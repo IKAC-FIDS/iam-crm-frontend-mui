@@ -1,25 +1,52 @@
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'sonner';
 import {
   Alert,
   Box,
   Button,
+  Chip,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
   Grid,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
   Stack,
+  Tab,
+  Tabs,
   Typography,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Header from '@/components/dashboard/Header';
-import { useCompany } from '../hooks/useCompanies';
+import { useAuthStore } from '@/store/authStore';
+import ChangeCompanyStageDialog from '../components/ChangeCompanyStageDialog';
+import EditCompanyDialog from '../components/EditCompanyDialog';
+import { useCompany, useUpdateCompany } from '../hooks/useCompanies';
 import {
-  companyOwnershipLabels,
+  COMPANY_PRIORITIES,
   companyPriorityLabels,
   companyStageLabels,
-  isCompanyOwnership,
   isCompanyPriority,
   isCompanyStage,
 } from '../types/company.types';
+import type { CompanyPriority } from '../types/company.types';
+
+const detailTabs = [
+  { label: 'نمای کلی', value: 'overview' },
+  { label: 'افراد', value: 'people' },
+  { label: 'فعالیت‌ها', value: 'activities' },
+  { label: 'کال کارت', value: 'call-card' },
+  { label: 'شعب', value: 'branches' },
+  { label: 'کانال‌های اجتماعی', value: 'social-channels' },
+] as const;
+
+type DetailTab = (typeof detailTabs)[number]['value'];
 
 interface DetailItemProps {
   label: string;
@@ -29,20 +56,41 @@ interface DetailItemProps {
 function DetailItem({ label, value }: DetailItemProps) {
   return (
     <Box>
-      <Typography variant="body2" color="text.secondary">
-        {label}
-      </Typography>
-      <Typography variant="body1" sx={{ mt: 0.5 }}>
+      <Typography variant="body2" color="text.secondary">{label}</Typography>
+      <Typography variant="body1" sx={{ mt: 0.5, overflowWrap: 'anywhere' }}>
         {value?.trim() || '—'}
       </Typography>
     </Box>
   );
 }
 
+function formatDate(value?: string | null): string {
+  if (!value) return '—';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '—';
+  return new Intl.DateTimeFormat('fa-IR', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(date);
+}
+
+function getTeamName(team: string | { name?: string } | null | undefined): string {
+  if (typeof team === 'string') return team;
+  return team?.name ?? '—';
+}
+
 export default function CompanyDetailsPage() {
   const navigate = useNavigate();
   const { companyId = '' } = useParams<{ companyId: string }>();
+  const currentUserId = useAuthStore((state) => state.user?.id);
   const { data: company, isLoading, isError } = useCompany(companyId);
+  const updateCompany = useUpdateCompany(companyId);
+  const [activeTab, setActiveTab] = useState<DetailTab>('overview');
+  const [editOpen, setEditOpen] = useState(false);
+  const [stageOpen, setStageOpen] = useState(false);
+  const [priorityOpen, setPriorityOpen] = useState(false);
+  const [assignOwnerOpen, setAssignOwnerOpen] = useState(false);
+  const [priority, setPriority] = useState<CompanyPriority | ''>('');
 
   if (isLoading) {
     return (
@@ -55,9 +103,7 @@ export default function CompanyDetailsPage() {
   if (isError || !company) {
     return (
       <Box>
-        <Alert severity="error" sx={{ mb: 2 }}>
-          دریافت اطلاعات شرکت با خطا مواجه شد.
-        </Alert>
+        <Alert severity="error" sx={{ mb: 2 }}>دریافت اطلاعات شرکت با خطا مواجه شد.</Alert>
         <Button onClick={() => navigate('/companies')}>بازگشت به شرکت‌ها</Button>
       </Box>
     );
@@ -66,57 +112,176 @@ export default function CompanyDetailsPage() {
   const stageLabel =
     company.stage && isCompanyStage(company.stage)
       ? companyStageLabels[company.stage]
-      : company.stage;
+      : company.stage || 'بدون مرحله';
   const priorityLabel =
     company.priority && isCompanyPriority(company.priority)
       ? companyPriorityLabels[company.priority]
-      : company.priority;
-  const ownershipLabel =
-    company.ownership && isCompanyOwnership(company.ownership)
-      ? companyOwnershipLabels[company.ownership]
-      : company.ownership;
+      : company.priority || 'بدون اولویت';
+
+  const handlePriorityOpen = () => {
+    setPriority(
+      company.priority && isCompanyPriority(company.priority) ? company.priority : '',
+    );
+    setPriorityOpen(true);
+  };
+
+  const handlePriorityChange = async () => {
+    if (!priority) return;
+    try {
+      await updateCompany.mutateAsync({ priority });
+      toast.success('اولویت شرکت تغییر کرد.');
+      setPriorityOpen(false);
+    } catch {
+      toast.error('تغییر اولویت با خطا مواجه شد.');
+    }
+  };
+
+  const handleAssignOwner = async () => {
+    if (!currentUserId) return;
+    try {
+      await updateCompany.mutateAsync({ ownerId: currentUserId });
+      toast.success('مالک شرکت به کاربر فعلی تخصیص یافت.');
+      setAssignOwnerOpen(false);
+    } catch {
+      toast.error('تخصیص مالک با خطا مواجه شد.');
+    }
+  };
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%', minWidth: 0 }}>
       <Header />
-      <Stack
-        direction="row"
-        sx={{ mb: 2, justifyContent: 'space-between', alignItems: 'center' }}
-      >
-        <Typography variant="h5">{company.legalName}</Typography>
-        <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/companies')}>
-          بازگشت
-        </Button>
-      </Stack>
 
-      <Paper sx={{ p: { xs: 2, md: 3 } }}>
-        <Grid container spacing={3}>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <DetailItem label="نام حقوقی" value={company.legalName} />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <DetailItem label="نام برند" value={company.brandName} />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <DetailItem label="صنعت" value={company.industry} />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <DetailItem label="نوع مالکیت" value={ownershipLabel} />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <DetailItem label="مرحله" value={stageLabel} />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <DetailItem label="اولویت" value={priorityLabel} />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <DetailItem label="مالک" value={company.owner?.fullName} />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <DetailItem label="شهر دفتر مرکزی" value={company.headOfficeCity} />
-          </Grid>
-        </Grid>
+      <Paper sx={{ p: { xs: 2, md: 3 }, mb: 2 }}>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={2}
+          sx={{ justifyContent: 'space-between', alignItems: { sm: 'center' } }}
+        >
+          <Box>
+            <Typography variant="h4">{company.legalName}</Typography>
+            <Typography color="text.secondary" sx={{ mt: 0.5 }}>
+              {company.brandName || 'بدون نام برند'}
+            </Typography>
+            <Stack direction="row" spacing={1} sx={{ mt: 1.5, flexWrap: 'wrap', gap: 1 }}>
+              <Chip label={stageLabel} color="primary" variant="outlined" />
+              <Chip label={priorityLabel} color="secondary" variant="outlined" />
+              <Chip label={`مالک: ${company.owner?.fullName || 'بدون مالک'}`} variant="outlined" />
+            </Stack>
+          </Box>
+          <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/companies')}>
+            بازگشت به شرکت‌ها
+          </Button>
+        </Stack>
       </Paper>
+
+      <Paper sx={{ mb: 2, overflow: 'hidden' }}>
+        <Tabs
+          value={activeTab}
+          onChange={(_, value: DetailTab) => setActiveTab(value)}
+          variant="scrollable"
+          scrollButtons="auto"
+          allowScrollButtonsMobile
+        >
+          {detailTabs.map((tab) => (
+            <Tab key={tab.value} value={tab.value} label={tab.label} />
+          ))}
+        </Tabs>
+      </Paper>
+
+      {activeTab === 'overview' ? (
+        <Stack spacing={2}>
+          <Paper sx={{ p: { xs: 2, md: 3 } }}>
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{ mb: 3, flexWrap: 'wrap', gap: 1 }}
+            >
+              <Button variant="contained" onClick={() => setEditOpen(true)}>
+                ویرایش اطلاعات شرکت
+              </Button>
+              <Button variant="outlined" onClick={() => setStageOpen(true)}>
+                تغییر مرحله
+              </Button>
+              <Button variant="outlined" onClick={() => setAssignOwnerOpen(true)}>
+                تخصیص مالک
+              </Button>
+              <Button variant="outlined" onClick={handlePriorityOpen}>
+                تغییر اولویت
+              </Button>
+            </Stack>
+
+            <Grid container spacing={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="نام حقوقی" value={company.legalName} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="نام برند" value={company.brandName} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="صنعت" value={company.industry} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="مرحله فروش" value={stageLabel} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="اولویت" value={priorityLabel} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="مالک" value={company.owner?.fullName} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="تیم مالک" value={getTeamName(company.owner?.team)} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="شهر دفتر مرکزی" value={company.headOfficeCity} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="وب‌سایت" value={company.website} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="منبع" value={company.source} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="تاریخ ایجاد" value={formatDate(company.createdAt)} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="آخرین بروزرسانی" value={formatDate(company.updatedAt)} /></Grid>
+            </Grid>
+          </Paper>
+        </Stack>
+      ) : (
+        <Paper sx={{ p: 4, textAlign: 'center', minHeight: 220 }}>
+          <Typography variant="h6">
+            {detailTabs.find((tab) => tab.value === activeTab)?.label}
+          </Typography>
+          <Typography color="text.secondary" sx={{ mt: 1 }}>
+            این بخش برای پیاده‌سازی در مرحله بعد آماده شده است.
+          </Typography>
+        </Paper>
+      )}
+
+      <EditCompanyDialog company={company} open={editOpen} onClose={() => setEditOpen(false)} />
+      <ChangeCompanyStageDialog
+        companyId={company.id}
+        currentStage={company.stage}
+        open={stageOpen}
+        onClose={() => setStageOpen(false)}
+      />
+
+      <Dialog open={priorityOpen} onClose={() => setPriorityOpen(false)} fullWidth maxWidth="xs">
+        <DialogTitle>تغییر اولویت</DialogTitle>
+        <DialogContent sx={{ pt: '12px !important' }}>
+          <FormControl fullWidth>
+            <InputLabel id="detail-priority-label">اولویت</InputLabel>
+            <Select
+              labelId="detail-priority-label"
+              label="اولویت"
+              value={priority}
+              onChange={(event) => setPriority(event.target.value as CompanyPriority)}
+            >
+              {COMPANY_PRIORITIES.map((value) => (
+                <MenuItem key={value} value={value}>{companyPriorityLabels[value]}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setPriorityOpen(false)}>انصراف</Button>
+          <Button variant="contained" onClick={handlePriorityChange} disabled={!priority || updateCompany.isPending}>
+            ثبت اولویت
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={assignOwnerOpen} onClose={() => setAssignOwnerOpen(false)} maxWidth="xs" fullWidth>
+        <DialogTitle>تخصیص مالک</DialogTitle>
+        <DialogContent>
+          <Typography>مالک شرکت به کاربر فعلی تخصیص داده شود؟</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setAssignOwnerOpen(false)}>انصراف</Button>
+          <Button variant="contained" onClick={handleAssignOwner} disabled={!currentUserId || updateCompany.isPending}>
+            تخصیص به من
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

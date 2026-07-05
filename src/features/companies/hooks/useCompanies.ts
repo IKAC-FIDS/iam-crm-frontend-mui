@@ -1,6 +1,11 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { companiesService } from '../services/companies.service';
-import type { CompaniesQueryParams, CreateCompanyPayload } from '../types/company.types';
+import type {
+  ChangeCompanyStagePayload,
+  CompaniesQueryParams,
+  CreateCompanyPayload,
+  UpdateCompanyPayload,
+} from '../types/company.types';
 
 export const companyQueryKeys = {
   all: ['companies'] as const,
@@ -29,6 +34,26 @@ export function useCreateCompany() {
 
   return useMutation({
     mutationFn: (payload: CreateCompanyPayload) => companiesService.create(payload),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: companyQueryKeys.all }),
+  });
+}
+
+export function useUpdateCompany(companyId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: UpdateCompanyPayload) =>
+      companiesService.update(companyId, payload),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: companyQueryKeys.all }),
+  });
+}
+
+export function useChangeCompanyStage(companyId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: ChangeCompanyStagePayload) =>
+      companiesService.changeStage(companyId, payload),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: companyQueryKeys.all }),
   });
 }

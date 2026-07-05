@@ -3,7 +3,9 @@ import type {
   CompaniesPageResult,
   CompaniesQueryParams,
   Company,
+  ChangeCompanyStagePayload,
   CreateCompanyPayload,
+  UpdateCompanyPayload,
 } from '../types/company.types';
 
 interface CompaniesApiMeta {
@@ -76,6 +78,27 @@ export const companiesService = {
   create: async (payload: CreateCompanyPayload): Promise<Company> => {
     const response = await axiosInstance.post<Company | { data: Company }>(
       '/companies',
+      payload,
+    );
+
+    return 'data' in response.data ? response.data.data : response.data;
+  },
+
+  update: async (companyId: string, payload: UpdateCompanyPayload): Promise<Company> => {
+    const response = await axiosInstance.patch<Company | { data: Company }>(
+      `/companies/${companyId}`,
+      payload,
+    );
+
+    return 'data' in response.data ? response.data.data : response.data;
+  },
+
+  changeStage: async (
+    companyId: string,
+    payload: ChangeCompanyStagePayload,
+  ): Promise<Company> => {
+    const response = await axiosInstance.patch<Company | { data: Company }>(
+      `/companies/${companyId}/stage`,
       payload,
     );
 

@@ -37,6 +37,7 @@ export type CompanyPageSize = (typeof COMPANY_PAGE_SIZES)[number];
 export interface CompanyOwner {
   id: string;
   fullName: string;
+  team?: string | { id?: string; name?: string } | null;
 }
 
 export interface Company {
@@ -49,8 +50,25 @@ export interface Company {
   priority?: CompanyPriority | string | null;
   owner?: CompanyOwner | null;
   headOfficeCity?: string | null;
+  website?: string | null;
+  source?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
+}
+
+export interface UpdateCompanyPayload {
+  legalName?: string;
+  brandName?: string;
+  industry?: string;
+  priority?: CompanyPriority;
+  headOfficeCity?: string;
+  website?: string;
+  source?: string;
+  ownerId?: string;
+}
+
+export interface ChangeCompanyStagePayload {
+  stage: CompanyStage;
 }
 
 export interface CreateCompanyPayload {
