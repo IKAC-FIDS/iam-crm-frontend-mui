@@ -9,6 +9,8 @@ import CompanyDetailsPage from '@/features/companies/pages/CompanyDetailsPage';
 import PipelinePage from '@/features/pipeline/pages/PipelinePage';
 import FollowUpsPage from '@/features/followUps/pages/FollowUpsPage';
 import ReportsPage from '@/features/reports/pages/ReportsPage';
+import AdminUsersPage from '@/features/admin/users/components/AdminUsersPage';
+import AdminPermissionsPage from '@/features/admin/permissions/components/AdminPermissionsPage';
 
 export const router = createBrowserRouter([
   {
@@ -25,6 +27,8 @@ export const router = createBrowserRouter([
           { path: 'pipeline', element: <PipelinePage /> },
           { path: 'follow-ups', element: <FollowUpsPage /> },
           { path: 'reports', element: <ReportsPage /> },
+          { path: 'admin/users', element: <AdminUsersPage /> },
+          { path: 'admin/permissions', element: <AdminPermissionsPage /> },
         ],
       },
     ],

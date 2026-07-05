@@ -208,3 +208,10 @@ export default defineConfig([
 - فایل‌های مهم: `src/features/activities/components/ActivitiesTab.tsx`، `src/features/followUps/components/FollowUpCard.tsx` و بررسی service/hookهای موجود فعالیت و پیگیری.
 - فرض‌ها و وابستگی‌ها: در repository فعلی هیچ endpoint یا قرارداد تأییدشده‌ای برای `PATCH /api/activities/:activityId`، reschedule یا complete وجود ندارد و پروژه فقط frontend است. به همین دلیل edit، reschedule و complete عمداً غیرفعال‌اند؛ پس از اضافه‌شدن endpointهای واقعی باید mutationها همراه invalidation کلیدهای activities، follow-ups و company پیاده‌سازی شوند.
 - وضعیت بررسی: lint بدون خطا یا هشدار و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle در خروجی build باقی مانده است.
+
+### fix 000020 — تکمیل مدیریت کاربران، مجوزها و تخصیص مالک
+
+- موارد پیاده‌سازی‌شده: افزودن routeهای `/admin/users` و `/admin/permissions` و منوی شرطی Admin؛ فهرست، ایجاد، تغییر نقش/تیم، فعال‌سازی و غیرفعال‌سازی کاربران واقعی با جلوگیری از غیرفعال‌سازی کاربر جاری؛ پشتیبانی از `isActive` و `active`؛ عملیات assign، revoke، bulk assign، bulk revoke و ایجاد مجوز با DELETE body صحیح؛ نمایش شفاف نبود endpoint مشاهده وضعیت مجوز نقش‌ها بدون ماتریس جعلی؛ سخت‌سازی helper مجوز با دسترسی ADMIN و افزودن `canAny` و `canAll`؛ و فعال‌سازی تخصیص مالک شرکت با کاربران فعال واقعی دارای نقش REP یا MANAGER.
+- فایل‌های مهم: featureهای `src/features/admin/users` و `src/features/admin/permissions`، `src/features/auth/utils/permissions.ts`، `src/features/companies/components/ChangeCompanyOwnerDialog.tsx`، `src/features/companies/pages/CompanyDetailsPage.tsx`، `src/components/dashboard/SideMenu.tsx` و `src/routes/index.tsx`.
+- فرض‌ها و وابستگی‌ها: به endpointهای واقعی `/api/users` و `/api/admin/permissions/*` اعلام‌شده وابسته است. Backend endpoint فهرست وضعیت مجوزها به تفکیک نقش ارائه نکرده، بنابراین current state نقش‌ها جعل نشده است؛ team برای MANAGER و REP در frontend الزامی است و تخصیص مالک فقط کاربران فعال این دو نقش را نشان می‌دهد.
+- وضعیت بررسی: lint بدون خطا یا هشدار و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle در خروجی build باقی مانده است.

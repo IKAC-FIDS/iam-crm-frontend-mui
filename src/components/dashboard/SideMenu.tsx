@@ -11,6 +11,8 @@ import BusinessIcon from '@mui/icons-material/Business';
 import ViewKanbanIcon from '@mui/icons-material/ViewKanban';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import AssessmentIcon from '@mui/icons-material/Assessment';
+import PeopleIcon from '@mui/icons-material/People';
+import SecurityIcon from '@mui/icons-material/Security';
 import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -34,6 +36,8 @@ const menuItems = [
   { text: 'پایپ‌لاین', icon: <ViewKanbanIcon />, path: '/pipeline' },
   { text: 'پیگیری‌ها', icon: <NotificationsActiveIcon />, path: '/follow-ups' },
   { text: 'گزارش‌ها', icon: <AssessmentIcon />, path: '/reports', reportOnly: true },
+  { text: 'کاربران', icon: <PeopleIcon />, path: '/admin/users', permission: 'user:manage' },
+  { text: 'مجوزها', icon: <SecurityIcon />, path: '/admin/permissions', permission: 'permission:manage' },
 ];
 
 interface SideMenuProps {
@@ -51,7 +55,7 @@ export default function SideMenu({ mobileOpen, onClose }: SideMenuProps) {
     <>
       <Toolbar />
       <List sx={{ mt: 2 }}>
-        {menuItems.filter((item) => !item.reportOnly || canViewReports).map((item) => (
+        {menuItems.filter((item) => (!item.reportOnly || canViewReports) && (!item.permission || can(user, item.permission, ['ADMIN']))).map((item) => (
           <ListItem key={item.text} disablePadding>
             <ListItemButton
               selected={location.pathname === item.path}

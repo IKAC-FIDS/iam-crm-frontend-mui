@@ -11,7 +11,6 @@ import {
   Stack,
   Tab,
   Tabs,
-  Tooltip,
   Typography,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -21,6 +20,7 @@ import { useAuthStore } from '@/store/authStore';
 import ChangeCompanyPriorityDialog from '../components/ChangeCompanyPriorityDialog';
 import ChangeCompanyStageDialog from '../components/ChangeCompanyStageDialog';
 import EditCompanyDialog from '../components/EditCompanyDialog';
+import ChangeCompanyOwnerDialog from '../components/ChangeCompanyOwnerDialog';
 import PeopleTab from '@/features/people/components/PeopleTab';
 import ActivitiesTab from '@/features/activities/components/ActivitiesTab';
 import CallCardTab from '@/features/callCards/components/CallCardTab';
@@ -74,6 +74,7 @@ export default function CompanyDetailsPage() {
   const [editOpen, setEditOpen] = useState(false);
   const [stageOpen, setStageOpen] = useState(false);
   const [priorityOpen, setPriorityOpen] = useState(false);
+  const [ownerOpen, setOwnerOpen] = useState(false);
   const canEditCompany = can(user, 'company:update', ['ADMIN', 'MANAGER', 'REP']);
   const canChangeStage = can(user, 'company:change-stage', ['ADMIN', 'MANAGER', 'REP']);
   const canAssignOwner = can(user, 'company:change-owner', ['ADMIN', 'MANAGER']);
@@ -158,13 +159,9 @@ export default function CompanyDetailsPage() {
                 </Button>
               )}
               {canAssignOwner && (
-                <Tooltip title="لیست کاربران برای تخصیص مالک هنوز آماده نیست.">
-                  <span>
-                    <Button variant="outlined" disabled>
-                      تخصیص مالک
-                    </Button>
-                  </span>
-                </Tooltip>
+                <Button variant="outlined" onClick={() => setOwnerOpen(true)}>
+                  تخصیص مالک
+                </Button>
               )}
               {canEditCompany && (
                 <Button variant="outlined" onClick={() => setPriorityOpen(true)}>
@@ -213,6 +210,16 @@ export default function CompanyDetailsPage() {
 
       {canEditCompany && (
         <EditCompanyDialog company={company} open={editOpen} onClose={() => setEditOpen(false)} />
+      )}
+
+      {canAssignOwner && (
+        <ChangeCompanyOwnerDialog
+          key={company.ownerId ?? 'no-owner'}
+          companyId={company.id}
+          currentOwnerId={company.ownerId}
+          open={ownerOpen}
+          onOpenChange={setOwnerOpen}
+        />
       )}
       {canChangeStage && (
         <ChangeCompanyStageDialog
