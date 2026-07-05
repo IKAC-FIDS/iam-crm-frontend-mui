@@ -8,12 +8,17 @@ import { authService } from '../services/auth.service';
 import type { LoginRequest } from '../services/auth.service';
 import { useAuthStore } from '@/store/authStore';
 import { toast } from 'sonner';
+import type { AxiosError } from 'axios';
+
+interface ApiErrorResponse {
+  message?: string;
+}
 
 export function useAuth() {
   const navigate = useNavigate();
   const { setUser } = useAuthStore();
 
-  const { mutate: login, isPending } = useMutation({
+  const { mutateAsync: login, isPending } = useMutation({
     mutationFn: (data: LoginRequest) => authService.login(data),
     onSuccess: (response) => {
       localStorage.setItem('accessToken', response.accessToken);
@@ -21,7 +26,7 @@ export function useAuth() {
       toast.success('ورود موفق!');
       navigate('/dashboard');
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiErrorResponse>) => {
       toast.error(error.response?.data?.message || 'خطا در ورود');
     },
   });

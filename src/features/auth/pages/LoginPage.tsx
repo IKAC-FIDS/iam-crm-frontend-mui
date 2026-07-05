@@ -13,18 +13,19 @@ import {
   InputAdornment,
   IconButton,
   Divider,
-  FormControlLabel,
-  Checkbox,
   Link,
   Stack,
-  useTheme,
-  colors,
 } from '@mui/material';
 import { Email, Lock, Visibility, VisibilityOff, Fingerprint } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import axios from 'axios';
 import { useAuth } from '../hooks/useAuth';
+
+interface ApiErrorResponse {
+  message?: string;
+}
 
 // ============================================================
 // 📝 اعتبارسنجی فرم
@@ -43,7 +44,6 @@ type LoginFormData = z.infer<typeof loginSchema>;
 // ============================================================
 
 export default function LoginPage() {
-  const theme = useTheme();
   const { login, isLoading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -63,8 +63,11 @@ export default function LoginPage() {
     try {
       setError(null);
       await login(data);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'خطا در ورود به سیستم');
+    } catch (err: unknown) {
+      const message = axios.isAxiosError<ApiErrorResponse>(err)
+        ? err.response?.data?.message
+        : undefined;
+      setError(message || 'خطا در ورود به سیستم');
     }
   };
 

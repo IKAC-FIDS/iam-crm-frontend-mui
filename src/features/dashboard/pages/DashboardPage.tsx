@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Box from '@mui/material/Box';
 import Header from '@/components/dashboard/Header';
 import MainGrid from '@/components/dashboard/MainGrid';

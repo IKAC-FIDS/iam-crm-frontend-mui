@@ -4,7 +4,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
-import type { GridColDef } from '@mui/x-data-grid';
+import type { GridColDef, GridPaginationModel } from '@mui/x-data-grid';
 
 // ستون‌های نمونه برای جدول فعالیت‌ها
 const columns: GridColDef[] = [
@@ -16,6 +16,11 @@ const columns: GridColDef[] = [
 ];
 
 export default function MainGrid() {
+  const [paginationModel, setPaginationModel] = React.useState<GridPaginationModel>({
+    page: 0,
+    pageSize: 5,
+  });
+
   // نمونه داده‌های آماری (بعداً با API جایگزین می‌شه)
   const stats = {
     totalCompanies: 124,
@@ -77,7 +82,8 @@ export default function MainGrid() {
           <DataGrid
             rows={rows}
             columns={columns}
-            paginationModel={{ page: 0, pageSize: 5 }}
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
             pageSizeOptions={[5, 10, 25]}
           />
         </div>

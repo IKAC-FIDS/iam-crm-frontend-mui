@@ -1,4 +1,4 @@
-import { Theme } from '@mui/material/styles';
+import type { Theme } from '@mui/material/styles';
 import type { TreeViewComponents } from '@mui/x-tree-view/themeAugmentation';
 
 export const treeViewCustomizations: TreeViewComponents<Theme> = {

@@ -1,7 +1,7 @@
-import { Theme } from '@mui/material/styles';
-import type { PickersComponents } from '@mui/x-date-pickers/themeAugmentation';
+import type { Theme } from '@mui/material/styles';
+import type { PickerComponents } from '@mui/x-date-pickers/themeAugmentation';
 
-export const datePickersCustomizations: PickersComponents<Theme> = {
+export const datePickersCustomizations: PickerComponents<Theme> = {
   MuiPickerPopper: {
     styleOverrides: {
       paper: ({ theme }) => ({

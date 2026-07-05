@@ -1,4 +1,4 @@
-import { Theme } from '@mui/material/styles';
+import type { Theme } from '@mui/material/styles';
 import { gridClasses } from '@mui/x-data-grid';
 import type { DataGridComponents } from '@mui/x-data-grid/themeAugmentation';
 
