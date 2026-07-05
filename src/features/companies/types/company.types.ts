@@ -19,10 +19,19 @@ export const COMPANY_STAGES = [
 ] as const;
 
 export const COMPANY_PRIORITIES = ['LOW', 'MEDIUM', 'HIGH', 'STRATEGIC'] as const;
+export const COMPANY_OWNERSHIPS = [
+  'PRIVATE',
+  'STATE',
+  'SEMI_STATE',
+  'PUBLIC_LISTED',
+  'BANK',
+  'HOLDING',
+] as const;
 export const COMPANY_PAGE_SIZES = [5, 10, 20] as const;
 
 export type CompanyStage = (typeof COMPANY_STAGES)[number];
 export type CompanyPriority = (typeof COMPANY_PRIORITIES)[number];
+export type CompanyOwnership = (typeof COMPANY_OWNERSHIPS)[number];
 export type CompanyPageSize = (typeof COMPANY_PAGE_SIZES)[number];
 
 export interface CompanyOwner {
@@ -35,6 +44,7 @@ export interface Company {
   legalName: string;
   brandName?: string | null;
   industry?: string | null;
+  ownership?: CompanyOwnership | string | null;
   stage?: CompanyStage | string | null;
   priority?: CompanyPriority | string | null;
   owner?: CompanyOwner | null;
@@ -47,6 +57,7 @@ export interface CreateCompanyPayload {
   legalName: string;
   brandName?: string;
   industry?: string;
+  ownership?: CompanyOwnership;
   priority?: CompanyPriority;
   headOfficeCity?: string;
   website?: string;
@@ -99,10 +110,23 @@ export const companyPriorityLabels: Record<CompanyPriority, string> = {
   STRATEGIC: 'استراتژیک',
 };
 
+export const companyOwnershipLabels: Record<CompanyOwnership, string> = {
+  PRIVATE: 'خصوصی',
+  STATE: 'دولتی',
+  SEMI_STATE: 'نیمه‌دولتی',
+  PUBLIC_LISTED: 'بورسی',
+  BANK: 'بانک',
+  HOLDING: 'هلدینگ',
+};
+
 export function isCompanyStage(value: string): value is CompanyStage {
   return COMPANY_STAGES.some((stage) => stage === value);
 }
 
 export function isCompanyPriority(value: string): value is CompanyPriority {
   return COMPANY_PRIORITIES.some((priority) => priority === value);
+}
+
+export function isCompanyOwnership(value: string): value is CompanyOwnership {
+  return COMPANY_OWNERSHIPS.some((ownership) => ownership === value);
 }

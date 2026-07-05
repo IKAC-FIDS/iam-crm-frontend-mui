@@ -19,8 +19,11 @@ import {
 } from '@mui/material';
 import { useCreateCompany } from '../hooks/useCompanies';
 import { useAuthStore } from '@/store/authStore';
+import IranProvinceSelect from '@/shared/components/IranProvinceSelect';
 import {
+  COMPANY_OWNERSHIPS,
   COMPANY_PRIORITIES,
+  companyOwnershipLabels,
   companyPriorityLabels,
 } from '../types/company.types';
 import type { CreateCompanyPayload } from '../types/company.types';
@@ -38,6 +41,7 @@ const createCompanySchema = z.object({
   legalName: z.string().trim().min(1, 'نام حقوقی الزامی است'),
   brandName: z.string(),
   industry: z.string(),
+  ownership: z.enum(COMPANY_OWNERSHIPS).or(z.literal('')),
   priority: z.enum(COMPANY_PRIORITIES).or(z.literal('')),
   headOfficeCity: z.string(),
   website: z.string(),
@@ -50,6 +54,7 @@ const defaultValues: CreateCompanyFormData = {
   legalName: '',
   brandName: '',
   industry: '',
+  ownership: '',
   priority: '',
   headOfficeCity: '',
   website: '',
@@ -91,6 +96,7 @@ export default function CreateCompanyDialog({ open, onClose }: CreateCompanyDial
       legalName: data.legalName.trim(),
       brandName: optionalValue(data.brandName),
       industry: optionalValue(data.industry),
+      ownership: data.ownership || undefined,
       priority: data.priority || undefined,
       headOfficeCity: optionalValue(data.headOfficeCity),
       website: optionalValue(data.website),
@@ -138,6 +144,28 @@ export default function CreateCompanyDialog({ open, onClose }: CreateCompanyDial
           <TextField label="صنعت" {...register('industry')} />
 
           <Controller
+            name="ownership"
+            control={control}
+            render={({ field }) => (
+              <FormControl fullWidth>
+                <InputLabel id="create-company-ownership-label">نوع مالکیت</InputLabel>
+                <Select
+                  {...field}
+                  labelId="create-company-ownership-label"
+                  label="نوع مالکیت"
+                >
+                  <MenuItem value="">انتخاب نشده</MenuItem>
+                  {COMPANY_OWNERSHIPS.map((ownership) => (
+                    <MenuItem key={ownership} value={ownership}>
+                      {companyOwnershipLabels[ownership]}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+          />
+
+          <Controller
             name="priority"
             control={control}
             render={({ field }) => (
@@ -159,7 +187,17 @@ export default function CreateCompanyDialog({ open, onClose }: CreateCompanyDial
             )}
           />
 
-          <TextField label="شهر دفتر مرکزی" {...register('headOfficeCity')} />
+          <Controller
+            name="headOfficeCity"
+            control={control}
+            render={({ field }) => (
+              <IranProvinceSelect
+                value={field.value}
+                onChange={field.onChange}
+                label="استان دفتر مرکزی"
+              />
+            )}
+          />
           <TextField label="وب‌سایت" {...register('website')} />
           <TextField label="منبع" {...register('source')} />
         </Stack>

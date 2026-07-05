@@ -13,8 +13,10 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Header from '@/components/dashboard/Header';
 import { useCompany } from '../hooks/useCompanies';
 import {
+  companyOwnershipLabels,
   companyPriorityLabels,
   companyStageLabels,
+  isCompanyOwnership,
   isCompanyPriority,
   isCompanyStage,
 } from '../types/company.types';
@@ -69,6 +71,10 @@ export default function CompanyDetailsPage() {
     company.priority && isCompanyPriority(company.priority)
       ? companyPriorityLabels[company.priority]
       : company.priority;
+  const ownershipLabel =
+    company.ownership && isCompanyOwnership(company.ownership)
+      ? companyOwnershipLabels[company.ownership]
+      : company.ownership;
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -93,6 +99,9 @@ export default function CompanyDetailsPage() {
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 4 }}>
             <DetailItem label="صنعت" value={company.industry} />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+            <DetailItem label="نوع مالکیت" value={ownershipLabel} />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 4 }}>
             <DetailItem label="مرحله" value={stageLabel} />
