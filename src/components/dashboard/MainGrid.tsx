@@ -1,93 +1,50 @@
-import * as React from 'react';
 import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
+import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
-import { DataGrid } from '@mui/x-data-grid';
-import type { GridColDef, GridPaginationModel } from '@mui/x-data-grid';
-
-// ستون‌های نمونه برای جدول فعالیت‌ها
-const columns: GridColDef[] = [
-  { field: 'id', headerName: 'شناسه', width: 90 },
-  { field: 'type', headerName: 'نوع', width: 120 },
-  { field: 'company', headerName: 'شرکت', width: 150 },
-  { field: 'person', headerName: 'شخص', width: 150 },
-  { field: 'occurredAt', headerName: 'تاریخ', width: 180 },
-];
+import { can } from '@/features/auth/utils/permissions';
+import { useAuthStore } from '@/store/authStore';
+import ReportMetricCard from '@/features/reports/components/ReportMetricCard';
+import { useActivityReport, useConversionRatesReport, usePipelineSummaryReport } from '@/features/reports/hooks/useReports';
+import { defaultActivityDateRange, formatCount, formatPercent, isForbiddenError } from '@/features/reports/utils/reportDisplay';
 
 export default function MainGrid() {
-  const [paginationModel, setPaginationModel] = React.useState<GridPaginationModel>({
-    page: 0,
-    pageSize: 5,
-  });
+  const user = useAuthStore((state) => state.user);
+  const hasAccess = can(user, 'report:view', ['ADMIN', 'MANAGER', 'BOARDS']);
+  const dateRange = defaultActivityDateRange();
+  const pipeline = usePipelineSummaryReport(hasAccess);
+  const conversion = useConversionRatesReport(hasAccess);
+  const activities = useActivityReport(dateRange, hasAccess);
 
-  // نمونه داده‌های آماری (بعداً با API جایگزین می‌شه)
-  const stats = {
-    totalCompanies: 124,
-    totalPeople: 345,
-    pendingFollowUps: 18,
-    meetingsToday: 5,
-  };
+  if (!hasAccess) {
+    return <Alert severity="info" sx={{ mt: 2 }}>گزارش‌های مدیریتی برای نقش شما فعال نیست.</Alert>;
+  }
 
-  // نمونه داده‌های جدول
-  const rows = [
-    { id: 1, type: 'جلسه', company: 'شرکت الف', person: 'رضا احمدی', occurredAt: '۱۴۰۲/۰۱/۱۵' },
-    { id: 2, type: 'تماس', company: 'شرکت ب', person: 'سارا محمدی', occurredAt: '۱۴۰۲/۰۱/۱۴' },
+  const forbidden = [pipeline.error, conversion.error, activities.error].some(isForbiddenError);
+
+  const metrics = [
+    { label: 'کل شرکت‌ها', value: formatCount(pipeline.data?.summary.totalCompanies), unavailable: pipeline.isError, loading: pipeline.isLoading },
+    { label: 'شرکت‌های فعال', value: formatCount(pipeline.data?.summary.activeCompanies), unavailable: pipeline.isError, loading: pipeline.isLoading },
+    { label: 'شرکت‌های از دست رفته', value: formatCount(pipeline.data?.summary.lostCompanies), unavailable: pipeline.isError, loading: pipeline.isLoading },
+    { label: 'نرخ از دست‌رفتگی', value: formatPercent(pipeline.data?.summary.lostRate), unavailable: pipeline.isError, loading: pipeline.isLoading },
+    { label: 'نرخ تبدیل کل', value: formatPercent(conversion.data?.summary.overallConversionRate), unavailable: conversion.isError, loading: conversion.isLoading },
+    { label: 'شرکت‌های موفق', value: formatCount(conversion.data?.summary.completedCompanies), unavailable: conversion.isError, loading: conversion.isLoading },
+    { label: 'فعالیت‌های ۳۰ روز اخیر', value: formatCount(activities.data?.totalActivities), unavailable: activities.isError, loading: activities.isLoading },
   ];
 
   return (
     <Box sx={{ width: '100%', mt: 2 }}>
-      {/* کارت‌های آماری */}
-      <Grid container spacing={{ xs: 2, md: 3 }} sx={{ mb: { xs: 2, md: 4 } }}>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-            <Typography variant="body2" color="text.secondary">
-              تعداد شرکت‌ها
-            </Typography>
-            <Typography variant="h4">{stats.totalCompanies}</Typography>
-          </Paper>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <Paper sx={{ p: 2 }}>
-            <Typography variant="body2" color="text.secondary">
-              تعداد اشخاص
-            </Typography>
-            <Typography variant="h4">{stats.totalPeople}</Typography>
-          </Paper>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <Paper sx={{ p: 2 }}>
-            <Typography variant="body2" color="text.secondary">
-              پیگیری‌های امروز
-            </Typography>
-            <Typography variant="h4">{stats.pendingFollowUps}</Typography>
-          </Paper>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <Paper sx={{ p: 2 }}>
-            <Typography variant="body2" color="text.secondary">
-              جلسات امروز
-            </Typography>
-            <Typography variant="h4">{stats.meetingsToday}</Typography>
-          </Paper>
-        </Grid>
+      {forbidden && <Alert severity="info" sx={{ mb: 2 }}>گزارش‌های مدیریتی برای نقش شما فعال نیست.</Alert>}
+      <Grid container spacing={2}>
+        {metrics.map((metric) => (
+          <Grid key={metric.label} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+            <ReportMetricCard
+              label={metric.label}
+              value={metric.loading ? 'در حال دریافت...' : metric.value}
+              unavailable={metric.unavailable}
+            />
+          </Grid>
+        ))}
       </Grid>
-
-      {/* جدول آخرین فعالیت‌ها */}
-      <Paper sx={{ p: { xs: 1, sm: 2 }, minWidth: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-        <Typography variant="h6" sx={{ mb: 2 }}>
-          آخرین فعالیت‌ها
-        </Typography>
-        <Box sx={{ height: 400, width: '100%', minWidth: 0 }}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            paginationModel={paginationModel}
-            onPaginationModelChange={setPaginationModel}
-            pageSizeOptions={[5, 10, 25]}
-          />
-        </Box>
-      </Paper>
     </Box>
   );
 }

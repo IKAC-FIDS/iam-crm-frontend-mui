@@ -8,6 +8,7 @@ import CompaniesPage from '@/features/companies/pages/CompaniesPage';
 import CompanyDetailsPage from '@/features/companies/pages/CompanyDetailsPage';
 import PipelinePage from '@/features/pipeline/pages/PipelinePage';
 import FollowUpsPage from '@/features/followUps/pages/FollowUpsPage';
+import ReportsPage from '@/features/reports/pages/ReportsPage';
 
 export const router = createBrowserRouter([
   {
@@ -23,6 +24,7 @@ export const router = createBrowserRouter([
           { path: 'companies/:companyId', element: <CompanyDetailsPage /> },
           { path: 'pipeline', element: <PipelinePage /> },
           { path: 'follow-ups', element: <FollowUpsPage /> },
+          { path: 'reports', element: <ReportsPage /> },
         ],
       },
     ],
