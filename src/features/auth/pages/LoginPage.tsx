@@ -84,7 +84,7 @@ export default function LoginPage() {
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
-        p: 2,
+        p: { xs: 1.5, sm: 2 },
       }}
     >
       <Card
@@ -95,7 +95,7 @@ export default function LoginPage() {
           boxShadow: '0 10px 40px rgba(74, 9, 9, 0.06)',
         }}
       >
-        <CardContent sx={{ p: 4 }}>
+        <CardContent sx={{ p: { xs: 2.5, sm: 4 }, '&:last-child': { pb: { xs: 2.5, sm: 4 } } }}>
           {/* عنوان */}
           <Typography
             variant="h4"

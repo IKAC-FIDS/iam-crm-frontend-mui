@@ -5,6 +5,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import Toolbar from '@mui/material/Toolbar';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import BusinessIcon from '@mui/icons-material/Business';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -27,18 +28,27 @@ const menuItems = [
   { text: 'شرکت‌ها', icon: <BusinessIcon />, path: '/companies' },
 ];
 
-export default function SideMenu() {
+interface SideMenuProps {
+  mobileOpen: boolean;
+  onClose: () => void;
+}
+
+export default function SideMenu({ mobileOpen, onClose }: SideMenuProps) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  return (
-    <StyledDrawer variant="permanent" anchor="right">
+  const menuContent = (
+    <>
+      <Toolbar />
       <List sx={{ mt: 2 }}>
         {menuItems.map((item) => (
           <ListItem key={item.text} disablePadding>
             <ListItemButton
               selected={location.pathname === item.path}
-              onClick={() => navigate(item.path)}
+              onClick={() => {
+                navigate(item.path);
+                onClose();
+              }}
               sx={{
                 borderRadius: 1,
                 mx: 1,
@@ -58,6 +68,29 @@ export default function SideMenu() {
           </ListItem>
         ))}
       </List>
-    </StyledDrawer>
+    </>
+  );
+
+  return (
+    <>
+      <StyledDrawer
+        variant="temporary"
+        anchor="right"
+        open={mobileOpen}
+        onClose={onClose}
+        ModalProps={{ keepMounted: true }}
+        sx={{ display: { xs: 'block', md: 'none' } }}
+      >
+        {menuContent}
+      </StyledDrawer>
+      <StyledDrawer
+        variant="permanent"
+        anchor="right"
+        open
+        sx={{ display: { xs: 'none', md: 'block' } }}
+      >
+        {menuContent}
+      </StyledDrawer>
+    </>
   );
 }

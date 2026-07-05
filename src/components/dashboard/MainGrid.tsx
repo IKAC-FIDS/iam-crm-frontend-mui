@@ -38,7 +38,7 @@ export default function MainGrid() {
   return (
     <Box sx={{ width: '100%', mt: 2 }}>
       {/* کارت‌های آماری */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
+      <Grid container spacing={{ xs: 2, md: 3 }} sx={{ mb: { xs: 2, md: 4 } }}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
             <Typography variant="body2" color="text.secondary">
@@ -74,11 +74,11 @@ export default function MainGrid() {
       </Grid>
 
       {/* جدول آخرین فعالیت‌ها */}
-      <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+      <Paper sx={{ p: { xs: 1, sm: 2 }, minWidth: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
         <Typography variant="h6" sx={{ mb: 2 }}>
           آخرین فعالیت‌ها
         </Typography>
-        <div style={{ height: 400, width: '100%' }}>
+        <Box sx={{ height: 400, width: '100%', minWidth: 0 }}>
           <DataGrid
             rows={rows}
             columns={columns}
@@ -86,7 +86,7 @@ export default function MainGrid() {
             onPaginationModelChange={setPaginationModel}
             pageSizeOptions={[5, 10, 25]}
           />
-        </div>
+        </Box>
       </Paper>
     </Box>
   );
