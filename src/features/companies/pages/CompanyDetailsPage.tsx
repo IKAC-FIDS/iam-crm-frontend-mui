@@ -25,6 +25,7 @@ import PeopleTab from '@/features/people/components/PeopleTab';
 import ActivitiesTab from '@/features/activities/components/ActivitiesTab';
 import CallCardTab from '@/features/callCards/components/CallCardTab';
 import CompanyBranchesTab from '@/features/companyBranches/components/CompanyBranchesTab';
+import CompanySocialChannelsTab from '@/features/companySocialChannels/components/CompanySocialChannelsTab';
 import { useCompany } from '../hooks/useCompanies';
 import {
   formatDateTime,
@@ -197,6 +198,8 @@ export default function CompanyDetailsPage() {
         <CallCardTab companyId={company.id} />
       ) : activeTab === 'branches' ? (
         <CompanyBranchesTab companyId={company.id} />
+      ) : activeTab === 'social-channels' ? (
+        <CompanySocialChannelsTab companyId={company.id} />
       ) : (
         <Paper sx={{ p: 4, textAlign: 'center', minHeight: 220 }}>
           <Typography variant="h6">

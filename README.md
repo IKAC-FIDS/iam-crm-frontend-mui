@@ -173,3 +173,10 @@ export default defineConfig([
 - فایل‌های مهم: `src/features/companyBranches/components/CompanyBranchForm.tsx` و کامپوننت مشترک موجود `src/shared/components/IranProvinceSelect.tsx`.
 - فرض‌ها و وابستگی‌ها: برای سازگاری با قرارداد فعلی Backend، نام فیلد payload همچنان `city` باقی مانده اما مقدار آن از فهرست استان‌های ایران انتخاب می‌شود؛ API یا داده جعلی تازه‌ای اضافه نشده است.
 - وضعیت بررسی: lint و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle باقی مانده است.
+
+### fix 000015 — پیاده‌سازی کانال‌های اجتماعی شرکت
+
+- موارد پیاده‌سازی‌شده: تکمیل تب مستقل کانال‌های اجتماعی شرکت؛ نمایش پلتفرم، آدرس یا هندل و آخرین بروزرسانی؛ ایجاد، ویرایش و حذف با تأیید؛ فرم مشترک create/edit با انتخاب enum پلتفرم و اعتبارسنجی اجباری هندل با Zod؛ trim مقدار پیش از ارسال؛ نمایش امن لینک‌های معتبر برای وب‌سایت، لینکدین، اینستاگرام، یوتیوب و آپارات؛ مدیریت وضعیت‌های loading، empty، error، success و pending؛ کنترل مجوزها؛ و invalidation کش کانال‌ها و جزئیات شرکت.
+- فایل‌های مهم: `src/features/companySocialChannels/types/companySocialChannel.types.ts`، `src/features/companySocialChannels/services/companySocialChannels.service.ts`، `src/features/companySocialChannels/hooks/useCompanySocialChannels.ts`، `src/features/companySocialChannels/components/CompanySocialChannelsTab.tsx`، `src/features/companySocialChannels/components/CompanySocialChannelForm.tsx`، `src/features/companySocialChannels/components/CompanySocialChannelFormDialog.tsx`، `src/features/companySocialChannels/utils/companySocialChannelDisplay.ts` و `src/features/companies/pages/CompanyDetailsPage.tsx`.
+- فرض‌ها و وابستگی‌ها: این ماژول مستقل از Socialهای اشخاص است و به endpointهای `GET` و `POST /api/companies/:companyId/social-channels` و `PATCH` و `DELETE /api/companies/:companyId/social-channels/:channelId` وابسته است. مقدار `OTHER` اضافه نشده، تبدیل اجباری هندل به URL انجام نمی‌شود و تست زنده update/delete به Backend در حال اجرا نیاز دارد.
+- وضعیت بررسی: lint و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle باقی مانده است.
