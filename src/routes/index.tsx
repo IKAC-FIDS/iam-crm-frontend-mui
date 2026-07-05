@@ -6,6 +6,7 @@ import LoginPage from '@/features/auth/pages/LoginPage';
 import DashboardPage from '@/features/dashboard/pages/DashboardPage';  // صفحه‌ی واقعی داشبورد
 import CompaniesPage from '@/features/companies/pages/CompaniesPage';
 import CompanyDetailsPage from '@/features/companies/pages/CompanyDetailsPage';
+import PipelinePage from '@/features/pipeline/pages/PipelinePage';
 
 export const router = createBrowserRouter([
   {
@@ -19,6 +20,7 @@ export const router = createBrowserRouter([
           { path: 'dashboard', element: <DashboardPage /> },
           { path: 'companies', element: <CompaniesPage /> },
           { path: 'companies/:companyId', element: <CompanyDetailsPage /> },
+          { path: 'pipeline', element: <PipelinePage /> },
         ],
       },
     ],

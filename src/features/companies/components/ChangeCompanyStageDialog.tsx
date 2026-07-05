@@ -25,6 +25,7 @@ interface ChangeCompanyStageDialogProps {
   currentStage?: PipelineStage | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSuccess?: () => Promise<void> | void;
 }
 
 interface ApiErrorBody {
@@ -36,6 +37,7 @@ export default function ChangeCompanyStageDialog({
   currentStage,
   open,
   onOpenChange,
+  onSuccess,
 }: ChangeCompanyStageDialogProps) {
   const changeStage = useChangeCompanyStage(companyId);
   const [stage, setStage] = useState<PipelineStage | ''>(
@@ -53,6 +55,7 @@ export default function ChangeCompanyStageDialog({
     if (!stage) return;
     try {
       await changeStage.mutateAsync({ stage });
+      await onSuccess?.();
       toast.success('مرحله شرکت با موفقیت تغییر کرد.');
       onOpenChange(false);
     } catch {
