@@ -9,6 +9,7 @@ import {
   Paper,
   Stack,
   TablePagination,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { can } from '@/features/auth/utils/permissions';
@@ -56,7 +57,7 @@ const followUpPresentation: Record<FollowUpStatus, { label: string; color: 'erro
   upcoming: { label: 'پیش رو', color: 'info' },
 };
 
-function ActivityItem({ activity, isLast }: { activity: Activity; isLast: boolean }) {
+function ActivityItem({ activity, isLast, canEdit }: { activity: Activity; isLast: boolean; canEdit: boolean }) {
   const followUpStatus = activity.nextActionDate
     ? getFollowUpStatus(activity.nextActionDate)
     : null;
@@ -127,6 +128,11 @@ function ActivityItem({ activity, isLast }: { activity: Activity; isLast: boolea
             />
           )}
         </Stack>
+        {canEdit && (
+          <Tooltip title="ویرایش فعالیت نیازمند endpoint بک‌اند است.">
+            <span><Button size="small" disabled>ویرایش</Button></span>
+          </Tooltip>
+        )}
       </Stack>
       {!isLast && <Divider sx={{ my: 3 }} />}
     </Box>
@@ -137,6 +143,7 @@ export default function ActivitiesTab({ companyId }: ActivitiesTabProps) {
   const user = useAuthStore((state) => state.user);
   const canView = can(user, 'activity:view', ['ADMIN', 'MANAGER', 'REP']);
   const canCreate = can(user, 'activity:create', ['ADMIN', 'MANAGER', 'REP']);
+  const canEdit = can(user, 'activity:update', ['ADMIN', 'MANAGER', 'REP']);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState<5 | 10 | 20>(10);
   const [formOpen, setFormOpen] = useState(false);
@@ -186,6 +193,7 @@ export default function ActivitiesTab({ companyId }: ActivitiesTabProps) {
               key={activity.id}
               activity={activity}
               isLast={index === activities.length - 1}
+              canEdit={canEdit}
             />
           ))}
           <TablePagination

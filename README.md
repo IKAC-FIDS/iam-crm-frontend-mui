@@ -201,3 +201,10 @@ export default defineConfig([
 - فایل‌های مهم: `src/features/reports/types/report.types.ts`، `src/features/reports/services/reports.service.ts`، `src/features/reports/hooks/useReports.ts`، `src/features/reports/utils/reportDisplay.ts`، componentها و صفحه Reports، `src/components/dashboard/MainGrid.tsx`، `src/components/dashboard/SideMenu.tsx` و `src/routes/index.tsx`.
 - فرض‌ها و وابستگی‌ها: به چهار endpoint واقعی `/api/reports/pipeline-summary`، `/api/reports/conversion-rates`، `/api/reports/stage-durations` و `/api/reports/activities` وابسته است. بازه فعالیت پیش‌فرض ۳۰ روز اخیر بر اساس تاریخ محلی مرورگر ساخته می‌شود؛ export، drill-down و dependency نموداری تازه اضافه نشده‌اند.
 - وضعیت بررسی: lint بدون خطا یا هشدار و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle در خروجی build باقی مانده است.
+
+### fix 000019 — آماده‌سازی امن ویرایش فعالیت و زمان‌بندی مجدد پیگیری
+
+- موارد پیاده‌سازی‌شده: بررسی کامل serviceها، hookها و componentهای Activities و Follow-ups برای endpointهای update، reschedule و complete؛ افزودن اکشن ویرایش به آیتم‌های فعالیت برای کاربران مجاز به‌صورت غیرفعال با hint وابستگی Backend؛ افزودن اکشن زمان‌بندی مجدد کنار اکشن موجود پیگیری؛ اصلاح label اکشن تکمیل به «انجام شد»؛ و جلوگیری صریح از mutation محلی یا endpoint حدسی.
+- فایل‌های مهم: `src/features/activities/components/ActivitiesTab.tsx`، `src/features/followUps/components/FollowUpCard.tsx` و بررسی service/hookهای موجود فعالیت و پیگیری.
+- فرض‌ها و وابستگی‌ها: در repository فعلی هیچ endpoint یا قرارداد تأییدشده‌ای برای `PATCH /api/activities/:activityId`، reschedule یا complete وجود ندارد و پروژه فقط frontend است. به همین دلیل edit، reschedule و complete عمداً غیرفعال‌اند؛ پس از اضافه‌شدن endpointهای واقعی باید mutationها همراه invalidation کلیدهای activities، follow-ups و company پیاده‌سازی شوند.
+- وضعیت بررسی: lint بدون خطا یا هشدار و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle در خروجی build باقی مانده است.

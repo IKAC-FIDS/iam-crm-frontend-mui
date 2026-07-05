@@ -34,7 +34,8 @@ export default function FollowUpCard({ followUp }: { followUp: FollowUpActivity 
         <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
           <Button size="small" onClick={() => navigate(`/companies/${companyId}`)}>مشاهده شرکت</Button>
           {followUp.personId && <Button size="small" onClick={() => navigate(`/companies/${companyId}`)}>مشاهده شخص</Button>}
-          <Tooltip title="ثبت انجام پیگیری نیازمند endpoint بک‌اند است."><span><Button size="small" disabled>ثبت انجام</Button></span></Tooltip>
+          <Tooltip title="زمان‌بندی مجدد نیازمند endpoint بک‌اند است."><span><Button size="small" disabled>زمان‌بندی مجدد</Button></span></Tooltip>
+          <Tooltip title="ثبت انجام پیگیری نیازمند endpoint بک‌اند است."><span><Button size="small" disabled>انجام شد</Button></span></Tooltip>
         </Stack>
       </Stack>
     </Paper>
