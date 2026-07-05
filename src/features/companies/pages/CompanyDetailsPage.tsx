@@ -23,6 +23,7 @@ import ChangeCompanyStageDialog from '../components/ChangeCompanyStageDialog';
 import EditCompanyDialog from '../components/EditCompanyDialog';
 import PeopleTab from '@/features/people/components/PeopleTab';
 import ActivitiesTab from '@/features/activities/components/ActivitiesTab';
+import CallCardTab from '@/features/callCards/components/CallCardTab';
 import { useCompany } from '../hooks/useCompanies';
 import {
   formatDateTime,
@@ -191,6 +192,8 @@ export default function CompanyDetailsPage() {
         <PeopleTab companyId={company.id} />
       ) : activeTab === 'activities' ? (
         <ActivitiesTab companyId={company.id} />
+      ) : activeTab === 'call-card' ? (
+        <CallCardTab companyId={company.id} />
       ) : (
         <Paper sx={{ p: 4, textAlign: 'center', minHeight: 220 }}>
           <Typography variant="h6">
