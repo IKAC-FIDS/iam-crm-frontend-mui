@@ -18,6 +18,7 @@ import {
   TextField,
 } from '@mui/material';
 import { useCreateCompany } from '../hooks/useCompanies';
+import { useAuthStore } from '@/store/authStore';
 import {
   COMPANY_PRIORITIES,
   companyPriorityLabels,
@@ -41,7 +42,6 @@ const createCompanySchema = z.object({
   headOfficeCity: z.string(),
   website: z.string(),
   source: z.string(),
-  ownerId: z.string(),
 });
 
 type CreateCompanyFormData = z.infer<typeof createCompanySchema>;
@@ -54,7 +54,6 @@ const defaultValues: CreateCompanyFormData = {
   headOfficeCity: '',
   website: '',
   source: '',
-  ownerId: '',
 };
 
 function optionalValue(value: string): string | undefined {
@@ -63,6 +62,7 @@ function optionalValue(value: string): string | undefined {
 
 export default function CreateCompanyDialog({ open, onClose }: CreateCompanyDialogProps) {
   const createCompany = useCreateCompany();
+  const userId = useAuthStore((state) => state.user?.id);
   const {
     control,
     handleSubmit,
@@ -82,6 +82,11 @@ export default function CreateCompanyDialog({ open, onClose }: CreateCompanyDial
   };
 
   const onSubmit = async (data: CreateCompanyFormData) => {
+    if (!userId) {
+      toast.error('اطلاعات کاربر واردشده در دسترس نیست. دوباره وارد شوید.');
+      return;
+    }
+
     const payload: CreateCompanyPayload = {
       legalName: data.legalName.trim(),
       brandName: optionalValue(data.brandName),
@@ -90,7 +95,7 @@ export default function CreateCompanyDialog({ open, onClose }: CreateCompanyDial
       headOfficeCity: optionalValue(data.headOfficeCity),
       website: optionalValue(data.website),
       source: optionalValue(data.source),
-      ownerId: optionalValue(data.ownerId),
+      ownerId: userId,
     };
 
     await createCompany.mutateAsync(payload);
@@ -157,7 +162,6 @@ export default function CreateCompanyDialog({ open, onClose }: CreateCompanyDial
           <TextField label="شهر دفتر مرکزی" {...register('headOfficeCity')} />
           <TextField label="وب‌سایت" {...register('website')} />
           <TextField label="منبع" {...register('source')} />
-          <TextField label="مالک" {...register('ownerId')} />
         </Stack>
       </DialogContent>
       <DialogActions>
@@ -168,7 +172,7 @@ export default function CreateCompanyDialog({ open, onClose }: CreateCompanyDial
           type="submit"
           form="create-company-form"
           variant="contained"
-          disabled={createCompany.isPending}
+          disabled={createCompany.isPending || !userId}
         >
           {createCompany.isPending ? 'در حال ثبت...' : 'ثبت شرکت'}
         </Button>

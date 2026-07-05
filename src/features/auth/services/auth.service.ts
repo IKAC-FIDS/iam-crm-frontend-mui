@@ -16,6 +16,7 @@ export interface LoginResponse {
     fullName: string;
     email: string;
     role: string;
+    team: string | null;
     permissions: string[];
   };
 }
