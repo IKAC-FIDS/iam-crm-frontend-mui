@@ -17,7 +17,10 @@ export default function Header() {
   const location = useLocation();
   const pathSegments = location.pathname.split('/').filter(Boolean);
   const currentPage = pathSegments[0] || 'dashboard';
-  const pageTitle = breadcrumbMap[currentPage] || 'داشبورد';
+  const pageTitle =
+    currentPage === 'companies' && pathSegments[1]
+      ? 'جزئیات شرکت'
+      : breadcrumbMap[currentPage] || 'داشبورد';
 
   return (
     <div style={{ width: '100%', padding: '16px 0' }}>

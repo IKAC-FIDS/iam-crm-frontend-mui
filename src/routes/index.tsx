@@ -5,6 +5,7 @@ import { ProtectedRoute } from './ProtectedRoute';
 import LoginPage from '@/features/auth/pages/LoginPage';
 import DashboardPage from '@/features/dashboard/pages/DashboardPage';  // صفحه‌ی واقعی داشبورد
 import CompaniesPage from '@/features/companies/pages/CompaniesPage';
+import CompanyDetailsPage from '@/features/companies/pages/CompanyDetailsPage';
 
 export const router = createBrowserRouter([
   {
@@ -17,6 +18,7 @@ export const router = createBrowserRouter([
           { index: true, element: <DashboardPage /> },
           { path: 'dashboard', element: <DashboardPage /> },
           { path: 'companies', element: <CompaniesPage /> },
+          { path: 'companies/:companyId', element: <CompanyDetailsPage /> },
         ],
       },
     ],
