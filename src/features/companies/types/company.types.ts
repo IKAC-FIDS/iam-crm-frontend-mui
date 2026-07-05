@@ -36,6 +36,45 @@ export type CompanyPriority = Priority;
 export type CompanyOwnership = (typeof COMPANY_OWNERSHIPS)[number];
 export type CompanyPageSize = (typeof COMPANY_PAGE_SIZES)[number];
 
+export const COMPANY_STAGE_OPTIONS: readonly { value: PipelineStage; label: string }[] = [
+  { value: 'LEAD', label: 'سرنخ' },
+  { value: 'CONTACTED', label: 'تماس گرفته شده' },
+  { value: 'INTERESTED', label: 'علاقه‌مند' },
+  { value: 'QUALIFIED', label: 'واجد شرایط' },
+  { value: 'NEEDS_ASSESSMENT', label: 'نیازسنجی' },
+  { value: 'PENDING_PRE_INVOICE_APPROVAL', label: 'در انتظار تأیید پیش‌فاکتور' },
+  { value: 'POC_PILOT_SCHEDULED', label: 'پایلوت زمان‌بندی شده' },
+  { value: 'POC_PILOT_IN_PROGRESS', label: 'پایلوت در حال انجام' },
+  { value: 'PENDING_POC_PILOT_APPROVAL', label: 'در انتظار تأیید پایلوت' },
+  { value: 'PENDING_PAYMENT_INVOICE_APPROVAL', label: 'در انتظار تأیید فاکتور پرداخت' },
+  { value: 'INSTALLATION_SCHEDULED', label: 'نصب زمان‌بندی شده' },
+  { value: 'INSTALLATION_IN_PROGRESS', label: 'نصب در حال انجام' },
+  { value: 'PENDING_CUSTOMER_ACCEPTANCE', label: 'در انتظار پذیرش مشتری' },
+  { value: 'DONE', label: 'انجام شده' },
+  { value: 'ON_HOLD', label: 'متوقف شده' },
+  { value: 'LOST', label: 'از دست رفته' },
+  { value: 'NO_RESPONSE', label: 'بدون پاسخ' },
+];
+
+export const COMPANY_PRIORITY_OPTIONS: readonly { value: Priority; label: string }[] = [
+  { value: 'LOW', label: 'کم' },
+  { value: 'MEDIUM', label: 'متوسط' },
+  { value: 'HIGH', label: 'زیاد' },
+  { value: 'STRATEGIC', label: 'استراتژیک' },
+];
+
+export const COMPANY_OWNERSHIP_OPTIONS: readonly {
+  value: CompanyOwnership;
+  label: string;
+}[] = [
+  { value: 'PRIVATE', label: 'خصوصی' },
+  { value: 'STATE', label: 'دولتی' },
+  { value: 'SEMI_STATE', label: 'نیمه‌دولتی' },
+  { value: 'PUBLIC_LISTED', label: 'بورسی' },
+  { value: 'BANK', label: 'بانک' },
+  { value: 'HOLDING', label: 'هلدینگ' },
+];
+
 export interface CompanyOwner {
   id: string;
   fullName: string;
@@ -49,9 +88,10 @@ export interface Company {
   legalName: string;
   brandName?: string | null;
   industry?: string | null;
-  ownership?: CompanyOwnership | string | null;
-  stage?: CompanyStage | string | null;
-  priority?: CompanyPriority | string | null;
+  ownership?: CompanyOwnership | null;
+  stage?: PipelineStage | null;
+  priority?: Priority | null;
+  ownerId?: string | null;
   owner?: CompanyOwner | null;
   headOfficeCity?: string | null;
   website?: string | null;
@@ -79,16 +119,7 @@ export type CompanyListItem = Pick<
   | 'updatedAt'
 >;
 
-export interface UpdateCompanyPayload {
-  legalName?: string;
-  brandName?: string;
-  industry?: string;
-  priority?: CompanyPriority;
-  headOfficeCity?: string;
-  website?: string;
-  source?: string;
-  ownerId?: string;
-}
+export type UpdateCompanyPayload = Partial<CreateCompanyPayload>;
 
 export interface ChangeCompanyStagePayload {
   stage: CompanyStage;
@@ -134,41 +165,17 @@ export interface PaginatedResult<T> {
   };
 }
 
-export const companyStageLabels: Record<CompanyStage, string> = {
-  LEAD: 'سرنخ',
-  CONTACTED: 'تماس گرفته‌شده',
-  INTERESTED: 'علاقه‌مند',
-  QUALIFIED: 'واجد شرایط',
-  NEEDS_ASSESSMENT: 'نیازمند ارزیابی',
-  PENDING_PRE_INVOICE_APPROVAL: 'در انتظار تأیید پیش‌فاکتور',
-  POC_PILOT_SCHEDULED: 'پایلوت برنامه‌ریزی‌شده',
-  POC_PILOT_IN_PROGRESS: 'پایلوت در حال اجرا',
-  PENDING_POC_PILOT_APPROVAL: 'در انتظار تأیید پایلوت',
-  PENDING_PAYMENT_INVOICE_APPROVAL: 'در انتظار تأیید فاکتور پرداخت',
-  INSTALLATION_SCHEDULED: 'نصب برنامه‌ریزی‌شده',
-  INSTALLATION_IN_PROGRESS: 'نصب در حال انجام',
-  PENDING_CUSTOMER_ACCEPTANCE: 'در انتظار تأیید مشتری',
-  DONE: 'انجام‌شده',
-  ON_HOLD: 'متوقف‌شده',
-  LOST: 'از دست رفته',
-  NO_RESPONSE: 'بدون پاسخ',
-};
+export const companyStageLabels = Object.fromEntries(
+  COMPANY_STAGE_OPTIONS.map((option) => [option.value, option.label]),
+) as Record<PipelineStage, string>;
 
-export const companyPriorityLabels: Record<CompanyPriority, string> = {
-  LOW: 'کم',
-  MEDIUM: 'متوسط',
-  HIGH: 'زیاد',
-  STRATEGIC: 'استراتژیک',
-};
+export const companyPriorityLabels = Object.fromEntries(
+  COMPANY_PRIORITY_OPTIONS.map((option) => [option.value, option.label]),
+) as Record<Priority, string>;
 
-export const companyOwnershipLabels: Record<CompanyOwnership, string> = {
-  PRIVATE: 'خصوصی',
-  STATE: 'دولتی',
-  SEMI_STATE: 'نیمه‌دولتی',
-  PUBLIC_LISTED: 'بورسی',
-  BANK: 'بانک',
-  HOLDING: 'هلدینگ',
-};
+export const companyOwnershipLabels = Object.fromEntries(
+  COMPANY_OWNERSHIP_OPTIONS.map((option) => [option.value, option.label]),
+) as Record<CompanyOwnership, string>;
 
 export function isCompanyStage(value: string): value is CompanyStage {
   return COMPANY_STAGES.some((stage) => stage === value);

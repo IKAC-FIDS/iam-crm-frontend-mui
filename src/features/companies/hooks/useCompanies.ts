@@ -17,7 +17,7 @@ export const companyQueryKeys = {
 export function useCompanies(params: GetCompaniesParams) {
   return useQuery({
     queryKey: companyQueryKeys.list(params),
-    queryFn: () => companiesService.getAll(params),
+    queryFn: () => companiesService.getCompanies(params),
     placeholderData: keepPreviousData,
   });
 }
@@ -25,7 +25,7 @@ export function useCompanies(params: GetCompaniesParams) {
 export function useCompany(companyId: string) {
   return useQuery({
     queryKey: companyQueryKeys.detail(companyId),
-    queryFn: () => companiesService.getById(companyId),
+    queryFn: () => companiesService.getCompanyById(companyId),
     enabled: Boolean(companyId),
   });
 }
@@ -34,7 +34,8 @@ export function useCreateCompany() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: CreateCompanyPayload) => companiesService.create(payload),
+    mutationFn: (payload: CreateCompanyPayload) =>
+      companiesService.createCompany(payload),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: companyQueryKeys.all }),
   });
 }
@@ -44,7 +45,7 @@ export function useUpdateCompany(companyId: string) {
 
   return useMutation({
     mutationFn: (payload: UpdateCompanyPayload) =>
-      companiesService.update(companyId, payload),
+      companiesService.updateCompany(companyId, payload),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: companyQueryKeys.all }),
   });
 }
@@ -54,7 +55,7 @@ export function useChangeCompanyStage(companyId: string) {
 
   return useMutation({
     mutationFn: (payload: ChangeCompanyStagePayload) =>
-      companiesService.changeStage(companyId, payload),
+      companiesService.changeCompanyStage(companyId, payload),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: companyQueryKeys.all }),
   });
 }
@@ -64,7 +65,7 @@ export function useChangeCompanyOwner(companyId: string) {
 
   return useMutation({
     mutationFn: (payload: ChangeCompanyOwnerPayload) =>
-      companiesService.changeOwner(companyId, payload),
+      companiesService.changeCompanyOwner(companyId, payload),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: companyQueryKeys.all }),
   });
 }

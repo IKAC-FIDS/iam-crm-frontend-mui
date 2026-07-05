@@ -4,6 +4,7 @@ import {
   Alert,
   Box,
   Button,
+  Chip,
   FormControl,
   InputLabel,
   MenuItem,
@@ -28,13 +29,16 @@ import { useCompanies } from '../hooks/useCompanies';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import {
   COMPANY_PAGE_SIZES,
-  COMPANY_PRIORITIES,
-  COMPANY_STAGES,
-  companyPriorityLabels,
-  companyStageLabels,
+  COMPANY_PRIORITY_OPTIONS,
+  COMPANY_STAGE_OPTIONS,
   isCompanyPriority,
   isCompanyStage,
 } from '../types/company.types';
+import {
+  formatDateTime,
+  getPriorityLabel,
+  getStageLabel,
+} from '../utils/companyDisplay';
 import type {
   GetCompaniesParams,
   CompanyListItem,
@@ -47,18 +51,6 @@ type OwnerFilter = 'ALL' | 'WITHOUT_OWNER' | 'SPECIFIC_OWNER';
 
 function displayValue(value?: string | null): string {
   return value?.trim() || '—';
-}
-
-function formatDate(value?: string | null): string {
-  if (!value) return '—';
-
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '—';
-
-  return new Intl.DateTimeFormat('fa-IR', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(date);
 }
 
 export default function CompaniesPage() {
@@ -106,15 +98,17 @@ export default function CompaniesPage() {
         headerName: 'مرحله',
         minWidth: 170,
         flex: 0.9,
-        renderCell: ({ value }: GridRenderCellParams<CompanyListItem, string | null>) =>
-          value && isCompanyStage(value) ? companyStageLabels[value] : displayValue(value),
+        renderCell: ({ value }: GridRenderCellParams<CompanyListItem, string | null>) => (
+          <Chip size="small" label={getStageLabel(value)} variant="outlined" color="primary" />
+        ),
       },
       {
         field: 'priority',
         headerName: 'اولویت',
         minWidth: 110,
-        renderCell: ({ value }: GridRenderCellParams<CompanyListItem, string | null>) =>
-          value && isCompanyPriority(value) ? companyPriorityLabels[value] : displayValue(value),
+        renderCell: ({ value }: GridRenderCellParams<CompanyListItem, string | null>) => (
+          <Chip size="small" label={getPriorityLabel(value)} variant="outlined" color="secondary" />
+        ),
       },
       {
         field: 'owner',
@@ -129,7 +123,7 @@ export default function CompaniesPage() {
         field: 'updatedAt',
         headerName: 'آخرین بروزرسانی',
         minWidth: 180,
-        renderCell: ({ value }: GridRenderCellParams<CompanyListItem, string | null>) => formatDate(value),
+        renderCell: ({ value }: GridRenderCellParams<CompanyListItem, string | null>) => formatDateTime(value),
       },
       {
         field: 'actions',
@@ -197,9 +191,9 @@ export default function CompaniesPage() {
               }}
             >
               <MenuItem value="">همه مراحل</MenuItem>
-              {COMPANY_STAGES.map((value) => (
-                <MenuItem key={value} value={value}>
-                  {companyStageLabels[value]}
+              {COMPANY_STAGE_OPTIONS.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
                 </MenuItem>
               ))}
             </Select>
@@ -218,9 +212,9 @@ export default function CompaniesPage() {
               }}
             >
               <MenuItem value="">همه اولویت‌ها</MenuItem>
-              {COMPANY_PRIORITIES.map((value) => (
-                <MenuItem key={value} value={value}>
-                  {companyPriorityLabels[value]}
+              {COMPANY_PRIORITY_OPTIONS.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
                 </MenuItem>
               ))}
             </Select>

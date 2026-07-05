@@ -70,18 +70,26 @@ function normalizeCompaniesResponse(
   };
 }
 
+function cleanRequestParams(params: GetCompaniesParams): Record<string, string | number | boolean> {
+  return Object.fromEntries(
+    Object.entries(params).filter(
+      ([, value]) => value !== undefined && value !== '',
+    ),
+  ) as Record<string, string | number | boolean>;
+}
+
 export const companiesService = {
-  getAll: async (
+  getCompanies: async (
     params: GetCompaniesParams,
   ): Promise<PaginatedResult<CompanyListItem>> => {
     const response = await axiosInstance.get<CompaniesApiResponse>('/companies', {
-      params,
+      params: cleanRequestParams(params),
     });
 
     return normalizeCompaniesResponse(response.data, params);
   },
 
-  getById: async (companyId: string): Promise<Company> => {
+  getCompanyById: async (companyId: string): Promise<Company> => {
     const response = await axiosInstance.get<Company | { data: Company }>(
       `/companies/${companyId}`,
     );
@@ -89,7 +97,7 @@ export const companiesService = {
     return 'data' in response.data ? response.data.data : response.data;
   },
 
-  create: async (payload: CreateCompanyPayload): Promise<Company> => {
+  createCompany: async (payload: CreateCompanyPayload): Promise<Company> => {
     const response = await axiosInstance.post<Company | { data: Company }>(
       '/companies',
       payload,
@@ -98,7 +106,10 @@ export const companiesService = {
     return 'data' in response.data ? response.data.data : response.data;
   },
 
-  update: async (companyId: string, payload: UpdateCompanyPayload): Promise<Company> => {
+  updateCompany: async (
+    companyId: string,
+    payload: UpdateCompanyPayload,
+  ): Promise<Company> => {
     const response = await axiosInstance.patch<Company | { data: Company }>(
       `/companies/${companyId}`,
       payload,
@@ -107,7 +118,7 @@ export const companiesService = {
     return 'data' in response.data ? response.data.data : response.data;
   },
 
-  changeStage: async (
+  changeCompanyStage: async (
     companyId: string,
     payload: ChangeCompanyStagePayload,
   ): Promise<Company> => {
@@ -119,7 +130,7 @@ export const companiesService = {
     return 'data' in response.data ? response.data.data : response.data;
   },
 
-  changeOwner: async (
+  changeCompanyOwner: async (
     companyId: string,
     payload: ChangeCompanyOwnerPayload,
   ): Promise<Company> => {

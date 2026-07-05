@@ -1,22 +1,13 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { toast } from 'sonner';
 import {
   Alert,
   Box,
   Button,
   Chip,
   CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormControl,
   Grid,
-  InputLabel,
-  MenuItem,
   Paper,
-  Select,
   Stack,
   Tab,
   Tabs,
@@ -27,17 +18,16 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Header from '@/components/dashboard/Header';
 import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
+import ChangeCompanyPriorityDialog from '../components/ChangeCompanyPriorityDialog';
 import ChangeCompanyStageDialog from '../components/ChangeCompanyStageDialog';
 import EditCompanyDialog from '../components/EditCompanyDialog';
-import { useCompany, useUpdateCompany } from '../hooks/useCompanies';
+import { useCompany } from '../hooks/useCompanies';
 import {
-  COMPANY_PRIORITIES,
-  companyPriorityLabels,
-  companyStageLabels,
-  isCompanyPriority,
-  isCompanyStage,
-} from '../types/company.types';
-import type { CompanyPriority } from '../types/company.types';
+  formatDateTime,
+  getOwnershipLabel,
+  getPriorityLabel,
+  getStageLabel,
+} from '../utils/companyDisplay';
 
 const detailTabs = [
   { label: 'نمای کلی', value: 'overview' },
@@ -66,19 +56,8 @@ function DetailItem({ label, value }: DetailItemProps) {
   );
 }
 
-function formatDate(value?: string | null): string {
-  if (!value) return '—';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '—';
-  return new Intl.DateTimeFormat('fa-IR', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(date);
-}
-
-function getTeamName(team: string | { name?: string } | null | undefined): string {
-  if (typeof team === 'string') return team;
-  return team?.name ?? '—';
+function getTeamName(team?: string): string {
+  return team || '—';
 }
 
 export default function CompanyDetailsPage() {
@@ -86,12 +65,10 @@ export default function CompanyDetailsPage() {
   const { companyId = '' } = useParams<{ companyId: string }>();
   const user = useAuthStore((state) => state.user);
   const { data: company, isLoading, isError } = useCompany(companyId);
-  const updateCompany = useUpdateCompany(companyId);
   const [activeTab, setActiveTab] = useState<DetailTab>('overview');
   const [editOpen, setEditOpen] = useState(false);
   const [stageOpen, setStageOpen] = useState(false);
   const [priorityOpen, setPriorityOpen] = useState(false);
-  const [priority, setPriority] = useState<CompanyPriority | ''>('');
   const canEditCompany = can(user, 'company:update', ['ADMIN', 'MANAGER', 'REP']);
   const canChangeStage = can(user, 'company:change-stage', ['ADMIN', 'MANAGER', 'REP']);
   const canAssignOwner = can(user, 'company:change-owner', ['ADMIN', 'MANAGER']);
@@ -113,32 +90,8 @@ export default function CompanyDetailsPage() {
     );
   }
 
-  const stageLabel =
-    company.stage && isCompanyStage(company.stage)
-      ? companyStageLabels[company.stage]
-      : company.stage || 'بدون مرحله';
-  const priorityLabel =
-    company.priority && isCompanyPriority(company.priority)
-      ? companyPriorityLabels[company.priority]
-      : company.priority || 'بدون اولویت';
-
-  const handlePriorityOpen = () => {
-    setPriority(
-      company.priority && isCompanyPriority(company.priority) ? company.priority : '',
-    );
-    setPriorityOpen(true);
-  };
-
-  const handlePriorityChange = async () => {
-    if (!priority) return;
-    try {
-      await updateCompany.mutateAsync({ priority });
-      toast.success('اولویت شرکت تغییر کرد.');
-      setPriorityOpen(false);
-    } catch {
-      toast.error('تغییر اولویت با خطا مواجه شد.');
-    }
-  };
+  const stageLabel = getStageLabel(company.stage);
+  const priorityLabel = getPriorityLabel(company.priority);
 
   return (
     <Box sx={{ width: '100%', minWidth: 0 }}>
@@ -209,7 +162,7 @@ export default function CompanyDetailsPage() {
                 </Tooltip>
               )}
               {canEditCompany && (
-                <Button variant="outlined" onClick={handlePriorityOpen}>
+                <Button variant="outlined" onClick={() => setPriorityOpen(true)}>
                   تغییر اولویت
                 </Button>
               )}
@@ -219,6 +172,7 @@ export default function CompanyDetailsPage() {
               <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="نام حقوقی" value={company.legalName} /></Grid>
               <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="نام برند" value={company.brandName} /></Grid>
               <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="صنعت" value={company.industry} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="نوع مالکیت" value={getOwnershipLabel(company.ownership)} /></Grid>
               <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="مرحله فروش" value={stageLabel} /></Grid>
               <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="اولویت" value={priorityLabel} /></Grid>
               <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="مالک" value={company.owner?.fullName} /></Grid>
@@ -226,8 +180,8 @@ export default function CompanyDetailsPage() {
               <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="شهر دفتر مرکزی" value={company.headOfficeCity} /></Grid>
               <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="وب‌سایت" value={company.website} /></Grid>
               <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="منبع" value={company.source} /></Grid>
-              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="تاریخ ایجاد" value={formatDate(company.createdAt)} /></Grid>
-              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="آخرین بروزرسانی" value={formatDate(company.updatedAt)} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="تاریخ ایجاد" value={formatDateTime(company.createdAt)} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="آخرین بروزرسانی" value={formatDateTime(company.updatedAt)} /></Grid>
             </Grid>
           </Paper>
         </Stack>
@@ -250,34 +204,18 @@ export default function CompanyDetailsPage() {
           companyId={company.id}
           currentStage={company.stage}
           open={stageOpen}
-          onClose={() => setStageOpen(false)}
+          onOpenChange={setStageOpen}
         />
       )}
 
-      <Dialog open={canEditCompany && priorityOpen} onClose={() => setPriorityOpen(false)} fullWidth maxWidth="xs">
-        <DialogTitle>تغییر اولویت</DialogTitle>
-        <DialogContent sx={{ pt: '12px !important' }}>
-          <FormControl fullWidth>
-            <InputLabel id="detail-priority-label">اولویت</InputLabel>
-            <Select
-              labelId="detail-priority-label"
-              label="اولویت"
-              value={priority}
-              onChange={(event) => setPriority(event.target.value as CompanyPriority)}
-            >
-              {COMPANY_PRIORITIES.map((value) => (
-                <MenuItem key={value} value={value}>{companyPriorityLabels[value]}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setPriorityOpen(false)}>انصراف</Button>
-          <Button variant="contained" onClick={handlePriorityChange} disabled={!priority || updateCompany.isPending}>
-            ثبت اولویت
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {canEditCompany && (
+        <ChangeCompanyPriorityDialog
+          companyId={company.id}
+          currentPriority={company.priority}
+          open={priorityOpen}
+          onOpenChange={setPriorityOpen}
+        />
+      )}
 
     </Box>
   );

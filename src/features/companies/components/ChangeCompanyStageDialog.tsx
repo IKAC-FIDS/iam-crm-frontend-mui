@@ -15,17 +15,16 @@ import {
 } from '@mui/material';
 import { useChangeCompanyStage } from '../hooks/useCompanies';
 import {
-  COMPANY_STAGES,
-  companyStageLabels,
+  COMPANY_STAGE_OPTIONS,
   isCompanyStage,
 } from '../types/company.types';
-import type { CompanyStage } from '../types/company.types';
+import type { PipelineStage } from '../types/company.types';
 
 interface ChangeCompanyStageDialogProps {
   companyId: string;
-  currentStage?: string | null;
+  currentStage?: PipelineStage | null;
   open: boolean;
-  onClose: () => void;
+  onOpenChange: (open: boolean) => void;
 }
 
 interface ApiErrorBody {
@@ -36,10 +35,10 @@ export default function ChangeCompanyStageDialog({
   companyId,
   currentStage,
   open,
-  onClose,
+  onOpenChange,
 }: ChangeCompanyStageDialogProps) {
   const changeStage = useChangeCompanyStage(companyId);
-  const [stage, setStage] = useState<CompanyStage | ''>(
+  const [stage, setStage] = useState<PipelineStage | ''>(
     currentStage && isCompanyStage(currentStage) ? currentStage : '',
   );
 
@@ -47,15 +46,15 @@ export default function ChangeCompanyStageDialog({
     if (changeStage.isPending) return;
     setStage(currentStage && isCompanyStage(currentStage) ? currentStage : '');
     changeStage.reset();
-    onClose();
+    onOpenChange(false);
   };
 
   const handleSubmit = async () => {
     if (!stage) return;
     try {
       await changeStage.mutateAsync({ stage });
-      toast.success('مرحله فروش شرکت تغییر کرد.');
-      onClose();
+      toast.success('مرحله شرکت با موفقیت تغییر کرد.');
+      onOpenChange(false);
     } catch {
       // خطای API در خود فرم نمایش داده می‌شود.
     }
@@ -71,7 +70,7 @@ export default function ChangeCompanyStageDialog({
       <DialogContent sx={{ pt: '12px !important' }}>
         {changeStage.isError && (
           <Alert severity="error" sx={{ mb: 2 }}>
-            {errorMessage || 'تغییر مرحله با خطا مواجه شد.'}
+            {errorMessage || 'خطا در تغییر مرحله شرکت.'}
           </Alert>
         )}
         <FormControl fullWidth>
@@ -85,8 +84,8 @@ export default function ChangeCompanyStageDialog({
               setStage(isCompanyStage(value) ? value : '');
             }}
           >
-            {COMPANY_STAGES.map((value) => (
-              <MenuItem key={value} value={value}>{companyStageLabels[value]}</MenuItem>
+            {COMPANY_STAGE_OPTIONS.map((option) => (
+              <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -98,7 +97,7 @@ export default function ChangeCompanyStageDialog({
           onClick={handleSubmit}
           disabled={!stage || changeStage.isPending || stage === currentStage}
         >
-          {changeStage.isPending ? 'در حال ثبت...' : 'ثبت مرحله'}
+          {changeStage.isPending ? 'در حال ثبت...' : 'ثبت تغییر مرحله'}
         </Button>
       </DialogActions>
     </Dialog>
