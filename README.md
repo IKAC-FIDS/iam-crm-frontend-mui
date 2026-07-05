@@ -215,3 +215,23 @@ export default defineConfig([
 - فایل‌های مهم: featureهای `src/features/admin/users` و `src/features/admin/permissions`، `src/features/auth/utils/permissions.ts`، `src/features/companies/components/ChangeCompanyOwnerDialog.tsx`، `src/features/companies/pages/CompanyDetailsPage.tsx`، `src/components/dashboard/SideMenu.tsx` و `src/routes/index.tsx`.
 - فرض‌ها و وابستگی‌ها: به endpointهای واقعی `/api/users` و `/api/admin/permissions/*` اعلام‌شده وابسته است. Backend endpoint فهرست وضعیت مجوزها به تفکیک نقش ارائه نکرده، بنابراین current state نقش‌ها جعل نشده است؛ team برای MANAGER و REP در frontend الزامی است و تخصیص مالک فقط کاربران فعال این دو نقش را نشان می‌دهد.
 - وضعیت بررسی: lint بدون خطا یا هشدار و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle در خروجی build باقی مانده است.
+
+### fix 000021 — پایدارسازی، QA و پاک‌سازی قراردادهای API
+
+- موارد پیاده‌سازی‌شده: audit کامل routeهای محافظت‌شده، serviceها، query keyها، permissionها و response normalizerها؛ افزودن invalidation پایپ‌لاین و گزارش‌ها پس از mutationهای شرکت؛ تازه‌سازی follow-ups و reports پس از ایجاد فعالیت؛ invalidation گزینه‌های مالک پس از mutation کاربران؛ مقاوم‌سازی response گزارش‌ها در برابر آرایه یا summary غایب؛ بررسی نبود raw fetch، base URL تکراری و مسیر `/api/api`؛ اجرای QA واقعی با نقش‌های ADMIN و REP و بررسی دسترسی مستقیم routeها، منوی شرطی، جزئیات شرکت و تخصیص مالک.
+- فایل‌های مهم: `src/features/companies/hooks/useCompanies.ts`، `src/features/activities/hooks/useActivities.ts`، `src/features/admin/users/hooks/useAdminUsers.ts`، `src/features/reports/services/reports.service.ts` و این README.
+- فرض‌ها و محدودیت‌ها: endpointهای update، complete و reschedule فعالیت در frontend یا قرارداد قابل‌اجرا تأیید نشده‌اند و اکشن‌های وابسته همچنان غیرفعال و بدون موفقیت جعلی هستند. endpoint فهرست وضعیت مجوزها بر اساس نقش و payload قطعی bulk owner نیز در frontend موجود نیست؛ بنابراین state مجوزها یا قرارداد bulk owner حدس زده نشده است.
+- وضعیت بررسی: ورود ADMIN و REP با حساب‌های QA محلی موفق بود؛ مسیرهای dashboard، companies، company detail، pipeline، follow-ups، reports و Admin مطابق نقش‌ها render شدند و خطای console مشاهده نشد. lint بدون خطا یا هشدار و build تولید موفق بود؛ فقط هشدار غیرمسدودکننده اندازه bundle باقی ماند.
+
+## چک‌لیست قرارداد API فرانت‌اند
+
+تمام مسیرهای زیر نسبت به `baseURL` مشترک Axios با پسوند `/api` فراخوانی می‌شوند:
+
+- شرکت‌ها: `GET/POST /companies`، `GET/PATCH /companies/:id`، `PATCH /companies/:id/stage` و `PATCH /companies/:id/owner`.
+- افراد: `GET/POST /people`، `GET/PATCH/DELETE /people/:id`، و CRUD مسیرهای `/people/:id/contacts` و `/people/:id/socials`.
+- فعالیت‌ها: `GET/POST /activities` و `GET /activities/follow-ups/due`. مسیرهای update، complete و reschedule تا تأیید Backend فراخوانی نمی‌شوند.
+- کال کارت: `GET/PUT /companies/:id/call-card` و `GET /companies/:id/call-card/suggest`.
+- شعب و کانال‌های اجتماعی: CRUD مسیرهای `/companies/:id/branches` و `/companies/:id/social-channels`.
+- گزارش‌ها: `GET /reports/pipeline-summary`، `/reports/conversion-rates`، `/reports/stage-durations` و `/reports/activities`.
+- کاربران: `GET/POST /users`، `GET /users/:id` و PATCH مسیرهای role، activate و deactivate.
+- مجوزها: POST مسیرهای assign، bulk-assign و create و DELETE مسیرهای revoke و bulk-revoke با body به‌شکل `{ data: payload }`.

@@ -8,18 +8,21 @@ function unwrap<T>(payload: T | { data: T }): T {
 export const reportsService = {
   getPipelineSummaryReport: async (): Promise<PipelineSummaryReport> => {
     const response = await axiosInstance.get<PipelineSummaryReport | { data: PipelineSummaryReport }>('/reports/pipeline-summary');
-    return unwrap(response.data);
+    const data = unwrap(response.data);
+    return { ...data, stages: data.stages ?? [], summary: data.summary ?? { totalCompanies: 0, activeCompanies: 0, lostCompanies: 0, lostRate: 0 } };
   },
   getConversionRatesReport: async (): Promise<ConversionRatesReport> => {
     const response = await axiosInstance.get<ConversionRatesReport | { data: ConversionRatesReport }>('/reports/conversion-rates');
-    return unwrap(response.data);
+    const data = unwrap(response.data);
+    return { ...data, stages: data.stages ?? [], summary: data.summary ?? { totalCompanies: 0, completedCompanies: 0, overallConversionRate: 0 } };
   },
   getStageDurationsReport: async (): Promise<StageDurationReportItem[]> => {
     const response = await axiosInstance.get<StageDurationReportItem[] | { data: StageDurationReportItem[] }>('/reports/stage-durations');
-    return unwrap(response.data);
+    return unwrap(response.data) ?? [];
   },
   getActivityReport: async (params: ActivityReportParams): Promise<ActivityReport> => {
     const response = await axiosInstance.get<ActivityReport | { data: ActivityReport }>('/reports/activities', { params });
-    return unwrap(response.data);
+    const data = unwrap(response.data);
+    return { ...data, breakdown: data.breakdown ?? [], totalActivities: data.totalActivities ?? 0 };
   },
 };

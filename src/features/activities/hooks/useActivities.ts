@@ -29,6 +29,8 @@ export function useCreateActivity(companyId: string) {
     onSuccess: () => Promise.all([
       queryClient.invalidateQueries({ queryKey: activityQueryKeys.lists(companyId) }),
       queryClient.invalidateQueries({ queryKey: companyQueryKeys.detail(companyId) }),
+      queryClient.invalidateQueries({ queryKey: ['follow-ups', 'due'] }),
+      queryClient.invalidateQueries({ queryKey: ['reports'] }),
     ]),
   });
 }

@@ -14,6 +14,14 @@ export const companyQueryKeys = {
   detail: (companyId: string) => [...companyQueryKeys.all, 'detail', companyId] as const,
 };
 
+function invalidateCompanyData(queryClient: ReturnType<typeof useQueryClient>) {
+  return Promise.all([
+    queryClient.invalidateQueries({ queryKey: companyQueryKeys.all }),
+    queryClient.invalidateQueries({ queryKey: ['pipeline'] }),
+    queryClient.invalidateQueries({ queryKey: ['reports'] }),
+  ]);
+}
+
 export function useCompanies(params: GetCompaniesParams) {
   return useQuery({
     queryKey: companyQueryKeys.list(params),
@@ -36,7 +44,7 @@ export function useCreateCompany() {
   return useMutation({
     mutationFn: (payload: CreateCompanyPayload) =>
       companiesService.createCompany(payload),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: companyQueryKeys.all }),
+    onSuccess: () => invalidateCompanyData(queryClient),
   });
 }
 
@@ -46,7 +54,7 @@ export function useUpdateCompany(companyId: string) {
   return useMutation({
     mutationFn: (payload: UpdateCompanyPayload) =>
       companiesService.updateCompany(companyId, payload),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: companyQueryKeys.all }),
+    onSuccess: () => invalidateCompanyData(queryClient),
   });
 }
 
@@ -56,7 +64,7 @@ export function useChangeCompanyStage(companyId: string) {
   return useMutation({
     mutationFn: (payload: ChangeCompanyStagePayload) =>
       companiesService.changeCompanyStage(companyId, payload),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: companyQueryKeys.all }),
+    onSuccess: () => invalidateCompanyData(queryClient),
   });
 }
 
@@ -66,6 +74,6 @@ export function useChangeCompanyOwner(companyId: string) {
   return useMutation({
     mutationFn: (payload: ChangeCompanyOwnerPayload) =>
       companiesService.changeCompanyOwner(companyId, payload),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: companyQueryKeys.all }),
+    onSuccess: () => invalidateCompanyData(queryClient),
   });
 }
