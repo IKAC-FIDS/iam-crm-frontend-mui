@@ -1,0 +1,23 @@
+/* ============================================================
+   مسیر: src/styles/globals.css
+   ============================================================ */
+
+@font-face {
+  font-family: 'BYekan';
+  src: url('../assets/fonts/BYekan+.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'BYekan';
+  src: url('../assets/fonts/BYekan+\ Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  font-family: 'BYekan', 'Vazirmatn', 'Roboto', 'Helvetica', 'Arial', sans-serif !important;
+}
