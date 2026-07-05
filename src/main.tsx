@@ -12,6 +12,7 @@ import './index.css'; // ← اضافه کنید
 import './styles/globals.css'; // ← اگر globals.css حاوی فونت‌هاست، آن را هم نگه دارید
 
 document.documentElement.dir = 'rtl';
+document.documentElement.lang = 'fa';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

@@ -7,8 +7,8 @@ export const treeViewCustomizations: TreeViewComponents<Theme> = {
       root: ({ theme }) => ({
         padding: theme.spacing(0, 1),
         '& .groupTransition': {
-          marginLeft: theme.spacing(2),
-          borderLeft: `1px solid ${theme.palette.divider}`,
+          marginInlineStart: theme.spacing(2),
+          borderInlineStart: `1px solid ${theme.palette.divider}`,
         },
       }),
       content: ({ theme }) => ({

@@ -6,7 +6,7 @@ import { Outlet } from 'react-router-dom';
 
 export default function DashboardLayout() {
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', direction: 'rtl', minHeight: '100vh' }}>
       <CssBaseline />
       <AppNavbar />
       <SideMenu />

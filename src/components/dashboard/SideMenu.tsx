@@ -18,7 +18,7 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
     width: drawerWidth,
     boxSizing: 'border-box',
     backgroundColor: theme.palette.background.paper,
-    borderRight: `1px solid ${theme.palette.divider}`,
+    borderInlineEnd: `1px solid ${theme.palette.divider}`,
   },
 }));
 
@@ -32,7 +32,7 @@ export default function SideMenu() {
   const location = useLocation();
 
   return (
-    <StyledDrawer variant="permanent" anchor="left">
+    <StyledDrawer variant="permanent" anchor="right">
       <List sx={{ mt: 2 }}>
         {menuItems.map((item) => (
           <ListItem key={item.text} disablePadding>

@@ -75,6 +75,7 @@ export default function LoginPage() {
     <Box
       sx={{
         width: '100%', 
+        direction: 'rtl',
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
@@ -112,7 +113,7 @@ export default function LoginPage() {
           )}
 
           {/* فرم */}
-          <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+          <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ textAlign: 'right' }}>
             <TextField
               fullWidth
               label="ایمیل"

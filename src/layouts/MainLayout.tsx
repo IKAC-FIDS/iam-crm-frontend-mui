@@ -29,9 +29,9 @@ export default function MainLayout() {
             </Avatar>
           </IconButton>
           <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-            <MenuItem onClick={handleClose}><AccountCircle sx={{ mr: 1 }} /> پروفایل</MenuItem>
-            <MenuItem onClick={handleClose}><Settings sx={{ mr: 1 }} /> تنظیمات</MenuItem>
-            <MenuItem onClick={handleLogout}><Logout sx={{ mr: 1 }} /> خروج</MenuItem>
+            <MenuItem onClick={handleClose}><AccountCircle sx={{ ml: 1 }} /> پروفایل</MenuItem>
+            <MenuItem onClick={handleClose}><Settings sx={{ ml: 1 }} /> تنظیمات</MenuItem>
+            <MenuItem onClick={handleLogout}><Logout sx={{ ml: 1 }} /> خروج</MenuItem>
           </Menu>
         </Toolbar>
       </AppBar>
