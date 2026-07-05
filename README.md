@@ -44,8 +44,7 @@ export default defineConfig([
 
 ```
 
-
-For React-specific lint rules, you can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-react-dom):
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
 ```js
 // eslint.config.js
@@ -146,33 +145,3 @@ export default defineConfig([
 - فایل‌های مهم: `src/features/people/types/person.types.ts`، `src/features/people/services/people.service.ts`، `src/features/people/hooks/usePeople.ts`، `src/features/people/components/PersonForm.tsx`، `src/features/people/components/PersonFormDialog.tsx`، `src/features/people/components/PeopleTab.tsx`، `src/features/people/components/PersonDetailDrawer.tsx`، `src/features/people/components/PersonContactForm.tsx` و `src/features/people/components/PersonSocialForm.tsx`.
 - فرض‌ها و وابستگی‌ها: Backend باید مقدار enum برابر `OTHER` را برای نوع تماس و پلتفرم شبکه اجتماعی پشتیبانی کند. تست زنده API به اجرای Backend نیاز دارد.
 - وضعیت بررسی: lint و build تولید با موفقیت اجرا شده‌اند.
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
