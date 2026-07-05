@@ -21,7 +21,6 @@ import { useAuthStore } from '@/store/authStore';
 import ChangeCompanyPriorityDialog from '../components/ChangeCompanyPriorityDialog';
 import ChangeCompanyStageDialog from '../components/ChangeCompanyStageDialog';
 import EditCompanyDialog from '../components/EditCompanyDialog';
-import PeopleTab from '@/features/people/components/PeopleTab';
 import { useCompany } from '../hooks/useCompanies';
 import {
   formatDateTime,
@@ -186,8 +185,6 @@ export default function CompanyDetailsPage() {
             </Grid>
           </Paper>
         </Stack>
-      ) : activeTab === 'people' ? (
-        <PeopleTab companyId={company.id} />
       ) : (
         <Paper sx={{ p: 4, textAlign: 'center', minHeight: 220 }}>
           <Typography variant="h6">
