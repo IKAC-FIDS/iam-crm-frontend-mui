@@ -166,3 +166,10 @@ export default defineConfig([
 - فایل‌های مهم: `src/features/companyBranches/types/companyBranch.types.ts`، `src/features/companyBranches/services/companyBranches.service.ts`، `src/features/companyBranches/hooks/useCompanyBranches.ts`، `src/features/companyBranches/components/CompanyBranchesTab.tsx`، `src/features/companyBranches/components/CompanyBranchForm.tsx`، `src/features/companyBranches/components/CompanyBranchFormDialog.tsx` و `src/features/companies/pages/CompanyDetailsPage.tsx`.
 - فرض‌ها و وابستگی‌ها: به endpointهای `GET` و `POST /api/companies/:companyId/branches` و `PATCH` و `DELETE /api/companies/:companyId/branches/:branchId` وابسته است. فرم داده ناقص اما غیرخالی را مجاز می‌داند و داده جعلی اضافه نشده است؛ تست زنده API به اجرای Backend نیاز دارد.
 - وضعیت بررسی: lint و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle باقی مانده است.
+
+### fix 000014 — هماهنگ‌سازی انتخاب محل شعبه با فرم شرکت
+
+- موارد پیاده‌سازی‌شده: جایگزینی ورودی متنی شهر در فرم ایجاد و ویرایش شعبه با انتخاب‌گر مشترک استان‌های ایران؛ نمایش لیست استان‌های ازپیش‌تعریف‌شده پروژه؛ حفظ مقدار انتخاب‌شده در حالت ویرایش؛ و غیرفعال‌کردن انتخاب‌گر هنگام ارسال فرم.
+- فایل‌های مهم: `src/features/companyBranches/components/CompanyBranchForm.tsx` و کامپوننت مشترک موجود `src/shared/components/IranProvinceSelect.tsx`.
+- فرض‌ها و وابستگی‌ها: برای سازگاری با قرارداد فعلی Backend، نام فیلد payload همچنان `city` باقی مانده اما مقدار آن از فهرست استان‌های ایران انتخاب می‌شود؛ API یا داده جعلی تازه‌ای اضافه نشده است.
+- وضعیت بررسی: lint و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle باقی مانده است.

@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Alert, Button, Stack, TextField } from '@mui/material';
+import IranProvinceSelect from '@/shared/components/IranProvinceSelect';
 import type {
   CompanyBranch,
   CreateCompanyBranchPayload,
@@ -53,7 +54,7 @@ export default function CompanyBranchForm({
   onSubmit,
   onCancel,
 }: CompanyBranchFormProps) {
-  const { handleSubmit, register, reset, formState: { errors } } = useForm<FormData>({
+  const { control, handleSubmit, register, reset, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(branchFormSchema),
     defaultValues: getValues(initialValues),
   });
@@ -77,7 +78,18 @@ export default function CompanyBranchForm({
         helperText={errors.name?.message}
         {...register('name')}
       />
-      <TextField label="شهر" {...register('city')} />
+      <Controller
+        name="city"
+        control={control}
+        render={({ field }) => (
+          <IranProvinceSelect
+            value={field.value}
+            onChange={field.onChange}
+            label="استان شعبه"
+            disabled={isSubmitting}
+          />
+        )}
+      />
       <TextField label="آدرس" multiline minRows={3} {...register('address')} />
       <TextField label="تلفن" {...register('phone')} />
       <Stack direction="row" spacing={1} sx={{ justifyContent: 'flex-end' }}>
