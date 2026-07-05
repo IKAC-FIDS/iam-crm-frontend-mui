@@ -9,6 +9,7 @@ import Toolbar from '@mui/material/Toolbar';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import BusinessIcon from '@mui/icons-material/Business';
 import ViewKanbanIcon from '@mui/icons-material/ViewKanban';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const drawerWidth = 260;
@@ -28,6 +29,7 @@ const menuItems = [
   { text: 'داشبورد', icon: <DashboardIcon />, path: '/dashboard' },
   { text: 'شرکت‌ها', icon: <BusinessIcon />, path: '/companies' },
   { text: 'پایپ‌لاین', icon: <ViewKanbanIcon />, path: '/pipeline' },
+  { text: 'پیگیری‌ها', icon: <NotificationsActiveIcon />, path: '/follow-ups' },
 ];
 
 interface SideMenuProps {
