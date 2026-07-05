@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { AxiosError } from 'axios';
 import {
   Alert,
   Box,
@@ -22,6 +21,8 @@ import type {
   GridRenderCellParams,
 } from '@mui/x-data-grid';
 import Header from '@/components/dashboard/Header';
+import { can } from '@/features/auth/utils/permissions';
+import { useAuthStore } from '@/store/authStore';
 import CreateCompanyDialog from '../components/CreateCompanyDialog';
 import { useCompanies } from '../hooks/useCompanies';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
@@ -35,18 +36,14 @@ import {
   isCompanyStage,
 } from '../types/company.types';
 import type {
-  CompaniesQueryParams,
-  Company,
+  GetCompaniesParams,
+  CompanyListItem,
   CompanyPageSize,
   CompanyPriority,
   CompanyStage,
 } from '../types/company.types';
 
 type OwnerFilter = 'ALL' | 'WITHOUT_OWNER' | 'SPECIFIC_OWNER';
-
-interface ApiErrorBody {
-  message?: string;
-}
 
 function displayValue(value?: string | null): string {
   return value?.trim() || '—';
@@ -64,13 +61,10 @@ function formatDate(value?: string | null): string {
   }).format(date);
 }
 
-function getErrorMessage(error: Error | null): string {
-  const apiError = error as AxiosError<ApiErrorBody> | null;
-  return apiError?.response?.data?.message || 'دریافت فهرست شرکت‌ها با خطا مواجه شد.';
-}
-
 export default function CompaniesPage() {
   const navigate = useNavigate();
+  const user = useAuthStore((state) => state.user);
+  const canCreateCompany = can(user, 'company:create', ['ADMIN', 'MANAGER']);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: 0,
@@ -83,7 +77,7 @@ export default function CompaniesPage() {
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebouncedValue(search.trim(), 400);
 
-  const queryParams = useMemo<CompaniesQueryParams>(
+  const queryParams = useMemo<GetCompaniesParams>(
     () => ({
       page: paginationModel.page + 1,
       limit: paginationModel.pageSize as CompanyPageSize,
@@ -96,13 +90,13 @@ export default function CompaniesPage() {
     [debouncedSearch, ownerFilter, ownerId, paginationModel, priority, stage],
   );
 
-  const { data, error, isError, isFetching } = useCompanies(queryParams);
+  const { data, isError, isFetching } = useCompanies(queryParams);
 
   const resetToFirstPage = () => {
     setPaginationModel((current) => ({ ...current, page: 0 }));
   };
 
-  const columns = useMemo<GridColDef<Company>[]>(
+  const columns = useMemo<GridColDef<CompanyListItem>[]>(
     () => [
       { field: 'legalName', headerName: 'نام حقوقی', minWidth: 180, flex: 1 },
       { field: 'brandName', headerName: 'نام برند', minWidth: 140, flex: 0.8 },
@@ -112,14 +106,14 @@ export default function CompaniesPage() {
         headerName: 'مرحله',
         minWidth: 170,
         flex: 0.9,
-        renderCell: ({ value }: GridRenderCellParams<Company, string | null>) =>
+        renderCell: ({ value }: GridRenderCellParams<CompanyListItem, string | null>) =>
           value && isCompanyStage(value) ? companyStageLabels[value] : displayValue(value),
       },
       {
         field: 'priority',
         headerName: 'اولویت',
         minWidth: 110,
-        renderCell: ({ value }: GridRenderCellParams<Company, string | null>) =>
+        renderCell: ({ value }: GridRenderCellParams<CompanyListItem, string | null>) =>
           value && isCompanyPriority(value) ? companyPriorityLabels[value] : displayValue(value),
       },
       {
@@ -128,14 +122,14 @@ export default function CompaniesPage() {
         minWidth: 150,
         flex: 0.7,
         sortable: false,
-        renderCell: ({ row }: GridRenderCellParams<Company>) => displayValue(row.owner?.fullName),
+        renderCell: ({ row }: GridRenderCellParams<CompanyListItem>) => displayValue(row.owner?.fullName),
       },
       { field: 'headOfficeCity', headerName: 'شهر دفتر مرکزی', minWidth: 150 },
       {
         field: 'updatedAt',
         headerName: 'آخرین بروزرسانی',
         minWidth: 180,
-        renderCell: ({ value }: GridRenderCellParams<Company, string | null>) => formatDate(value),
+        renderCell: ({ value }: GridRenderCellParams<CompanyListItem, string | null>) => formatDate(value),
       },
       {
         field: 'actions',
@@ -143,7 +137,7 @@ export default function CompaniesPage() {
         minWidth: 250,
         sortable: false,
         filterable: false,
-        renderCell: ({ row }: GridRenderCellParams<Company>) => (
+        renderCell: ({ row }: GridRenderCellParams<CompanyListItem>) => (
           <Stack direction="row" spacing={1} sx={{ height: '100%', alignItems: 'center' }}>
             <Button size="small" onClick={() => navigate(`/companies/${row.id}`)}>
               مشاهده جزئیات
@@ -166,11 +160,13 @@ export default function CompaniesPage() {
     <Box sx={{ width: '100%', minWidth: 0 }}>
       <Header />
 
-      <Stack direction="row" sx={{ mb: 2, justifyContent: 'flex-end' }}>
-        <Button variant="contained" onClick={() => setIsCreateDialogOpen(true)}>
-          افزودن شرکت
-        </Button>
-      </Stack>
+      {canCreateCompany && (
+        <Stack direction="row" sx={{ mb: 2, justifyContent: 'flex-end' }}>
+          <Button variant="contained" onClick={() => setIsCreateDialogOpen(true)}>
+            افزودن شرکت
+          </Button>
+        </Stack>
+      )}
 
       <Paper sx={{ p: { xs: 2, md: 3 }, mb: 3 }}>
         <Typography variant="h6" sx={{ mb: 2 }}>
@@ -253,23 +249,23 @@ export default function CompaniesPage() {
 
       {isError && (
         <Alert severity="error" sx={{ mb: 2 }}>
-          {getErrorMessage(error)}
+          خطا در دریافت اطلاعات شرکت‌ها.
         </Alert>
       )}
 
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
         <DataGrid
           autoHeight
-          rows={data?.items ?? []}
+          rows={data?.data ?? []}
           columns={columns}
           loading={isFetching}
-          rowCount={data?.total ?? 0}
+          rowCount={data?.meta.total ?? 0}
           paginationMode="server"
           paginationModel={paginationModel}
           onPaginationModelChange={setPaginationModel}
           pageSizeOptions={[...COMPANY_PAGE_SIZES]}
           disableRowSelectionOnClick
-          localeText={{ noRowsLabel: 'شرکتی یافت نشد' }}
+          localeText={{ noRowsLabel: 'هنوز شرکتی ثبت نشده است.' }}
           sx={{
             border: 0,
             minHeight: 420,
@@ -278,10 +274,12 @@ export default function CompaniesPage() {
         />
       </Paper>
 
-      <CreateCompanyDialog
-        open={isCreateDialogOpen}
-        onClose={() => setIsCreateDialogOpen(false)}
-      />
+      {canCreateCompany && (
+        <CreateCompanyDialog
+          open={isCreateDialogOpen}
+          onClose={() => setIsCreateDialogOpen(false)}
+        />
+      )}
     </Box>
   );
 }

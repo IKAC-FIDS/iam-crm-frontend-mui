@@ -29,15 +29,19 @@ export const COMPANY_OWNERSHIPS = [
 ] as const;
 export const COMPANY_PAGE_SIZES = [5, 10, 20] as const;
 
-export type CompanyStage = (typeof COMPANY_STAGES)[number];
-export type CompanyPriority = (typeof COMPANY_PRIORITIES)[number];
+export type PipelineStage = (typeof COMPANY_STAGES)[number];
+export type Priority = (typeof COMPANY_PRIORITIES)[number];
+export type CompanyStage = PipelineStage;
+export type CompanyPriority = Priority;
 export type CompanyOwnership = (typeof COMPANY_OWNERSHIPS)[number];
 export type CompanyPageSize = (typeof COMPANY_PAGE_SIZES)[number];
 
 export interface CompanyOwner {
   id: string;
   fullName: string;
-  team?: string | { id?: string; name?: string } | null;
+  email?: string;
+  team?: string;
+  role?: string;
 }
 
 export interface Company {
@@ -54,7 +58,26 @@ export interface Company {
   source?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
+  people?: unknown[];
+  branches?: unknown[];
+  socialChannels?: unknown[];
+  callCard?: unknown | null;
+  activities?: unknown[];
+  stageHistory?: unknown[];
 }
+
+export type CompanyListItem = Pick<
+  Company,
+  | 'id'
+  | 'legalName'
+  | 'brandName'
+  | 'industry'
+  | 'stage'
+  | 'priority'
+  | 'owner'
+  | 'headOfficeCity'
+  | 'updatedAt'
+>;
 
 export interface UpdateCompanyPayload {
   legalName?: string;
@@ -71,6 +94,10 @@ export interface ChangeCompanyStagePayload {
   stage: CompanyStage;
 }
 
+export interface ChangeCompanyOwnerPayload {
+  newOwnerId: string;
+}
+
 export interface CreateCompanyPayload {
   legalName: string;
   brandName?: string;
@@ -83,7 +110,7 @@ export interface CreateCompanyPayload {
   ownerId?: string;
 }
 
-export interface CompaniesQueryParams {
+export interface GetCompaniesParams {
   page: number;
   limit: CompanyPageSize;
   stage?: CompanyStage;
@@ -93,12 +120,18 @@ export interface CompaniesQueryParams {
   ownerId?: string;
 }
 
-export interface CompaniesPageResult {
-  items: Company[];
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
+export type CompaniesQueryParams = GetCompaniesParams;
+
+export interface PaginatedResult<T> {
+  data: T[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+    hasNext?: boolean;
+    hasPrevious?: boolean;
+  };
 }
 
 export const companyStageLabels: Record<CompanyStage, string> = {

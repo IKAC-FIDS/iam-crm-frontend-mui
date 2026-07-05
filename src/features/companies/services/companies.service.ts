@@ -1,9 +1,11 @@
 import axiosInstance from '@/lib/axios';
 import type {
-  CompaniesPageResult,
-  CompaniesQueryParams,
+  GetCompaniesParams,
+  PaginatedResult,
   Company,
+  CompanyListItem,
   ChangeCompanyStagePayload,
+  ChangeCompanyOwnerPayload,
   CreateCompanyPayload,
   UpdateCompanyPayload,
 } from '../types/company.types';
@@ -13,11 +15,13 @@ interface CompaniesApiMeta {
   limit?: number;
   total?: number;
   totalPages?: number;
+  hasNext?: boolean;
+  hasPrevious?: boolean;
 }
 
 interface CompaniesApiEnvelope {
-  data?: Company[];
-  items?: Company[];
+  data?: CompanyListItem[];
+  items?: CompanyListItem[];
   meta?: CompaniesApiMeta;
   page?: number;
   limit?: number;
@@ -25,19 +29,23 @@ interface CompaniesApiEnvelope {
   totalPages?: number;
 }
 
-type CompaniesApiResponse = Company[] | CompaniesApiEnvelope;
+type CompaniesApiResponse = CompanyListItem[] | CompaniesApiEnvelope;
 
 function normalizeCompaniesResponse(
   payload: CompaniesApiResponse,
-  params: CompaniesQueryParams,
-): CompaniesPageResult {
+  params: GetCompaniesParams,
+): PaginatedResult<CompanyListItem> {
   if (Array.isArray(payload)) {
     return {
-      items: payload,
-      page: params.page,
-      limit: params.limit,
-      total: payload.length,
-      totalPages: Math.max(1, Math.ceil(payload.length / params.limit)),
+      data: payload,
+      meta: {
+        page: params.page,
+        limit: params.limit,
+        total: payload.length,
+        totalPages: Math.max(1, Math.ceil(payload.length / params.limit)),
+        hasNext: false,
+        hasPrevious: params.page > 1,
+      },
     };
   }
 
@@ -47,19 +55,25 @@ function normalizeCompaniesResponse(
   const total = payload.meta?.total ?? payload.total ?? items.length;
 
   return {
-    items,
-    page,
-    limit,
-    total,
-    totalPages:
-      payload.meta?.totalPages ??
-      payload.totalPages ??
-      Math.max(1, Math.ceil(total / limit)),
+    data: items,
+    meta: {
+      page,
+      limit,
+      total,
+      totalPages:
+        payload.meta?.totalPages ??
+        payload.totalPages ??
+        Math.max(1, Math.ceil(total / limit)),
+      hasNext: payload.meta?.hasNext ?? page * limit < total,
+      hasPrevious: payload.meta?.hasPrevious ?? page > 1,
+    },
   };
 }
 
 export const companiesService = {
-  getAll: async (params: CompaniesQueryParams): Promise<CompaniesPageResult> => {
+  getAll: async (
+    params: GetCompaniesParams,
+  ): Promise<PaginatedResult<CompanyListItem>> => {
     const response = await axiosInstance.get<CompaniesApiResponse>('/companies', {
       params,
     });
@@ -99,6 +113,18 @@ export const companiesService = {
   ): Promise<Company> => {
     const response = await axiosInstance.patch<Company | { data: Company }>(
       `/companies/${companyId}/stage`,
+      payload,
+    );
+
+    return 'data' in response.data ? response.data.data : response.data;
+  },
+
+  changeOwner: async (
+    companyId: string,
+    payload: ChangeCompanyOwnerPayload,
+  ): Promise<Company> => {
+    const response = await axiosInstance.patch<Company | { data: Company }>(
+      `/companies/${companyId}/owner`,
       payload,
     );
 

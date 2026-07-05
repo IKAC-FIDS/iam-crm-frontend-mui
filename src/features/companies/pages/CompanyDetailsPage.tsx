@@ -20,10 +20,12 @@ import {
   Stack,
   Tab,
   Tabs,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Header from '@/components/dashboard/Header';
+import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
 import ChangeCompanyStageDialog from '../components/ChangeCompanyStageDialog';
 import EditCompanyDialog from '../components/EditCompanyDialog';
@@ -82,15 +84,17 @@ function getTeamName(team: string | { name?: string } | null | undefined): strin
 export default function CompanyDetailsPage() {
   const navigate = useNavigate();
   const { companyId = '' } = useParams<{ companyId: string }>();
-  const currentUserId = useAuthStore((state) => state.user?.id);
+  const user = useAuthStore((state) => state.user);
   const { data: company, isLoading, isError } = useCompany(companyId);
   const updateCompany = useUpdateCompany(companyId);
   const [activeTab, setActiveTab] = useState<DetailTab>('overview');
   const [editOpen, setEditOpen] = useState(false);
   const [stageOpen, setStageOpen] = useState(false);
   const [priorityOpen, setPriorityOpen] = useState(false);
-  const [assignOwnerOpen, setAssignOwnerOpen] = useState(false);
   const [priority, setPriority] = useState<CompanyPriority | ''>('');
+  const canEditCompany = can(user, 'company:update', ['ADMIN', 'MANAGER', 'REP']);
+  const canChangeStage = can(user, 'company:change-stage', ['ADMIN', 'MANAGER', 'REP']);
+  const canAssignOwner = can(user, 'company:change-owner', ['ADMIN', 'MANAGER']);
 
   if (isLoading) {
     return (
@@ -133,17 +137,6 @@ export default function CompanyDetailsPage() {
       setPriorityOpen(false);
     } catch {
       toast.error('تغییر اولویت با خطا مواجه شد.');
-    }
-  };
-
-  const handleAssignOwner = async () => {
-    if (!currentUserId) return;
-    try {
-      await updateCompany.mutateAsync({ ownerId: currentUserId });
-      toast.success('مالک شرکت به کاربر فعلی تخصیص یافت.');
-      setAssignOwnerOpen(false);
-    } catch {
-      toast.error('تخصیص مالک با خطا مواجه شد.');
     }
   };
 
@@ -196,18 +189,30 @@ export default function CompanyDetailsPage() {
               spacing={1}
               sx={{ mb: 3, flexWrap: 'wrap', gap: 1 }}
             >
-              <Button variant="contained" onClick={() => setEditOpen(true)}>
-                ویرایش اطلاعات شرکت
-              </Button>
-              <Button variant="outlined" onClick={() => setStageOpen(true)}>
-                تغییر مرحله
-              </Button>
-              <Button variant="outlined" onClick={() => setAssignOwnerOpen(true)}>
-                تخصیص مالک
-              </Button>
-              <Button variant="outlined" onClick={handlePriorityOpen}>
-                تغییر اولویت
-              </Button>
+              {canEditCompany && (
+                <Button variant="contained" onClick={() => setEditOpen(true)}>
+                  ویرایش اطلاعات شرکت
+                </Button>
+              )}
+              {canChangeStage && (
+                <Button variant="outlined" onClick={() => setStageOpen(true)}>
+                  تغییر مرحله
+                </Button>
+              )}
+              {canAssignOwner && (
+                <Tooltip title="لیست کاربران برای تخصیص مالک هنوز آماده نیست.">
+                  <span>
+                    <Button variant="outlined" disabled>
+                      تخصیص مالک
+                    </Button>
+                  </span>
+                </Tooltip>
+              )}
+              {canEditCompany && (
+                <Button variant="outlined" onClick={handlePriorityOpen}>
+                  تغییر اولویت
+                </Button>
+              )}
             </Stack>
 
             <Grid container spacing={3}>
@@ -237,15 +242,19 @@ export default function CompanyDetailsPage() {
         </Paper>
       )}
 
-      <EditCompanyDialog company={company} open={editOpen} onClose={() => setEditOpen(false)} />
-      <ChangeCompanyStageDialog
-        companyId={company.id}
-        currentStage={company.stage}
-        open={stageOpen}
-        onClose={() => setStageOpen(false)}
-      />
+      {canEditCompany && (
+        <EditCompanyDialog company={company} open={editOpen} onClose={() => setEditOpen(false)} />
+      )}
+      {canChangeStage && (
+        <ChangeCompanyStageDialog
+          companyId={company.id}
+          currentStage={company.stage}
+          open={stageOpen}
+          onClose={() => setStageOpen(false)}
+        />
+      )}
 
-      <Dialog open={priorityOpen} onClose={() => setPriorityOpen(false)} fullWidth maxWidth="xs">
+      <Dialog open={canEditCompany && priorityOpen} onClose={() => setPriorityOpen(false)} fullWidth maxWidth="xs">
         <DialogTitle>تغییر اولویت</DialogTitle>
         <DialogContent sx={{ pt: '12px !important' }}>
           <FormControl fullWidth>
@@ -270,18 +279,6 @@ export default function CompanyDetailsPage() {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={assignOwnerOpen} onClose={() => setAssignOwnerOpen(false)} maxWidth="xs" fullWidth>
-        <DialogTitle>تخصیص مالک</DialogTitle>
-        <DialogContent>
-          <Typography>مالک شرکت به کاربر فعلی تخصیص داده شود؟</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setAssignOwnerOpen(false)}>انصراف</Button>
-          <Button variant="contained" onClick={handleAssignOwner} disabled={!currentUserId || updateCompany.isPending}>
-            تخصیص به من
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 }

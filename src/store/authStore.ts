@@ -5,7 +5,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-interface User {
+export interface AuthUser {
   id: string;
   fullName: string;
   email: string;
@@ -15,8 +15,8 @@ interface User {
 }
 
 interface AuthState {
-  user: User | null;
-  setUser: (user: User) => void;
+  user: AuthUser | null;
+  setUser: (user: AuthUser) => void;
   clearUser: () => void;
 }
 

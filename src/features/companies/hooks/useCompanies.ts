@@ -2,18 +2,19 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tansta
 import { companiesService } from '../services/companies.service';
 import type {
   ChangeCompanyStagePayload,
-  CompaniesQueryParams,
+  ChangeCompanyOwnerPayload,
+  GetCompaniesParams,
   CreateCompanyPayload,
   UpdateCompanyPayload,
 } from '../types/company.types';
 
 export const companyQueryKeys = {
   all: ['companies'] as const,
-  list: (params: CompaniesQueryParams) => [...companyQueryKeys.all, 'list', params] as const,
+  list: (params: GetCompaniesParams) => [...companyQueryKeys.all, 'list', params] as const,
   detail: (companyId: string) => [...companyQueryKeys.all, 'detail', companyId] as const,
 };
 
-export function useCompanies(params: CompaniesQueryParams) {
+export function useCompanies(params: GetCompaniesParams) {
   return useQuery({
     queryKey: companyQueryKeys.list(params),
     queryFn: () => companiesService.getAll(params),
@@ -54,6 +55,16 @@ export function useChangeCompanyStage(companyId: string) {
   return useMutation({
     mutationFn: (payload: ChangeCompanyStagePayload) =>
       companiesService.changeStage(companyId, payload),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: companyQueryKeys.all }),
+  });
+}
+
+export function useChangeCompanyOwner(companyId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: ChangeCompanyOwnerPayload) =>
+      companiesService.changeOwner(companyId, payload),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: companyQueryKeys.all }),
   });
 }
