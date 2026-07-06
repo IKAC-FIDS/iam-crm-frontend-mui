@@ -2318,6 +2318,54 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 ---
 
+## fix 000038 — پشتیبانی کامل از مراحل داینامیک پایپ‌لاین
+
+**موارد پیاده‌سازی‌شده:**
+
+* حذف وابستگی typeهای تنظیمات پایپ‌لاین و گزارش‌ها به enum ثابت `PipelineStage` و استفاده از `code: string` و شناسه واقعی مرحله.
+* تکمیل مدل مرحله با `terminalType`، `isDefault`، زمان ایجاد/ویرایش و payloadهای مستقل ایجاد، ویرایش و reorder.
+* اتصال ایجاد، دریافت جزئیات، ویرایش، غیرفعال‌سازی با مرحله جایگزین و reorder به routeهای نهایی `/admin/pipeline/stages`.
+* افزودن فرم ایجاد مرحله با validation کد، عنوان، رنگ، ترتیب، وضعیت فعال/پایانی، نوع پایان و مرحله پیش‌فرض؛ کد در حالت ویرایش قابل تغییر نیست.
+* افزودن confirmation غیرفعال‌سازی و selector مرحله جایگزین؛ پیام conflict یا validation بک‌اند به کاربر نمایش داده می‌شود.
+* افزودن reorder بدون dependency جدید drag-and-drop، با کنترل‌های بالا/پایین و ارسال آرایه `{ id, sortOrder }` به بک‌اند.
+* اصلاح normalization قوانین انتقال از responseهای nested بک‌اند و جایگزینی codeهای enumمحور با `fromStageId` و `toStageId`.
+* تکمیل ایجاد، ویرایش و حذف قوانین انتقال، شامل قانون عمومی با role خالی و نمایش labelهای واقعی مراحل.
+* تغییر dialog جابه‌جایی فرصت برای استفاده از مراحل فعال و قوانین انتقال واقعی متناسب با مرحله فعلی و نقش کاربر؛ در خطای دریافت قوانین هیچ مقصد ساختگی نمایش داده نمی‌شود.
+* حفظ برد فرصت‌محور با ستون‌های مراحل فعال، مرتب‌شده بر اساس `sortOrder` و label/color بک‌اند و فیلتر فرصت‌ها با `stageId`.
+* report filterها همچنان گزینه مراحل را از `/reports/filter-options` می‌گیرند و typeهای گزارش دیگر enum ثابت مرحله را require نمی‌کنند.
+* invalidation پس از mutationها شامل مراحل، قوانین، pipeline، opportunities و reports است.
+
+**فایل‌های مهم:**
+
+* `src/features/pipelineConfig/types/pipelineConfig.types.ts`
+* `src/features/pipelineConfig/services/pipelineConfig.service.ts`
+* `src/features/pipelineConfig/hooks/usePipelineConfig.ts`
+* `src/features/pipelineConfig/components/StageConfigDialog.tsx`
+* `src/features/pipelineConfig/components/StagesConfigTab.tsx`
+* `src/features/pipelineConfig/components/TransitionRuleDialog.tsx`
+* `src/features/pipelineConfig/components/TransitionRulesTab.tsx`
+* `src/features/opportunities/components/ChangeOpportunityStageDialog.tsx`
+* `src/features/companies/components/ChangeCompanyStageDialog.tsx`
+* `src/features/reports/types/report.types.ts`
+* `README.md`
+
+**فرضیات و وابستگی‌ها:**
+
+* قرارداد نهایی مستقیماً از backend fix 000013 در commit `3297cfec` بررسی شد.
+* بک‌اند از permissionهای `pipeline:config:view`، `pipeline:config:manage`، `pipeline:transition:view` و `pipeline:transition:manage` استفاده می‌کند؛ permission ساختگی `pipeline:manage` اضافه نشد.
+* DELETE مرحله عملیات غیرفعال‌سازی است و در صورت استفاده‌شدن مرحله، `replacementStageId` را به‌صورت query parameter می‌پذیرد.
+* transitionهای backend بر اساس stage ID هستند و rule مخصوص role نسبت به rule عمومی اولویت دارد.
+* enum قدیمی مرحله فقط در flow سازگاری metadata شرکت باقی مانده و برای admin stages، opportunity pipeline، opportunity stage changes یا report typeها لازم نیست.
+
+**وضعیت بررسی:**
+
+* Lint بدون خطا یا هشدار پاس شد.
+* build نسخه production پاس شد.
+* هشدار غیرمسدودکننده بزرگ‌بودن bundle همچنان باقی است.
+* route محلی `GET /api/admin/pipeline/stages` در دسترس بود و بدون token پاسخ `401` داد؛ تست زنده احراز هویت‌شده CRUD مراحل، reorder، قوانین انتقال و dialog تغییر مرحله انجام نشد.
+
+---
+
 **Built with ❤️ for sales team**
 
 ---

@@ -1,23 +1,15 @@
-import { useMemo, useState } from 'react';
-import { Alert, Box, Button, Chip, Paper } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
-import type { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
-import { usePipelineStages } from '../hooks/usePipelineConfig';
+import { useCallback, useMemo, useState } from 'react';
+import axios from 'axios';
+import { toast } from 'sonner';
+import { Alert, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Paper, Select, Stack } from '@mui/material';
+import { DataGrid, type GridColDef, type GridRenderCellParams } from '@mui/x-data-grid';
+import { useDeactivatePipelineStage, usePipelineStages, useReorderPipelineStages } from '../hooks/usePipelineConfig';
 import type { PipelineStageConfig } from '../types/pipelineConfig.types';
 import StageConfigDialog from './StageConfigDialog';
-
-export default function StagesConfigTab() {
-  const query = usePipelineStages();
-  const [editing, setEditing] = useState<PipelineStageConfig | null>(null);
-  const columns = useMemo<GridColDef<PipelineStageConfig>[]>(() => [
-    { field: 'label', headerName: 'عنوان', minWidth: 180, flex: 1 },
-    { field: 'code', headerName: 'کد', minWidth: 180 },
-    { field: 'description', headerName: 'توضیح', minWidth: 220, flex: 1, valueFormatter: (value) => value || '—' },
-    { field: 'sortOrder', headerName: 'ترتیب نمایش', minWidth: 110 },
-    { field: 'color', headerName: 'رنگ', minWidth: 100, renderCell: ({ value }) => <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}><Box sx={{ width: 20, height: 20, borderRadius: '50%', bgcolor: value || 'transparent', border: 1, borderColor: 'divider' }} />{value || '—'}</Box> },
-    { field: 'isActive', headerName: 'وضعیت', minWidth: 100, renderCell: ({ value }) => <Chip size="small" color={value ? 'success' : 'default'} label={value ? 'فعال' : 'غیرفعال'} /> },
-    { field: 'isTerminal', headerName: 'مرحله پایانی', minWidth: 110, valueFormatter: (value) => value ? 'بله' : 'خیر' },
-    { field: 'actions', headerName: 'عملیات', minWidth: 100, sortable: false, renderCell: ({ row }: GridRenderCellParams<PipelineStageConfig>) => <Button size="small" onClick={() => setEditing(row)}>ویرایش</Button> },
-  ], []);
-  return <>{query.isError && <Alert severity="error" sx={{ mb: 2 }}>خطا در دریافت تنظیمات مراحل.</Alert>}<Paper><DataGrid autoHeight rows={query.data ?? []} columns={columns} loading={query.isLoading} hideFooter localeText={{ noRowsLabel: 'هیچ مرحله‌ای از Backend دریافت نشد.' }} sx={{ border: 0, minHeight: 360 }} /></Paper>{editing && <StageConfigDialog key={editing.id} stage={editing} open onClose={() => setEditing(null)} />}</>;
+const errorMessage = (e: unknown) => axios.isAxiosError<{ message?: string }>(e) ? e.response?.data?.message : undefined;
+export default function StagesConfigTab() { const query = usePipelineStages(); const deactivate = useDeactivatePipelineStage(); const reorder = useReorderPipelineStages(); const [form, setForm] = useState<PipelineStageConfig | null | undefined>(undefined); const [deleting, setDeleting] = useState<PipelineStageConfig | null>(null); const [replacement, setReplacement] = useState('');
+  const move = useCallback(async (stage: PipelineStageConfig, delta: number) => { const rows = [...(query.data ?? [])]; const index = rows.findIndex((s) => s.id === stage.id); const next = index + delta; if (next < 0 || next >= rows.length) return; [rows[index], rows[next]] = [rows[next], rows[index]]; await reorder.mutateAsync({ items: rows.map((s, i) => ({ id: s.id, sortOrder: i })) }); }, [query.data, reorder]);
+  const confirm = async () => { if (!deleting) return; try { await deactivate.mutateAsync({ id: deleting.id, replacementStageId: replacement || undefined }); toast.success('مرحله غیرفعال شد.'); setDeleting(null); setReplacement(''); } catch (e) { toast.error(errorMessage(e) || 'غیرفعال‌سازی مرحله انجام نشد.'); } };
+  const columns = useMemo<GridColDef<PipelineStageConfig>[]>(() => [{ field: 'label', headerName: 'عنوان', minWidth: 160, flex: 1 }, { field: 'code', headerName: 'کد', minWidth: 160 }, { field: 'sortOrder', headerName: 'ترتیب', width: 80 }, { field: 'color', headerName: 'رنگ', width: 100, renderCell: ({ value }) => <Box sx={{ width: 22, height: 22, borderRadius: 1, bgcolor: value || 'transparent', border: 1, borderColor: 'divider' }} /> }, { field: 'isActive', headerName: 'وضعیت', width: 100, renderCell: ({ value }) => <Chip size="small" color={value ? 'success' : 'default'} label={value ? 'فعال' : 'غیرفعال'} /> }, { field: 'terminalType', headerName: 'نوع پایان', width: 110 }, { field: 'isDefault', headerName: 'پیش‌فرض', width: 90, valueFormatter: (v) => v ? 'بله' : 'خیر' }, { field: 'actions', headerName: 'عملیات', minWidth: 280, sortable: false, renderCell: ({ row }: GridRenderCellParams<PipelineStageConfig>) => <Stack direction="row"><Button size="small" onClick={() => setForm(row)}>ویرایش</Button><Button size="small" onClick={() => move(row, -1)}>بالا</Button><Button size="small" onClick={() => move(row, 1)}>پایین</Button>{row.isActive && <Button size="small" color="warning" onClick={() => setDeleting(row)}>غیرفعال</Button>}</Stack> }], [move]);
+  return <Stack spacing={2}><Stack direction="row" sx={{ justifyContent: 'flex-end' }}><Button variant="contained" onClick={() => setForm(null)}>ایجاد مرحله</Button></Stack>{query.isError && <Alert severity="error">دریافت مراحل انجام نشد.</Alert>}<Paper><DataGrid autoHeight rows={query.data ?? []} columns={columns} loading={query.isLoading || reorder.isPending} hideFooter /></Paper>{form !== undefined && <StageConfigDialog stage={form} open onClose={() => setForm(undefined)} />}<Dialog open={Boolean(deleting)} onClose={() => setDeleting(null)}><DialogTitle>غیرفعال‌سازی مرحله</DialogTitle><DialogContent sx={{ minWidth: 360 }}><Alert severity="warning" sx={{ mb: 2 }}>اگر مرحله در فرصت‌های فعال استفاده شده باشد، انتخاب مرحله جایگزین الزامی است.</Alert><FormControl fullWidth><InputLabel>مرحله جایگزین</InputLabel><Select label="مرحله جایگزین" value={replacement} onChange={(e) => setReplacement(e.target.value)}><MenuItem value="">بدون جایگزین</MenuItem>{(query.data ?? []).filter((s) => s.isActive && s.id !== deleting?.id).map((s) => <MenuItem key={s.id} value={s.id}>{s.label}</MenuItem>)}</Select></FormControl></DialogContent><DialogActions><Button onClick={() => setDeleting(null)}>انصراف</Button><Button color="warning" variant="contained" disabled={deactivate.isPending} onClick={confirm}>غیرفعال‌سازی</Button></DialogActions></Dialog></Stack>;
 }

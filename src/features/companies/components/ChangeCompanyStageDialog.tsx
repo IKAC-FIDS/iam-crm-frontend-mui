@@ -66,7 +66,7 @@ export default function ChangeCompanyStageDialog({
   const errorMessage = axios.isAxiosError<ApiErrorBody>(changeStage.error)
     ? changeStage.error.response?.data?.message
     : undefined;
-  const allowedCodes = new Set((rules.data ?? []).filter((rule) => rule.allowed && rule.fromStage === currentStage && rule.role === role).map((rule) => rule.toStage));
+  const allowedCodes = new Set((rules.data ?? []).filter((rule) => rule.allowed && rule.fromStage?.code === currentStage && rule.role === role).map((rule) => rule.toStage?.code).filter((code): code is string => Boolean(code)));
   const targets = (stages.data ?? []).filter((item) => item.isActive && isCompanyStage(item.code) && item.code !== currentStage && allowedCodes.has(item.code));
 
   return (
