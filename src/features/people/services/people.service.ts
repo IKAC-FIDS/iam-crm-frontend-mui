@@ -24,9 +24,9 @@ interface PageMeta {
   hasPrevious?: boolean;
 }
 
-interface PeopleEnvelope {
-  data?: Person[];
-  items?: Person[];
+interface PeopleEnvelope<T = Person> {
+  data?: T[];
+  items?: T[];
   meta?: PageMeta;
   total?: number;
   page?: number;
@@ -45,10 +45,10 @@ function unwrapList<T>(payload: T[] | { data?: T[]; items?: T[] }): T[] {
   return payload.data ?? payload.items ?? [];
 }
 
-function normalizePeople(
-  payload: Person[] | PeopleEnvelope,
+function normalizePeople<T>(
+  payload: T[] | PeopleEnvelope<T>,
   params: { page: number; limit: number },
-): PaginatedResult<Person> {
+): PaginatedResult<T> {
   if (Array.isArray(payload)) {
     return {
       data: payload,
@@ -87,8 +87,10 @@ function cleanParams(params: PeopleDirectoryParams): Record<string, string | num
 
 export const peopleService = {
   getPeopleDirectory: async (params: PeopleDirectoryParams): Promise<PaginatedResult<DirectoryPerson>> => {
-    const response = await axiosInstance.get<DirectoryPerson[] | PeopleEnvelope>('/people', { params: cleanParams(params) });
-    return normalizePeople(response.data as Person[] | PeopleEnvelope, params) as PaginatedResult<DirectoryPerson>;
+    const response = await axiosInstance.get<PeopleEnvelope<DirectoryPerson>>('/people/directory', {
+      params: cleanParams(params),
+    });
+    return normalizePeople(response.data, params);
   },
 
   getPeopleByCompany: async (params: GetPeopleParams): Promise<PaginatedResult<Person>> => {

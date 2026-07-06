@@ -88,9 +88,11 @@ export interface PersonDirectoryCompany {
   owner?: { id: string; fullName: string; team?: string | null } | null;
 }
 
-export interface DirectoryPerson extends Person {
+export interface DirectoryPerson extends Omit<Person, 'contacts' | 'socials'> {
   company?: PersonDirectoryCompany | null;
   owner?: { id: string; fullName: string; team?: string | null } | null;
+  contacts?: Array<Pick<PersonContact, 'id' | 'type' | 'value' | 'isPrimary'>>;
+  socials?: Array<Pick<PersonSocial, 'id' | 'platform' | 'handle'>>;
   emailSummary?: string | null;
   phoneSummary?: string | null;
 }

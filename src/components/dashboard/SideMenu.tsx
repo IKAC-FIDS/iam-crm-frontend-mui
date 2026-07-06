@@ -56,7 +56,7 @@ export default function SideMenu({ mobileOpen, onClose }: SideMenuProps) {
   const location = useLocation();
   const user = useAuthStore((state) => state.user);
   const canViewReports = can(user, 'report:view', ['ADMIN', 'MANAGER', 'BOARDS']);
-  const canViewPeople = canAny(user, ['people:directory:view', 'person:view'], ['ADMIN', 'MANAGER', 'REP']);
+  const canViewPeople = can(user, 'people:directory:view');
 
   const menuContent = (
     <>

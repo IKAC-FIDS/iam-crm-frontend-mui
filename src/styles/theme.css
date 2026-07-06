@@ -1,0 +1,72 @@
+/* ============================================================
+   مسیر: src/styles/theme.css
+   منبع مرکزی رنگ‌ها و tokenهای UI پروژه
+   ============================================================ */
+
+:root {
+  /* Primary */
+  --color-primary-main: #001736;
+  --color-primary-light: #123B70;
+  --color-primary-dark: #000B1A;
+  --color-primary-contrast: #FFFFFF;
+
+  /* Secondary */
+  --color-secondary-main: #00A6B2;
+  --color-secondary-light: #33C5CF;
+  --color-secondary-dark: #007C86;
+  --color-secondary-contrast: #FFFFFF;
+
+  /* Background */
+  --color-bg-default: #F5F7FB;
+  --color-bg-paper: #FFFFFF;
+
+  /* Text */
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #64748B;
+
+  /* Border / Divider */
+  --color-divider: #E2E8F0;
+
+  /* Semantic */
+  --color-success-main: #16A34A;
+  --color-success-contrast: #FFFFFF;
+
+  --color-warning-main: #F59E0B;
+  --color-warning-contrast: #0F172A;
+
+  --color-error-main: #DC2626;
+  --color-error-contrast: #FFFFFF;
+
+  --color-info-main: #2563EB;
+  --color-info-contrast: #FFFFFF;
+
+  /* Action states */
+  --color-action-hover: rgba(18, 59, 112, 0.08);
+  --color-action-selected: rgba(18, 59, 112, 0.14);
+  --color-action-disabled: rgba(15, 23, 42, 0.38);
+  --color-action-disabled-bg: rgba(15, 23, 42, 0.12);
+
+  /* Shadows */
+  --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.08);
+  --shadow-popover: 0 8px 24px rgba(15, 23, 42, 0.12);
+  --shadow-login-card: 0 10px 40px rgba(15, 23, 42, 0.14);
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* Legacy aliases for old Vite template files, especially App.css */
+  --text: var(--color-text-secondary);
+  --text-h: var(--color-text-primary);
+  --bg: var(--color-bg-default);
+  --border: var(--color-divider);
+  --code-bg: var(--color-bg-paper);
+  --accent: var(--color-secondary-main);
+  --accent-bg: rgba(0, 166, 178, 0.1);
+  --accent-border: rgba(0, 166, 178, 0.5);
+  --social-bg: rgba(226, 232, 240, 0.45);
+  --shadow: var(--shadow-card);
+
+  color-scheme: light;
+}

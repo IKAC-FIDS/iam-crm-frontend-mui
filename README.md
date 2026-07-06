@@ -450,7 +450,8 @@ PATCH /companies/:id/restore
 ### People
 
 ```http
-GET /people
+GET /people?companyId=:companyId
+GET /people/directory
 POST /people
 GET /people/:id
 PATCH /people/:id
@@ -2235,6 +2236,40 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Lint passed without errors or warnings.
 * Production build passed.
 * Only a non-blocking bundle-size warning remained.
+
+---
+
+## fix 000036 — اتصال دایرکتوری سراسری افراد به قرارداد بک‌اند
+
+**موارد پیاده‌سازی‌شده:**
+
+* اتصال صفحه سراسری `/people` به `GET /api/people/directory` به‌جای فراخوانی بدون `companyId` روی `GET /api/people`.
+* ارسال فیلترهای `page`، `limit`، `search`، `companyId`، `ownerId`، `team`، `department`، `personaTag`، `isPrimaryContact`، `hasEmail` و `hasPhone` به endpoint دایرکتوری.
+* نرمال‌سازی پاسخ صفحه‌بندی‌شده `data` و `meta` به مدل فعلی جدول دایرکتوری، شامل اطلاعات شرکت، مالک، تماس‌ها، شبکه‌های اجتماعی و خلاصه ایمیل/تلفنِ برگشتی از بک‌اند.
+* محدودکردن دسترسی صفحه و آیتم منوی افراد به مجوز `people:directory:view` با حفظ fallback داخلی نقش `ADMIN` در helper مجوزها.
+* حفظ endpoint شرکت‌محور `GET /api/people?companyId=...` و تب افراد در جزئیات شرکت بدون تغییر.
+* گزینه‌های فیلتر همچنان از endpointهای واقعی شرکت‌ها، گزارش‌ها و lookupهای دپارتمان و پرسونا دریافت می‌شوند و داده ساختگی اضافه نشده است.
+
+**فایل‌های مهم:**
+
+* `src/features/people/services/people.service.ts`
+* `src/features/people/types/person.types.ts`
+* `src/features/people/pages/PeopleDirectoryPage.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+* `README.md`
+
+**فرضیات و وابستگی‌ها:**
+
+* این تغییر به backend fix 000011 وابسته است؛ وجود route، DTO، فیلترها، scope نقش‌ها و شکل پاسخ از commit `ad74325c` در repository بک‌اند بررسی شد.
+* endpoint دایرکتوری مجوز `people:directory:view` می‌خواهد و پاسخ `{ data, meta }` برمی‌گرداند.
+* تست زنده API فقط در صورت اجرای بک‌اند و وجود نشست احراز هویت‌شده ممکن است.
+
+**وضعیت بررسی:**
+
+* Lint بدون خطا یا هشدار پاس شد.
+* build نسخه production پاس شد.
+* هشدار غیرمسدودکننده بزرگ‌بودن bundle همچنان باقی است.
+* endpoint محلی دایرکتوری در دسترس بود و بدون توکن پاسخ `401` داد؛ تست زنده احراز هویت‌شده صفحه، فیلترها، drawer و لینک شرکت انجام نشد.
 
 ---
 
