@@ -1,44 +1,26 @@
+export const LOOKUP_GROUPS = ['teams', 'departments', 'seniority-levels', 'persona-tags', 'contact-types', 'person-social-platforms', 'company-sources'] as const;
+export type LookupGroup = (typeof LOOKUP_GROUPS)[number];
+export const LOOKUP_GROUP_LABELS: Record<LookupGroup, string> = { teams: 'تیم‌ها', departments: 'دپارتمان‌ها', 'seniority-levels': 'سطح ارشدیت', 'persona-tags': 'برچسب‌های پرسونا', 'contact-types': 'انواع تماس', 'person-social-platforms': 'شبکه‌های اجتماعی اشخاص', 'company-sources': 'منابع شرکت' };
+
 export const CATALOG_DEFINITIONS = {
   industries: { label: 'صنایع', endpoint: '/industries' },
   leadSources: { label: 'منابع جذب', endpoint: '/lead-sources' },
   painPoints: { label: 'نقاط درد', endpoint: '/pain-points' },
   useCases: { label: 'کاربردها', endpoint: '/use-cases' },
-  personas: { label: 'پرسوناها', endpoint: '/personas' },
-  lookupOptions: { label: 'گزینه‌های پایه', endpoint: '/lookup-options' },
+  personas: { label: 'پرسوناها', endpoint: '/persona-library' },
+  lookupOptions: { label: 'گزینه‌های پایه', endpoint: '/lookups' },
 } as const;
-
 export type CatalogKind = keyof typeof CATALOG_DEFINITIONS;
 
 export interface CatalogItem {
-  id: string;
-  name?: string | null;
-  title?: string | null;
-  label?: string | null;
-  value?: string | null;
-  description?: string | null;
-  category?: string | null;
-  type?: string | null;
-  isActive?: boolean;
-  active?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
+  id: string; label: string; value: string; description?: string | null; isActive: boolean;
+  code?: string | null; category?: string | null; sortOrder?: number | null; createdAt?: string; updatedAt?: string;
+  name?: string | null; title?: string | null; titlePattern?: string | null; defaultPainPoint?: string | null; defaultUseCase?: string | null; notes?: string | null;
 }
-
 export interface CatalogPayload {
-  name?: string;
-  label?: string;
-  value?: string;
-  description?: string;
-  category?: string;
-  isActive?: boolean;
+  name?: string; code?: string; title?: string; label?: string; description?: string; category?: string; isActive?: boolean; sortOrder?: number;
+  titlePattern?: string; defaultPainPoint?: string; defaultUseCase?: string; notes?: string;
 }
-
-export function isCatalogItemActive(item: CatalogItem): boolean {
-  if (typeof item.isActive === 'boolean') return item.isActive;
-  if (typeof item.active === 'boolean') return item.active;
-  return true;
-}
-
-export function getCatalogItemLabel(item: CatalogItem): string {
-  return item.name || item.label || item.title || item.value || '—';
-}
+export interface CatalogQueryOptions { group?: LookupGroup; includeInactive?: boolean }
+export function isCatalogItemActive(item: CatalogItem): boolean { return item.isActive; }
+export function getCatalogItemLabel(item: CatalogItem): string { return item.label || '—'; }

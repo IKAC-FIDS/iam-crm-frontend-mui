@@ -69,7 +69,8 @@ export default function PersonForm({
   onSubmit,
   onCancel,
 }: PersonFormProps) {
-  const lookups = useCatalog('lookupOptions');
+  const departments = useCatalog('lookupOptions', true, { group: 'departments' });
+  const personaTags = useCatalog('lookupOptions', true, { group: 'persona-tags' });
   const {
     control,
     handleSubmit,
@@ -113,9 +114,9 @@ export default function PersonForm({
         {...register('fullName')}
       />
       <TextField label="سمت" {...register('title')} />
-      <Controller name="department" control={control} render={({ field }) => <FormControl fullWidth disabled={lookups.isLoading || lookups.isError}><InputLabel id={`${mode}-person-department`}>دپارتمان</InputLabel><Select {...field} labelId={`${mode}-person-department`} label="دپارتمان"><MenuItem value="">انتخاب نشده</MenuItem>{(lookups.data ?? []).filter((item) => isCatalogItemActive(item) && ['department', 'departments'].includes(String(item.category ?? item.type ?? '').replace(/[_-]/g, '').toLowerCase())).map((item) => <MenuItem key={item.id} value={item.value || getCatalogItemLabel(item)}>{getCatalogItemLabel(item)}</MenuItem>)}</Select></FormControl>} />
-      <Controller name="personaTag" control={control} render={({ field }) => <FormControl fullWidth disabled={lookups.isLoading || lookups.isError}><InputLabel id={`${mode}-person-persona`}>پرسونا</InputLabel><Select {...field} labelId={`${mode}-person-persona`} label="پرسونا"><MenuItem value="">انتخاب نشده</MenuItem>{(lookups.data ?? []).filter((item) => isCatalogItemActive(item) && ['personatag', 'persona', 'personas'].includes(String(item.category ?? item.type ?? '').replace(/[_-]/g, '').toLowerCase())).map((item) => <MenuItem key={item.id} value={item.value || getCatalogItemLabel(item)}>{getCatalogItemLabel(item)}</MenuItem>)}</Select></FormControl>} />
-      {lookups.isError && <Alert severity="error">خطا در دریافت گزینه‌های دپارتمان و پرسونا.</Alert>}
+      <Controller name="department" control={control} render={({ field }) => <FormControl fullWidth disabled={departments.isLoading || departments.isError}><InputLabel id={`${mode}-person-department`}>دپارتمان</InputLabel><Select {...field} labelId={`${mode}-person-department`} label="دپارتمان"><MenuItem value="">انتخاب نشده</MenuItem>{(departments.data ?? []).filter(isCatalogItemActive).map((item) => <MenuItem key={item.id} value={item.value}>{getCatalogItemLabel(item)}</MenuItem>)}</Select></FormControl>} />
+      <Controller name="personaTag" control={control} render={({ field }) => <FormControl fullWidth disabled={personaTags.isLoading || personaTags.isError}><InputLabel id={`${mode}-person-persona`}>پرسونا</InputLabel><Select {...field} labelId={`${mode}-person-persona`} label="پرسونا"><MenuItem value="">انتخاب نشده</MenuItem>{(personaTags.data ?? []).filter(isCatalogItemActive).map((item) => <MenuItem key={item.id} value={item.value}>{getCatalogItemLabel(item)}</MenuItem>)}</Select></FormControl>} />
+      {(departments.isError || personaTags.isError) && <Alert severity="error">خطا در دریافت گزینه‌های دپارتمان و پرسونا.</Alert>}
       <TextField
         label="لینکدین"
         error={Boolean(errors.linkedinUrl)}

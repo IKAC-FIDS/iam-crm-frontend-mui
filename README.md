@@ -618,15 +618,15 @@ POST /use-cases
 PATCH /use-cases/:id
 DELETE /use-cases/:id
 
-GET /personas
-POST /personas
-PATCH /personas/:id
-DELETE /personas/:id
+GET /persona-library
+POST /persona-library
+PATCH /persona-library/:id
+DELETE /persona-library/:id
 
-GET /lookup-options
-POST /lookup-options
-PATCH /lookup-options/:id
-DELETE /lookup-options/:id
+GET /lookups/:group
+POST /lookups/:group
+PATCH /lookups/:group/:id
+DELETE /lookups/:group/:id
 ```
 
 ---
@@ -1561,8 +1561,8 @@ All paths below are called relative to the shared Axios `baseURL`, which include
   * `/lead-sources`
   * `/pain-points`
   * `/use-cases`
-  * `/personas`
-  * `/lookup-options`
+  * `/persona-library`
+  * `/lookups/:group`
 
 **Pipeline settings:**
 
@@ -1717,8 +1717,8 @@ All paths below are called relative to the shared Axios `baseURL`, which include
   * `GET/POST /api/lead-sources`
   * `GET/POST /api/pain-points`
   * `GET/POST /api/use-cases`
-  * `GET/POST /api/personas`
-  * `GET/POST /api/lookup-options`
+  * `GET/POST /api/persona-library`
+  * `GET/POST /api/lookups/:group`
   * `PATCH/DELETE /api/:resource/:id`
 * Generic library payload includes:
 
@@ -1866,7 +1866,7 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * If summaries are missing, frontend falls back to `email`, `phone`, and `contacts`.
 * Company options come from `GET /api/companies`.
 * Owner/team options come from `/api/reports/filter-options`.
-* Lookup options come from `/api/lookup-options`.
+* Lookup options come from `/api/lookups/departments` and `/api/lookups/persona-tags`.
 * Live filter and scope testing requires backend to be running and was not performed.
 
 **Verification status:**
@@ -2181,6 +2181,54 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Permission checks use only the backend-supported keys supplied for libraries, pipeline settings, and the people directory.
 * ADMIN fallback remains active through the existing permission helper.
 * Live menu/route testing for ADMIN, MANAGER, REP, and BOARDS requires a running backend and authenticated role sessions and was not performed.
+
+**Verification status:**
+
+* Lint passed without errors or warnings.
+* Production build passed.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
+## fix 000035 — Catalogs and libraries API alignment
+
+**Implemented items:**
+
+* Verified catalog controllers, DTOs, services, Prisma models, and lookup groups directly from the local backend repository.
+* Kept Industries on `/api/industries` and mapped writes to `name` and optional `description` only.
+* Kept Lead Sources on `/api/lead-sources` and mapped writes to `code`, `name`, optional `description`, `isActive`, and `sortOrder`.
+* Kept Pain Points on `/api/pain-points` and mapped writes to `title`, optional `description`, and optional `category`.
+* Kept Use Cases on `/api/use-cases` with the same verified title/description/category DTO mapping.
+* Changed Persona Library from `/api/personas` to `/api/persona-library` and mapped `titlePattern`, `defaultPainPoint`, `defaultUseCase`, and `notes`.
+* Replaced `/api/lookup-options` with group-based `/api/lookups/:group` CRUD routes.
+* Added all backend-accepted lookup groups: `teams`, `departments`, `seniority-levels`, `persona-tags`, `contact-types`, `person-social-platforms`, and `company-sources`.
+* Added a lookup-group selector to the Admin Libraries lookup tab.
+* Replaced the generic catalog write payload with explicit resource-specific DTO mappers.
+* Normalized heterogeneous backend responses into frontend `id`, `label`, `value`, `description`, and `isActive` option fields after receipt.
+* Loaded both active and inactive Lead Source/Lookup records in Admin by issuing the backend-supported active-state queries separately.
+* Kept Company Industry and Lead Source dropdowns limited to active backend records; Lead Source submits its backend code.
+* Changed Person department and persona-tag fields to `/api/lookups/departments` and `/api/lookups/persona-tags`.
+* Updated People Directory filters to the same verified group routes.
+* Added no fallback or fake catalog values.
+
+**Important files:**
+
+* `src/features/catalogs/types/catalog.types.ts`
+* `src/features/catalogs/services/catalogs.service.ts`
+* `src/features/catalogs/hooks/useCatalogs.ts`
+* `src/features/catalogs/components/CatalogItemDialog.tsx`
+* `src/features/catalogs/components/CatalogTab.tsx`
+* `src/features/companies/components/CompanyForm.tsx`
+* `src/features/people/components/PersonForm.tsx`
+* `src/features/people/pages/PeopleDirectoryPage.tsx`
+* `README.md`
+
+**Assumptions and dependencies:**
+
+* Backend contracts were verified from `E:/nodejs/iam-crm-backend`; no DTO fields or lookup groups were inferred.
+* Backend Lead Source and Lookup list endpoints filter by a boolean `active` query, so Admin combines `active=true` and `active=false` results to manage both states.
+* Industry relationship fields (`painPointIds`, `useCaseIds`) are valid backend fields but are not exposed by the current frontend form and are therefore not sent.
+* Live Admin Libraries and company/person form testing requires a running backend and was not performed.
 
 **Verification status:**
 

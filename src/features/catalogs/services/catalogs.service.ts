@@ -1,31 +1,50 @@
 import axiosInstance from '@/lib/axios';
 import { CATALOG_DEFINITIONS } from '../types/catalog.types';
-import type { CatalogItem, CatalogKind, CatalogPayload } from '../types/catalog.types';
+import type { CatalogItem, CatalogKind, CatalogPayload, CatalogQueryOptions, LookupGroup } from '../types/catalog.types';
 
-function unwrap<T>(payload: T | { data: T }): T {
-  return typeof payload === 'object' && payload !== null && 'data' in payload ? payload.data : payload;
+function unwrap(payload: unknown): unknown { return payload && typeof payload === 'object' && 'data' in payload ? (payload as { data: unknown }).data : payload; }
+function list(payload: unknown): unknown[] { const data = unwrap(payload); if (Array.isArray(data)) return data; return data && typeof data === 'object' && 'items' in data && Array.isArray((data as { items: unknown }).items) ? (data as { items: unknown[] }).items : []; }
+function raw(item: unknown): Record<string, unknown> { return item as Record<string, unknown>; }
+function normalize(item: unknown): CatalogItem {
+  const value = raw(item);
+  const label = value.name ?? value.title ?? value.titlePattern ?? value.label ?? value.code;
+  const optionValue = value.code ?? value.name ?? value.title ?? value.titlePattern ?? value.label;
+  return {
+    id: String(value.id), label: String(label ?? ''), value: String(optionValue ?? ''), description: value.description == null ? value.notes == null ? null : String(value.notes) : String(value.description),
+    isActive: typeof value.isActive === 'boolean' ? value.isActive : true, code: value.code == null ? null : String(value.code), category: value.category == null ? null : String(value.category),
+    sortOrder: value.sortOrder == null ? null : Number(value.sortOrder), createdAt: value.createdAt == null ? undefined : String(value.createdAt), updatedAt: value.updatedAt == null ? undefined : String(value.updatedAt),
+    name: value.name == null ? null : String(value.name), title: value.title == null ? null : String(value.title), titlePattern: value.titlePattern == null ? null : String(value.titlePattern),
+    defaultPainPoint: value.defaultPainPoint == null ? null : String(value.defaultPainPoint), defaultUseCase: value.defaultUseCase == null ? null : String(value.defaultUseCase), notes: value.notes == null ? null : String(value.notes),
+  };
 }
-
-function list(payload: CatalogItem[] | { data?: CatalogItem[]; items?: CatalogItem[] }): CatalogItem[] {
-  return Array.isArray(payload) ? payload : payload.data ?? payload.items ?? [];
+function endpoint(kind: CatalogKind, group?: LookupGroup): string {
+  if (kind === 'lookupOptions') { if (!group) throw new Error('Lookup group is required'); return `/lookups/${group}`; }
+  return CATALOG_DEFINITIONS[kind].endpoint;
 }
-
-function endpoint(kind: CatalogKind): string { return CATALOG_DEFINITIONS[kind].endpoint; }
-
+function requestPayload(kind: CatalogKind, payload: CatalogPayload): Record<string, unknown> {
+  if (kind === 'industries') return { name: payload.name, ...(payload.description && { description: payload.description }) };
+  if (kind === 'leadSources') return { code: payload.code, name: payload.name, ...(payload.description && { description: payload.description }), isActive: payload.isActive, sortOrder: payload.sortOrder };
+  if (kind === 'painPoints' || kind === 'useCases') return { title: payload.title, ...(payload.description && { description: payload.description }), ...(payload.category && { category: payload.category }) };
+  if (kind === 'personas') return { titlePattern: payload.titlePattern, ...(payload.defaultPainPoint && { defaultPainPoint: payload.defaultPainPoint }), ...(payload.defaultUseCase && { defaultUseCase: payload.defaultUseCase }), ...(payload.notes && { notes: payload.notes }) };
+  return { code: payload.code, label: payload.label, ...(payload.description && { description: payload.description }), isActive: payload.isActive, sortOrder: payload.sortOrder };
+}
+async function fetchItems(kind: CatalogKind, group: LookupGroup | undefined, active?: boolean): Promise<CatalogItem[]> {
+  const response = await axiosInstance.get(endpoint(kind, group), active === undefined ? undefined : { params: { active } });
+  return list(response.data).map(normalize);
+}
 export const catalogsService = {
-  getItems: async (kind: CatalogKind): Promise<CatalogItem[]> => {
-    const response = await axiosInstance.get<CatalogItem[] | { data?: CatalogItem[]; items?: CatalogItem[] }>(endpoint(kind));
-    return list(response.data);
+  getItems: async (kind: CatalogKind, options: CatalogQueryOptions = {}): Promise<CatalogItem[]> => {
+    if (options.includeInactive && (kind === 'leadSources' || kind === 'lookupOptions')) {
+      const [active, inactive] = await Promise.all([fetchItems(kind, options.group, true), fetchItems(kind, options.group, false)]);
+      return [...active, ...inactive].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0) || a.label.localeCompare(b.label, 'fa'));
+    }
+    return fetchItems(kind, options.group, kind === 'leadSources' || kind === 'lookupOptions' ? true : undefined);
   },
-  createItem: async (kind: CatalogKind, payload: CatalogPayload): Promise<CatalogItem> => {
-    const response = await axiosInstance.post<CatalogItem | { data: CatalogItem }>(endpoint(kind), payload);
-    return unwrap(response.data);
+  createItem: async (kind: CatalogKind, payload: CatalogPayload, group?: LookupGroup): Promise<CatalogItem> => {
+    const response = await axiosInstance.post(endpoint(kind, group), requestPayload(kind, payload)); return normalize(unwrap(response.data));
   },
-  updateItem: async (kind: CatalogKind, id: string, payload: CatalogPayload): Promise<CatalogItem> => {
-    const response = await axiosInstance.patch<CatalogItem | { data: CatalogItem }>(`${endpoint(kind)}/${id}`, payload);
-    return unwrap(response.data);
+  updateItem: async (kind: CatalogKind, id: string, payload: CatalogPayload, group?: LookupGroup): Promise<CatalogItem> => {
+    const response = await axiosInstance.patch(`${endpoint(kind, group)}/${id}`, requestPayload(kind, payload)); return normalize(unwrap(response.data));
   },
-  deleteItem: async (kind: CatalogKind, id: string): Promise<void> => {
-    await axiosInstance.delete(`${endpoint(kind)}/${id}`);
-  },
+  deleteItem: async (kind: CatalogKind, id: string, group?: LookupGroup): Promise<void> => { await axiosInstance.delete(`${endpoint(kind, group)}/${id}`); },
 };

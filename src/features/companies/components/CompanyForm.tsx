@@ -147,7 +147,7 @@ export default function CompanyForm({
             <InputLabel id={`${mode}-company-industry-label`}>صنعت</InputLabel>
             <Select {...field} labelId={`${mode}-company-industry-label`} label="صنعت">
               <MenuItem value="">انتخاب نشده</MenuItem>
-              {(industries.data ?? []).filter(isCatalogItemActive).map((item) => { const label = getCatalogItemLabel(item); return <MenuItem key={item.id} value={label}>{label}</MenuItem>; })}
+              {(industries.data ?? []).filter(isCatalogItemActive).map((item) => <MenuItem key={item.id} value={item.value}>{getCatalogItemLabel(item)}</MenuItem>)}
             </Select>
           </FormControl>
         )}
@@ -223,7 +223,7 @@ export default function CompanyForm({
             <InputLabel id={`${mode}-company-source-label`}>منبع جذب</InputLabel>
             <Select {...field} labelId={`${mode}-company-source-label`} label="منبع جذب">
               <MenuItem value="">انتخاب نشده</MenuItem>
-              {(leadSources.data ?? []).filter(isCatalogItemActive).map((item) => { const label = getCatalogItemLabel(item); return <MenuItem key={item.id} value={label}>{label}</MenuItem>; })}
+              {(leadSources.data ?? []).filter(isCatalogItemActive).map((item) => <MenuItem key={item.id} value={item.value}>{getCatalogItemLabel(item)}</MenuItem>)}
             </Select>
           </FormControl>
         )}

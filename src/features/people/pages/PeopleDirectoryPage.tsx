@@ -18,7 +18,6 @@ import type { DirectoryPerson, PeopleDirectoryParams } from '../types/person.typ
 type BooleanFilter = '' | 'true' | 'false';
 const display = (value?: string | null) => value?.trim() || '—';
 const booleanValue = (value: BooleanFilter): boolean | undefined => value === '' ? undefined : value === 'true';
-const lookupCategory = (value?: string | null) => String(value ?? '').replace(/[_-]/g, '').toLowerCase();
 
 function contactSummary(person: DirectoryPerson): string {
   const emails = [person.emailSummary, person.email, ...(person.contacts ?? []).filter((item) => item.type.includes('EMAIL')).map((item) => item.value)].filter(Boolean);
@@ -40,7 +39,8 @@ export default function PeopleDirectoryPage() {
   const [openPersonId, setOpenPersonId] = useState('');
   const companyOptions = useCompanies({ page: 1, limit: 20, search: debouncedCompanySearch || undefined });
   const reportOptions = useReportFilterOptions(allowed);
-  const lookups = useCatalog('lookupOptions', allowed);
+  const departmentsQuery = useCatalog('lookupOptions', allowed, { group: 'departments' });
+  const personaTagsQuery = useCatalog('lookupOptions', allowed, { group: 'persona-tags' });
   const resetPage = () => setPagination((current) => ({ ...current, page: 0 }));
   const params = useMemo<PeopleDirectoryParams>(() => ({
     page: pagination.page + 1, limit: pagination.pageSize as PeopleDirectoryParams['limit'],
@@ -49,8 +49,8 @@ export default function PeopleDirectoryPage() {
     isPrimaryContact: booleanValue(primary), hasEmail: booleanValue(hasEmail), hasPhone: booleanValue(hasPhone),
   }), [company?.id, debouncedSearch, department, hasEmail, hasPhone, ownerId, pagination, personaTag, primary, team]);
   const query = usePeopleDirectory(params, allowed);
-  const departments = (lookups.data ?? []).filter((item) => isCatalogItemActive(item) && ['department', 'departments'].includes(lookupCategory(item.category ?? item.type)));
-  const personas = (lookups.data ?? []).filter((item) => isCatalogItemActive(item) && ['personatag', 'persona', 'personas'].includes(lookupCategory(item.category ?? item.type)));
+  const departments = (departmentsQuery.data ?? []).filter(isCatalogItemActive);
+  const personas = (personaTagsQuery.data ?? []).filter(isCatalogItemActive);
 
   const columns = useMemo<GridColDef<DirectoryPerson>[]>(() => [
     { field: 'fullName', headerName: 'نام', minWidth: 170, flex: 1 },
@@ -73,10 +73,10 @@ export default function PeopleDirectoryPage() {
       <Autocomplete options={company ? [company, ...(companyOptions.data?.data ?? []).filter((item) => item.id !== company.id)] : companyOptions.data?.data ?? []} value={company} loading={companyOptions.isFetching} inputValue={companySearch} onInputChange={(_, value) => setCompanySearch(value)} onChange={(_, value) => { setCompany(value); resetPage(); }} getOptionLabel={(item) => item.legalName} isOptionEqualToValue={(item, value) => item.id === value.id} renderInput={(input) => <TextField {...input} label="شرکت" />} />
       <FormControl fullWidth disabled={reportOptions.isError}><InputLabel id="people-owner">مالک</InputLabel><Select labelId="people-owner" label="مالک" value={ownerId} onChange={(event) => { setOwnerId(event.target.value); resetPage(); }}><MenuItem value="">همه مالکان</MenuItem>{(reportOptions.data?.owners ?? []).map((item) => <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>)}</Select></FormControl>
       <FormControl fullWidth disabled={reportOptions.isError}><InputLabel id="people-team">تیم</InputLabel><Select labelId="people-team" label="تیم" value={team} onChange={(event) => { setTeam(event.target.value); resetPage(); }}><MenuItem value="">همه تیم‌ها</MenuItem>{(reportOptions.data?.teams ?? []).map((item) => <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>)}</Select></FormControl>
-      <FormControl fullWidth disabled={lookups.isError}><InputLabel id="people-department">دپارتمان</InputLabel><Select labelId="people-department" label="دپارتمان" value={department} onChange={(event) => { setDepartment(event.target.value); resetPage(); }}><MenuItem value="">همه دپارتمان‌ها</MenuItem>{departments.map((item) => <MenuItem key={item.id} value={item.value || getCatalogItemLabel(item)}>{getCatalogItemLabel(item)}</MenuItem>)}</Select></FormControl>
-      <FormControl fullWidth disabled={lookups.isError}><InputLabel id="people-persona">پرسونا</InputLabel><Select labelId="people-persona" label="پرسونا" value={personaTag} onChange={(event) => { setPersonaTag(event.target.value); resetPage(); }}><MenuItem value="">همه پرسوناها</MenuItem>{personas.map((item) => <MenuItem key={item.id} value={item.value || getCatalogItemLabel(item)}>{getCatalogItemLabel(item)}</MenuItem>)}</Select></FormControl>
+      <FormControl fullWidth disabled={departmentsQuery.isError}><InputLabel id="people-department">دپارتمان</InputLabel><Select labelId="people-department" label="دپارتمان" value={department} onChange={(event) => { setDepartment(event.target.value); resetPage(); }}><MenuItem value="">همه دپارتمان‌ها</MenuItem>{departments.map((item) => <MenuItem key={item.id} value={item.value}>{getCatalogItemLabel(item)}</MenuItem>)}</Select></FormControl>
+      <FormControl fullWidth disabled={personaTagsQuery.isError}><InputLabel id="people-persona">پرسونا</InputLabel><Select labelId="people-persona" label="پرسونا" value={personaTag} onChange={(event) => { setPersonaTag(event.target.value); resetPage(); }}><MenuItem value="">همه پرسوناها</MenuItem>{personas.map((item) => <MenuItem key={item.id} value={item.value}>{getCatalogItemLabel(item)}</MenuItem>)}</Select></FormControl>
       {boolSelect('people-primary', 'مخاطب اصلی', primary, setPrimary)}{boolSelect('people-email', 'دارای ایمیل', hasEmail, setHasEmail)}{boolSelect('people-phone', 'دارای تلفن', hasPhone, setHasPhone)}
-    </Box>{(reportOptions.isError || lookups.isError || companyOptions.isError) && <Alert severity="warning" sx={{ mt: 2 }}>دریافت بخشی از گزینه‌های فیلتر با خطا مواجه شد.</Alert>}</Paper>
+    </Box>{(reportOptions.isError || departmentsQuery.isError || personaTagsQuery.isError || companyOptions.isError) && <Alert severity="warning" sx={{ mt: 2 }}>دریافت بخشی از گزینه‌های فیلتر با خطا مواجه شد.</Alert>}</Paper>
     {query.isError && <Alert severity="error" sx={{ mb: 2 }}>خطا در دریافت فهرست افراد.</Alert>}
     <Paper sx={{ overflow: 'hidden' }}><DataGrid autoHeight rows={query.data?.data ?? []} columns={columns} loading={query.isFetching} rowCount={query.data?.meta.total ?? 0} paginationMode="server" paginationModel={pagination} onPaginationModelChange={setPagination} pageSizeOptions={[5, 10, 20, 50]} disableRowSelectionOnClick localeText={{ noRowsLabel: 'فردی مطابق فیلترها یافت نشد.' }} sx={{ border: 0, minHeight: 440 }} /></Paper>
     <PersonDetailDrawer personId={openPersonId} open={Boolean(openPersonId)} onClose={() => setOpenPersonId('')} canManageContacts={can(user, 'person:update', ['ADMIN', 'MANAGER', 'REP'])} canManageSocials={can(user, 'person:update', ['ADMIN', 'MANAGER', 'REP'])} />
