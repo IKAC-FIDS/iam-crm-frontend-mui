@@ -3,3 +3,8 @@ export const KNOWN_PERMISSION_ACTIONS = ['company:view','company:create','compan
 export interface RolePermissionPayload { role: UserRole; action: string }
 export interface BulkRolePermissionPayload { role: UserRole; actions: string[] }
 export interface CreatePermissionPayload { action: string; description?: string }
+export interface PermissionMatrixRow {
+  action: string;
+  description?: string | null;
+  assignments: Record<UserRole, boolean>;
+}

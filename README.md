@@ -1905,6 +1905,43 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 ---
 
+## fix 000028 — Permission matrix cleanup
+
+**Implemented items:**
+
+* Replaced the unavailable-state notice and hardcoded permission action controls with the real permission matrix.
+* Added `GET /api/admin/permissions/matrix` service and React Query integration.
+* Rendered permission actions as rows and `ADMIN`, `MANAGER`, `REP`, and `BOARDS` as columns.
+* Displayed assigned and unassigned state with interactive checkboxes derived only from backend data.
+* Connected unassigned cell toggles to `POST /api/admin/permissions/assign`.
+* Connected assigned cell toggles to `POST /api/admin/permissions/bulk-revoke` with one selected action.
+* Preserved bulk assign and bulk revoke for actions selected directly from the real matrix.
+* Preserved permission creation and refreshes the matrix after every successful mutation.
+* Added loading, empty, and error states without synthesizing permission assignments.
+
+**Important files:**
+
+* `src/features/admin/permissions/types/adminPermission.types.ts`
+* `src/features/admin/permissions/services/adminPermissions.service.ts`
+* `src/features/admin/permissions/hooks/useAdminPermissions.ts`
+* `src/features/admin/permissions/components/AdminPermissionsPage.tsx`
+* `README.md`
+
+**Assumptions and dependencies:**
+
+* Matrix state depends on `GET /api/admin/permissions/matrix` and accepts row arrays, a `matrix` envelope, a `permissions` envelope, or role-keyed permission arrays.
+* Matrix rows may expose assignments as role arrays, `assignedRoles`, `assignments`, or direct role boolean fields; all are normalized without adding known actions locally.
+* Bulk revoke uses `POST /api/admin/permissions/bulk-revoke` with `{ role, actions }`, matching the current documented backend route.
+* Live assign, revoke, and matrix refresh testing requires the backend to be running and was not performed.
+
+**Verification status:**
+
+* Lint passed without errors or warnings.
+* Production build passed.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
 **Built with ❤️ for sales team**
 
 ---

@@ -1,6 +1,8 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { adminPermissionsService } from '../services/adminPermissions.service';
-export const adminPermissionQueryKeys = { all: ['admin', 'permissions'] as const };
+
+export const adminPermissionQueryKeys = { all: ['admin', 'permissions'] as const, matrix: () => [...adminPermissionQueryKeys.all, 'matrix'] as const };
+export function usePermissionMatrix(enabled = true) { return useQuery({ queryKey: adminPermissionQueryKeys.matrix(), queryFn: adminPermissionsService.getPermissionMatrix, enabled }); }
 function mutation<T>(fn: (payload: T) => Promise<void>) { return function usePermissionMutation() { const client = useQueryClient(); return useMutation({ mutationFn: fn, onSuccess: () => client.invalidateQueries({ queryKey: adminPermissionQueryKeys.all }) }); }; }
 export const useAssignPermission = mutation(adminPermissionsService.assignPermission);
 export const useRevokePermission = mutation(adminPermissionsService.revokePermission);
