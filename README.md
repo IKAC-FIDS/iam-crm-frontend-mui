@@ -1868,6 +1868,43 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 ---
 
+## fix 000027 — Owner assignment and users polish
+
+**Implemented items:**
+
+* Replaced the generic users request in company owner assignment with `GET /api/users/owner-options`.
+* Added an independent owner-options service method, React Query hook, and cache invalidation.
+* Restricted assignable owners to active `REP` and `MANAGER` users.
+* Excluded `ADMIN`, `BOARDS`, and inactive users even if they are returned unexpectedly.
+* Preserved manager owner assignment when the backend includes the manager in owner options.
+* Added Admin Users filters for search, role, team, and active/inactive status.
+* Search matches user name, email, and team.
+* Team options are derived from the real users response without fake values.
+* Added a filtered empty state to the users table.
+
+**Important files:**
+
+* `src/features/admin/users/services/adminUsers.service.ts`
+* `src/features/admin/users/hooks/useAdminUsers.ts`
+* `src/features/admin/users/components/AdminUsersPage.tsx`
+* `src/features/companies/components/ChangeCompanyOwnerDialog.tsx`
+* `README.md`
+
+**Assumptions and dependencies:**
+
+* Owner assignment depends on `GET /api/users/owner-options` returning eligible user records with role and active-status fields.
+* The frontend applies a defensive active `REP`/`MANAGER` filter and does not add fallback or fake owners.
+* Admin user filters operate client-side over the existing real, non-paginated `GET /api/users` response.
+* Live owner assignment and backend authorization testing requires the backend to be running and was not performed.
+
+**Verification status:**
+
+* Lint passed without errors or warnings.
+* Production build passed.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
 **Built with ❤️ for sales team**
 
 ---

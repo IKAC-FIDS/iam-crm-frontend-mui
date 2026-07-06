@@ -1,15 +1,95 @@
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { Alert, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Paper, Stack, Typography } from '@mui/material';
+import {
+  Alert, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle,
+  FormControl, InputLabel, MenuItem, Paper, Select, Stack, TextField, Typography,
+} from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import type { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
-import { can } from '@/features/auth/utils/permissions'; import { useAuthStore } from '@/store/authStore'; import { formatDateTime } from '@/features/companies/utils/companyDisplay';
-import AdminUserFormDialog from './AdminUserFormDialog'; import EditUserRoleDialog from './EditUserRoleDialog';
-import { useActivateUser, useAdminUsers, useDeactivateUser } from '../hooks/useAdminUsers'; import { isUserActive, USER_ROLE_LABELS } from '../types/adminUser.types'; import type { AdminUser } from '../types/adminUser.types';
+import { can } from '@/features/auth/utils/permissions';
+import { formatDateTime } from '@/features/companies/utils/companyDisplay';
+import { useAuthStore } from '@/store/authStore';
+import AdminUserFormDialog from './AdminUserFormDialog';
+import EditUserRoleDialog from './EditUserRoleDialog';
+import { useActivateUser, useAdminUsers, useDeactivateUser } from '../hooks/useAdminUsers';
+import { isUserActive, USER_ROLE_LABELS, USER_ROLES } from '../types/adminUser.types';
+import type { AdminUser, UserRole } from '../types/adminUser.types';
+
+type StatusFilter = 'ALL' | 'ACTIVE' | 'INACTIVE';
+
 export default function AdminUsersPage() {
-  const current = useAuthStore((s) => s.user); const allowed = can(current, 'user:manage', ['ADMIN']); const query = useAdminUsers(allowed); const activate = useActivateUser(); const deactivate = useDeactivateUser(); const [createOpen, setCreateOpen] = useState(false); const [editing, setEditing] = useState<AdminUser | null>(null); const [statusUser, setStatusUser] = useState<AdminUser | null>(null);
-  const columns = useMemo<GridColDef<AdminUser>[]>(() => [{ field: 'fullName', headerName: 'نام', minWidth: 150, flex: 1 }, { field: 'email', headerName: 'ایمیل', minWidth: 200, flex: 1 }, { field: 'role', headerName: 'نقش', minWidth: 130, valueFormatter: (v) => USER_ROLE_LABELS[v as keyof typeof USER_ROLE_LABELS] ?? v }, { field: 'team', headerName: 'تیم', minWidth: 120, valueFormatter: (v) => v || '—' }, { field: 'status', headerName: 'وضعیت', minWidth: 100, renderCell: ({ row }: GridRenderCellParams<AdminUser>) => <Chip size="small" color={isUserActive(row) ? 'success' : 'default'} label={isUserActive(row) ? 'فعال' : 'غیرفعال'} /> }, { field: 'createdAt', headerName: 'تاریخ ایجاد', minWidth: 180, valueFormatter: formatDateTime }, { field: 'actions', headerName: 'عملیات', minWidth: 250, sortable: false, renderCell: ({ row }: GridRenderCellParams<AdminUser>) => <Stack direction="row"><Button size="small" onClick={() => setEditing(row)}>ویرایش نقش</Button><Button size="small" color={isUserActive(row) ? 'error' : 'success'} disabled={row.id === current?.id} onClick={() => setStatusUser(row)}>{isUserActive(row) ? 'غیرفعال‌سازی' : 'فعال‌سازی'}</Button></Stack> }], [current?.id]);
+  const current = useAuthStore((state) => state.user);
+  const allowed = can(current, 'user:manage', ['ADMIN']);
+  const query = useAdminUsers(allowed);
+  const activate = useActivateUser();
+  const deactivate = useDeactivateUser();
+  const [createOpen, setCreateOpen] = useState(false);
+  const [editing, setEditing] = useState<AdminUser | null>(null);
+  const [statusUser, setStatusUser] = useState<AdminUser | null>(null);
+  const [search, setSearch] = useState('');
+  const [role, setRole] = useState<UserRole | 'ALL'>('ALL');
+  const [team, setTeam] = useState('ALL');
+  const [status, setStatus] = useState<StatusFilter>('ALL');
+
+  const teams = useMemo(
+    () => [...new Set((query.data ?? []).map((user) => user.team?.trim()).filter((value): value is string => Boolean(value)))].sort((a, b) => a.localeCompare(b, 'fa')),
+    [query.data],
+  );
+
+  const filteredUsers = useMemo(() => {
+    const term = search.trim().toLocaleLowerCase('fa');
+    return (query.data ?? []).filter((user) => {
+      const matchesSearch = !term || [user.fullName, user.email, user.team]
+        .some((value) => value?.toLocaleLowerCase('fa').includes(term));
+      const matchesRole = role === 'ALL' || user.role === role;
+      const matchesTeam = team === 'ALL' || user.team?.trim() === team;
+      const active = isUserActive(user);
+      const matchesStatus = status === 'ALL' || (status === 'ACTIVE' ? active : !active);
+      return matchesSearch && matchesRole && matchesTeam && matchesStatus;
+    });
+  }, [query.data, role, search, status, team]);
+
+  const columns = useMemo<GridColDef<AdminUser>[]>(() => [
+    { field: 'fullName', headerName: 'نام', minWidth: 150, flex: 1 },
+    { field: 'email', headerName: 'ایمیل', minWidth: 200, flex: 1 },
+    { field: 'role', headerName: 'نقش', minWidth: 130, valueFormatter: (value) => USER_ROLE_LABELS[value as UserRole] ?? value },
+    { field: 'team', headerName: 'تیم', minWidth: 120, valueFormatter: (value) => value || '—' },
+    { field: 'status', headerName: 'وضعیت', minWidth: 100, renderCell: ({ row }: GridRenderCellParams<AdminUser>) => <Chip size="small" color={isUserActive(row) ? 'success' : 'default'} label={isUserActive(row) ? 'فعال' : 'غیرفعال'} /> },
+    { field: 'createdAt', headerName: 'تاریخ ایجاد', minWidth: 180, valueFormatter: formatDateTime },
+    { field: 'actions', headerName: 'عملیات', minWidth: 250, sortable: false, renderCell: ({ row }: GridRenderCellParams<AdminUser>) => <Stack direction="row"><Button size="small" onClick={() => setEditing(row)}>ویرایش نقش</Button><Button size="small" color={isUserActive(row) ? 'error' : 'success'} disabled={row.id === current?.id} onClick={() => setStatusUser(row)}>{isUserActive(row) ? 'غیرفعال‌سازی' : 'فعال‌سازی'}</Button></Stack> },
+  ], [current?.id]);
+
   if (!allowed) return <Alert severity="warning">شما دسترسی مدیریت کاربران را ندارید.</Alert>;
-  const changeStatus = async () => { if (!statusUser) return; const active = isUserActive(statusUser); try { await (active ? deactivate : activate).mutateAsync(statusUser.id); toast.success(active ? 'کاربر با موفقیت غیرفعال شد.' : 'کاربر با موفقیت فعال شد.'); setStatusUser(null); } catch { toast.error(active ? 'خطا در غیرفعال‌سازی کاربر.' : 'خطا در فعال‌سازی کاربر.'); } };
-  return <Stack spacing={2}><Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}><div><Typography variant="h4">مدیریت کاربران</Typography><Typography color="text.secondary">ایجاد، فعال‌سازی، غیرفعال‌سازی و مدیریت نقش کاربران سیستم.</Typography></div><Stack direction="row" spacing={1}><Button onClick={() => query.refetch()}>بروزرسانی</Button><Button variant="contained" onClick={() => setCreateOpen(true)}>افزودن کاربر</Button></Stack></Stack>{query.isError && <Alert severity="error">خطا در دریافت کاربران.</Alert>}<Paper><DataGrid autoHeight rows={query.data ?? []} columns={columns} loading={query.isLoading} hideFooter localeText={{ noRowsLabel: 'هنوز کاربری ثبت نشده است.' }} sx={{ border: 0, minHeight: 350 }} /></Paper><AdminUserFormDialog open={createOpen} onClose={() => setCreateOpen(false)} /><EditUserRoleDialog key={editing?.id ?? 'no-user'} user={editing} open={Boolean(editing)} onClose={() => setEditing(null)} /><Dialog open={Boolean(statusUser)} onClose={() => setStatusUser(null)}><DialogTitle>{statusUser && isUserActive(statusUser) ? 'غیرفعال‌سازی کاربر' : 'فعال‌سازی کاربر'}</DialogTitle><DialogContent>آیا از تغییر وضعیت این کاربر مطمئن هستید؟</DialogContent><DialogActions><Button onClick={() => setStatusUser(null)}>انصراف</Button><Button variant="contained" onClick={changeStatus} disabled={activate.isPending || deactivate.isPending}>تأیید</Button></DialogActions></Dialog></Stack>;
+
+  const changeStatus = async () => {
+    if (!statusUser) return;
+    const active = isUserActive(statusUser);
+    try {
+      await (active ? deactivate : activate).mutateAsync(statusUser.id);
+      toast.success(active ? 'کاربر با موفقیت غیرفعال شد.' : 'کاربر با موفقیت فعال شد.');
+      setStatusUser(null);
+    } catch {
+      toast.error(active ? 'خطا در غیرفعال‌سازی کاربر.' : 'خطا در فعال‌سازی کاربر.');
+    }
+  };
+
+  return <Stack spacing={2}>
+    <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+      <div><Typography variant="h4">مدیریت کاربران</Typography><Typography color="text.secondary">ایجاد، فعال‌سازی، غیرفعال‌سازی و مدیریت نقش کاربران سیستم.</Typography></div>
+      <Stack direction="row" spacing={1}><Button onClick={() => query.refetch()}>بروزرسانی</Button><Button variant="contained" onClick={() => setCreateOpen(true)}>افزودن کاربر</Button></Stack>
+    </Stack>
+    {query.isError && <Alert severity="error">خطا در دریافت کاربران.</Alert>}
+    <Paper sx={{ p: 2 }}>
+      <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ mb: 2 }}>
+        <TextField fullWidth label="جستجو" placeholder="نام، ایمیل یا تیم" value={search} onChange={(event) => setSearch(event.target.value)} />
+        <FormControl fullWidth><InputLabel id="admin-user-role-filter">نقش</InputLabel><Select labelId="admin-user-role-filter" label="نقش" value={role} onChange={(event) => setRole(event.target.value as UserRole | 'ALL')}><MenuItem value="ALL">همه نقش‌ها</MenuItem>{USER_ROLES.map((item) => <MenuItem key={item} value={item}>{USER_ROLE_LABELS[item]}</MenuItem>)}</Select></FormControl>
+        <FormControl fullWidth><InputLabel id="admin-user-team-filter">تیم</InputLabel><Select labelId="admin-user-team-filter" label="تیم" value={team} onChange={(event) => setTeam(event.target.value)}><MenuItem value="ALL">همه تیم‌ها</MenuItem>{teams.map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}</Select></FormControl>
+        <FormControl fullWidth><InputLabel id="admin-user-status-filter">وضعیت</InputLabel><Select labelId="admin-user-status-filter" label="وضعیت" value={status} onChange={(event) => setStatus(event.target.value as StatusFilter)}><MenuItem value="ALL">همه وضعیت‌ها</MenuItem><MenuItem value="ACTIVE">فعال</MenuItem><MenuItem value="INACTIVE">غیرفعال</MenuItem></Select></FormControl>
+      </Stack>
+      <DataGrid autoHeight rows={filteredUsers} columns={columns} loading={query.isLoading} hideFooter localeText={{ noRowsLabel: 'کاربری مطابق فیلترها یافت نشد.' }} sx={{ border: 0, minHeight: 350 }} />
+    </Paper>
+    <AdminUserFormDialog open={createOpen} onClose={() => setCreateOpen(false)} />
+    <EditUserRoleDialog key={editing?.id ?? 'no-user'} user={editing} open={Boolean(editing)} onClose={() => setEditing(null)} />
+    <Dialog open={Boolean(statusUser)} onClose={() => setStatusUser(null)}><DialogTitle>{statusUser && isUserActive(statusUser) ? 'غیرفعال‌سازی کاربر' : 'فعال‌سازی کاربر'}</DialogTitle><DialogContent>آیا از تغییر وضعیت این کاربر مطمئن هستید؟</DialogContent><DialogActions><Button onClick={() => setStatusUser(null)}>انصراف</Button><Button variant="contained" onClick={changeStatus} disabled={activate.isPending || deactivate.isPending}>تأیید</Button></DialogActions></Dialog>
+  </Stack>;
 }
