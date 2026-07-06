@@ -42,8 +42,8 @@ export default function FollowUpCard({ followUp }: { followUp: FollowUpActivity 
         <Box><Typography variant="caption" color="text.secondary">یادداشت</Typography><Typography sx={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{display(followUp.notes)}</Typography></Box>
         <Box><Typography variant="caption" color="text.secondary">نتیجه</Typography><Typography sx={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{display(followUp.outcome)}</Typography></Box>
         <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
-          <Button size="small" onClick={() => navigate(`/companies/${companyId}`)}>مشاهده شرکت</Button>
-          {followUp.personId && <Button size="small" onClick={() => navigate(`/companies/${companyId}`)}>مشاهده شخص</Button>}
+          <Button size="small" onClick={() => navigate(`/companies/${companyId}`, { state: { backTo: '/follow-ups', backLabel: 'بازگشت به پیگیری‌ها' } })}>مشاهده شرکت</Button>
+          {followUp.personId && <Button size="small" onClick={() => navigate(`/companies/${companyId}`, { state: { backTo: '/follow-ups', backLabel: 'بازگشت به پیگیری‌ها' } })}>مشاهده شخص</Button>}
           {canReschedule && <Button size="small" onClick={() => setRescheduleOpen(true)}>زمان‌بندی مجدد</Button>}
           {canComplete && <Button size="small" variant="contained" onClick={() => setCompleteOpen(true)}>انجام شد</Button>}
         </Stack>

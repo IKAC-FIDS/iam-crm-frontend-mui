@@ -2033,6 +2033,42 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 ---
 
+## fix 000031 — Navigation return-state support
+
+**Implemented items:**
+
+* Added React Router navigation state when opening Company Detail from the Companies list.
+* Added `backTo: '/companies'` and Persian «بازگشت به شرکت‌ها» label for Companies navigation.
+* Added return state to both company and person actions in Follow-up cards.
+* Added `backTo: '/follow-ups'` and Persian «بازگشت به پیگیری‌ها» label for Follow-ups navigation.
+* Added return state when opening Company Detail from Pipeline cards.
+* Added `backTo: '/pipeline'` and Persian «بازگشت به پایپ‌لاین» label for Pipeline navigation.
+* Updated Company Detail to read typed location state for its back destination and label.
+* Preserved `/companies` and «بازگشت به شرکت‌ها» as the fallback for direct URL access or missing state.
+* Applied the same fallback behavior to the Company Detail error-state back button.
+
+**Important files:**
+
+* `src/features/companies/pages/CompaniesPage.tsx`
+* `src/features/companies/pages/CompanyDetailsPage.tsx`
+* `src/features/followUps/components/FollowUpCard.tsx`
+* `src/features/pipeline/components/PipelineCompanyCard.tsx`
+* `README.md`
+
+**Assumptions and dependencies:**
+
+* Return destinations are internal React Router paths passed through location state.
+* This fix has no backend or API dependency.
+* Browser-level live navigation testing was not performed; behavior was verified through typed route usage, lint, and production build.
+
+**Verification status:**
+
+* Lint passed without errors or warnings.
+* Production build passed.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
 **Built with ❤️ for sales team**
 
 ---

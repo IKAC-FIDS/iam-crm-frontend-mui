@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
   Alert,
   Box,
@@ -47,6 +47,7 @@ const detailTabs = [
 ] as const;
 
 type DetailTab = (typeof detailTabs)[number]['value'];
+interface CompanyDetailLocationState { backTo?: string; backLabel?: string }
 
 interface DetailItemProps {
   label: string;
@@ -70,6 +71,10 @@ function getTeamName(team?: string): string {
 
 export default function CompanyDetailsPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const navigationState = location.state as CompanyDetailLocationState | null;
+  const backTo = navigationState?.backTo ?? '/companies';
+  const backLabel = navigationState?.backLabel ?? 'بازگشت به شرکت‌ها';
   const { companyId = '' } = useParams<{ companyId: string }>();
   const user = useAuthStore((state) => state.user);
   const { data: company, isLoading, isError } = useCompany(companyId);
@@ -97,7 +102,7 @@ export default function CompanyDetailsPage() {
     return (
       <Box>
         <Alert severity="error" sx={{ mb: 2 }}>دریافت اطلاعات شرکت با خطا مواجه شد.</Alert>
-        <Button onClick={() => navigate('/companies')}>بازگشت به شرکت‌ها</Button>
+        <Button onClick={() => navigate(backTo)}>{backLabel}</Button>
       </Box>
     );
   }
@@ -128,8 +133,8 @@ export default function CompanyDetailsPage() {
               {archived && <Chip label="بایگانی‌شده" color="warning" />}
             </Stack>
           </Box>
-          <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/companies')}>
-            بازگشت به شرکت‌ها
+          <Button startIcon={<ArrowBackIcon />} onClick={() => navigate(backTo)}>
+            {backLabel}
           </Button>
         </Stack>
       </Paper>

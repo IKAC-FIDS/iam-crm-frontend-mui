@@ -142,7 +142,7 @@ export default function CompaniesPage() {
         filterable: false,
         renderCell: ({ row }: GridRenderCellParams<CompanyListItem>) => (
           <Stack direction="row" spacing={1} sx={{ height: '100%', alignItems: 'center' }}>
-            <Button size="small" onClick={() => navigate(`/companies/${row.id}`)}>
+            <Button size="small" onClick={() => navigate(`/companies/${row.id}`, { state: { backTo: '/companies', backLabel: 'بازگشت به شرکت‌ها' } })}>
               مشاهده جزئیات
             </Button>
             {canArchiveCompany && (isCompanyArchived(row)

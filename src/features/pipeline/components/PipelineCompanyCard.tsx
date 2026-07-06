@@ -29,7 +29,7 @@ export default function PipelineCompanyCard({ company, canChangeStage, onChangeS
           <Typography variant="caption">شهر: {value(company.headOfficeCity)}</Typography>
           <Typography variant="caption" color="text.secondary">آخرین بروزرسانی: {formatDateTime(company.updatedAt)}</Typography>
           <Stack direction="row" spacing={0.5} sx={{ pt: 0.5 }}>
-            <Button size="small" onClick={() => navigate(`/companies/${company.id}`)}>مشاهده جزئیات</Button>
+            <Button size="small" onClick={() => navigate(`/companies/${company.id}`, { state: { backTo: '/pipeline', backLabel: 'بازگشت به پایپ‌لاین' } })}>مشاهده جزئیات</Button>
             {canChangeStage && <Button size="small" onClick={() => onChangeStage(company)}>تغییر مرحله</Button>}
           </Stack>
         </Stack>
