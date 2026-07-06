@@ -2069,6 +2069,45 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 ---
 
+## fix 000032 — Restore shared lib files and verify API infrastructure
+
+**Implemented items:**
+
+* Inspected the current repository, Git history, and clean working tree before verification.
+* Confirmed `src/lib/axios.ts` already exists and is the single shared Axios instance.
+* Confirmed Axios uses `import.meta.env.VITE_API_URL` with `http://localhost:3000/api` fallback.
+* Confirmed the 30-second timeout, JSON content type, bearer token request interceptor, and 401 token cleanup/login redirect.
+* Confirmed `src/lib/queryClient.ts` already exists with five-minute stale time, one query retry, disabled window-focus refetch, and zero mutation retries.
+* Confirmed the shared QueryClient is mounted through `QueryProvider` at the application root.
+* Verified all `@/lib/axios` and `@/lib/queryClient` imports resolve successfully.
+* Verified matching `@/*` aliases in TypeScript and Vite configuration.
+* Confirmed no duplicate Axios instance or raw feature-component API replacement was introduced.
+
+**Important files verified:**
+
+* `src/lib/axios.ts`
+* `src/lib/queryClient.ts`
+* `src/providers/QueryProvider.tsx`
+* `src/app/App.tsx`
+* `tsconfig.app.json`
+* `tsconfig.json`
+* `vite.config.ts`
+* `README.md`
+
+**Assumptions and dependencies:**
+
+* Both requested shared library files were already present and matched the requested behavior, so they were not rewritten or duplicated.
+* No API paths or feature services were changed because lint and build exposed no infrastructure errors.
+* This was a local infrastructure verification; no live backend request was required or performed.
+
+**Verification status:**
+
+* Lint passed without errors or warnings.
+* Production build passed and confirmed alias resolution.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
 **Built with ❤️ for sales team**
 
 ---
