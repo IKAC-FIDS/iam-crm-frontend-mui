@@ -1,0 +1,9 @@
+import { Alert, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Stack } from '@mui/material';
+import type { ActivityByUserReportItem } from '../types/report.types';
+import { formatCount } from '../utils/reportDisplay';
+
+export default function ActivityByUserSection({ data, isLoading, isError }: { data?: ActivityByUserReportItem[]; isLoading: boolean; isError: boolean }) {
+  if (isLoading) return <Typography>در حال دریافت گزارش فعالیت کاربران...</Typography>;
+  if (isError) return <Alert severity="error">خطا در دریافت گزارش فعالیت کاربران.</Alert>;
+  return <Stack spacing={2}><Typography variant="h5">فعالیت به تفکیک کاربر</Typography>{data?.length ? <TableContainer component={Paper}><Table size="small"><TableHead><TableRow><TableCell>کاربر</TableCell><TableCell>تیم</TableCell><TableCell>کل فعالیت‌ها</TableCell><TableCell>تماس‌ها</TableCell><TableCell>ایمیل‌ها</TableCell><TableCell>جلسات</TableCell><TableCell>یادداشت‌ها</TableCell><TableCell>پیام‌های لینکدین</TableCell><TableCell>تعاملات لینکدین</TableCell></TableRow></TableHead><TableBody>{data.map((item, index) => <TableRow key={item.userId ?? `${item.userName ?? item.fullName}-${index}`}><TableCell>{item.userName ?? item.fullName ?? '—'}</TableCell><TableCell>{item.team || '—'}</TableCell><TableCell>{formatCount(item.totalActivities)}</TableCell><TableCell>{formatCount(item.calls)}</TableCell><TableCell>{formatCount(item.emails)}</TableCell><TableCell>{formatCount(item.meetings)}</TableCell><TableCell>{formatCount(item.notes)}</TableCell><TableCell>{formatCount(item.linkedinMessages)}</TableCell><TableCell>{formatCount(item.linkedinEngagements)}</TableCell></TableRow>)}</TableBody></Table></TableContainer> : <Alert severity="info">داده‌ای برای فعالیت کاربران با فیلترهای انتخاب‌شده وجود ندارد.</Alert>}</Stack>;
+}

@@ -232,7 +232,7 @@ export default defineConfig([
 - فعالیت‌ها: `GET/POST /activities`، `PATCH /activities/:id`، `PATCH /activities/:id/complete`، `PATCH /activities/:id/reschedule` و `GET /activities/follow-ups/due`.
 - کال کارت: `GET/PUT /companies/:id/call-card` و `GET /companies/:id/call-card/suggest`.
 - شعب و کانال‌های اجتماعی: CRUD مسیرهای `/companies/:id/branches` و `/companies/:id/social-channels`.
-- گزارش‌ها: `GET /reports/pipeline-summary`، `/reports/conversion-rates`، `/reports/stage-durations` و `/reports/activities`.
+- گزارش‌ها: `GET /reports/filter-options`، `/reports/pipeline-summary`، `/reports/conversion-rates`، `/reports/stage-durations`، `/reports/activities`، `/reports/activities/by-user` و `/reports/pipeline/by-owner`؛ فیلترهای انتخابی به‌صورت query parameter به endpointهای گزارش ارسال می‌شوند.
 - کاربران: `GET/POST /users`، `GET /users/:id` و PATCH مسیرهای role، activate و deactivate.
 - مجوزها: POST مسیرهای assign، bulk-assign و create و DELETE مسیرهای revoke و bulk-revoke با body به‌شکل `{ data: payload }`.
 
@@ -242,3 +242,10 @@ export default defineConfig([
 - فایل‌های مهم: type/service/hookهای Activities و Follow-ups، `ActivityForm.tsx`، `EditActivityDialog.tsx`، `ActivitiesTab.tsx`، `CompleteFollowUpDialog.tsx`، `RescheduleFollowUpDialog.tsx` و `FollowUpCard.tsx`.
 - فرض‌ها و وابستگی‌ها: Backend سه endpoint `PATCH /api/activities/:activityId`، `/complete` و `/reschedule` را با payloadهای اعلام‌شده پشتیبانی می‌کند. پاک‌کردن مقادیر اختیاری در edit با `null` انجام می‌شود و تاریخ‌ها به ISO تبدیل می‌شوند؛ هیچ completion یا reschedule محلی و جعلی وجود ندارد.
 - وضعیت بررسی: lint بدون خطا یا هشدار و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle در خروجی build باقی مانده است.
+
+### fix 000023 — افزودن فیلترهای پیشرفته و گزارش‌های تفکیکی
+
+- موارد پیاده‌سازی‌شده: افزودن پنل فیلتر یکپارچه به صفحه گزارش‌ها با بازه تاریخ و انتخاب چندگانه کاربران، تیم‌ها، مالکان، مراحل پایپ‌لاین، اولویت‌ها، صنایع، منابع جذب و نوع فعالیت؛ دریافت تمام گزینه‌های انتخاب از Backend؛ اعمال هم‌زمان فیلترها روی خلاصه پایپ‌لاین، نرخ تبدیل، زمان ماندگاری مراحل و فعالیت‌ها؛ استفاده داشبورد از قرارداد فیلتر مشترک با بازه پیش‌فرض ۳۰ روزه؛ افزودن جدول فعالیت به تفکیک کاربر و جدول پایپ‌لاین به تفکیک مالک همراه با تفکیک مراحل؛ و مدیریت loading، empty، error، refresh، پاک‌کردن و اعتبارسنجی بازه تاریخ.
+- فایل‌های مهم: `src/features/reports/types/report.types.ts`، `src/features/reports/services/reports.service.ts`، `src/features/reports/hooks/useReports.ts`، `src/features/reports/components/ReportFilterPanel.tsx`، `src/features/reports/components/ActivityReportSection.tsx`، `src/features/reports/components/ActivityByUserSection.tsx`، `src/features/reports/components/PipelineByOwnerSection.tsx`، `src/features/reports/pages/ReportsPage.tsx`، `src/components/dashboard/MainGrid.tsx` و این README.
+- فرض‌ها و وابستگی‌ها: این قابلیت به endpointهای `GET /api/reports/filter-options`، چهار endpoint گزارش موجود، `GET /api/reports/activities/by-user` و `GET /api/reports/pipeline/by-owner` وابسته است. کلیدهای query فیلترها `startDate`، `endDate`، `userIds`، `teams`، `ownerIds`، `stages`، `priorities`، `industries`، `leadSources` و `activityTypes` هستند و گزینه‌های Backend به‌صورت مقدار ساده یا شیء دارای `value/id/code/name` normalize می‌شوند؛ تست زنده API به Backend در حال اجرا نیاز دارد و انجام نشده است.
+- وضعیت بررسی: lint بدون خطا یا هشدار و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle باقی مانده است.

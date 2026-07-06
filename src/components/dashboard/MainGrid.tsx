@@ -11,8 +11,8 @@ export default function MainGrid() {
   const user = useAuthStore((state) => state.user);
   const hasAccess = can(user, 'report:view', ['ADMIN', 'MANAGER', 'BOARDS']);
   const dateRange = defaultActivityDateRange();
-  const pipeline = usePipelineSummaryReport(hasAccess);
-  const conversion = useConversionRatesReport(hasAccess);
+  const pipeline = usePipelineSummaryReport(dateRange, hasAccess);
+  const conversion = useConversionRatesReport(dateRange, hasAccess);
   const activities = useActivityReport(dateRange, hasAccess);
 
   if (!hasAccess) {
