@@ -5,11 +5,17 @@ import { z } from 'zod';
 import {
   Alert,
   Button,
+  FormControl,
   FormControlLabel,
+  InputLabel,
+  MenuItem,
+  Select,
   Stack,
   Switch,
   TextField,
 } from '@mui/material';
+import { useCatalog } from '@/features/catalogs/hooks/useCatalogs';
+import { getCatalogItemLabel, isCatalogItemActive } from '@/features/catalogs/types/catalog.types';
 import type { CreatePersonPayload, Person, UpdatePersonPayload } from '../types/person.types';
 
 interface PersonFormProps {
@@ -63,6 +69,7 @@ export default function PersonForm({
   onSubmit,
   onCancel,
 }: PersonFormProps) {
+  const lookups = useCatalog('lookupOptions');
   const {
     control,
     handleSubmit,
@@ -106,8 +113,9 @@ export default function PersonForm({
         {...register('fullName')}
       />
       <TextField label="سمت" {...register('title')} />
-      <TextField label="دپارتمان" {...register('department')} />
-      <TextField label="پرسونا" {...register('personaTag')} />
+      <Controller name="department" control={control} render={({ field }) => <FormControl fullWidth disabled={lookups.isLoading || lookups.isError}><InputLabel id={`${mode}-person-department`}>دپارتمان</InputLabel><Select {...field} labelId={`${mode}-person-department`} label="دپارتمان"><MenuItem value="">انتخاب نشده</MenuItem>{(lookups.data ?? []).filter((item) => isCatalogItemActive(item) && ['department', 'departments'].includes(String(item.category ?? item.type ?? '').replace(/[_-]/g, '').toLowerCase())).map((item) => <MenuItem key={item.id} value={item.value || getCatalogItemLabel(item)}>{getCatalogItemLabel(item)}</MenuItem>)}</Select></FormControl>} />
+      <Controller name="personaTag" control={control} render={({ field }) => <FormControl fullWidth disabled={lookups.isLoading || lookups.isError}><InputLabel id={`${mode}-person-persona`}>پرسونا</InputLabel><Select {...field} labelId={`${mode}-person-persona`} label="پرسونا"><MenuItem value="">انتخاب نشده</MenuItem>{(lookups.data ?? []).filter((item) => isCatalogItemActive(item) && ['personatag', 'persona', 'personas'].includes(String(item.category ?? item.type ?? '').replace(/[_-]/g, '').toLowerCase())).map((item) => <MenuItem key={item.id} value={item.value || getCatalogItemLabel(item)}>{getCatalogItemLabel(item)}</MenuItem>)}</Select></FormControl>} />
+      {lookups.isError && <Alert severity="error">خطا در دریافت گزینه‌های دپارتمان و پرسونا.</Alert>}
       <TextField
         label="لینکدین"
         error={Boolean(errors.linkedinUrl)}

@@ -13,6 +13,8 @@ import {
   TextField,
 } from '@mui/material';
 import IranProvinceSelect from '@/shared/components/IranProvinceSelect';
+import { useCatalog } from '@/features/catalogs/hooks/useCatalogs';
+import { getCatalogItemLabel, isCatalogItemActive } from '@/features/catalogs/types/catalog.types';
 import {
   COMPANY_OWNERSHIPS,
   COMPANY_OWNERSHIP_OPTIONS,
@@ -86,6 +88,8 @@ export default function CompanyForm({
   onSubmit,
   onCancel,
 }: CompanyFormProps) {
+  const industries = useCatalog('industries');
+  const leadSources = useCatalog('leadSources');
   const {
     control,
     handleSubmit,
@@ -135,7 +139,20 @@ export default function CompanyForm({
         {...register('legalName')}
       />
       <TextField label="نام برند" {...register('brandName')} />
-      <TextField label="صنعت" {...register('industry')} />
+      <Controller
+        name="industry"
+        control={control}
+        render={({ field }) => (
+          <FormControl fullWidth disabled={industries.isLoading || industries.isError} error={industries.isError}>
+            <InputLabel id={`${mode}-company-industry-label`}>صنعت</InputLabel>
+            <Select {...field} labelId={`${mode}-company-industry-label`} label="صنعت">
+              <MenuItem value="">انتخاب نشده</MenuItem>
+              {(industries.data ?? []).filter(isCatalogItemActive).map((item) => { const label = getCatalogItemLabel(item); return <MenuItem key={item.id} value={label}>{label}</MenuItem>; })}
+            </Select>
+          </FormControl>
+        )}
+      />
+      {industries.isError && <Alert severity="error">خطا در دریافت فهرست صنایع.</Alert>}
 
       <Controller
         name="ownership"
@@ -198,7 +215,20 @@ export default function CompanyForm({
         helperText={errors.website?.message}
         {...register('website')}
       />
-      <TextField label="منبع" {...register('source')} />
+      <Controller
+        name="source"
+        control={control}
+        render={({ field }) => (
+          <FormControl fullWidth disabled={leadSources.isLoading || leadSources.isError} error={leadSources.isError}>
+            <InputLabel id={`${mode}-company-source-label`}>منبع جذب</InputLabel>
+            <Select {...field} labelId={`${mode}-company-source-label`} label="منبع جذب">
+              <MenuItem value="">انتخاب نشده</MenuItem>
+              {(leadSources.data ?? []).filter(isCatalogItemActive).map((item) => { const label = getCatalogItemLabel(item); return <MenuItem key={item.id} value={label}>{label}</MenuItem>; })}
+            </Select>
+          </FormControl>
+        )}
+      />
+      {leadSources.isError && <Alert severity="error">خطا در دریافت فهرست منابع جذب.</Alert>}
 
       <Stack direction="row" spacing={1} sx={{ justifyContent: 'flex-end' }}>
         {onCancel && (

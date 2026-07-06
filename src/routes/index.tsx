@@ -11,6 +11,7 @@ import FollowUpsPage from '@/features/followUps/pages/FollowUpsPage';
 import ReportsPage from '@/features/reports/pages/ReportsPage';
 import AdminUsersPage from '@/features/admin/users/components/AdminUsersPage';
 import AdminPermissionsPage from '@/features/admin/permissions/components/AdminPermissionsPage';
+import AdminLibrariesPage from '@/features/catalogs/pages/AdminLibrariesPage';
 
 export const router = createBrowserRouter([
   {
@@ -29,6 +30,7 @@ export const router = createBrowserRouter([
           { path: 'reports', element: <ReportsPage /> },
           { path: 'admin/users', element: <AdminUsersPage /> },
           { path: 'admin/permissions', element: <AdminPermissionsPage /> },
+          { path: 'admin/libraries', element: <AdminLibrariesPage /> },
         ],
       },
     ],
