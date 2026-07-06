@@ -1942,6 +1942,49 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 ---
 
+## fix 000029 — Company archive and restore
+
+**Implemented items:**
+
+* Removed the disabled company delete action from the companies list.
+* Added archive actions to the companies list and company detail page.
+* Added an archive confirmation dialog with a required archive reason.
+* Connected archive to `PATCH /api/companies/:id/archive`.
+* Added active, archived, and all filters to the companies list.
+* Defaulted every company list query, including pipeline consumers, to active companies.
+* Added restore actions for archived companies in list and detail views.
+* Added restore confirmation and connected it to `PATCH /api/companies/:id/restore`.
+* Added archived status, archive date, and archive reason display where available.
+* Disabled normal edit, owner, priority, and stage actions while a company is archived.
+* Invalidated company, pipeline, and report caches after archive and restore.
+
+**Important files:**
+
+* `src/features/companies/types/company.types.ts`
+* `src/features/companies/services/companies.service.ts`
+* `src/features/companies/hooks/useCompanies.ts`
+* `src/features/companies/components/ArchiveCompanyDialog.tsx`
+* `src/features/companies/components/RestoreCompanyDialog.tsx`
+* `src/features/companies/pages/CompaniesPage.tsx`
+* `src/features/companies/pages/CompanyDetailsPage.tsx`
+* `README.md`
+
+**Assumptions and dependencies:**
+
+* Archive uses `{ reason }` with `PATCH /api/companies/:companyId/archive`.
+* Restore uses `PATCH /api/companies/:companyId/restore` without a request body.
+* `GET /api/companies` accepts `archiveStatus` values `ACTIVE`, `ARCHIVED`, and `ALL`; omitted frontend values are normalized to `ACTIVE`.
+* Company responses identify archive state through `isArchived`, `archived`, or `archivedAt`, and may return `archiveReason`.
+* Live archive, restore, and archived-filter testing requires the backend to be running and was not performed.
+
+**Verification status:**
+
+* Lint passed without errors or warnings.
+* Production build passed.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
 **Built with ❤️ for sales team**
 
 ---

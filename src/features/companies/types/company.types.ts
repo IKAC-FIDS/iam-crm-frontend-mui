@@ -35,6 +35,7 @@ export type CompanyStage = PipelineStage;
 export type CompanyPriority = Priority;
 export type CompanyOwnership = (typeof COMPANY_OWNERSHIPS)[number];
 export type CompanyPageSize = (typeof COMPANY_PAGE_SIZES)[number];
+export type CompanyArchiveStatus = 'ACTIVE' | 'ARCHIVED' | 'ALL';
 
 export const COMPANY_STAGE_OPTIONS: readonly { value: PipelineStage; label: string }[] = [
   { value: 'LEAD', label: 'سرنخ' },
@@ -98,6 +99,10 @@ export interface Company {
   source?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
+  isArchived?: boolean;
+  archived?: boolean;
+  archivedAt?: string | null;
+  archiveReason?: string | null;
   people?: unknown[];
   branches?: unknown[];
   socialChannels?: unknown[];
@@ -117,6 +122,10 @@ export type CompanyListItem = Pick<
   | 'owner'
   | 'headOfficeCity'
   | 'updatedAt'
+  | 'isArchived'
+  | 'archived'
+  | 'archivedAt'
+  | 'archiveReason'
 >;
 
 export type UpdateCompanyPayload = Partial<CreateCompanyPayload>;
@@ -128,6 +137,8 @@ export interface ChangeCompanyStagePayload {
 export interface ChangeCompanyOwnerPayload {
   newOwnerId: string;
 }
+
+export interface ArchiveCompanyPayload { reason: string }
 
 export interface CreateCompanyPayload {
   legalName: string;
@@ -149,6 +160,7 @@ export interface GetCompaniesParams {
   withoutOwner?: boolean;
   search?: string;
   ownerId?: string;
+  archiveStatus?: CompanyArchiveStatus;
 }
 
 export type CompaniesQueryParams = GetCompaniesParams;
@@ -187,4 +199,10 @@ export function isCompanyPriority(value: string): value is CompanyPriority {
 
 export function isCompanyOwnership(value: string): value is CompanyOwnership {
   return COMPANY_OWNERSHIPS.some((ownership) => ownership === value);
+}
+
+export function isCompanyArchived(company: Pick<Company, 'isArchived' | 'archived' | 'archivedAt'>): boolean {
+  if (typeof company.isArchived === 'boolean') return company.isArchived;
+  if (typeof company.archived === 'boolean') return company.archived;
+  return Boolean(company.archivedAt);
 }

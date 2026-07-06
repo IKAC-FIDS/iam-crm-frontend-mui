@@ -12,7 +12,6 @@ import {
   Select,
   Stack,
   TextField,
-  Tooltip,
   Typography,
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
@@ -25,6 +24,8 @@ import Header from '@/components/dashboard/Header';
 import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
 import CreateCompanyDialog from '../components/CreateCompanyDialog';
+import ArchiveCompanyDialog from '../components/ArchiveCompanyDialog';
+import RestoreCompanyDialog from '../components/RestoreCompanyDialog';
 import { useCompanies } from '../hooks/useCompanies';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import {
@@ -33,6 +34,7 @@ import {
   COMPANY_STAGE_OPTIONS,
   isCompanyPriority,
   isCompanyStage,
+  isCompanyArchived,
 } from '../types/company.types';
 import {
   formatDateTime,
@@ -45,6 +47,7 @@ import type {
   CompanyPageSize,
   CompanyPriority,
   CompanyStage,
+  CompanyArchiveStatus,
 } from '../types/company.types';
 
 type OwnerFilter = 'ALL' | 'WITHOUT_OWNER' | 'SPECIFIC_OWNER';
@@ -57,6 +60,7 @@ export default function CompaniesPage() {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
   const canCreateCompany = can(user, 'company:create', ['ADMIN', 'MANAGER']);
+  const canArchiveCompany = can(user, 'company:archive', ['ADMIN', 'MANAGER']);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: 0,
@@ -67,6 +71,9 @@ export default function CompaniesPage() {
   const [ownerFilter, setOwnerFilter] = useState<OwnerFilter>('ALL');
   const [ownerId] = useState('');
   const [search, setSearch] = useState('');
+  const [archiveStatus, setArchiveStatus] = useState<CompanyArchiveStatus>('ACTIVE');
+  const [archiving, setArchiving] = useState<CompanyListItem | null>(null);
+  const [restoring, setRestoring] = useState<CompanyListItem | null>(null);
   const debouncedSearch = useDebouncedValue(search.trim(), 400);
 
   const queryParams = useMemo<GetCompaniesParams>(
@@ -78,8 +85,9 @@ export default function CompaniesPage() {
       ...(ownerFilter === 'WITHOUT_OWNER' && { withoutOwner: true }),
       ...(ownerFilter === 'SPECIFIC_OWNER' && ownerId && { ownerId }),
       ...(debouncedSearch && { search: debouncedSearch }),
+      archiveStatus,
     }),
-    [debouncedSearch, ownerFilter, ownerId, paginationModel, priority, stage],
+    [archiveStatus, debouncedSearch, ownerFilter, ownerId, paginationModel, priority, stage],
   );
 
   const { data, isError, isFetching } = useCompanies(queryParams);
@@ -119,6 +127,7 @@ export default function CompaniesPage() {
         renderCell: ({ row }: GridRenderCellParams<CompanyListItem>) => displayValue(row.owner?.fullName),
       },
       { field: 'headOfficeCity', headerName: 'شهر دفتر مرکزی', minWidth: 150 },
+      { field: 'archiveState', headerName: 'وضعیت', minWidth: 110, valueGetter: (_value, row) => isCompanyArchived(row) ? 'بایگانی‌شده' : 'فعال' },
       {
         field: 'updatedAt',
         headerName: 'آخرین بروزرسانی',
@@ -136,18 +145,14 @@ export default function CompaniesPage() {
             <Button size="small" onClick={() => navigate(`/companies/${row.id}`)}>
               مشاهده جزئیات
             </Button>
-            <Tooltip title="حذف شرکت در نسخه بعدی فعال می‌شود">
-              <span>
-                <Button size="small" color="error" disabled>
-                  حذف
-                </Button>
-              </span>
-            </Tooltip>
+            {canArchiveCompany && (isCompanyArchived(row)
+              ? <Button size="small" color="success" onClick={() => setRestoring(row)}>بازیابی</Button>
+              : <Button size="small" color="warning" onClick={() => setArchiving(row)}>بایگانی</Button>)}
           </Stack>
         ),
       },
     ],
-    [navigate],
+    [canArchiveCompany, navigate],
   );
 
   return (
@@ -196,6 +201,12 @@ export default function CompaniesPage() {
                   {option.label}
                 </MenuItem>
               ))}
+            </Select>
+          </FormControl>
+          <FormControl fullWidth>
+            <InputLabel id="company-archive-filter-label">وضعیت بایگانی</InputLabel>
+            <Select labelId="company-archive-filter-label" label="وضعیت بایگانی" value={archiveStatus} onChange={(event) => { setArchiveStatus(event.target.value as CompanyArchiveStatus); resetToFirstPage(); }}>
+              <MenuItem value="ACTIVE">فعال</MenuItem><MenuItem value="ARCHIVED">بایگانی‌شده</MenuItem><MenuItem value="ALL">همه</MenuItem>
             </Select>
           </FormControl>
 
@@ -274,6 +285,8 @@ export default function CompaniesPage() {
           onClose={() => setIsCreateDialogOpen(false)}
         />
       )}
+      {archiving && <ArchiveCompanyDialog key={archiving.id} companyId={archiving.id} companyName={archiving.legalName} open onClose={() => setArchiving(null)} />}
+      {restoring && <RestoreCompanyDialog key={restoring.id} companyId={restoring.id} companyName={restoring.legalName} open onClose={() => setRestoring(null)} />}
     </Box>
   );
 }

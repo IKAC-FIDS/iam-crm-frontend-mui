@@ -6,6 +6,7 @@ import type {
   GetCompaniesParams,
   CreateCompanyPayload,
   UpdateCompanyPayload,
+  ArchiveCompanyPayload,
 } from '../types/company.types';
 
 export const companyQueryKeys = {
@@ -76,4 +77,14 @@ export function useChangeCompanyOwner(companyId: string) {
       companiesService.changeCompanyOwner(companyId, payload),
     onSuccess: () => invalidateCompanyData(queryClient),
   });
+}
+
+export function useArchiveCompany(companyId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({ mutationFn: (payload: ArchiveCompanyPayload) => companiesService.archiveCompany(companyId, payload), onSuccess: () => invalidateCompanyData(queryClient) });
+}
+
+export function useRestoreCompany(companyId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({ mutationFn: () => companiesService.restoreCompany(companyId), onSuccess: () => invalidateCompanyData(queryClient) });
 }

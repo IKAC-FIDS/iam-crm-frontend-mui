@@ -8,6 +8,7 @@ import type {
   ChangeCompanyOwnerPayload,
   CreateCompanyPayload,
   UpdateCompanyPayload,
+  ArchiveCompanyPayload,
 } from '../types/company.types';
 
 interface CompaniesApiMeta {
@@ -83,7 +84,7 @@ export const companiesService = {
     params: GetCompaniesParams,
   ): Promise<PaginatedResult<CompanyListItem>> => {
     const response = await axiosInstance.get<CompaniesApiResponse>('/companies', {
-      params: cleanRequestParams(params),
+      params: cleanRequestParams({ ...params, archiveStatus: params.archiveStatus ?? 'ACTIVE' }),
     });
 
     return normalizeCompaniesResponse(response.data, params);
@@ -139,6 +140,14 @@ export const companiesService = {
       payload,
     );
 
+    return 'data' in response.data ? response.data.data : response.data;
+  },
+  archiveCompany: async (companyId: string, payload: ArchiveCompanyPayload): Promise<Company> => {
+    const response = await axiosInstance.patch<Company | { data: Company }>(`/companies/${companyId}/archive`, payload);
+    return 'data' in response.data ? response.data.data : response.data;
+  },
+  restoreCompany: async (companyId: string): Promise<Company> => {
+    const response = await axiosInstance.patch<Company | { data: Company }>(`/companies/${companyId}/restore`);
     return 'data' in response.data ? response.data.data : response.data;
   },
 };

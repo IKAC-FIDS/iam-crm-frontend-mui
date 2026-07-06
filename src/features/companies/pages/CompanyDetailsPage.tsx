@@ -21,12 +21,15 @@ import ChangeCompanyPriorityDialog from '../components/ChangeCompanyPriorityDial
 import ChangeCompanyStageDialog from '../components/ChangeCompanyStageDialog';
 import EditCompanyDialog from '../components/EditCompanyDialog';
 import ChangeCompanyOwnerDialog from '../components/ChangeCompanyOwnerDialog';
+import ArchiveCompanyDialog from '../components/ArchiveCompanyDialog';
+import RestoreCompanyDialog from '../components/RestoreCompanyDialog';
 import PeopleTab from '@/features/people/components/PeopleTab';
 import ActivitiesTab from '@/features/activities/components/ActivitiesTab';
 import CallCardTab from '@/features/callCards/components/CallCardTab';
 import CompanyBranchesTab from '@/features/companyBranches/components/CompanyBranchesTab';
 import CompanySocialChannelsTab from '@/features/companySocialChannels/components/CompanySocialChannelsTab';
 import { useCompany } from '../hooks/useCompanies';
+import { isCompanyArchived } from '../types/company.types';
 import {
   formatDateTime,
   getOwnershipLabel,
@@ -75,9 +78,12 @@ export default function CompanyDetailsPage() {
   const [stageOpen, setStageOpen] = useState(false);
   const [priorityOpen, setPriorityOpen] = useState(false);
   const [ownerOpen, setOwnerOpen] = useState(false);
+  const [archiveOpen, setArchiveOpen] = useState(false);
+  const [restoreOpen, setRestoreOpen] = useState(false);
   const canEditCompany = can(user, 'company:update', ['ADMIN', 'MANAGER', 'REP']);
   const canChangeStage = can(user, 'company:change-stage', ['ADMIN', 'MANAGER', 'REP']);
   const canAssignOwner = can(user, 'company:change-owner', ['ADMIN', 'MANAGER']);
+  const canArchiveCompany = can(user, 'company:archive', ['ADMIN', 'MANAGER']);
 
   if (isLoading) {
     return (
@@ -98,6 +104,7 @@ export default function CompanyDetailsPage() {
 
   const stageLabel = getStageLabel(company.stage);
   const priorityLabel = getPriorityLabel(company.priority);
+  const archived = isCompanyArchived(company);
 
   return (
     <Box sx={{ width: '100%', minWidth: 0 }}>
@@ -118,6 +125,7 @@ export default function CompanyDetailsPage() {
               <Chip label={stageLabel} color="primary" variant="outlined" />
               <Chip label={priorityLabel} color="secondary" variant="outlined" />
               <Chip label={`مالک: ${company.owner?.fullName || 'بدون مالک'}`} variant="outlined" />
+              {archived && <Chip label="بایگانی‌شده" color="warning" />}
             </Stack>
           </Box>
           <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/companies')}>
@@ -148,26 +156,29 @@ export default function CompanyDetailsPage() {
               spacing={1}
               sx={{ mb: 3, flexWrap: 'wrap', gap: 1 }}
             >
-              {canEditCompany && (
+              {canEditCompany && !archived && (
                 <Button variant="contained" onClick={() => setEditOpen(true)}>
                   ویرایش اطلاعات شرکت
                 </Button>
               )}
-              {canChangeStage && (
+              {canChangeStage && !archived && (
                 <Button variant="outlined" onClick={() => setStageOpen(true)}>
                   تغییر مرحله
                 </Button>
               )}
-              {canAssignOwner && (
+              {canAssignOwner && !archived && (
                 <Button variant="outlined" onClick={() => setOwnerOpen(true)}>
                   تخصیص مالک
                 </Button>
               )}
-              {canEditCompany && (
+              {canEditCompany && !archived && (
                 <Button variant="outlined" onClick={() => setPriorityOpen(true)}>
                   تغییر اولویت
                 </Button>
               )}
+              {canArchiveCompany && (archived
+                ? <Button color="success" variant="outlined" onClick={() => setRestoreOpen(true)}>بازیابی</Button>
+                : <Button color="warning" variant="outlined" onClick={() => setArchiveOpen(true)}>بایگانی</Button>)}
             </Stack>
 
             <Grid container spacing={3}>
@@ -184,6 +195,7 @@ export default function CompanyDetailsPage() {
               <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="منبع" value={company.source} /></Grid>
               <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="تاریخ ایجاد" value={formatDateTime(company.createdAt)} /></Grid>
               <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="آخرین بروزرسانی" value={formatDateTime(company.updatedAt)} /></Grid>
+              {archived && <><Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="تاریخ بایگانی" value={formatDateTime(company.archivedAt)} /></Grid><Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="دلیل بایگانی" value={company.archiveReason} /></Grid></>}
             </Grid>
           </Paper>
         </Stack>
@@ -211,6 +223,8 @@ export default function CompanyDetailsPage() {
       {canEditCompany && (
         <EditCompanyDialog company={company} open={editOpen} onClose={() => setEditOpen(false)} />
       )}
+      {canArchiveCompany && <ArchiveCompanyDialog companyId={company.id} companyName={company.legalName} open={archiveOpen} onClose={() => setArchiveOpen(false)} onSuccess={() => navigate('/companies')} />}
+      {canArchiveCompany && <RestoreCompanyDialog companyId={company.id} companyName={company.legalName} open={restoreOpen} onClose={() => setRestoreOpen(false)} />}
 
       {canAssignOwner && (
         <ChangeCompanyOwnerDialog
