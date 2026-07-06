@@ -72,11 +72,18 @@ function normalizeCompaniesResponse(
 }
 
 function cleanRequestParams(params: GetCompaniesParams): Record<string, string | number | boolean> {
-  return Object.fromEntries(
+  const result = Object.fromEntries(
     Object.entries(params).filter(
       ([, value]) => value !== undefined && value !== '',
     ),
   ) as Record<string, string | number | boolean>;
+
+  delete result.archiveStatus;
+
+  if (params.archiveStatus === 'ALL') result.includeArchived = true;
+  if (params.archiveStatus === 'ARCHIVED') result.archivedOnly = true;
+
+  return result;
 }
 
 export const companiesService = {
@@ -84,7 +91,7 @@ export const companiesService = {
     params: GetCompaniesParams,
   ): Promise<PaginatedResult<CompanyListItem>> => {
     const response = await axiosInstance.get<CompaniesApiResponse>('/companies', {
-      params: cleanRequestParams({ ...params, archiveStatus: params.archiveStatus ?? 'ACTIVE' }),
+      params: cleanRequestParams(params),
     });
 
     return normalizeCompaniesResponse(response.data, params);

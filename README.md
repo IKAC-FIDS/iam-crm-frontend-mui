@@ -1983,7 +1983,7 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 * Archive uses `{ reason }` with `PATCH /api/companies/:companyId/archive`.
 * Restore uses `PATCH /api/companies/:companyId/restore` without a request body.
-* `GET /api/companies` accepts `archiveStatus` values `ACTIVE`, `ARCHIVED`, and `ALL`; omitted frontend values are normalized to `ACTIVE`.
+* UI state `archiveStatus` is frontend-only; `ACTIVE` sends no archive query, `ALL` sends `includeArchived=true`, and `ARCHIVED` sends `archivedOnly=true`.
 * Company responses identify archive state through `isArchived`, `archived`, or `archivedAt`, and may return `archiveReason`.
 * Live archive, restore, and archived-filter testing requires the backend to be running and was not performed.
 
@@ -2363,6 +2363,36 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * build نسخه production پاس شد.
 * هشدار غیرمسدودکننده بزرگ‌بودن bundle همچنان باقی است.
 * route محلی `GET /api/admin/pipeline/stages` در دسترس بود و بدون token پاسخ `401` داد؛ تست زنده احراز هویت‌شده CRUD مراحل، reorder، قوانین انتقال و dialog تغییر مرحله انجام نشد.
+
+---
+
+## fix 000039 — هماهنگ‌سازی فیلتر بایگانی شرکت‌ها با قرارداد API
+
+**موارد پیاده‌سازی‌شده:**
+
+* حفظ state رابط کاربری `archiveStatus` با مقادیر `ACTIVE`، `ALL` و `ARCHIVED` بدون ارسال مستقیم آن به بک‌اند.
+* نگاشت `ACTIVE` به درخواست بدون پارامتر بایگانی، `ALL` به `includeArchived=true` و `ARCHIVED` به `archivedOnly=true`.
+* حذف default اجباری `archiveStatus=ACTIVE` از درخواست `GET /api/companies`.
+* عدم ارسال `includeArchived=false` یا پارامتر اضافی غیرضروری.
+* اصلاح توضیح قرارداد بایگانی در fix 000029 بر اساس DTO فعلی بک‌اند.
+
+**فایل‌های مهم:**
+
+* `src/features/companies/services/companies.service.ts`
+* `README.md`
+
+**فرضیات و وابستگی‌ها:**
+
+* قرارداد مستقیماً از `FindCompaniesDto` و controller فعلی repository بک‌اند بررسی شد؛ DTO فقط `includeArchived` و `archivedOnly` را می‌پذیرد.
+* فیلتر UI حذف یا تغییر ظاهری نکرده است و mapping فقط در مرز service انجام می‌شود.
+* تست زنده رفتار فیلترها به نشست احراز هویت‌شده و داده active/archived نیاز دارد.
+
+**وضعیت بررسی:**
+
+* Lint بدون خطا یا هشدار پاس شد.
+* build نسخه production پاس شد.
+* هشدار غیرمسدودکننده بزرگ‌بودن bundle همچنان باقی است.
+* هر سه URL بدون پارامتر، با `includeArchived=true` و با `archivedOnly=true` به backend محلی رسیدند و بدون token پاسخ `401` دادند؛ بررسی زنده نتیجه فیلترها و داده‌ها انجام نشد.
 
 ---
 
