@@ -634,13 +634,13 @@ DELETE /lookup-options/:id
 ### Pipeline Settings
 
 ```http
-GET /pipeline/stages
-PATCH /pipeline/stages/:id
+GET /admin/pipeline/stages
+PATCH /admin/pipeline/stages/:stage
 
-GET /pipeline/transition-rules
-POST /pipeline/transition-rules
-PATCH /pipeline/transition-rules/:id
-DELETE /pipeline/transition-rules/:id
+GET /admin/pipeline/transitions
+POST /admin/pipeline/transitions
+PATCH /admin/pipeline/transitions/:id
+DELETE /admin/pipeline/transitions/:id
 ```
 
 ---
@@ -1566,9 +1566,9 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 **Pipeline settings:**
 
-* `GET /pipeline/stages`
-* `PATCH /pipeline/stages/:id`
-* CRUD for transition rules under `/pipeline/transition-rules`
+* `GET /admin/pipeline/stages`
+* `PATCH /admin/pipeline/stages/:stage`
+* CRUD for transition rules under `/admin/pipeline/transitions`
 
 ---
 
@@ -1792,8 +1792,8 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 * Frontend contract depends on:
 
-  * `GET/PATCH /api/pipeline/stages`
-  * `GET/POST/PATCH/DELETE /api/pipeline/transition-rules`
+  * `GET/PATCH /api/admin/pipeline/stages`
+  * `GET/POST/PATCH/DELETE /api/admin/pipeline/transitions`
 * Stage code must match the current company stage enum.
 * Unknown or inactive stages are not displayed on the board.
 * Destination stages are extracted only from `allowed=true` rules matching `fromStage` and user role.
@@ -2104,6 +2104,45 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 * Lint passed without errors or warnings.
 * Production build passed and confirmed alias resolution.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
+## fix 000033 — Pipeline config API contract cleanup
+
+**Implemented items:**
+
+* Updated stage configuration reads to `GET /api/admin/pipeline/stages`.
+* Updated stage writes to `PATCH /api/admin/pipeline/stages/:stage`.
+* Changed stage updates to use the normalized stage enum in the URL instead of the database ID.
+* Updated transition reads to `GET /api/admin/pipeline/transitions`.
+* Updated transition create, update, and delete calls to `/api/admin/pipeline/transitions` and `/:id`.
+* Added stage response normalization from backend `stage` to frontend `code`, with normalized labels, descriptions, ordering, colors, active state, and terminal state.
+* Added transition response normalization from backend `isAllowed` to frontend `allowed`.
+* Mapped frontend transition writes from `allowed` to backend `isAllowed`.
+* Preserved existing Pipeline board filtering so only active, recognized company-stage enums render.
+* Preserved the stage-change dialog behavior without local fallback configuration.
+* Updated the README API reference and earlier pipeline contract notes to the corrected backend routes.
+
+**Important files:**
+
+* `src/features/pipelineConfig/services/pipelineConfig.service.ts`
+* `src/features/pipelineConfig/hooks/usePipelineConfig.ts`
+* `src/features/pipelineConfig/components/StageConfigDialog.tsx`
+* Pipeline and stage-change consumers were inspected and required no direct contract changes.
+* `README.md`
+
+**Assumptions and dependencies:**
+
+* The backend stage response uses `stage`; `code` remains accepted only as the explicitly requested safe response fallback.
+* The backend transition response uses `isAllowed`, and transition write payloads send `isAllowed`.
+* No local pipeline configuration is created when backend requests fail.
+* Live `/admin/pipeline`, `/pipeline`, and company stage-change dialog testing requires a running backend and was not performed.
+
+**Verification status:**
+
+* Lint passed without errors or warnings.
+* Production build passed.
 * Only a non-blocking bundle-size warning remained.
 
 ---
