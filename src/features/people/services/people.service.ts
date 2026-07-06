@@ -4,10 +4,12 @@ import type {
   CreatePersonContactPayload,
   CreatePersonPayload,
   CreatePersonSocialPayload,
+  DirectoryPerson,
   GetPeopleParams,
   Person,
   PersonContact,
   PersonSocial,
+  PeopleDirectoryParams,
   UpdatePersonContactPayload,
   UpdatePersonPayload,
   UpdatePersonSocialPayload,
@@ -45,7 +47,7 @@ function unwrapList<T>(payload: T[] | { data?: T[]; items?: T[] }): T[] {
 
 function normalizePeople(
   payload: Person[] | PeopleEnvelope,
-  params: GetPeopleParams,
+  params: { page: number; limit: number },
 ): PaginatedResult<Person> {
   if (Array.isArray(payload)) {
     return {
@@ -79,7 +81,16 @@ function normalizePeople(
   };
 }
 
+function cleanParams(params: PeopleDirectoryParams): Record<string, string | number | boolean> {
+  return Object.fromEntries(Object.entries(params).filter(([, value]) => value !== undefined && value !== '')) as Record<string, string | number | boolean>;
+}
+
 export const peopleService = {
+  getPeopleDirectory: async (params: PeopleDirectoryParams): Promise<PaginatedResult<DirectoryPerson>> => {
+    const response = await axiosInstance.get<DirectoryPerson[] | PeopleEnvelope>('/people', { params: cleanParams(params) });
+    return normalizePeople(response.data as Person[] | PeopleEnvelope, params) as PaginatedResult<DirectoryPerson>;
+  },
+
   getPeopleByCompany: async (params: GetPeopleParams): Promise<PaginatedResult<Person>> => {
     const response = await axiosInstance.get<Person[] | PeopleEnvelope>('/people', { params });
     return normalizePeople(response.data, params);

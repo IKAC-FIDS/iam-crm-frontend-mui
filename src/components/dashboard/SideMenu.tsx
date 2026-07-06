@@ -34,6 +34,7 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
 const menuItems = [
   { text: 'داشبورد', icon: <DashboardIcon />, path: '/dashboard' },
   { text: 'شرکت‌ها', icon: <BusinessIcon />, path: '/companies' },
+  { text: 'افراد', icon: <PeopleIcon />, path: '/people', peopleOnly: true },
   { text: 'پایپ‌لاین', icon: <ViewKanbanIcon />, path: '/pipeline' },
   { text: 'پیگیری‌ها', icon: <NotificationsActiveIcon />, path: '/follow-ups' },
   { text: 'گزارش‌ها', icon: <AssessmentIcon />, path: '/reports', reportOnly: true },
@@ -53,12 +54,13 @@ export default function SideMenu({ mobileOpen, onClose }: SideMenuProps) {
   const location = useLocation();
   const user = useAuthStore((state) => state.user);
   const canViewReports = can(user, 'report:view', ['ADMIN', 'MANAGER', 'BOARDS']);
+  const canViewPeople = can(user, 'person:view', ['ADMIN', 'MANAGER', 'REP']);
 
   const menuContent = (
     <>
       <Toolbar />
       <List sx={{ mt: 2 }}>
-        {menuItems.filter((item) => (!item.reportOnly || canViewReports) && (!item.permission || can(user, item.permission, ['ADMIN']))).map((item) => (
+        {menuItems.filter((item) => (!item.reportOnly || canViewReports) && (!item.peopleOnly || canViewPeople) && (!item.permission || can(user, item.permission, ['ADMIN']))).map((item) => (
           <ListItem key={item.text} disablePadding>
             <ListItemButton
               selected={location.pathname === item.path}

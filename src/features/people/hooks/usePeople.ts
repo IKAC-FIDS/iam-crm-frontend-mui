@@ -6,6 +6,7 @@ import type {
   CreatePersonPayload,
   CreatePersonSocialPayload,
   GetPeopleParams,
+  PeopleDirectoryParams,
   UpdatePersonContactPayload,
   UpdatePersonPayload,
   UpdatePersonSocialPayload,
@@ -15,10 +16,15 @@ export const peopleQueryKeys = {
   all: ['people'] as const,
   lists: (companyId: string) => [...peopleQueryKeys.all, 'list', companyId] as const,
   list: (params: GetPeopleParams) => [...peopleQueryKeys.lists(params.companyId), params] as const,
+  directory: (params: PeopleDirectoryParams) => [...peopleQueryKeys.all, 'directory', params] as const,
   detail: (personId: string) => [...peopleQueryKeys.all, 'detail', personId] as const,
   contacts: (personId: string) => ['person-contacts', personId] as const,
   socials: (personId: string) => ['person-socials', personId] as const,
 };
+
+export function usePeopleDirectory(params: PeopleDirectoryParams, enabled = true) {
+  return useQuery({ queryKey: peopleQueryKeys.directory(params), queryFn: () => peopleService.getPeopleDirectory(params), placeholderData: keepPreviousData, enabled });
+}
 
 export function usePeople(params: GetPeopleParams) {
   return useQuery({
@@ -56,7 +62,7 @@ export function usePersonSocials(personId: string) {
 function usePeopleInvalidation(companyId: string) {
   const queryClient = useQueryClient();
   return () => Promise.all([
-    queryClient.invalidateQueries({ queryKey: peopleQueryKeys.lists(companyId) }),
+    queryClient.invalidateQueries({ queryKey: peopleQueryKeys.all }),
     queryClient.invalidateQueries({ queryKey: companyQueryKeys.detail(companyId) }),
   ]);
 }

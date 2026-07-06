@@ -81,6 +81,20 @@ export interface Person {
   socials?: PersonSocial[];
 }
 
+export interface PersonDirectoryCompany {
+  id: string;
+  legalName: string;
+  brandName?: string | null;
+  owner?: { id: string; fullName: string; team?: string | null } | null;
+}
+
+export interface DirectoryPerson extends Person {
+  company?: PersonDirectoryCompany | null;
+  owner?: { id: string; fullName: string; team?: string | null } | null;
+  emailSummary?: string | null;
+  phoneSummary?: string | null;
+}
+
 export interface CreatePersonPayload {
   companyId: string;
   fullName: string;
@@ -104,6 +118,20 @@ export interface GetPeopleParams {
   companyId: string;
   page: number;
   limit: 5 | 10 | 20 | 100;
+}
+
+export interface PeopleDirectoryParams {
+  page: number;
+  limit: 5 | 10 | 20 | 50;
+  search?: string;
+  companyId?: string;
+  ownerId?: string;
+  team?: string;
+  department?: string;
+  personaTag?: string;
+  isPrimaryContact?: boolean;
+  hasEmail?: boolean;
+  hasPhone?: boolean;
 }
 
 export function getContactTypeLabel(type?: string | null): string {

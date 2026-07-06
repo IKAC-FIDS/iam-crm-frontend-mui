@@ -13,6 +13,7 @@ import AdminUsersPage from '@/features/admin/users/components/AdminUsersPage';
 import AdminPermissionsPage from '@/features/admin/permissions/components/AdminPermissionsPage';
 import AdminLibrariesPage from '@/features/catalogs/pages/AdminLibrariesPage';
 import AdminPipelinePage from '@/features/pipelineConfig/pages/AdminPipelinePage';
+import PeopleDirectoryPage from '@/features/people/pages/PeopleDirectoryPage';
 
 export const router = createBrowserRouter([
   {
@@ -26,6 +27,7 @@ export const router = createBrowserRouter([
           { path: 'dashboard', element: <DashboardPage /> },
           { path: 'companies', element: <CompaniesPage /> },
           { path: 'companies/:companyId', element: <CompanyDetailsPage /> },
+          { path: 'people', element: <PeopleDirectoryPage /> },
           { path: 'pipeline', element: <PipelinePage /> },
           { path: 'follow-ups', element: <FollowUpsPage /> },
           { path: 'reports', element: <ReportsPage /> },
