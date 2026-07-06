@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Alert, Autocomplete, Box, Button, Chip, FormControl, InputLabel, MenuItem, Paper, Select, Stack, TextField, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import type { GridColDef, GridPaginationModel, GridRenderCellParams } from '@mui/x-data-grid';
-import { can } from '@/features/auth/utils/permissions';
+import { can, canAny } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
 import { useCompanies } from '@/features/companies/hooks/useCompanies';
 import { useDebouncedValue } from '@/features/companies/hooks/useDebouncedValue';
@@ -30,7 +30,7 @@ function contactSummary(person: DirectoryPerson): string {
 export default function PeopleDirectoryPage() {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
-  const allowed = can(user, 'person:view', ['ADMIN', 'MANAGER', 'REP']);
+  const allowed = canAny(user, ['people:directory:view', 'person:view'], ['ADMIN', 'MANAGER', 'REP']);
   const [pagination, setPagination] = useState<GridPaginationModel>({ page: 0, pageSize: 10 });
   const [search, setSearch] = useState(''); const debouncedSearch = useDebouncedValue(search.trim(), 400);
   const [companySearch, setCompanySearch] = useState(''); const debouncedCompanySearch = useDebouncedValue(companySearch.trim(), 400);

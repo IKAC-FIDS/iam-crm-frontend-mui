@@ -551,7 +551,7 @@ ownerIds
 stages
 priorities
 industries
-leadSources
+sources
 activityTypes
 ```
 
@@ -1660,7 +1660,7 @@ All paths below are called relative to the shared Axios `baseURL`, which include
   * `stages`
   * `priorities`
   * `industries`
-  * `leadSources`
+  * `sources` (mapped from frontend `leadSources`)
   * `activityTypes`
 * Backend options are normalized from simple values or objects containing `value`, `id`, `code`, or `name`.
 * Live API testing requires backend to be running and was not performed.
@@ -2138,6 +2138,49 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * The backend transition response uses `isAllowed`, and transition write payloads send `isAllowed`.
 * No local pipeline configuration is created when backend requests fail.
 * Live `/admin/pipeline`, `/pipeline`, and company stage-change dialog testing requires a running backend and was not performed.
+
+**Verification status:**
+
+* Lint passed without errors or warnings.
+* Production build passed.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
+## fix 000034 — Reports, follow-up and permission contract cleanup
+
+**Implemented items:**
+
+* Mapped the frontend Reports `leadSources` filter to the backend `sources` query parameter.
+* Removed `leadSources` from all outgoing report request parameters.
+* Normalized Pipeline by Owner backend `stages` into frontend `stageBreakdown` in the report service.
+* Preserved an existing `stageBreakdown` response when already present.
+* Mapped follow-up completion UI `note` to backend `completionNote` while preserving `outcome`.
+* Replaced `catalog:manage` with the supported granular library and lookup permission keys.
+* Restricted each Libraries tab to its corresponding permission while preserving ADMIN access.
+* Replaced `pipeline:manage` with `pipeline:config:manage` and `pipeline:transition:manage`.
+* Restricted Pipeline Settings tabs to their corresponding permissions while preserving ADMIN access.
+* Updated People Directory access to prefer `people:directory:view` alongside the existing `person:view` and role fallbacks.
+* Updated side-menu visibility to use the same supported permission checks.
+
+**Important files:**
+
+* `src/features/reports/services/reports.service.ts`
+* `src/features/followUps/services/followUps.service.ts`
+* `src/components/dashboard/SideMenu.tsx`
+* `src/features/catalogs/pages/AdminLibrariesPage.tsx`
+* `src/features/pipelineConfig/pages/AdminPipelinePage.tsx`
+* `src/features/people/pages/PeopleDirectoryPage.tsx`
+* `README.md`
+
+**Assumptions and dependencies:**
+
+* Reports APIs accept `sources`, not `leadSources`.
+* Pipeline by Owner returns stage data under `stages` when `stageBreakdown` is absent.
+* Follow-up completion accepts `{ outcome, completionNote }`.
+* Permission checks use only the backend-supported keys supplied for libraries, pipeline settings, and the people directory.
+* ADMIN fallback remains active through the existing permission helper.
+* Live menu/route testing for ADMIN, MANAGER, REP, and BOARDS requires a running backend and authenticated role sessions and was not performed.
 
 **Verification status:**
 

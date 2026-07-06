@@ -30,7 +30,7 @@ export const followUpsService = {
     return normalize(response.data, params);
   },
   completeFollowUp: async (activityId: string, payload: CompleteFollowUpPayload): Promise<FollowUpActivity> => {
-    const response = await axiosInstance.patch<FollowUpActivity | { data: FollowUpActivity }>(`/activities/${activityId}/complete`, payload);
+    const response = await axiosInstance.patch<FollowUpActivity | { data: FollowUpActivity }>(`/activities/${activityId}/complete`, { outcome: payload.outcome, completionNote: payload.note });
     return typeof response.data === 'object' && response.data !== null && 'data' in response.data ? response.data.data : response.data;
   },
   rescheduleFollowUp: async (activityId: string, payload: RescheduleFollowUpPayload): Promise<FollowUpActivity> => {

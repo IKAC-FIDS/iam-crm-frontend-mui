@@ -33,9 +33,12 @@ function options(value: unknown): ReportFilterOption[] {
 }
 
 function requestParams(filters: ReportFilters): Record<string, string | string[]> {
-  return Object.fromEntries(
+  const params = Object.fromEntries(
     Object.entries(filters).filter(([, value]) => value !== undefined && value !== '' && (!Array.isArray(value) || value.length > 0)),
-  );
+  ) as Record<string, string | string[]>;
+  if (filters.leadSources?.length) params.sources = filters.leadSources;
+  delete params.leadSources;
+  return params;
 }
 
 async function getList<T>(url: string, filters: ReportFilters): Promise<T[]> {
@@ -77,5 +80,8 @@ export const reportsService = {
     return { ...data, breakdown: data.breakdown ?? [], totalActivities: data.totalActivities ?? 0 };
   },
   getActivitiesByUserReport: (filters: ReportFilters = {}): Promise<ActivityByUserReportItem[]> => getList('/reports/activities/by-user', filters),
-  getPipelineByOwnerReport: (filters: ReportFilters = {}): Promise<PipelineByOwnerReportItem[]> => getList('/reports/pipeline/by-owner', filters),
+  getPipelineByOwnerReport: async (filters: ReportFilters = {}): Promise<PipelineByOwnerReportItem[]> => {
+    const data = await getList<PipelineByOwnerReportItem & { stages?: PipelineByOwnerReportItem['stageBreakdown'] }>('/reports/pipeline/by-owner', filters);
+    return data.map((item) => ({ ...item, stageBreakdown: item.stageBreakdown ?? item.stages ?? [] }));
+  },
 };

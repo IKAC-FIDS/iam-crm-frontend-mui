@@ -15,7 +15,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import SecurityIcon from '@mui/icons-material/Security';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import HistoryIcon from '@mui/icons-material/History';
-import { can } from '@/features/auth/utils/permissions';
+import { can, canAny } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -41,8 +41,8 @@ const menuItems = [
   { text: 'گزارش‌ها', icon: <AssessmentIcon />, path: '/reports', reportOnly: true },
   { text: 'کاربران', icon: <PeopleIcon />, path: '/admin/users', permission: 'user:manage' },
   { text: 'مجوزها', icon: <SecurityIcon />, path: '/admin/permissions', permission: 'permission:manage' },
-  { text: 'کتابخانه‌ها', icon: <LibraryBooksIcon />, path: '/admin/libraries', permission: 'catalog:manage' },
-  { text: 'تنظیمات پایپ‌لاین', icon: <ViewKanbanIcon />, path: '/admin/pipeline', permission: 'pipeline:manage' },
+  { text: 'کتابخانه‌ها', icon: <LibraryBooksIcon />, path: '/admin/libraries', permissions: ['library:industry:manage', 'library:pain-point:manage', 'library:use-case:manage', 'library:persona:manage', 'library:lead-source:manage', 'lookup:manage'] },
+  { text: 'تنظیمات پایپ‌لاین', icon: <ViewKanbanIcon />, path: '/admin/pipeline', permissions: ['pipeline:config:manage', 'pipeline:transition:manage'] },
   { text: 'لاگ تغییرات', icon: <HistoryIcon />, path: '/admin/audit-logs', permission: 'audit-log:view' },
 ];
 
@@ -56,13 +56,13 @@ export default function SideMenu({ mobileOpen, onClose }: SideMenuProps) {
   const location = useLocation();
   const user = useAuthStore((state) => state.user);
   const canViewReports = can(user, 'report:view', ['ADMIN', 'MANAGER', 'BOARDS']);
-  const canViewPeople = can(user, 'person:view', ['ADMIN', 'MANAGER', 'REP']);
+  const canViewPeople = canAny(user, ['people:directory:view', 'person:view'], ['ADMIN', 'MANAGER', 'REP']);
 
   const menuContent = (
     <>
       <Toolbar />
       <List sx={{ mt: 2 }}>
-        {menuItems.filter((item) => (!item.reportOnly || canViewReports) && (!item.peopleOnly || canViewPeople) && (!item.permission || can(user, item.permission, ['ADMIN']))).map((item) => (
+        {menuItems.filter((item) => (!item.reportOnly || canViewReports) && (!item.peopleOnly || canViewPeople) && (!item.permission || can(user, item.permission, ['ADMIN'])) && (!item.permissions || canAny(user, item.permissions, ['ADMIN']))).map((item) => (
           <ListItem key={item.text} disablePadding>
             <ListItemButton
               selected={location.pathname === item.path}
