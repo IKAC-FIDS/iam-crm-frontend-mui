@@ -48,3 +48,13 @@ export interface GetDueFollowUpsParams {
 
 export type FollowUpDueStatus = 'overdue' | 'today' | 'upcoming' | 'unknown';
 export type FollowUpFilter = 'ALL' | 'OVERDUE' | 'TODAY' | 'UPCOMING';
+
+export interface CompleteFollowUpPayload {
+  outcome?: string;
+  note?: string;
+}
+
+export interface RescheduleFollowUpPayload {
+  nextActionDate: string;
+  note?: string;
+}

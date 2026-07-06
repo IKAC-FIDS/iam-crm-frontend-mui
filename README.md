@@ -229,9 +229,16 @@ export default defineConfig([
 
 - شرکت‌ها: `GET/POST /companies`، `GET/PATCH /companies/:id`، `PATCH /companies/:id/stage` و `PATCH /companies/:id/owner`.
 - افراد: `GET/POST /people`، `GET/PATCH/DELETE /people/:id`، و CRUD مسیرهای `/people/:id/contacts` و `/people/:id/socials`.
-- فعالیت‌ها: `GET/POST /activities` و `GET /activities/follow-ups/due`. مسیرهای update، complete و reschedule تا تأیید Backend فراخوانی نمی‌شوند.
+- فعالیت‌ها: `GET/POST /activities`، `PATCH /activities/:id`، `PATCH /activities/:id/complete`، `PATCH /activities/:id/reschedule` و `GET /activities/follow-ups/due`.
 - کال کارت: `GET/PUT /companies/:id/call-card` و `GET /companies/:id/call-card/suggest`.
 - شعب و کانال‌های اجتماعی: CRUD مسیرهای `/companies/:id/branches` و `/companies/:id/social-channels`.
 - گزارش‌ها: `GET /reports/pipeline-summary`، `/reports/conversion-rates`، `/reports/stage-durations` و `/reports/activities`.
 - کاربران: `GET/POST /users`، `GET /users/:id` و PATCH مسیرهای role، activate و deactivate.
 - مجوزها: POST مسیرهای assign، bulk-assign و create و DELETE مسیرهای revoke و bulk-revoke با body به‌شکل `{ data: payload }`.
+
+### fix 000022 — اتصال چرخه عمر فعالیت و پیگیری به Backend
+
+- موارد پیاده‌سازی‌شده: فعال‌سازی ویرایش فعالیت برای نقش‌ها و مجوزهای مجاز؛ فرم مشترک create/edit با مقداردهی اولیه شخص، نوع، تاریخ‌ها، یادداشت و نتیجه؛ قفل نوع فعالیت‌های `STAGE_CHANGE`؛ اتصال `PATCH /api/activities/:id`؛ فعال‌سازی تکمیل پیگیری با دیالوگ نتیجه و یادداشت؛ فعال‌سازی زمان‌بندی مجدد با اعتبارسنجی تاریخ آینده؛ اتصال endpointهای complete و reschedule؛ و invalidation خودکار Activities، Follow-ups، Company Detail، Reports و Dashboard پس از mutationها.
+- فایل‌های مهم: type/service/hookهای Activities و Follow-ups، `ActivityForm.tsx`، `EditActivityDialog.tsx`، `ActivitiesTab.tsx`، `CompleteFollowUpDialog.tsx`، `RescheduleFollowUpDialog.tsx` و `FollowUpCard.tsx`.
+- فرض‌ها و وابستگی‌ها: Backend سه endpoint `PATCH /api/activities/:activityId`، `/complete` و `/reschedule` را با payloadهای اعلام‌شده پشتیبانی می‌کند. پاک‌کردن مقادیر اختیاری در edit با `null` انجام می‌شود و تاریخ‌ها به ISO تبدیل می‌شوند؛ هیچ completion یا reschedule محلی و جعلی وجود ندارد.
+- وضعیت بررسی: lint بدون خطا یا هشدار و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle در خروجی build باقی مانده است.

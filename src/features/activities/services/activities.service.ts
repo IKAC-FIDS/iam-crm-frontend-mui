@@ -4,6 +4,7 @@ import type {
   Activity,
   CreateActivityPayload,
   GetActivitiesParams,
+  UpdateActivityPayload,
 } from '../types/activity.types';
 
 interface PageMeta {
@@ -81,6 +82,14 @@ export const activitiesService = {
   createActivity: async (payload: CreateActivityPayload): Promise<Activity> => {
     const response = await axiosInstance.post<Activity | { data: Activity }>(
       '/activities',
+      payload,
+    );
+    return unwrap(response.data);
+  },
+
+  updateActivity: async (activityId: string, payload: UpdateActivityPayload): Promise<Activity> => {
+    const response = await axiosInstance.patch<Activity | { data: Activity }>(
+      `/activities/${activityId}`,
       payload,
     );
     return unwrap(response.data);

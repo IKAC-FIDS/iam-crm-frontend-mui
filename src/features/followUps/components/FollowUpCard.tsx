@@ -1,9 +1,14 @@
-import { Box, Button, Chip, Paper, Stack, Tooltip, Typography } from '@mui/material';
+import { useState } from 'react';
+import { Box, Button, Chip, Paper, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { getActivityTypeLabel } from '@/features/activities/types/activity.types';
 import { formatDateTime } from '@/features/companies/utils/companyDisplay';
 import type { FollowUpActivity } from '../types/followUp.types';
 import { FOLLOW_UP_STATUS_PRESENTATION, getFollowUpDueStatus } from '../utils/followUpDisplay';
+import { can } from '@/features/auth/utils/permissions';
+import { useAuthStore } from '@/store/authStore';
+import CompleteFollowUpDialog from './CompleteFollowUpDialog';
+import RescheduleFollowUpDialog from './RescheduleFollowUpDialog';
 
 function display(value?: string | null): string { return value?.trim() || '—'; }
 
@@ -12,6 +17,11 @@ export default function FollowUpCard({ followUp }: { followUp: FollowUpActivity 
   const status = getFollowUpDueStatus(followUp.nextActionDate);
   const presentation = FOLLOW_UP_STATUS_PRESENTATION[status];
   const companyId = followUp.company?.id ?? followUp.companyId;
+  const user = useAuthStore((state) => state.user);
+  const canComplete = can(user, 'follow-up:complete', ['ADMIN', 'MANAGER', 'REP']);
+  const canReschedule = can(user, 'follow-up:reschedule', ['ADMIN', 'MANAGER', 'REP']);
+  const [completeOpen, setCompleteOpen] = useState(false);
+  const [rescheduleOpen, setRescheduleOpen] = useState(false);
   return (
     <Paper variant="outlined" sx={{ p: { xs: 2, md: 2.5 } }}>
       <Stack spacing={2}>
@@ -34,10 +44,12 @@ export default function FollowUpCard({ followUp }: { followUp: FollowUpActivity 
         <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
           <Button size="small" onClick={() => navigate(`/companies/${companyId}`)}>مشاهده شرکت</Button>
           {followUp.personId && <Button size="small" onClick={() => navigate(`/companies/${companyId}`)}>مشاهده شخص</Button>}
-          <Tooltip title="زمان‌بندی مجدد نیازمند endpoint بک‌اند است."><span><Button size="small" disabled>زمان‌بندی مجدد</Button></span></Tooltip>
-          <Tooltip title="ثبت انجام پیگیری نیازمند endpoint بک‌اند است."><span><Button size="small" disabled>انجام شد</Button></span></Tooltip>
+          {canReschedule && <Button size="small" onClick={() => setRescheduleOpen(true)}>زمان‌بندی مجدد</Button>}
+          {canComplete && <Button size="small" variant="contained" onClick={() => setCompleteOpen(true)}>انجام شد</Button>}
         </Stack>
       </Stack>
+      {canComplete && <CompleteFollowUpDialog key={completeOpen ? followUp.id : 'complete-closed'} followUp={followUp} open={completeOpen} onClose={() => setCompleteOpen(false)} />}
+      {canReschedule && <RescheduleFollowUpDialog key={rescheduleOpen ? followUp.id : 'reschedule-closed'} followUp={followUp} open={rescheduleOpen} onClose={() => setRescheduleOpen(false)} />}
     </Paper>
   );
 }

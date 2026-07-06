@@ -1,6 +1,6 @@
 import axiosInstance from '@/lib/axios';
 import type { PaginatedResult } from '@/features/companies/types/company.types';
-import type { FollowUpActivity, GetDueFollowUpsParams } from '../types/followUp.types';
+import type { CompleteFollowUpPayload, FollowUpActivity, GetDueFollowUpsParams, RescheduleFollowUpPayload } from '../types/followUp.types';
 
 interface Envelope {
   data?: FollowUpActivity[];
@@ -28,5 +28,13 @@ export const followUpsService = {
   getDueFollowUps: async (params: GetDueFollowUpsParams): Promise<PaginatedResult<FollowUpActivity>> => {
     const response = await axiosInstance.get<FollowUpActivity[] | Envelope>('/activities/follow-ups/due', { params });
     return normalize(response.data, params);
+  },
+  completeFollowUp: async (activityId: string, payload: CompleteFollowUpPayload): Promise<FollowUpActivity> => {
+    const response = await axiosInstance.patch<FollowUpActivity | { data: FollowUpActivity }>(`/activities/${activityId}/complete`, payload);
+    return typeof response.data === 'object' && response.data !== null && 'data' in response.data ? response.data.data : response.data;
+  },
+  rescheduleFollowUp: async (activityId: string, payload: RescheduleFollowUpPayload): Promise<FollowUpActivity> => {
+    const response = await axiosInstance.patch<FollowUpActivity | { data: FollowUpActivity }>(`/activities/${activityId}/reschedule`, payload);
+    return typeof response.data === 'object' && response.data !== null && 'data' in response.data ? response.data.data : response.data;
   },
 };

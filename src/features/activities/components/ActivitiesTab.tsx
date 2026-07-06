@@ -9,12 +9,12 @@ import {
   Paper,
   Stack,
   TablePagination,
-  Tooltip,
   Typography,
 } from '@mui/material';
 import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
 import ActivityFormDialog from './ActivityFormDialog';
+import EditActivityDialog from './EditActivityDialog';
 import { useActivities } from '../hooks/useActivities';
 import type { Activity } from '../types/activity.types';
 import { getActivityTypeLabel } from '../types/activity.types';
@@ -57,7 +57,7 @@ const followUpPresentation: Record<FollowUpStatus, { label: string; color: 'erro
   upcoming: { label: 'پیش رو', color: 'info' },
 };
 
-function ActivityItem({ activity, isLast, canEdit }: { activity: Activity; isLast: boolean; canEdit: boolean }) {
+function ActivityItem({ activity, isLast, canEdit, onEdit }: { activity: Activity; isLast: boolean; canEdit: boolean; onEdit: (activity: Activity) => void }) {
   const followUpStatus = activity.nextActionDate
     ? getFollowUpStatus(activity.nextActionDate)
     : null;
@@ -129,9 +129,7 @@ function ActivityItem({ activity, isLast, canEdit }: { activity: Activity; isLas
           )}
         </Stack>
         {canEdit && (
-          <Tooltip title="ویرایش فعالیت نیازمند endpoint بک‌اند است.">
-            <span><Button size="small" disabled>ویرایش</Button></span>
-          </Tooltip>
+          <Button size="small" onClick={() => onEdit(activity)}>ویرایش</Button>
         )}
       </Stack>
       {!isLast && <Divider sx={{ my: 3 }} />}
@@ -147,6 +145,7 @@ export default function ActivitiesTab({ companyId }: ActivitiesTabProps) {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState<5 | 10 | 20>(10);
   const [formOpen, setFormOpen] = useState(false);
+  const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
   const activitiesQuery = useActivities({ companyId, page, limit });
 
   if (!canView) {
@@ -194,6 +193,7 @@ export default function ActivitiesTab({ companyId }: ActivitiesTabProps) {
               activity={activity}
               isLast={index === activities.length - 1}
               canEdit={canEdit}
+              onEdit={setEditingActivity}
             />
           ))}
           <TablePagination
@@ -219,6 +219,14 @@ export default function ActivitiesTab({ companyId }: ActivitiesTabProps) {
           companyId={companyId}
           open={formOpen}
           onClose={() => setFormOpen(false)}
+        />
+      )}
+      {canEdit && editingActivity && (
+        <EditActivityDialog
+          key={editingActivity.id}
+          activity={editingActivity}
+          open
+          onClose={() => setEditingActivity(null)}
         />
       )}
     </Box>

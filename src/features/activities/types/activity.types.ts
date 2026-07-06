@@ -56,6 +56,15 @@ export interface CreateActivityPayload {
   nextActionDate?: string;
 }
 
+export interface UpdateActivityPayload {
+  type?: ManualActivityType;
+  personId?: string | null;
+  notes?: string | null;
+  outcome?: string | null;
+  occurredAt?: string | null;
+  nextActionDate?: string | null;
+}
+
 export interface GetActivitiesParams {
   companyId: string;
   page: number;
