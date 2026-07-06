@@ -19,10 +19,16 @@ import { useAuthStore } from '@/store/authStore';
 import { useDebouncedValue } from '@/features/companies/hooks/useDebouncedValue';
 import { companyQueryKeys } from '@/features/companies/hooks/useCompanies';
 import ChangeCompanyStageDialog from '@/features/companies/components/ChangeCompanyStageDialog';
-import { COMPANY_PRIORITY_OPTIONS, COMPANY_STAGES } from '@/features/companies/types/company.types';
-import type { CompanyListItem, Priority } from '@/features/companies/types/company.types';
+import { COMPANY_PRIORITY_OPTIONS, isCompanyStage } from '@/features/companies/types/company.types';
+import type { CompanyListItem, PipelineStage, Priority } from '@/features/companies/types/company.types';
+import { usePipelineStages } from '@/features/pipelineConfig/hooks/usePipelineConfig';
+import type { PipelineStageConfig } from '@/features/pipelineConfig/types/pipelineConfig.types';
 import PipelineColumn from '../components/PipelineColumn';
 import { pipelineQueryKeys, usePipeline } from '../hooks/usePipeline';
+
+function isActiveConfiguredStage(stage: PipelineStageConfig): stage is PipelineStageConfig & { code: PipelineStage } {
+  return stage.isActive && isCompanyStage(stage.code);
+}
 
 export default function PipelinePage() {
   const user = useAuthStore((state) => state.user);
@@ -33,8 +39,10 @@ export default function PipelinePage() {
   const [priority, setPriority] = useState<Priority | ''>('');
   const [selectedCompany, setSelectedCompany] = useState<CompanyListItem | null>(null);
   const debouncedSearch = useDebouncedValue(search.trim(), 400);
-  const queries = usePipeline(priority || undefined, debouncedSearch || undefined);
-  const isInitialLoading = queries.every((query) => query.isLoading);
+  const stageConfig = usePipelineStages(canView);
+  const activeStages = useMemo(() => (stageConfig.data ?? []).filter(isActiveConfiguredStage), [stageConfig.data]);
+  const queries = usePipeline(activeStages.map((stage) => stage.code), priority || undefined, debouncedSearch || undefined);
+  const isInitialLoading = stageConfig.isLoading || (queries.length > 0 && queries.every((query) => query.isLoading));
   const hasError = queries.some((query) => query.isError);
   const isEmpty = queries.every((query) => !query.isLoading && (query.data?.data.length ?? 0) === 0);
   const isRefreshing = queries.some((query) => query.isFetching);
@@ -78,13 +86,15 @@ export default function PipelinePage() {
         </Stack>
       </Paper>
 
+      {stageConfig.isError && <Alert severity="error" sx={{ mb: 2 }}>خطا در دریافت تنظیمات مراحل پایپ‌لاین. ستون‌ها بدون تنظیمات Backend نمایش داده نمی‌شوند.</Alert>}
       {hasError && <Alert severity="warning" sx={{ mb: 2 }}>خطا در دریافت اطلاعات یک یا چند ستون پایپ‌لاین؛ سایر ستون‌ها همچنان قابل استفاده‌اند.</Alert>}
       {isInitialLoading && <Typography color="text.secondary" sx={{ mb: 2 }}>در حال دریافت پایپ‌لاین...</Typography>}
-      {isEmpty && !hasError && <Alert severity="info" sx={{ mb: 2 }}>هنوز شرکتی در پایپ‌لاین وجود ندارد.</Alert>}
+      {isEmpty && !hasError && activeStages.length > 0 && <Alert severity="info" sx={{ mb: 2 }}>هنوز شرکتی در پایپ‌لاین وجود ندارد.</Alert>}
+      {!stageConfig.isLoading && !stageConfig.isError && activeStages.length === 0 && <Alert severity="info" sx={{ mb: 2 }}>هیچ مرحله فعال و معتبری برای پایپ‌لاین تعریف نشده است.</Alert>}
 
       <Stack direction="row" spacing={2} sx={{ overflowX: 'auto', pb: 2, alignItems: 'stretch' }}>
-        {COMPANY_STAGES.map((stage, index) => (
-          <PipelineColumn key={stage} stage={stage} query={queries[index]} canChangeStage={canChangeStage} onChangeStage={setSelectedCompany} />
+        {activeStages.map((stage, index) => (
+          <PipelineColumn key={stage.id} stage={stage} query={queries[index]} canChangeStage={canChangeStage} onChangeStage={setSelectedCompany} />
         ))}
       </Stack>
       <Typography variant="caption" color="text.secondary">مجموع شرکت‌ها در مراحل: {totalCompanies.toLocaleString('fa-IR')}</Typography>

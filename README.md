@@ -236,6 +236,7 @@ export default defineConfig([
 - کاربران: `GET/POST /users`، `GET /users/:id` و PATCH مسیرهای role، activate و deactivate.
 - مجوزها: POST مسیرهای assign، bulk-assign و create و DELETE مسیرهای revoke و bulk-revoke با body به‌شکل `{ data: payload }`.
 - کتابخانه‌ها: CRUD استاندارد با `GET/POST /industries`، `/lead-sources`، `/pain-points`، `/use-cases`، `/personas` و `/lookup-options` و `PATCH/DELETE` روی مسیر `/:id` هر منبع.
+- تنظیمات پایپ‌لاین: `GET /pipeline/stages`، `PATCH /pipeline/stages/:id` و CRUD قوانین با `GET/POST /pipeline/transition-rules` و `PATCH/DELETE /pipeline/transition-rules/:id`.
 
 ### fix 000022 — اتصال چرخه عمر فعالیت و پیگیری به Backend
 
@@ -256,4 +257,11 @@ export default defineConfig([
 - موارد پیاده‌سازی‌شده: افزودن route محافظت‌شده `/admin/libraries` و گزینه «کتابخانه‌ها» به منوی Admin؛ ساخت شش تب صنایع، منابع جذب، نقاط درد، کاربردها، پرسوناها و گزینه‌های پایه؛ پیاده‌سازی فهرست، ایجاد، ویرایش، فعال/غیرفعال‌سازی از طریق ویرایش و حذف هر کتابخانه با API واقعی؛ نمایش وضعیت‌های loading، empty و error؛ جایگزینی ورودی‌های متنی صنعت و منبع جذب شرکت با dropdown شامل فقط آیتم‌های فعال؛ و جایگزینی ورودی‌های دپارتمان و پرسونا در فرم شخص با گزینه‌های فعال lookup بدون داده پیش‌فرض یا جعلی.
 - فایل‌های مهم: feature جدید `src/features/catalogs` شامل type، service، hook، dialog، tab و صفحه مدیریت؛ `src/features/companies/components/CompanyForm.tsx`، `src/features/people/components/PersonForm.tsx`، `src/components/dashboard/SideMenu.tsx`، `src/routes/index.tsx` و این README.
 - فرض‌ها و وابستگی‌ها: قرارداد frontend برای شش منبع از endpointهای `GET/POST /api/industries`، `/lead-sources`، `/pain-points`، `/use-cases`، `/personas` و `/lookup-options` و عملیات `PATCH/DELETE /api/:resource/:id` استفاده می‌کند؛ payload عمومی کتابخانه‌ها شامل `name`، `description` و `isActive` و payload گزینه پایه شامل `label`، `value`، `category`، `description` و `isActive` است. دسته‌های `department` و `personaTag` از lookup options استفاده می‌شوند. فیلد `seniorityLevel` چون در type و payload فعلی Person وجود ندارد، اضافه یا حدس زده نشده است. تست زنده CRUD به Backend در حال اجرا نیاز دارد و انجام نشده است.
+- وضعیت بررسی: lint بدون خطا یا هشدار و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle باقی مانده است.
+
+### fix 000025 — تنظیم مراحل پایپ‌لاین و قوانین انتقال
+
+- موارد پیاده‌سازی‌شده: افزودن route محافظت‌شده `/admin/pipeline` و گزینه «تنظیمات پایپ‌لاین» به منوی Admin؛ ساخت تب‌های مراحل و قوانین انتقال؛ نمایش و ویرایش عنوان، توضیح، ترتیب نمایش، رنگ، وضعیت فعال و مرحله پایانی؛ فهرست، ایجاد، ویرایش و حذف قوانین از مرحله، به مرحله، نقش و وضعیت مجاز/غیرمجاز؛ استفاده برد پایپ‌لاین از ترتیب، عنوان، مراحل فعال و رنگ‌های دریافت‌شده از Backend؛ و محدودکردن مقصدهای دیالوگ تغییر مرحله به قوانین مجاز دریافت‌شده برای مرحله فعلی و نقش کاربر، همراه با نمایش پیام خطای واقعی Backend برای انتقال نامعتبر.
+- فایل‌های مهم: feature جدید `src/features/pipelineConfig` شامل type، service، hook، dialogها، tabها و صفحه Admin؛ `src/features/pipeline/hooks/usePipeline.ts`، `src/features/pipeline/pages/PipelinePage.tsx`، `src/features/pipeline/components/PipelineColumn.tsx`، `src/features/companies/components/ChangeCompanyStageDialog.tsx`، `src/components/dashboard/SideMenu.tsx`، `src/routes/index.tsx` و این README.
+- فرض‌ها و وابستگی‌ها: قرارداد frontend به `GET/PATCH /api/pipeline/stages` و `GET/POST/PATCH/DELETE /api/pipeline/transition-rules` وابسته است. کد stage باید با enum فعلی Company stage سازگار باشد؛ stageهای ناشناخته یا غیرفعال در برد نمایش داده نمی‌شوند. مقصد انتقال فقط از ruleهای `allowed=true` با `fromStage` و `role` منطبق استخراج می‌شود و در خطای دریافت rule هیچ مجوز محلی یا جعلی ساخته نمی‌شود. تست زنده تنظیمات و انتقال به Backend در حال اجرا نیاز دارد و انجام نشده است.
 - وضعیت بررسی: lint بدون خطا یا هشدار و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle باقی مانده است.

@@ -1,7 +1,6 @@
 import { useQueries } from '@tanstack/react-query';
 import { companiesService } from '@/features/companies/services/companies.service';
-import { COMPANY_STAGES } from '@/features/companies/types/company.types';
-import type { Priority } from '@/features/companies/types/company.types';
+import type { PipelineStage, Priority } from '@/features/companies/types/company.types';
 
 export const pipelineQueryKeys = {
   all: ['pipeline'] as const,
@@ -12,9 +11,9 @@ export const pipelineQueryKeys = {
   ] as const,
 };
 
-export function usePipeline(priority?: Priority, search?: string) {
+export function usePipeline(stages: PipelineStage[], priority?: Priority, search?: string) {
   return useQueries({
-    queries: COMPANY_STAGES.map((stage) => ({
+    queries: stages.map((stage) => ({
       queryKey: pipelineQueryKeys.column(stage, priority, search),
       queryFn: () => companiesService.getCompanies({
         stage,

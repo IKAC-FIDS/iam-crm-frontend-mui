@@ -14,11 +14,10 @@ import {
   Select,
 } from '@mui/material';
 import { useChangeCompanyStage } from '../hooks/useCompanies';
-import {
-  COMPANY_STAGE_OPTIONS,
-  isCompanyStage,
-} from '../types/company.types';
+import { isCompanyStage } from '../types/company.types';
 import type { PipelineStage } from '../types/company.types';
+import { usePipelineStages, useTransitionRules } from '@/features/pipelineConfig/hooks/usePipelineConfig';
+import { useAuthStore } from '@/store/authStore';
 
 interface ChangeCompanyStageDialogProps {
   companyId: string;
@@ -40,13 +39,14 @@ export default function ChangeCompanyStageDialog({
   onSuccess,
 }: ChangeCompanyStageDialogProps) {
   const changeStage = useChangeCompanyStage(companyId);
-  const [stage, setStage] = useState<PipelineStage | ''>(
-    currentStage && isCompanyStage(currentStage) ? currentStage : '',
-  );
+  const role = useAuthStore((state) => state.user?.role);
+  const stages = usePipelineStages(open);
+  const rules = useTransitionRules(open);
+  const [stage, setStage] = useState<PipelineStage | ''>('');
 
   const handleClose = () => {
     if (changeStage.isPending) return;
-    setStage(currentStage && isCompanyStage(currentStage) ? currentStage : '');
+    setStage('');
     changeStage.reset();
     onOpenChange(false);
   };
@@ -66,6 +66,8 @@ export default function ChangeCompanyStageDialog({
   const errorMessage = axios.isAxiosError<ApiErrorBody>(changeStage.error)
     ? changeStage.error.response?.data?.message
     : undefined;
+  const allowedCodes = new Set((rules.data ?? []).filter((rule) => rule.allowed && rule.fromStage === currentStage && rule.role === role).map((rule) => rule.toStage));
+  const targets = (stages.data ?? []).filter((item) => item.isActive && isCompanyStage(item.code) && item.code !== currentStage && allowedCodes.has(item.code));
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="xs">
@@ -76,7 +78,9 @@ export default function ChangeCompanyStageDialog({
             {errorMessage || 'خطا در تغییر مرحله شرکت.'}
           </Alert>
         )}
-        <FormControl fullWidth>
+        {(stages.isError || rules.isError) && <Alert severity="error" sx={{ mb: 2 }}>دریافت مراحل مجاز از Backend با خطا مواجه شد. تغییر مرحله تا دریافت قوانین معتبر غیرفعال است.</Alert>}
+        {!stages.isLoading && !rules.isLoading && !stages.isError && !rules.isError && targets.length === 0 && <Alert severity="info" sx={{ mb: 2 }}>برای نقش شما انتقال مجازی از مرحله فعلی تعریف نشده است.</Alert>}
+        <FormControl fullWidth disabled={stages.isLoading || rules.isLoading || stages.isError || rules.isError}>
           <InputLabel id="change-company-stage-label">مرحله فروش</InputLabel>
           <Select
             labelId="change-company-stage-label"
@@ -87,8 +91,8 @@ export default function ChangeCompanyStageDialog({
               setStage(isCompanyStage(value) ? value : '');
             }}
           >
-            {COMPANY_STAGE_OPTIONS.map((option) => (
-              <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+            {targets.map((option) => (
+              <MenuItem key={option.id} value={option.code}>{option.label}</MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -98,7 +102,7 @@ export default function ChangeCompanyStageDialog({
         <Button
           variant="contained"
           onClick={handleSubmit}
-          disabled={!stage || changeStage.isPending || stage === currentStage}
+          disabled={!stage || changeStage.isPending || stage === currentStage || !targets.some((item) => item.code === stage)}
         >
           {changeStage.isPending ? 'در حال ثبت...' : 'ثبت تغییر مرحله'}
         </Button>

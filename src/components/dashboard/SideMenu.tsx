@@ -40,6 +40,7 @@ const menuItems = [
   { text: 'کاربران', icon: <PeopleIcon />, path: '/admin/users', permission: 'user:manage' },
   { text: 'مجوزها', icon: <SecurityIcon />, path: '/admin/permissions', permission: 'permission:manage' },
   { text: 'کتابخانه‌ها', icon: <LibraryBooksIcon />, path: '/admin/libraries', permission: 'catalog:manage' },
+  { text: 'تنظیمات پایپ‌لاین', icon: <ViewKanbanIcon />, path: '/admin/pipeline', permission: 'pipeline:manage' },
 ];
 
 interface SideMenuProps {

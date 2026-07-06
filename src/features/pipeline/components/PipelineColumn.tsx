@@ -1,11 +1,11 @@
 import { Alert, Box, CircularProgress, Paper, Stack, Typography } from '@mui/material';
 import type { UseQueryResult } from '@tanstack/react-query';
 import type { CompanyListItem, PaginatedResult, PipelineStage } from '@/features/companies/types/company.types';
-import { getStageLabel } from '@/features/companies/utils/companyDisplay';
+import type { PipelineStageConfig } from '@/features/pipelineConfig/types/pipelineConfig.types';
 import PipelineCompanyCard from './PipelineCompanyCard';
 
 interface Props {
-  stage: PipelineStage;
+  stage: PipelineStageConfig & { code: PipelineStage };
   query: UseQueryResult<PaginatedResult<CompanyListItem>, Error>;
   canChangeStage: boolean;
   onChangeStage: (company: CompanyListItem) => void;
@@ -15,9 +15,9 @@ export default function PipelineColumn({ stage, query, canChangeStage, onChangeS
   const companies = query.data?.data ?? [];
   const total = query.data?.meta.total ?? companies.length;
   return (
-    <Paper sx={{ width: 310, minWidth: 310, p: 2, bgcolor: 'background.default', alignSelf: 'stretch' }}>
+    <Paper sx={{ width: 310, minWidth: 310, p: 2, bgcolor: 'background.default', alignSelf: 'stretch', borderTop: 4, borderTopColor: stage.color || 'primary.main' }}>
       <Stack spacing={2} sx={{ height: '100%' }}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>{getStageLabel(stage)} — {total.toLocaleString('fa-IR')}</Typography>
+        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>{stage.label} — {total.toLocaleString('fa-IR')}</Typography>
         {query.isLoading ? (
           <Stack sx={{ minHeight: 140, alignItems: 'center', justifyContent: 'center' }} spacing={1}><CircularProgress size={26} /><Typography variant="body2">در حال دریافت...</Typography></Stack>
         ) : query.isError ? (
