@@ -359,6 +359,7 @@ Frontend visibility is not a replacement for backend authorization. Backend perm
 | `/admin/users`          | Admin user management                        |
 | `/admin/permissions`    | Admin permission management                  |
 | `/admin/libraries`      | Admin libraries and catalogs                 |
+| `/admin/audit-logs`     | Admin audit log viewer                        |
 | `/admin/pipeline`       | Admin pipeline settings and transition rules |
 
 All operational routes are protected.
@@ -582,6 +583,14 @@ POST /admin/permissions/assign
 DELETE /admin/permissions/revoke
 POST /admin/permissions/bulk-assign
 POST /admin/permissions/bulk-revoke
+```
+
+---
+
+### Audit Logs
+
+```http
+GET /admin/audit-logs
 ```
 
 ---
@@ -1976,6 +1985,45 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * `GET /api/companies` accepts `archiveStatus` values `ACTIVE`, `ARCHIVED`, and `ALL`; omitted frontend values are normalized to `ACTIVE`.
 * Company responses identify archive state through `isArchived`, `archived`, or `archivedAt`, and may return `archiveReason`.
 * Live archive, restore, and archived-filter testing requires the backend to be running and was not performed.
+
+**Verification status:**
+
+* Lint passed without errors or warnings.
+* Production build passed.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
+## fix 000030 — Audit log
+
+**Implemented items:**
+
+* Added protected `/admin/audit-logs` route and Persian «لاگ تغییرات» navigation item.
+* Added a dedicated audit-log type, service, React Query hook, and page.
+* Loaded audit events from real `GET /api/admin/audit-logs` with server-side pagination.
+* Added actor, entity type, entity ID, action, and date-range filters.
+* Populated the actor filter from the real users endpoint without fake users.
+* Added date, actor, action, entity type, entity ID, and metadata columns.
+* Added loading, empty, error, and invalid-date-range states.
+* Safely displayed metadata as escaped preformatted text, with JSON parsing used only for readable formatting.
+* Supported direct and paginated `data` or `items` response envelopes.
+
+**Important files:**
+
+* `src/features/auditLogs/types/auditLog.types.ts`
+* `src/features/auditLogs/services/auditLogs.service.ts`
+* `src/features/auditLogs/hooks/useAuditLogs.ts`
+* `src/features/auditLogs/pages/AuditLogsPage.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+* `src/routes/index.tsx`
+* `README.md`
+
+**Assumptions and dependencies:**
+
+* Audit logs use `GET /api/admin/audit-logs` with `page`, `limit`, `actorId`, `entityType`, `entityId`, `action`, `startDate`, and `endDate` query parameters.
+* Audit records may use `createdAt` or `timestamp`, nested `actor`, `actorName`, or `actorId`, and arbitrary JSON-compatible metadata.
+* Access uses `audit-log:view` with ADMIN fallback.
+* Live filters, pagination, access scope, and response-shape testing requires the backend to be running and was not performed.
 
 **Verification status:**
 

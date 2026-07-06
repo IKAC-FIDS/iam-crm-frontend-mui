@@ -14,6 +14,7 @@ import AssessmentIcon from '@mui/icons-material/Assessment';
 import PeopleIcon from '@mui/icons-material/People';
 import SecurityIcon from '@mui/icons-material/Security';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import HistoryIcon from '@mui/icons-material/History';
 import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -42,6 +43,7 @@ const menuItems = [
   { text: 'مجوزها', icon: <SecurityIcon />, path: '/admin/permissions', permission: 'permission:manage' },
   { text: 'کتابخانه‌ها', icon: <LibraryBooksIcon />, path: '/admin/libraries', permission: 'catalog:manage' },
   { text: 'تنظیمات پایپ‌لاین', icon: <ViewKanbanIcon />, path: '/admin/pipeline', permission: 'pipeline:manage' },
+  { text: 'لاگ تغییرات', icon: <HistoryIcon />, path: '/admin/audit-logs', permission: 'audit-log:view' },
 ];
 
 interface SideMenuProps {
