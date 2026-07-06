@@ -2273,6 +2273,51 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 ---
 
+## fix 000037 — انتقال پایپ‌لاین فروش از شرکت‌ها به فرصت‌ها
+
+**موارد پیاده‌سازی‌شده:**
+
+* ایجاد feature مستقل `opportunities` شامل typeها، service، hookهای React Query، فرم ایجاد/ویرایش، تغییر مرحله، تغییر مالک، کارت فرصت و تب فرصت‌های شرکت.
+* انتقال برد `/pipeline` از queryهای مرحله‌ای شرکت‌ها به `GET /api/opportunities?stageId=...` بر اساس شناسه مراحل داینامیک بک‌اند.
+* نمایش عنوان فرصت، شرکت مرتبط، مالک، اولویت، تاریخ بسته‌شدن مورد انتظار و ارزش تخمینی روی کارت‌های پایپ‌لاین.
+* جایگزینی تغییر مرحله شرکت در برد با `PATCH /api/opportunities/:id/stage` و payload مبتنی بر `stageId`.
+* افزودن تب «فرصت‌ها» به جزئیات شرکت بدون حذف یا تغییر تب‌های افراد، فعالیت‌ها، کال کارت، شعب و کانال‌های اجتماعی.
+* افزودن ایجاد شرکت‌محور با `POST /api/companies/:companyId/opportunities`، فهرست شرکت‌محور، ویرایش، تغییر مالک، بایگانی و بازیابی فرصت.
+* افزودن انتخاب اختیاری فرصت هنگام ثبت فعالیت؛ فعالیت سطح شرکت همچنان بدون `opportunityId` قابل ثبت است.
+* تغییر برچسب شاخص‌های پایپ‌لاین و نرخ تبدیل در داشبورد و گزارش‌ها از «شرکت» به «فرصت»، بدون تغییر کلیدهای legacy پاسخ بک‌اند.
+* استفاده از permissionهای `opportunity:view`، `opportunity:create`، `opportunity:update`، `opportunity:change-stage`، `opportunity:change-owner`، `opportunity:archive` و `opportunity:restore` با fallback داخلی ADMIN.
+* invalidation کش‌های opportunities، pipeline، company-opportunities، جزئیات شرکت و reports پس از mutationها.
+* برد تکراری یا داده فرصت ساختگی اضافه نشد؛ کنترل‌های legacy مرحله شرکت فقط در metadata جزئیات شرکت برای سازگاری باقی ماندند و برد جدید از API شرکت برای تغییر مرحله استفاده نمی‌کند.
+
+**فایل‌های مهم:**
+
+* `src/features/opportunities/`
+* `src/features/pipeline/`
+* `src/features/companies/pages/CompanyDetailsPage.tsx`
+* `src/features/activities/components/ActivityForm.tsx`
+* `src/features/activities/components/ActivityFormDialog.tsx`
+* `src/features/activities/types/activity.types.ts`
+* `src/components/dashboard/MainGrid.tsx`
+* `src/features/reports/components/PipelineSummarySection.tsx`
+* `src/features/reports/components/ConversionRatesSection.tsx`
+* `README.md`
+
+**فرضیات و وابستگی‌ها:**
+
+* قراردادها مستقیماً از backend fix 000012 در commit `ab501e44` و مهاجرت مراحل داینامیک fix 000013 در commit `3297cfec` بررسی شدند؛ به همین دلیل frontend برای فیلتر و mutation مرحله از `stageId` استفاده می‌کند.
+* گزارش‌های بک‌اند اکنون بر اساس Opportunity محاسبه می‌شوند، اما برخی کلیدهای response برای سازگاری هنوز نام‌هایی مانند `totalCompanies` دارند و frontend کلید wire را تغییر نداده است.
+* endpointهای استفاده‌شده شامل `/opportunities`، `/opportunities/:id`، actionهای `stage`، `owner`، `archive` و `restore` و `/companies/:companyId/opportunities` هستند.
+* تست زنده کامل به نشست احراز هویت‌شده، permissionهای seedشده و داده فرصت در بک‌اند نیاز دارد.
+
+**وضعیت بررسی:**
+
+* Lint بدون خطا یا هشدار پاس شد.
+* build نسخه production پاس شد.
+* هشدار غیرمسدودکننده بزرگ‌بودن bundle همچنان باقی است.
+* backend محلی در زمان بررسی برای `GET /api/opportunities` پاسخ `404` داد؛ بنابراین تست زنده برد، CRUD، تغییر مرحله/مالک، بایگانی/بازیابی و اتصال فعالیت انجام نشد و اجرای build جدید backend لازم است.
+
+---
+
 **Built with ❤️ for sales team**
 
 ---

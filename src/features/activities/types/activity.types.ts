@@ -33,6 +33,7 @@ export interface ActivityUser {
 export interface Activity {
   id: string;
   companyId: string;
+  opportunityId?: string | null;
   personId?: string | null;
   userId?: string | null;
   type: ActivityType;
@@ -48,6 +49,7 @@ export interface Activity {
 
 export interface CreateActivityPayload {
   companyId: string;
+  opportunityId?: string;
   personId?: string;
   type: ManualActivityType;
   notes?: string;

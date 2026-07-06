@@ -1,34 +1,6 @@
 import { Alert, Box, CircularProgress, Paper, Stack, Typography } from '@mui/material';
 import type { UseQueryResult } from '@tanstack/react-query';
-import type { CompanyListItem, PaginatedResult, PipelineStage } from '@/features/companies/types/company.types';
+import type { Opportunity, OpportunityPage } from '@/features/opportunities/types/opportunity.types';
 import type { PipelineStageConfig } from '@/features/pipelineConfig/types/pipelineConfig.types';
-import PipelineCompanyCard from './PipelineCompanyCard';
-
-interface Props {
-  stage: PipelineStageConfig & { code: PipelineStage };
-  query: UseQueryResult<PaginatedResult<CompanyListItem>, Error>;
-  canChangeStage: boolean;
-  onChangeStage: (company: CompanyListItem) => void;
-}
-
-export default function PipelineColumn({ stage, query, canChangeStage, onChangeStage }: Props) {
-  const companies = query.data?.data ?? [];
-  const total = query.data?.meta.total ?? companies.length;
-  return (
-    <Paper sx={{ width: 310, minWidth: 310, p: 2, bgcolor: 'background.default', alignSelf: 'stretch', borderTop: 4, borderTopColor: stage.color || 'primary.main' }}>
-      <Stack spacing={2} sx={{ height: '100%' }}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>{stage.label} — {total.toLocaleString('fa-IR')}</Typography>
-        {query.isLoading ? (
-          <Stack sx={{ minHeight: 140, alignItems: 'center', justifyContent: 'center' }} spacing={1}><CircularProgress size={26} /><Typography variant="body2">در حال دریافت...</Typography></Stack>
-        ) : query.isError ? (
-          <Alert severity="error">خطا در دریافت این مرحله.</Alert>
-        ) : companies.length ? (
-          <Stack spacing={1.5}>{companies.map((company) => <PipelineCompanyCard key={company.id} company={company} canChangeStage={canChangeStage} onChangeStage={onChangeStage} />)}</Stack>
-        ) : (
-          <Box sx={{ py: 4, textAlign: 'center' }}><Typography variant="body2" color="text.secondary">شرکتی در این مرحله نیست.</Typography></Box>
-        )}
-        {total > companies.length && <Typography variant="caption" color="text.secondary">نمایش {companies.length.toLocaleString('fa-IR')} مورد از {total.toLocaleString('fa-IR')}</Typography>}
-      </Stack>
-    </Paper>
-  );
-}
+import OpportunityCard from '@/features/opportunities/components/OpportunityCard';
+export default function PipelineColumn({ stage, query, canChangeStage, onChangeStage }: { stage: PipelineStageConfig; query: UseQueryResult<OpportunityPage, Error>; canChangeStage: boolean; onChangeStage: (item: Opportunity) => void }) { const items = query.data?.data ?? []; const total = query.data?.meta.total ?? items.length; return <Paper sx={{ width: 310, minWidth: 310, p: 2, bgcolor: 'background.default', borderTop: 4, borderTopColor: stage.color || 'primary.main' }}><Stack spacing={2}><Typography variant="subtitle1" sx={{ fontWeight: 700 }}>{stage.label} â€” {total.toLocaleString('fa-IR')}</Typography>{query.isLoading ? <Stack sx={{ alignItems: 'center', py: 5 }}><CircularProgress size={26} /></Stack> : query.isError ? <Alert severity="error">Ø®Ø·Ø§ Ø¯Ø± Ø¯Ø±ÛŒØ§ÙØª ÙØ±ØµØªâ€ŒÙ‡Ø§ÛŒ Ø§ÛŒÙ† Ù…Ø±Ø­Ù„Ù‡.</Alert> : items.length ? <Stack spacing={1.5}>{items.map((item) => <OpportunityCard key={item.id} opportunity={item} canChangeStage={canChangeStage} onChangeStage={onChangeStage} />)}</Stack> : <Box sx={{ py: 4, textAlign: 'center' }}><Typography color="text.secondary">ÙØ±ØµØªÛŒ Ø¯Ø± Ø§ÛŒÙ† Ù…Ø±Ø­Ù„Ù‡ Ù†ÛŒØ³Øª.</Typography></Box>}</Stack></Paper>; }

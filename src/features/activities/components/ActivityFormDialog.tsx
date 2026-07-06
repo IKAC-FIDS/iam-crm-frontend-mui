@@ -2,6 +2,7 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogTitle } from '@mui/material';
 import { usePeople } from '@/features/people/hooks/usePeople';
+import { useCompanyOpportunities } from '@/features/opportunities/hooks/useOpportunities';
 import ActivityForm from './ActivityForm';
 import { useCreateActivity } from '../hooks/useActivities';
 import type { CreateActivityPayload } from '../types/activity.types';
@@ -24,6 +25,7 @@ export default function ActivityFormDialog({
 }: ActivityFormDialogProps) {
   const createActivity = useCreateActivity(companyId);
   const peopleQuery = usePeople({ companyId, page: 1, limit: 100 });
+  const opportunitiesQuery = useCompanyOpportunities(companyId, { page: 1, limit: 100 }, open);
 
   const handleClose = () => {
     if (createActivity.isPending) return;
@@ -37,6 +39,7 @@ export default function ActivityFormDialog({
         companyId,
         type: values.type === 'STAGE_CHANGE' ? 'NOTE' : values.type,
         personId: values.personId ?? undefined,
+        opportunityId: values.opportunityId ?? undefined,
         occurredAt: values.occurredAt ?? undefined,
         notes: values.notes ?? undefined,
         outcome: values.outcome ?? undefined,
@@ -62,6 +65,7 @@ export default function ActivityFormDialog({
         <ActivityForm
           mode="create"
           people={peopleQuery.data?.data}
+          opportunities={opportunitiesQuery.data?.data}
           isPeopleLoading={peopleQuery.isLoading}
           isSubmitting={createActivity.isPending}
           errorMessage={createActivity.isError
