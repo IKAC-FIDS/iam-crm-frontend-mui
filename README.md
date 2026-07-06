@@ -1,274 +1,1873 @@
-# React + TypeScript + Vite
+# 🚀 IAM CRM Frontend MUI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend application for the **IAM CRM / Sales Process Management System**.
 
-Currently, two official plugins are available:
+This application provides a Persian, RTL, role-aware user interface for B2B sales operations, including company management, people/contact management, activities, follow-ups, sales pipeline, call cards, reports, admin users, permissions, libraries, and pipeline configuration.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+The project is built with **React**, **TypeScript**, **Vite**, **MUI**, **TanStack React Query**, **Zustand**, **Axios**, **React Hook Form**, and **Zod**.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🔗 Related Repositories
 
-## Expanding the ESLint configuration
+| Repository   | URL                                               |
+| ------------ | ------------------------------------------------- |
+| **Backend**  | https://github.com/IKAC-FIDS/iam-crm-backend      |
+| **Frontend** | https://github.com/IKAC-FIDS/iam-crm-frontend-mui |
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+The backend must be running before testing the main frontend flows.
+The frontend communicates with the backend through the `/api` routes.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🎯 Project Goal
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+The goal of this frontend is to provide a production-ready CRM interface for the sales team.
 
+Users can:
+
+* Manage companies and leads
+* Manage people, contacts, phone numbers, emails, and social profiles
+* Record and manage activities
+* Track due follow-ups
+* View and operate the sales pipeline
+* Create and maintain company Call Cards
+* Manage company branches and social channels
+* View dashboards and reports
+* Manage users and permissions
+* Manage libraries and base data
+* Configure pipeline stages and transition rules
+
+---
+
+## ✨ Key Features
+
+* **JWT authentication**
+
+  * Persian login page
+  * Token persistence
+  * Automatic token injection into API requests
+  * Automatic logout on unauthorized responses
+  * Auth state managed with Zustand
+
+* **Persian RTL interface**
+
+  * `lang="fa"` and `dir="rtl"`
+  * RTL layouts
+  * Right-side navigation drawer
+  * Persian labels, badges, statuses, and messages
+  * Shared Iran province selector
+
+* **Dashboard**
+
+  * Real backend-driven metrics
+  * Pipeline, company, conversion, and recent activity metrics
+  * Role-aware visibility
+
+* **Companies**
+
+  * Company list with search, filters, and server-side pagination
+  * Create, view, and edit company
+  * Change stage
+  * Change priority
+  * Assign owner
+  * Archive/restore support when available in backend
+  * Loading, empty, and error states
+
+* **Company details**
+
+  * Overview tab
+  * People tab
+  * Activities tab
+  * Call Card tab
+  * Branches tab
+  * Social Channels tab
+
+* **People and contacts**
+
+  * Create, edit, and delete people
+  * Person detail drawer
+  * Manage contact methods
+  * Manage person social profiles
+  * Zod validation
+  * Real API integration without fake local data
+
+* **Global People Directory**
+
+  * Protected `/people` route
+  * Server-side pagination
+  * Search and filters
+  * Company, owner, team, department, persona, primary contact, email, and phone filters
+
+* **Activities and follow-ups**
+
+  * Create company activities
+  * Timeline view
+  * Edit activity
+  * Complete follow-up
+  * Reschedule follow-up
+  * Due follow-up page
+  * Automatic query invalidation after mutations
+
+* **Follow-ups**
+
+  * Protected `/follow-ups` route
+  * Due follow-up list
+  * Summary cards
+  * Current-page client-side tabs for all, overdue, today, and future follow-ups
+  * Complete and reschedule actions when backend endpoints are available
+
+* **Call Cards**
+
+  * View, create, and edit company Call Cards
+  * Select real company people as primary/secondary contacts
+  * Manage strategy, opener text, discovery questions, objections, responses, qualification, and follow-up content
+  * Backend suggestions preview
+  * Apply confirmed suggestions without auto-saving
+  * Copy email and LinkedIn message text
+
+* **Company branches**
+
+  * Branch list
+  * Create, edit, and delete branch
+  * Shared Iran province selector for location
+  * Form validation and safe payload cleanup
+
+* **Company social channels**
+
+  * Social channel list
+  * Create, edit, and delete company social channels
+  * Safe display of valid external links
+  * Platform enum support based on backend contract
+
+* **Sales pipeline**
+
+  * Protected `/pipeline` route
+  * Horizontal pipeline board
+  * Companies grouped by stage
+  * Search and priority filter
+  * Stage change dialog
+  * Backend-driven stage config and transition rules when available
+
+* **Reports**
+
+  * Protected `/reports` route
+  * Pipeline summary
+  * Conversion rates
+  * Stage duration report
+  * Activity report
+  * Activity report by user
+  * Pipeline report by owner
+  * Advanced filter panel
+
+* **Admin users**
+
+  * Protected `/admin/users` route
+  * User list
+  * Create user
+  * Change role/team
+  * Activate/deactivate user
+  * Prevent deactivating the current user
+
+* **Admin permissions**
+
+  * Protected `/admin/permissions` route
+  * Create permission
+  * Assign/revoke permission
+  * Bulk assign/bulk revoke
+  * Permission matrix support when backend provides it
+  * No fake permission state when backend does not provide current role state
+
+* **Admin libraries**
+
+  * Protected `/admin/libraries` route
+  * Industries
+  * Lead sources
+  * Pain points
+  * Use cases
+  * Personas
+  * Lookup options
+  * Uses active catalog options in company and person forms
+
+* **Admin pipeline settings**
+
+  * Protected `/admin/pipeline` route
+  * Pipeline stage configuration
+  * Transition rule management
+  * Stage order, label, color, active status, and terminal status support
+  * Allowed transition filtering in stage-change dialogs
+
+---
+
+## 🧱 Tech Stack
+
+| Tool                                        | Purpose                                                       |
+| ------------------------------------------- | ------------------------------------------------------------- |
+| **React**                                   | UI framework                                                  |
+| **TypeScript**                              | Type safety                                                   |
+| **Vite**                                    | Dev server and production build                               |
+| **MUI**                                     | UI component library                                          |
+| **MUI X Data Grid / Date Pickers / Charts** | Tables, date inputs, and data display                         |
+| **React Router**                            | Routing and protected routes                                  |
+| **TanStack React Query**                    | Server-state management, caching, mutations, and invalidation |
+| **Axios**                                   | API client                                                    |
+| **Zustand**                                 | Auth state management                                         |
+| **React Hook Form**                         | Form state management                                         |
+| **Zod**                                     | Form validation                                               |
+| **Sonner**                                  | Toast notifications                                           |
+| **Day.js**                                  | Date handling                                                 |
+
+---
+
+## 🚀 Quick Start
+
+### 1. Install dependencies
+
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Configure environment variables
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Create a `.env` file in the project root.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```env
+VITE_API_URL=http://localhost:3000/api
 ```
 
-## تاریخچه Fixها
+The shared Axios instance reads `VITE_API_URL`.
 
-### fix 000001 — رفع خطاهای Build و مشکلات اولیه داشبورد
+If it is not set, the default API base URL is:
 
-- موارد پیاده‌سازی‌شده: اصلاح type importهای MUI، هماهنگ‌سازی نوع سفارشی‌سازی Date Picker، حذف importهای بدون استفاده، type-safe کردن خطای ورود، استفاده از `mutateAsync` در ورود، کنترل state صفحه‌بندی DataGrid، فعال‌سازی مسیر شرکت‌ها و حذف گزینه‌های منوی فاقد صفحه.
-- فایل‌های مهم: `src/features/auth/hooks/useAuth.ts`، `src/features/auth/pages/LoginPage.tsx`، `src/components/dashboard/MainGrid.tsx`، `src/components/dashboard/SideMenu.tsx`، `src/routes/index.tsx`، فایل‌های `src/theme/customizations/*` و فایل‌های TypeScript config.
-- فرض‌ها و وابستگی‌ها: جزئیات از diff کامیت `2bd29cc` استنباط شده‌اند؛ وابستگی Backend تازه‌ای در این کامیت قابل تشخیص نیست.
-- وضعیت بررسی: نتیجه اجرای lint یا build در تاریخچه Git ثبت نشده است.
+```text
+http://localhost:3000/api
+```
 
-### fix 000002 — تکمیل چیدمان RTL و تنظیمات فارسی سند
+### 3. Start development server
 
-- موارد پیاده‌سازی‌شده: تنظیم `lang="fa"` و `dir="rtl"`، اعمال جهت و تراز RTL در سطح سند و layoutها، انتقال منوی کناری به سمت راست و جایگزینی فاصله‌ها و borderهای وابسته به جهت با ویژگی‌های منطقی CSS.
-- فایل‌های مهم: `index.html`، `src/main.tsx`، `src/index.css`، `src/layouts/DashboardLayout.tsx`، `src/layouts/MainLayout.tsx`، `src/components/dashboard/SideMenu.tsx` و `src/features/auth/pages/LoginPage.tsx`.
-- فرض‌ها و وابستگی‌ها: این جمع‌بندی بر اساس diff کامیت `95ea7b1` است؛ وابستگی Backend تازه‌ای دیده نمی‌شود.
-- وضعیت بررسی: نتیجه اجرای lint یا build در تاریخچه Git ثبت نشده است.
+```bash
+npm run dev
+```
 
-### fix 000003 — واکنش‌گرا کردن داشبورد و ناوبری
+The frontend usually runs at:
 
-- موارد پیاده‌سازی‌شده: افزودن منوی موقت موبایل و دکمه بازکردن آن، حفظ Drawer دائمی در نمایشگرهای بزرگ، اصلاح فاصله محتوای زیر AppBar و واکنش‌گرا کردن padding، کارت‌های داشبورد، جدول فعالیت‌ها و فرم ورود.
-- فایل‌های مهم: `src/components/dashboard/AppNavbar.tsx`، `src/components/dashboard/SideMenu.tsx`، `src/components/dashboard/MainGrid.tsx`، `src/layouts/DashboardLayout.tsx` و `src/features/auth/pages/LoginPage.tsx`.
-- فرض‌ها و وابستگی‌ها: این جمع‌بندی از diff کامیت `dbd4298` استخراج شده است؛ وابستگی Backend تازه‌ای قابل تشخیص نیست.
-- وضعیت بررسی: نتیجه اجرای lint یا build در تاریخچه Git ثبت نشده است.
+```text
+http://localhost:5173
+```
 
-### fix 000004 — پیاده‌سازی فهرست، جزئیات و ایجاد شرکت
+### 4. Production build
 
-- موارد پیاده‌سازی‌شده: ساخت فهرست شرکت‌ها با جست‌وجوی debounce، فیلتر مرحله، اولویت و مالک، صفحه‌بندی سمت سرور و وضعیت‌های loading/error؛ افزودن فرم ایجاد شرکت با Zod؛ ساخت صفحه جزئیات؛ تعریف typeها، service و hookهای React Query؛ افزودن route جزئیات شرکت و invalidation کش پس از ایجاد.
-- فایل‌های مهم: `src/features/companies/components/CreateCompanyDialog.tsx`، `src/features/companies/pages/CompaniesPage.tsx`، `src/features/companies/pages/CompanyDetailsPage.tsx`، `src/features/companies/services/companies.service.ts`، `src/features/companies/hooks/useCompanies.ts`، `src/features/companies/hooks/useDebouncedValue.ts`، `src/features/companies/types/company.types.ts` و `src/routes/index.tsx`.
-- فرض‌ها و وابستگی‌ها: به APIهای فهرست، جزئیات و ایجاد شرکت وابسته است. گزینه فیلتر مالک مشخص و حذف شرکت در UI این نسخه غیرفعال بوده‌اند. جزئیات از diff کامیت `ccc44f2` استخراج شده‌اند.
-- وضعیت بررسی: نتیجه اجرای lint یا build در تاریخچه Git ثبت نشده است.
+```bash
+npm run build
+```
 
-### fix 000005 — استخراج مالک شرکت از احراز هویت و انتخاب استان ایران
+### 5. Preview production build
 
-- موارد پیاده‌سازی‌شده: حذف ورودی دستی مالک از فرم ایجاد شرکت، ارسال شناسه کاربر واردشده به‌عنوان `ownerId`، جلوگیری از ثبت در نبود اطلاعات کاربر، افزودن `team` به مدل کاربر و ایجاد انتخاب‌گر مشترک استان‌های ایران.
-- فایل‌های مهم: `src/features/companies/components/CreateCompanyDialog.tsx`، `src/features/auth/services/auth.service.ts`، `src/store/authStore.ts`، `src/shared/components/IranProvinceSelect.tsx` و `src/shared/constants/iranProvinces.ts`.
-- فرض‌ها و وابستگی‌ها: پاسخ ورود باید `id` کاربر و فیلد `team` را فراهم کند و API ایجاد شرکت باید `ownerId` را بپذیرد. جمع‌بندی بر اساس diff کامیت `7a0ad88` است.
-- وضعیت بررسی: نتیجه اجرای lint یا build در تاریخچه Git ثبت نشده است.
+```bash
+npm run preview
+```
 
-### fix 000006 — افزودن نوع مالکیت شرکت و انتخاب استان
+### 6. Lint
 
-- موارد پیاده‌سازی‌شده: تعریف enum و برچسب‌های فارسی نوع مالکیت، افزودن آن به type و payload ایجاد شرکت، نمایش آن در جزئیات و استفاده از انتخاب‌گر استان برای دفتر مرکزی در فرم ایجاد.
-- فایل‌های مهم: `src/features/companies/types/company.types.ts`، `src/features/companies/components/CreateCompanyDialog.tsx` و `src/features/companies/pages/CompanyDetailsPage.tsx`.
-- فرض‌ها و وابستگی‌ها: Backend باید مقادیر `PRIVATE`، `STATE`، `SEMI_STATE`، `PUBLIC_LISTED`، `BANK` و `HOLDING` را برای `ownership` بپذیرد. این موارد از diff کامیت `6a0597b` استخراج شده‌اند.
-- وضعیت بررسی: نتیجه اجرای lint یا build در تاریخچه Git ثبت نشده است.
+```bash
+npm run lint
+```
 
-### fix 000007 — تکمیل تب نمای کلی و عملیات به‌روزرسانی شرکت
+---
 
-- موارد پیاده‌سازی‌شده: افزودن تب‌های صفحه جزئیات، تکمیل نمای کلی، فرم ویرایش شرکت، دیالوگ تغییر مرحله، تغییر اولویت و تخصیص مالک به کاربر فعلی؛ افزودن mutationهای ویرایش و تغییر مرحله و invalidation داده‌های شرکت.
-- فایل‌های مهم: `src/features/companies/components/EditCompanyDialog.tsx`، `src/features/companies/components/ChangeCompanyStageDialog.tsx`، `src/features/companies/pages/CompanyDetailsPage.tsx`، `src/features/companies/hooks/useCompanies.ts`، `src/features/companies/services/companies.service.ts` و `src/features/companies/types/company.types.ts`.
-- فرض‌ها و وابستگی‌ها: به `PATCH /companies/:id` و `PATCH /companies/:id/stage` در لایه Axios پروژه وابسته است؛ در این نسخه تخصیص مالک با شناسه کاربر فعلی و از مسیر عمومی به‌روزرسانی انجام می‌شد. جزئیات از diff کامیت `1b6efd6` استخراج شده‌اند.
-- وضعیت بررسی: نتیجه اجرای lint یا build در تاریخچه Git ثبت نشده است.
+## 🔌 Backend Integration
 
-### fix 000008 — استانداردسازی API، typeها، مجوزها و تخصیص مالک شرکت‌ها
+This frontend is designed to work with the IAM CRM backend:
 
-- موارد پیاده‌سازی‌شده: تکمیل موارد ۷ تا ۱۴ نیازمندی‌های ماژول شرکت‌ها؛ تغییر اولویت با `PATCH /api/companies/:id`؛ اتصال endpoint تخصیص مالک با `PATCH /api/companies/:id/owner`؛ استانداردسازی `PaginatedResult<T>` و typeهای شرکت؛ استفاده از `unknown` برای relationهای هنوز پیاده‌سازی‌نشده؛ افزودن helper مجوزها با نقش‌های fallback؛ اعمال مجوز ایجاد، ویرایش، تغییر مرحله، تغییر اولویت و تخصیص مالک؛ افزودن متن‌های دقیق وضعیت خالی و خطای بارگذاری؛ و invalidation کش فهرست و جزئیات پس از mutationها.
-- فایل‌های مهم: `src/features/auth/utils/permissions.ts`، `src/features/companies/types/company.types.ts`، `src/store/authStore.ts` و فایل‌های مرتبط service، hook و UI شرکت‌ها.
-- فرض‌ها و وابستگی‌ها: چون API کاربران موجود نبود، کاربر جعلی یا فهرست ثابت مالک‌ها اضافه نشد و تخصیص مالک غیرفعال باقی ماند.
-- وضعیت بررسی: lint و build با موفقیت اجرا شده‌اند.
+```text
+https://github.com/IKAC-FIDS/iam-crm-backend
+```
 
-### fix 000009 — تکمیل فرم‌ها، enumها، validation و mutation flowهای شرکت‌ها
+For local development, the backend should be available at:
 
-- موارد پیاده‌سازی‌شده: یکپارچه‌سازی فرم ایجاد و ویرایش در `CompanyForm`؛ افزودن validation با Zod و اعتبارسنجی URL؛ trim رشته‌ها و حذف مقادیر خالی پیش از ارسال؛ ایجاد optionها، labelها و helperهای نمایش تاریخ مشترک؛ افزودن دیالوگ مستقل تغییر اولویت؛ بهبود دیالوگ تغییر مرحله و پیام‌ها؛ نمایش badgeهای فارسی؛ پاک‌سازی query paramها؛ استانداردسازی نام توابع API و حفظ invalidation فهرست و جزئیات.
-- فایل‌های مهم: `src/features/companies/components/CompanyForm.tsx`، `src/features/companies/components/ChangeCompanyPriorityDialog.tsx`، `src/features/companies/utils/companyDisplay.ts`، `src/features/companies/types/company.types.ts` و فایل‌های مرتبط صفحه، دیالوگ، service و hook شرکت‌ها.
-- فرض‌ها و وابستگی‌ها: تخصیص مالک به دلیل نبود API کاربران غیرفعال ماند؛ مالک شرکت هنگام ایجاد از کاربر واردشده گرفته می‌شود و محل دفتر مرکزی انتخاب‌گر استان است.
-- وضعیت بررسی: lint و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle باقی مانده است.
+```text
+http://localhost:3000/api
+```
 
-### fix 000010 — تکمیل تب افراد شرکت، تماس‌ها و شبکه‌های اجتماعی
+Recommended frontend `.env`:
 
-- موارد پیاده‌سازی‌شده: تکمیل تب افراد با فهرست و صفحه‌بندی و اندازه‌های ۵، ۱۰ و ۲۰؛ جریان‌های ایجاد، ویرایش و حذف همراه تأیید حذف و مدیریت خطا؛ drawer جزئیات کامل فرد؛ CRUD روش‌های تماس و شبکه‌های اجتماعی؛ فرم‌های مشترک و validation با Zod؛ گزینه‌های فارسی؛ کنترل دسترسی مبتنی بر نقش/مجوز؛ invalidation کش افراد، شرکت، تماس‌ها و شبکه‌های اجتماعی؛ و متمرکز کردن همه APIها در service اختصاصی بدون Axios در componentها.
-- فایل‌های مهم: `src/features/people/types/person.types.ts`، `src/features/people/services/people.service.ts`، `src/features/people/hooks/usePeople.ts`، `src/features/people/components/PersonForm.tsx`، `src/features/people/components/PersonFormDialog.tsx`، `src/features/people/components/PeopleTab.tsx`، `src/features/people/components/PersonDetailDrawer.tsx`، `src/features/people/components/PersonContactForm.tsx` و `src/features/people/components/PersonSocialForm.tsx`.
-- فرض‌ها و وابستگی‌ها: Backend باید مقدار enum برابر `OTHER` را برای نوع تماس و پلتفرم شبکه اجتماعی پشتیبانی کند. تست زنده API به اجرای Backend نیاز دارد.
-- وضعیت بررسی: lint و build تولید با موفقیت اجرا شده‌اند.
+```env
+VITE_API_URL=http://localhost:3000/api
+```
 
-### fix 000011 — پیاده‌سازی تایم‌لاین و جریان ثبت فعالیت‌های شرکت
+The shared Axios instance is located at:
 
-- موارد پیاده‌سازی‌شده: تکمیل تب فعالیت‌ها در جزئیات شرکت؛ نمایش فعالیت‌ها در تایم‌لاین واکنش‌گرا با صفحه‌بندی و اندازه‌های ۵، ۱۰ و ۲۰؛ نمایش نوع فعالیت، شخص مرتبط، ثبت‌کننده، یادداشت، نتیجه، زمان انجام، پیگیری بعدی و تاریخ ثبت؛ مشخص‌کردن پیگیری‌های عقب‌افتاده، امروز و آینده؛ افزودن فرم ثبت فعالیت با Zod، انتخاب شخص واقعی از افراد شرکت و تبدیل تاریخ‌ها به ISO؛ نمایش `STAGE_CHANGE` بدون امکان ثبت دستی آن؛ کنترل دسترسی و invalidation کش فعالیت‌ها و جزئیات شرکت پس از ثبت.
-- فایل‌های مهم: `src/features/activities/types/activity.types.ts`، `src/features/activities/services/activities.service.ts`، `src/features/activities/hooks/useActivities.ts`، `src/features/activities/components/ActivitiesTab.tsx`، `src/features/activities/components/ActivityForm.tsx`، `src/features/activities/components/ActivityFormDialog.tsx` و `src/features/companies/pages/CompanyDetailsPage.tsx`.
-- فرض‌ها و وابستگی‌ها: به `GET /api/activities`، `POST /api/activities` و API افراد شرکت وابسته است. Backend باید صفحه‌بندی فعالیت‌ها و مقدارهای تعریف‌شده `ActivityType` را پشتیبانی کند؛ تست زنده API به اجرای Backend نیاز دارد و داده جعلی اضافه نشده است.
-- وضعیت بررسی: lint و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle باقی مانده است.
+```text
+src/lib/axios.ts
+```
 
-### fix 000012 — پیاده‌سازی تب کال کارت شرکت
+Axios behavior:
 
-- موارد پیاده‌سازی‌شده: تکمیل تب کال کارت با وضعیت‌های loading، empty و error؛ ایجاد و ویرایش کال کارت؛ انتخاب مخاطب اصلی و دوم از افراد واقعی شرکت؛ نمایش بخش‌های مخاطبان، استراتژی، متن‌های شروع ارتباط، سؤالات کشف نیاز، اعتراض‌ها و پاسخ‌ها، ارزیابی صلاحیت و پیگیری؛ مدیریت داینامیک سؤال‌ها و اعتراض‌ها با Zod و حذف مقادیر خالی؛ دریافت و پیش‌نمایش پیشنهادهای Backend و اعمال تأییدشده آن‌ها در فرم بدون ذخیره خودکار؛ merge محافظه‌کارانه پیشنهادها با داده موجود؛ کپی متن ایمیل و پیام لینکدین؛ مدیریت پاسخ 404 یا خالی به‌عنوان نبود کال کارت؛ کنترل دسترسی و invalidation کش کال کارت و جزئیات شرکت پس از ذخیره.
-- فایل‌های مهم: `src/features/callCards/types/callCard.types.ts`، `src/features/callCards/services/callCards.service.ts`، `src/features/callCards/hooks/useCallCards.ts`، `src/features/callCards/components/CallCardTab.tsx`، `src/features/callCards/components/CallCardView.tsx`، `src/features/callCards/components/CallCardForm.tsx`، `src/features/callCards/components/CallCardFormDialog.tsx`، `src/features/callCards/components/CallCardSuggestionDialog.tsx`، `src/features/callCards/utils/callCardDisplay.ts` و `src/features/companies/pages/CompanyDetailsPage.tsx`.
-- فرض‌ها و وابستگی‌ها: به `GET /api/companies/:companyId/call-card`، `GET /api/companies/:companyId/call-card/suggest`، `PUT /api/companies/:companyId/call-card` و API افراد شرکت وابسته است. شکل فیلدهای ناشناخته پیشنهادها با `unknown` نگه داشته شده و تست زنده به اجرای Backend نیاز دارد؛ پیشنهادها در Frontend تولید یا خودکار ذخیره نمی‌شوند.
-- وضعیت بررسی: lint و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle باقی مانده است.
+* Uses `VITE_API_URL` as `baseURL`
+* Automatically adds `Authorization: Bearer <token>`
+* Redirects to `/login` on `401`
+* Removes invalid token on unauthorized response
+* Uses a 30-second timeout
 
-### fix 000013 — پیاده‌سازی مدیریت شعب شرکت
+---
 
-- موارد پیاده‌سازی‌شده: تکمیل تب شعب در جزئیات شرکت؛ نمایش شعب در جدول با نام، شهر، آدرس، تلفن و آخرین بروزرسانی؛ افزودن جریان‌های ایجاد، ویرایش و حذف با دیالوگ تأیید؛ فرم مشترک create/edit با Zod و الزام ورود حداقل یک فیلد؛ trim رشته‌ها و حذف مقادیر خالی پیش از ارسال؛ مدیریت وضعیت‌های loading، empty، error، success و pending؛ اعمال مجوزهای مشاهده، مدیریت و حذف؛ و invalidation کش شعب و جزئیات شرکت پس از mutationها.
-- فایل‌های مهم: `src/features/companyBranches/types/companyBranch.types.ts`، `src/features/companyBranches/services/companyBranches.service.ts`، `src/features/companyBranches/hooks/useCompanyBranches.ts`، `src/features/companyBranches/components/CompanyBranchesTab.tsx`، `src/features/companyBranches/components/CompanyBranchForm.tsx`، `src/features/companyBranches/components/CompanyBranchFormDialog.tsx` و `src/features/companies/pages/CompanyDetailsPage.tsx`.
-- فرض‌ها و وابستگی‌ها: به endpointهای `GET` و `POST /api/companies/:companyId/branches` و `PATCH` و `DELETE /api/companies/:companyId/branches/:branchId` وابسته است. فرم داده ناقص اما غیرخالی را مجاز می‌داند و داده جعلی اضافه نشده است؛ تست زنده API به اجرای Backend نیاز دارد.
-- وضعیت بررسی: lint و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle باقی مانده است.
+## 🔐 Roles and Access Control
 
-### fix 000014 — هماهنگ‌سازی انتخاب محل شعبه با فرم شرکت
+The frontend consumes backend roles and permissions.
 
-- موارد پیاده‌سازی‌شده: جایگزینی ورودی متنی شهر در فرم ایجاد و ویرایش شعبه با انتخاب‌گر مشترک استان‌های ایران؛ نمایش لیست استان‌های ازپیش‌تعریف‌شده پروژه؛ حفظ مقدار انتخاب‌شده در حالت ویرایش؛ و غیرفعال‌کردن انتخاب‌گر هنگام ارسال فرم.
-- فایل‌های مهم: `src/features/companyBranches/components/CompanyBranchForm.tsx` و کامپوننت مشترک موجود `src/shared/components/IranProvinceSelect.tsx`.
-- فرض‌ها و وابستگی‌ها: برای سازگاری با قرارداد فعلی Backend، نام فیلد payload همچنان `city` باقی مانده اما مقدار آن از فهرست استان‌های ایران انتخاب می‌شود؛ API یا داده جعلی تازه‌ای اضافه نشده است.
-- وضعیت بررسی: lint و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle باقی مانده است.
+Main roles:
 
-### fix 000015 — پیاده‌سازی کانال‌های اجتماعی شرکت
+| Role      | Description                                                                                   |
+| --------- | --------------------------------------------------------------------------------------------- |
+| `ADMIN`   | Full access to users, permissions, libraries, settings, reports, and operational CRM features |
+| `MANAGER` | Team-scoped sales management, reports, owner assignment, and CRM workflows                    |
+| `REP`     | Own-company sales operations, people, activities, follow-ups, and Call Cards                  |
+| `BOARDS`  | Mostly read/reporting access based on backend permissions                                     |
 
-- موارد پیاده‌سازی‌شده: تکمیل تب مستقل کانال‌های اجتماعی شرکت؛ نمایش پلتفرم، آدرس یا هندل و آخرین بروزرسانی؛ ایجاد، ویرایش و حذف با تأیید؛ فرم مشترک create/edit با انتخاب enum پلتفرم و اعتبارسنجی اجباری هندل با Zod؛ trim مقدار پیش از ارسال؛ نمایش امن لینک‌های معتبر برای وب‌سایت، لینکدین، اینستاگرام، یوتیوب و آپارات؛ مدیریت وضعیت‌های loading، empty، error، success و pending؛ کنترل مجوزها؛ و invalidation کش کانال‌ها و جزئیات شرکت.
-- فایل‌های مهم: `src/features/companySocialChannels/types/companySocialChannel.types.ts`، `src/features/companySocialChannels/services/companySocialChannels.service.ts`، `src/features/companySocialChannels/hooks/useCompanySocialChannels.ts`، `src/features/companySocialChannels/components/CompanySocialChannelsTab.tsx`، `src/features/companySocialChannels/components/CompanySocialChannelForm.tsx`، `src/features/companySocialChannels/components/CompanySocialChannelFormDialog.tsx`، `src/features/companySocialChannels/utils/companySocialChannelDisplay.ts` و `src/features/companies/pages/CompanyDetailsPage.tsx`.
-- فرض‌ها و وابستگی‌ها: این ماژول مستقل از Socialهای اشخاص است و به endpointهای `GET` و `POST /api/companies/:companyId/social-channels` و `PATCH` و `DELETE /api/companies/:companyId/social-channels/:channelId` وابسته است. مقدار `OTHER` اضافه نشده، تبدیل اجباری هندل به URL انجام نمی‌شود و تست زنده update/delete به Backend در حال اجرا نیاز دارد.
-- وضعیت بررسی: lint و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle باقی مانده است.
+Permission helper location:
 
-### fix 000016 — پیاده‌سازی صفحه پایپ‌لاین فروش
+```text
+src/features/auth/utils/permissions.ts
+```
 
-- موارد پیاده‌سازی‌شده: افزودن route محافظت‌شده `/pipeline` و گزینه پایپ‌لاین به منوی اصلی؛ نمایش برد افقی شامل تمام مراحل فروش با ترتیب موجود در ماژول Companies؛ دریافت ۲۰ شرکت نخست هر مرحله با queryهای cache‌شده و API واقعی شرکت‌ها؛ جستجوی debounceشده و فیلتر اولویت؛ نمایش تعداد کل هر ستون و هشدار محدودیت ۲۰ مورد؛ کارت فشرده شرکت با جزئیات، لینک صفحه شرکت و تغییر مرحله؛ reuse دیالوگ تغییر مرحله با callback موفقیت؛ refresh و invalidation پایپ‌لاین، فهرست و جزئیات شرکت؛ و مدیریت مستقل loading، empty و error هر ستون.
-- فایل‌های مهم: `src/features/pipeline/hooks/usePipeline.ts`، `src/features/pipeline/pages/PipelinePage.tsx`، `src/features/pipeline/components/PipelineColumn.tsx`، `src/features/pipeline/components/PipelineCompanyCard.tsx`، `src/features/companies/components/ChangeCompanyStageDialog.tsx`، `src/routes/index.tsx` و `src/components/dashboard/SideMenu.tsx`.
-- فرض‌ها و وابستگی‌ها: از `GET /api/companies` و `PATCH /api/companies/:companyId/stage` موجود استفاده شده و endpoint تازه‌ای ساخته نشده است. هر مرحله حداکثر ۲۰ شرکت نمایش می‌دهد؛ search ممکن است تا زمان پشتیبانی Backend نادیده گرفته شود و drag-and-drop یا صفحه‌بندی ستونی پیاده‌سازی نشده است.
-- وضعیت بررسی: lint و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle باقی مانده است.
+Access-control behavior:
 
-### fix 000017 — پیاده‌سازی صفحه پیگیری‌های سررسید
+* Role checks
+* Permission checks
+* Fallback role-based access
+* Conditional route visibility
+* Conditional sidebar items
+* Conditional action buttons
 
-- موارد پیاده‌سازی‌شده: افزودن route محافظت‌شده `/follow-ups` و گزینه پیگیری‌ها به منوی اصلی؛ دریافت واقعی پیگیری‌های سررسید با صفحه‌بندی و اندازه‌های ۵، ۱۰، ۲۰ و ۵۰؛ نمایش کارت‌های خلاصه تعداد صفحه جاری، عقب‌افتاده‌ها و موعد امروز؛ فیلتر client-side صفحه جاری برای همه، عقب‌افتاده، امروز و آینده؛ نمایش وضعیت، نوع فعالیت، شرکت، شخص، ثبت‌کننده، یادداشت، نتیجه، زمان انجام و زمان پیگیری؛ لینک جزئیات شرکت و شخص؛ refresh همراه حفظ داده موجود؛ و مدیریت loading، empty، error و permission.
-- فایل‌های مهم: `src/features/followUps/types/followUp.types.ts`، `src/features/followUps/services/followUps.service.ts`، `src/features/followUps/hooks/useFollowUps.ts`، `src/features/followUps/utils/followUpDisplay.ts`، `src/features/followUps/components/FollowUpsSummaryCards.tsx`، `src/features/followUps/components/FollowUpCard.tsx`، `src/features/followUps/pages/FollowUpsPage.tsx`، `src/routes/index.tsx` و `src/components/dashboard/SideMenu.tsx`.
-- فرض‌ها و وابستگی‌ها: فقط از `GET /api/activities/follow-ups/due` استفاده شده و responseهای آرایه‌ای یا paginated به شکل مشترک normalize می‌شوند. فیلترهای وضعیت فقط داده صفحه جاری را فیلتر می‌کنند؛ به دلیل نبود endpoint تأییدشده، ثبت انجام، ویرایش یا حذف پیگیری پیاده‌سازی نشده است.
-- وضعیت بررسی: lint بدون خطا یا هشدار و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle در خروجی build باقی مانده است.
+Frontend visibility is not a replacement for backend authorization. Backend permissions remain the source of truth.
 
-### fix 000018 — پیاده‌سازی گزارش‌ها و متریک‌های واقعی داشبورد
+---
 
-- موارد پیاده‌سازی‌شده: افزودن route محافظت‌شده `/reports` و گزینه شرطی گزارش‌ها برای نقش‌ها و مجوزهای مجاز؛ ایجاد گزارش خلاصه پایپ‌لاین با کارت و progress bar، نرخ تبدیل با جدول مراحل، زمان ماندگاری مراحل و گزارش فعالیت‌ها با بازه پیش‌فرض ۳۰ روزه و کنترل تاریخ؛ normalization امن مقدارهای عددی و درصدی؛ مدیریت خطای مستقل هر بخش و 403؛ جایگزینی کامل داده‌های نمونه داشبورد با هفت متریک واقعی شرکت‌ها، نرخ تبدیل و فعالیت‌های ۳۰ روز اخیر؛ حفظ داشبورد برای نقش‌های بدون دسترسی گزارش؛ refresh همه گزارش‌ها و query caching مشترک.
-- فایل‌های مهم: `src/features/reports/types/report.types.ts`، `src/features/reports/services/reports.service.ts`، `src/features/reports/hooks/useReports.ts`، `src/features/reports/utils/reportDisplay.ts`، componentها و صفحه Reports، `src/components/dashboard/MainGrid.tsx`، `src/components/dashboard/SideMenu.tsx` و `src/routes/index.tsx`.
-- فرض‌ها و وابستگی‌ها: به چهار endpoint واقعی `/api/reports/pipeline-summary`، `/api/reports/conversion-rates`، `/api/reports/stage-durations` و `/api/reports/activities` وابسته است. بازه فعالیت پیش‌فرض ۳۰ روز اخیر بر اساس تاریخ محلی مرورگر ساخته می‌شود؛ export، drill-down و dependency نموداری تازه اضافه نشده‌اند.
-- وضعیت بررسی: lint بدون خطا یا هشدار و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle در خروجی build باقی مانده است.
+## 🧭 Main Routes
 
-### fix 000019 — آماده‌سازی امن ویرایش فعالیت و زمان‌بندی مجدد پیگیری
+| Route                   | Description                                  |
+| ----------------------- | -------------------------------------------- |
+| `/login`                | Login page                                   |
+| `/`                     | Default dashboard route                      |
+| `/dashboard`            | Dashboard                                    |
+| `/companies`            | Companies list                               |
+| `/companies/:companyId` | Company details                              |
+| `/people`               | Global people directory                      |
+| `/pipeline`             | Sales pipeline board                         |
+| `/follow-ups`           | Due follow-ups                               |
+| `/reports`              | Reports                                      |
+| `/admin/users`          | Admin user management                        |
+| `/admin/permissions`    | Admin permission management                  |
+| `/admin/libraries`      | Admin libraries and catalogs                 |
+| `/admin/pipeline`       | Admin pipeline settings and transition rules |
 
-- موارد پیاده‌سازی‌شده: بررسی کامل serviceها، hookها و componentهای Activities و Follow-ups برای endpointهای update، reschedule و complete؛ افزودن اکشن ویرایش به آیتم‌های فعالیت برای کاربران مجاز به‌صورت غیرفعال با hint وابستگی Backend؛ افزودن اکشن زمان‌بندی مجدد کنار اکشن موجود پیگیری؛ اصلاح label اکشن تکمیل به «انجام شد»؛ و جلوگیری صریح از mutation محلی یا endpoint حدسی.
-- فایل‌های مهم: `src/features/activities/components/ActivitiesTab.tsx`، `src/features/followUps/components/FollowUpCard.tsx` و بررسی service/hookهای موجود فعالیت و پیگیری.
-- فرض‌ها و وابستگی‌ها: در repository فعلی هیچ endpoint یا قرارداد تأییدشده‌ای برای `PATCH /api/activities/:activityId`، reschedule یا complete وجود ندارد و پروژه فقط frontend است. به همین دلیل edit، reschedule و complete عمداً غیرفعال‌اند؛ پس از اضافه‌شدن endpointهای واقعی باید mutationها همراه invalidation کلیدهای activities، follow-ups و company پیاده‌سازی شوند.
-- وضعیت بررسی: lint بدون خطا یا هشدار و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle در خروجی build باقی مانده است.
+All operational routes are protected.
 
-### fix 000020 — تکمیل مدیریت کاربران، مجوزها و تخصیص مالک
+---
 
-- موارد پیاده‌سازی‌شده: افزودن routeهای `/admin/users` و `/admin/permissions` و منوی شرطی Admin؛ فهرست، ایجاد، تغییر نقش/تیم، فعال‌سازی و غیرفعال‌سازی کاربران واقعی با جلوگیری از غیرفعال‌سازی کاربر جاری؛ پشتیبانی از `isActive` و `active`؛ عملیات assign، revoke، bulk assign، bulk revoke و ایجاد مجوز با DELETE body صحیح؛ نمایش شفاف نبود endpoint مشاهده وضعیت مجوز نقش‌ها بدون ماتریس جعلی؛ سخت‌سازی helper مجوز با دسترسی ADMIN و افزودن `canAny` و `canAll`؛ و فعال‌سازی تخصیص مالک شرکت با کاربران فعال واقعی دارای نقش REP یا MANAGER.
-- فایل‌های مهم: featureهای `src/features/admin/users` و `src/features/admin/permissions`، `src/features/auth/utils/permissions.ts`، `src/features/companies/components/ChangeCompanyOwnerDialog.tsx`، `src/features/companies/pages/CompanyDetailsPage.tsx`، `src/components/dashboard/SideMenu.tsx` و `src/routes/index.tsx`.
-- فرض‌ها و وابستگی‌ها: به endpointهای واقعی `/api/users` و `/api/admin/permissions/*` اعلام‌شده وابسته است. Backend endpoint فهرست وضعیت مجوزها به تفکیک نقش ارائه نکرده، بنابراین current state نقش‌ها جعل نشده است؛ team برای MANAGER و REP در frontend الزامی است و تخصیص مالک فقط کاربران فعال این دو نقش را نشان می‌دهد.
-- وضعیت بررسی: lint بدون خطا یا هشدار و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle در خروجی build باقی مانده است.
+## 📂 Project Structure
 
-### fix 000021 — پایدارسازی، QA و پاک‌سازی قراردادهای API
+```text
+src/
+├── app/                         App-level setup
+├── assets/                      Static assets
+├── components/
+│   └── dashboard/               AppNavbar, SideMenu, Header, dashboard widgets
+├── features/
+│   ├── auth/                    Login, auth service, hooks, permissions
+│   ├── dashboard/               Dashboard page
+│   ├── companies/               Company list, detail, forms, dialogs, services
+│   ├── people/                  People tab, person drawer, directory, contacts, socials
+│   ├── activities/              Activities tab, activity form, lifecycle services
+│   ├── followUps/               Due follow-ups page and components
+│   ├── callCards/               Call Card view, form, suggestions
+│   ├── companyBranches/         Company branches CRUD
+│   ├── companySocialChannels/   Company social channels CRUD
+│   ├── pipeline/                Sales pipeline board
+│   ├── pipelineConfig/          Admin pipeline stages and transition rules
+│   ├── reports/                 Reports page, filters, report sections
+│   ├── catalogs/                Admin libraries and lookup options
+│   └── admin/
+│       ├── users/               Admin users page
+│       └── permissions/         Admin permissions page
+├── layouts/                     AuthLayout, MainLayout, DashboardLayout
+├── lib/                         Axios instance and query client
+├── providers/                   React Query provider
+├── routes/                      Router and ProtectedRoute
+├── shared/                      Shared components and constants
+├── store/                       Zustand stores
+├── styles/                      Global styles
+├── theme/                       MUI theme and customizations
+├── main.tsx
+└── index.css
+```
 
-- موارد پیاده‌سازی‌شده: audit کامل routeهای محافظت‌شده، serviceها، query keyها، permissionها و response normalizerها؛ افزودن invalidation پایپ‌لاین و گزارش‌ها پس از mutationهای شرکت؛ تازه‌سازی follow-ups و reports پس از ایجاد فعالیت؛ invalidation گزینه‌های مالک پس از mutation کاربران؛ مقاوم‌سازی response گزارش‌ها در برابر آرایه یا summary غایب؛ بررسی نبود raw fetch، base URL تکراری و مسیر `/api/api`؛ اجرای QA واقعی با نقش‌های ADMIN و REP و بررسی دسترسی مستقیم routeها، منوی شرطی، جزئیات شرکت و تخصیص مالک.
-- فایل‌های مهم: `src/features/companies/hooks/useCompanies.ts`، `src/features/activities/hooks/useActivities.ts`، `src/features/admin/users/hooks/useAdminUsers.ts`، `src/features/reports/services/reports.service.ts` و این README.
-- فرض‌ها و محدودیت‌ها: endpointهای update، complete و reschedule فعالیت در frontend یا قرارداد قابل‌اجرا تأیید نشده‌اند و اکشن‌های وابسته همچنان غیرفعال و بدون موفقیت جعلی هستند. endpoint فهرست وضعیت مجوزها بر اساس نقش و payload قطعی bulk owner نیز در frontend موجود نیست؛ بنابراین state مجوزها یا قرارداد bulk owner حدس زده نشده است.
-- وضعیت بررسی: ورود ADMIN و REP با حساب‌های QA محلی موفق بود؛ مسیرهای dashboard، companies، company detail، pipeline، follow-ups، reports و Admin مطابق نقش‌ها render شدند و خطای console مشاهده نشد. lint بدون خطا یا هشدار و build تولید موفق بود؛ فقط هشدار غیرمسدودکننده اندازه bundle باقی ماند.
+---
 
-## چک‌لیست قرارداد API فرانت‌اند
+## 🌐 Frontend API Contract
 
-تمام مسیرهای زیر نسبت به `baseURL` مشترک Axios با پسوند `/api` فراخوانی می‌شوند:
+All paths below are called relative to `VITE_API_URL`.
 
-- شرکت‌ها: `GET/POST /companies`، `GET/PATCH /companies/:id`، `PATCH /companies/:id/stage` و `PATCH /companies/:id/owner`.
-- افراد: `GET/POST /people`، `GET/PATCH/DELETE /people/:id`، و CRUD مسیرهای `/people/:id/contacts` و `/people/:id/socials`؛ فهرست سراسری `GET /people` فیلترها و صفحه‌بندی را با query parameter دریافت می‌کند.
-- فعالیت‌ها: `GET/POST /activities`، `PATCH /activities/:id`، `PATCH /activities/:id/complete`، `PATCH /activities/:id/reschedule` و `GET /activities/follow-ups/due`.
-- کال کارت: `GET/PUT /companies/:id/call-card` و `GET /companies/:id/call-card/suggest`.
-- شعب و کانال‌های اجتماعی: CRUD مسیرهای `/companies/:id/branches` و `/companies/:id/social-channels`.
-- گزارش‌ها: `GET /reports/filter-options`، `/reports/pipeline-summary`، `/reports/conversion-rates`، `/reports/stage-durations`، `/reports/activities`، `/reports/activities/by-user` و `/reports/pipeline/by-owner`؛ فیلترهای انتخابی به‌صورت query parameter به endpointهای گزارش ارسال می‌شوند.
-- کاربران: `GET/POST /users`، `GET /users/:id` و PATCH مسیرهای role، activate و deactivate.
-- مجوزها: POST مسیرهای assign، bulk-assign و create و DELETE مسیرهای revoke و bulk-revoke با body به‌شکل `{ data: payload }`.
-- کتابخانه‌ها: CRUD استاندارد با `GET/POST /industries`، `/lead-sources`، `/pain-points`، `/use-cases`، `/personas` و `/lookup-options` و `PATCH/DELETE` روی مسیر `/:id` هر منبع.
-- تنظیمات پایپ‌لاین: `GET /pipeline/stages`، `PATCH /pipeline/stages/:id` و CRUD قوانین با `GET/POST /pipeline/transition-rules` و `PATCH/DELETE /pipeline/transition-rules/:id`.
+For example, if:
 
-### fix 000022 — اتصال چرخه عمر فعالیت و پیگیری به Backend
+```env
+VITE_API_URL=http://localhost:3000/api
+```
 
-- موارد پیاده‌سازی‌شده: فعال‌سازی ویرایش فعالیت برای نقش‌ها و مجوزهای مجاز؛ فرم مشترک create/edit با مقداردهی اولیه شخص، نوع، تاریخ‌ها، یادداشت و نتیجه؛ قفل نوع فعالیت‌های `STAGE_CHANGE`؛ اتصال `PATCH /api/activities/:id`؛ فعال‌سازی تکمیل پیگیری با دیالوگ نتیجه و یادداشت؛ فعال‌سازی زمان‌بندی مجدد با اعتبارسنجی تاریخ آینده؛ اتصال endpointهای complete و reschedule؛ و invalidation خودکار Activities، Follow-ups، Company Detail، Reports و Dashboard پس از mutationها.
-- فایل‌های مهم: type/service/hookهای Activities و Follow-ups، `ActivityForm.tsx`، `EditActivityDialog.tsx`، `ActivitiesTab.tsx`، `CompleteFollowUpDialog.tsx`، `RescheduleFollowUpDialog.tsx` و `FollowUpCard.tsx`.
-- فرض‌ها و وابستگی‌ها: Backend سه endpoint `PATCH /api/activities/:activityId`، `/complete` و `/reschedule` را با payloadهای اعلام‌شده پشتیبانی می‌کند. پاک‌کردن مقادیر اختیاری در edit با `null` انجام می‌شود و تاریخ‌ها به ISO تبدیل می‌شوند؛ هیچ completion یا reschedule محلی و جعلی وجود ندارد.
-- وضعیت بررسی: lint بدون خطا یا هشدار و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle در خروجی build باقی مانده است.
+then `/companies` becomes:
 
-### fix 000023 — افزودن فیلترهای پیشرفته و گزارش‌های تفکیکی
+```text
+http://localhost:3000/api/companies
+```
 
-- موارد پیاده‌سازی‌شده: افزودن پنل فیلتر یکپارچه به صفحه گزارش‌ها با بازه تاریخ و انتخاب چندگانه کاربران، تیم‌ها، مالکان، مراحل پایپ‌لاین، اولویت‌ها، صنایع، منابع جذب و نوع فعالیت؛ دریافت تمام گزینه‌های انتخاب از Backend؛ اعمال هم‌زمان فیلترها روی خلاصه پایپ‌لاین، نرخ تبدیل، زمان ماندگاری مراحل و فعالیت‌ها؛ استفاده داشبورد از قرارداد فیلتر مشترک با بازه پیش‌فرض ۳۰ روزه؛ افزودن جدول فعالیت به تفکیک کاربر و جدول پایپ‌لاین به تفکیک مالک همراه با تفکیک مراحل؛ و مدیریت loading، empty، error، refresh، پاک‌کردن و اعتبارسنجی بازه تاریخ.
-- فایل‌های مهم: `src/features/reports/types/report.types.ts`، `src/features/reports/services/reports.service.ts`، `src/features/reports/hooks/useReports.ts`، `src/features/reports/components/ReportFilterPanel.tsx`، `src/features/reports/components/ActivityReportSection.tsx`، `src/features/reports/components/ActivityByUserSection.tsx`، `src/features/reports/components/PipelineByOwnerSection.tsx`، `src/features/reports/pages/ReportsPage.tsx`، `src/components/dashboard/MainGrid.tsx` و این README.
-- فرض‌ها و وابستگی‌ها: این قابلیت به endpointهای `GET /api/reports/filter-options`، چهار endpoint گزارش موجود، `GET /api/reports/activities/by-user` و `GET /api/reports/pipeline/by-owner` وابسته است. کلیدهای query فیلترها `startDate`، `endDate`، `userIds`، `teams`، `ownerIds`، `stages`، `priorities`، `industries`، `leadSources` و `activityTypes` هستند و گزینه‌های Backend به‌صورت مقدار ساده یا شیء دارای `value/id/code/name` normalize می‌شوند؛ تست زنده API به Backend در حال اجرا نیاز دارد و انجام نشده است.
-- وضعیت بررسی: lint بدون خطا یا هشدار و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle باقی مانده است.
+---
 
-### fix 000024 — مدیریت کتابخانه‌ها و داده‌های پایه
+### Auth
 
-- موارد پیاده‌سازی‌شده: افزودن route محافظت‌شده `/admin/libraries` و گزینه «کتابخانه‌ها» به منوی Admin؛ ساخت شش تب صنایع، منابع جذب، نقاط درد، کاربردها، پرسوناها و گزینه‌های پایه؛ پیاده‌سازی فهرست، ایجاد، ویرایش، فعال/غیرفعال‌سازی از طریق ویرایش و حذف هر کتابخانه با API واقعی؛ نمایش وضعیت‌های loading، empty و error؛ جایگزینی ورودی‌های متنی صنعت و منبع جذب شرکت با dropdown شامل فقط آیتم‌های فعال؛ و جایگزینی ورودی‌های دپارتمان و پرسونا در فرم شخص با گزینه‌های فعال lookup بدون داده پیش‌فرض یا جعلی.
-- فایل‌های مهم: feature جدید `src/features/catalogs` شامل type، service، hook، dialog، tab و صفحه مدیریت؛ `src/features/companies/components/CompanyForm.tsx`، `src/features/people/components/PersonForm.tsx`، `src/components/dashboard/SideMenu.tsx`، `src/routes/index.tsx` و این README.
-- فرض‌ها و وابستگی‌ها: قرارداد frontend برای شش منبع از endpointهای `GET/POST /api/industries`، `/lead-sources`، `/pain-points`، `/use-cases`، `/personas` و `/lookup-options` و عملیات `PATCH/DELETE /api/:resource/:id` استفاده می‌کند؛ payload عمومی کتابخانه‌ها شامل `name`، `description` و `isActive` و payload گزینه پایه شامل `label`، `value`، `category`، `description` و `isActive` است. دسته‌های `department` و `personaTag` از lookup options استفاده می‌شوند. فیلد `seniorityLevel` چون در type و payload فعلی Person وجود ندارد، اضافه یا حدس زده نشده است. تست زنده CRUD به Backend در حال اجرا نیاز دارد و انجام نشده است.
-- وضعیت بررسی: lint بدون خطا یا هشدار و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle باقی مانده است.
+```http
+POST /auth/login
+```
 
-### fix 000025 — تنظیم مراحل پایپ‌لاین و قوانین انتقال
+---
 
-- موارد پیاده‌سازی‌شده: افزودن route محافظت‌شده `/admin/pipeline` و گزینه «تنظیمات پایپ‌لاین» به منوی Admin؛ ساخت تب‌های مراحل و قوانین انتقال؛ نمایش و ویرایش عنوان، توضیح، ترتیب نمایش، رنگ، وضعیت فعال و مرحله پایانی؛ فهرست، ایجاد، ویرایش و حذف قوانین از مرحله، به مرحله، نقش و وضعیت مجاز/غیرمجاز؛ استفاده برد پایپ‌لاین از ترتیب، عنوان، مراحل فعال و رنگ‌های دریافت‌شده از Backend؛ و محدودکردن مقصدهای دیالوگ تغییر مرحله به قوانین مجاز دریافت‌شده برای مرحله فعلی و نقش کاربر، همراه با نمایش پیام خطای واقعی Backend برای انتقال نامعتبر.
-- فایل‌های مهم: feature جدید `src/features/pipelineConfig` شامل type، service، hook، dialogها، tabها و صفحه Admin؛ `src/features/pipeline/hooks/usePipeline.ts`، `src/features/pipeline/pages/PipelinePage.tsx`، `src/features/pipeline/components/PipelineColumn.tsx`، `src/features/companies/components/ChangeCompanyStageDialog.tsx`، `src/components/dashboard/SideMenu.tsx`، `src/routes/index.tsx` و این README.
-- فرض‌ها و وابستگی‌ها: قرارداد frontend به `GET/PATCH /api/pipeline/stages` و `GET/POST/PATCH/DELETE /api/pipeline/transition-rules` وابسته است. کد stage باید با enum فعلی Company stage سازگار باشد؛ stageهای ناشناخته یا غیرفعال در برد نمایش داده نمی‌شوند. مقصد انتقال فقط از ruleهای `allowed=true` با `fromStage` و `role` منطبق استخراج می‌شود و در خطای دریافت rule هیچ مجوز محلی یا جعلی ساخته نمی‌شود. تست زنده تنظیمات و انتقال به Backend در حال اجرا نیاز دارد و انجام نشده است.
-- وضعیت بررسی: lint بدون خطا یا هشدار و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle باقی مانده است.
+### Companies
 
-### fix 000026 — افزودن دایرکتوری سراسری افراد
+```http
+GET /companies
+POST /companies
+GET /companies/:id
+PATCH /companies/:id
+PATCH /companies/:id/stage
+PATCH /companies/:id/owner
+PATCH /companies/bulk/owner
+PATCH /companies/:id/archive
+PATCH /companies/:id/restore
+```
 
-- موارد پیاده‌سازی‌شده: افزودن route محافظت‌شده `/people` و گزینه «افراد» برای نقش‌ها و مجوزهای مجاز؛ ساخت جدول سراسری با نام، سمت، دپارتمان، پرسونا، مخاطب اصلی، شرکت، مالک، خلاصه اطلاعات تماس و عملیات؛ صفحه‌بندی server-side با اندازه‌های ۵، ۱۰، ۲۰ و ۵۰؛ جستجوی debounceشده؛ فیلتر شرکت با جستجوی زنده شرکت‌ها، مالک و تیم از گزینه‌های گزارش Backend، دپارتمان و پرسونا از lookup options، و فیلترهای مخاطب اصلی، دارای ایمیل و دارای تلفن؛ نمایش شرکت، بازکردن drawer موجود شخص؛ و نمایش `—` برای داده‌های غایب همراه با حالت‌های loading، empty و error.
-- فایل‌های مهم: `src/features/people/pages/PeopleDirectoryPage.tsx`، `src/features/people/types/person.types.ts`، `src/features/people/services/people.service.ts`، `src/features/people/hooks/usePeople.ts`، `src/components/dashboard/SideMenu.tsx`، `src/routes/index.tsx` و این README.
-- فرض‌ها و وابستگی‌ها: دایرکتوری از همان `GET /api/people` واقعی با queryهای `page`، `limit`، `search`، `companyId`، `ownerId`، `team`، `department`، `personaTag`، `isPrimaryContact`، `hasEmail` و `hasPhone` استفاده می‌کند. برای نمایش ستون‌ها، response هر شخص می‌تواند relationهای `company` و `owner` و summaryهای `emailSummary` و `phoneSummary` را برگرداند؛ در نبود summary از `email`، `phone` و `contacts` استفاده می‌شود. گزینه‌های شرکت از `GET /api/companies`، مالک و تیم از `/api/reports/filter-options` و lookupها از `/api/lookup-options` دریافت می‌شوند؛ تست زنده فیلترها و scope دسترسی به Backend در حال اجرا نیاز دارد و انجام نشده است.
-- وضعیت بررسی: lint بدون خطا یا هشدار و build تولید با موفقیت اجرا شده‌اند؛ فقط هشدار غیرمسدودکننده اندازه bundle باقی مانده است.
+---
+
+### People
+
+```http
+GET /people
+POST /people
+GET /people/:id
+PATCH /people/:id
+DELETE /people/:id
+```
+
+---
+
+### Person Contacts
+
+```http
+GET /people/:id/contacts
+GET /people/:id/contacts/:contactId
+POST /people/:id/contacts
+PATCH /people/:id/contacts/:contactId
+DELETE /people/:id/contacts/:contactId
+```
+
+---
+
+### Person Socials
+
+```http
+GET /people/:id/socials
+GET /people/:id/socials/:socialId
+POST /people/:id/socials
+PATCH /people/:id/socials/:socialId
+DELETE /people/:id/socials/:socialId
+```
+
+---
+
+### Activities and Follow-ups
+
+```http
+GET /activities
+POST /activities
+PATCH /activities/:id
+PATCH /activities/:id/complete
+PATCH /activities/:id/reschedule
+GET /activities/follow-ups/due
+```
+
+---
+
+### Call Cards
+
+```http
+GET /companies/:id/call-card
+PUT /companies/:id/call-card
+GET /companies/:id/call-card/suggest
+```
+
+---
+
+### Branches
+
+```http
+GET /companies/:id/branches
+POST /companies/:id/branches
+PATCH /companies/:id/branches/:branchId
+DELETE /companies/:id/branches/:branchId
+```
+
+---
+
+### Company Social Channels
+
+```http
+GET /companies/:id/social-channels
+POST /companies/:id/social-channels
+PATCH /companies/:id/social-channels/:channelId
+DELETE /companies/:id/social-channels/:channelId
+```
+
+---
+
+### Reports
+
+```http
+GET /reports/filter-options
+GET /reports/pipeline-summary
+GET /reports/conversion-rates
+GET /reports/stage-durations
+GET /reports/activities
+GET /reports/activities/by-user
+GET /reports/pipeline/by-owner
+```
+
+Report filters are sent as query parameters, including:
+
+```text
+startDate
+endDate
+userIds
+teams
+ownerIds
+stages
+priorities
+industries
+leadSources
+activityTypes
+```
+
+---
+
+### Users
+
+```http
+GET /users
+POST /users
+GET /users/:id
+PATCH /users/:id/role
+PATCH /users/:id/activate
+PATCH /users/:id/deactivate
+GET /users/owner-options
+```
+
+---
+
+### Admin Permissions
+
+```http
+GET /admin/permissions
+GET /admin/permissions/matrix
+GET /admin/permissions/roles/:role
+GET /admin/permissions/roles/:role/with-details
+POST /admin/permissions/create
+POST /admin/permissions/assign
+DELETE /admin/permissions/revoke
+POST /admin/permissions/bulk-assign
+POST /admin/permissions/bulk-revoke
+```
+
+---
+
+### Libraries and Catalogs
+
+```http
+GET /industries
+POST /industries
+PATCH /industries/:id
+DELETE /industries/:id
+
+GET /lead-sources
+POST /lead-sources
+PATCH /lead-sources/:id
+DELETE /lead-sources/:id
+
+GET /pain-points
+POST /pain-points
+PATCH /pain-points/:id
+DELETE /pain-points/:id
+
+GET /use-cases
+POST /use-cases
+PATCH /use-cases/:id
+DELETE /use-cases/:id
+
+GET /personas
+POST /personas
+PATCH /personas/:id
+DELETE /personas/:id
+
+GET /lookup-options
+POST /lookup-options
+PATCH /lookup-options/:id
+DELETE /lookup-options/:id
+```
+
+---
+
+### Pipeline Settings
+
+```http
+GET /pipeline/stages
+PATCH /pipeline/stages/:id
+
+GET /pipeline/transition-rules
+POST /pipeline/transition-rules
+PATCH /pipeline/transition-rules/:id
+DELETE /pipeline/transition-rules/:id
+```
+
+---
+
+## 🧪 QA and Verification Status
+
+Based on the recorded fix history:
+
+* Recent fixes passed `npm run lint`.
+* Recent fixes passed production build.
+* Remaining build warning is related to bundle size and does not block production build.
+* Manual QA was performed for ADMIN and REP roles in fix `000021`.
+* Some live API tests for newer features require the backend to be running.
+
+---
+
+## ⚠️ Development Notes
+
+* Do not use raw `fetch` inside components.
+* Feature API calls should be centralized in feature service files.
+* Use the shared Axios instance from `src/lib/axios.ts`.
+* Avoid duplicate `/api/api` paths.
+* `VITE_API_URL` should already include `/api`.
+* Mutations must invalidate related React Query keys.
+* Do not add fake data as a substitute for real backend responses.
+* If an endpoint is missing, show disabled, empty, or backend-dependency UI instead of fake success state.
+* Use React Hook Form and Zod for forms.
+* Convert dates to ISO before sending them to the backend.
+* Trim and clean optional string fields before submitting payloads.
+* Use `null` only when the backend contract expects it for clearing optional values.
+* UI permission checks improve UX but do not replace backend authorization.
+
+---
+
+## 📦 Scripts
+
+| Command           | Description                                    |
+| ----------------- | ---------------------------------------------- |
+| `npm run dev`     | Start Vite development server                  |
+| `npm run build`   | Run TypeScript build and Vite production build |
+| `npm run lint`    | Run ESLint                                     |
+| `npm run preview` | Preview production build                       |
+
+---
+
+## ✅ Current Status
+
+This README documents the frontend status through:
+
+```text
+fix 000001 → fix 000026
+```
+
+The fix history below documents what changed in each numbered fix.
+
+---
+
+# Fix History
+
+## fix 000001 — Build error fixes and initial dashboard cleanup
+
+**Implemented items:**
+
+* Fixed MUI type imports.
+* Aligned Date Picker customization types.
+* Removed unused imports.
+* Made login error handling type-safe.
+* Used `mutateAsync` in the login flow.
+* Controlled DataGrid pagination state.
+* Enabled the companies route.
+* Removed menu items that did not have actual pages.
+
+**Important files:**
+
+* `src/features/auth/hooks/useAuth.ts`
+* `src/features/auth/pages/LoginPage.tsx`
+* `src/components/dashboard/MainGrid.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+* `src/routes/index.tsx`
+* `src/theme/customizations/*`
+* TypeScript config files
+
+**Assumptions and dependencies:**
+
+* Details were inferred from commit `2bd29cc`.
+* No new backend dependency was identifiable in this commit.
+
+**Verification status:**
+
+* Lint/build result was not recorded in Git history.
+
+---
+
+## fix 000002 — RTL layout and Persian document setup
+
+**Implemented items:**
+
+* Set `lang="fa"` and `dir="rtl"`.
+* Applied RTL direction and alignment at document and layout level.
+* Moved sidebar navigation to the right side.
+* Replaced direction-dependent spacing and borders with logical CSS properties.
+
+**Important files:**
+
+* `index.html`
+* `src/main.tsx`
+* `src/index.css`
+* `src/layouts/DashboardLayout.tsx`
+* `src/layouts/MainLayout.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+* `src/features/auth/pages/LoginPage.tsx`
+
+**Assumptions and dependencies:**
+
+* Summary is based on commit `95ea7b1`.
+* No new backend dependency was identified.
+
+**Verification status:**
+
+* Lint/build result was not recorded in Git history.
+
+---
+
+## fix 000003 — Responsive dashboard and navigation
+
+**Implemented items:**
+
+* Added temporary mobile drawer and open button.
+* Kept permanent drawer on large screens.
+* Fixed content spacing below AppBar.
+* Made page padding responsive.
+* Improved responsive behavior for dashboard cards, activity table, and login form.
+
+**Important files:**
+
+* `src/components/dashboard/AppNavbar.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+* `src/components/dashboard/MainGrid.tsx`
+* `src/layouts/DashboardLayout.tsx`
+* `src/features/auth/pages/LoginPage.tsx`
+
+**Assumptions and dependencies:**
+
+* Summary is based on commit `dbd4298`.
+* No new backend dependency was identifiable.
+
+**Verification status:**
+
+* Lint/build result was not recorded in Git history.
+
+---
+
+## fix 000004 — Company list, detail page, and create flow
+
+**Implemented items:**
+
+* Built companies list with debounced search.
+* Added stage, priority, and owner filters.
+* Added server-side pagination.
+* Added loading/error states.
+* Added create company form with Zod validation.
+* Built company detail page.
+* Defined types, service, and React Query hooks.
+* Added company detail route.
+* Added cache invalidation after create.
+
+**Important files:**
+
+* `src/features/companies/components/CreateCompanyDialog.tsx`
+* `src/features/companies/pages/CompaniesPage.tsx`
+* `src/features/companies/pages/CompanyDetailsPage.tsx`
+* `src/features/companies/services/companies.service.ts`
+* `src/features/companies/hooks/useCompanies.ts`
+* `src/features/companies/hooks/useDebouncedValue.ts`
+* `src/features/companies/types/company.types.ts`
+* `src/routes/index.tsx`
+
+**Assumptions and dependencies:**
+
+* Depends on company list, detail, and create APIs.
+* Owner filter options and delete action were disabled in this version.
+* Details were extracted from commit `ccc44f2`.
+
+**Verification status:**
+
+* Lint/build result was not recorded in Git history.
+
+---
+
+## fix 000005 — Company owner from auth and Iran province selector
+
+**Implemented items:**
+
+* Removed manual owner input from company create form.
+* Sent the logged-in user ID as `ownerId`.
+* Prevented company creation when user info is missing.
+* Added `team` to the user model in frontend auth state.
+* Added shared Iran province selector.
+
+**Important files:**
+
+* `src/features/companies/components/CreateCompanyDialog.tsx`
+* `src/features/auth/services/auth.service.ts`
+* `src/store/authStore.ts`
+* `src/shared/components/IranProvinceSelect.tsx`
+* `src/shared/constants/iranProvinces.ts`
+
+**Assumptions and dependencies:**
+
+* Login response must provide user `id` and `team`.
+* Company create API must accept `ownerId`.
+* Summary is based on commit `7a0ad88`.
+
+**Verification status:**
+
+* Lint/build result was not recorded in Git history.
+
+---
+
+## fix 000006 — Company ownership type and province selector
+
+**Implemented items:**
+
+* Defined company ownership enum and Persian labels.
+* Added ownership to company type and create payload.
+* Displayed ownership in company details.
+* Used province selector for company head office location.
+
+**Important files:**
+
+* `src/features/companies/types/company.types.ts`
+* `src/features/companies/components/CreateCompanyDialog.tsx`
+* `src/features/companies/pages/CompanyDetailsPage.tsx`
+
+**Assumptions and dependencies:**
+
+* Backend must accept ownership values:
+
+  * `PRIVATE`
+  * `STATE`
+  * `SEMI_STATE`
+  * `PUBLIC_LISTED`
+  * `BANK`
+  * `HOLDING`
+* Summary is based on commit `6a0597b`.
+
+**Verification status:**
+
+* Lint/build result was not recorded in Git history.
+
+---
+
+## fix 000007 — Overview tab and company update actions
+
+**Implemented items:**
+
+* Added company detail tabs.
+* Completed overview tab.
+* Added company edit form.
+* Added change stage dialog.
+* Added priority change.
+* Added owner assignment to current user.
+* Added edit and stage-change mutations.
+* Added company data invalidation.
+
+**Important files:**
+
+* `src/features/companies/components/EditCompanyDialog.tsx`
+* `src/features/companies/components/ChangeCompanyStageDialog.tsx`
+* `src/features/companies/pages/CompanyDetailsPage.tsx`
+* `src/features/companies/hooks/useCompanies.ts`
+* `src/features/companies/services/companies.service.ts`
+* `src/features/companies/types/company.types.ts`
+
+**Assumptions and dependencies:**
+
+* Depends on `PATCH /companies/:id` and `PATCH /companies/:id/stage`.
+* Owner assignment was implemented through the generic update route using the current user ID in this version.
+* Details were extracted from commit `1b6efd6`.
+
+**Verification status:**
+
+* Lint/build result was not recorded in Git history.
+
+---
+
+## fix 000008 — API, types, permissions, and company owner assignment cleanup
+
+**Implemented items:**
+
+* Completed company module requirements 7–14.
+* Changed priority through `PATCH /api/companies/:id`.
+* Connected owner assignment to `PATCH /api/companies/:id/owner`.
+* Standardized `PaginatedResult<T>`.
+* Standardized company types.
+* Used `unknown` for relations not yet implemented.
+* Added permission helper with role fallbacks.
+* Applied permissions for create, edit, stage change, priority change, and owner assignment.
+* Added accurate empty and loading-error messages.
+* Added list and detail invalidation after mutations.
+
+**Important files:**
+
+* `src/features/auth/utils/permissions.ts`
+* `src/features/companies/types/company.types.ts`
+* `src/store/authStore.ts`
+* Related company service, hook, and UI files
+
+**Assumptions and dependencies:**
+
+* Since users API was not available, no fake users or static owners were added.
+* Owner assignment remained disabled.
+
+**Verification status:**
+
+* Lint and build passed.
+
+---
+
+## fix 000009 — Company forms, enums, validation, and mutation flows
+
+**Implemented items:**
+
+* Unified create/edit form in `CompanyForm`.
+* Added Zod validation and URL validation.
+* Trimmed strings and removed empty values before sending payload.
+* Added shared options, labels, and date display helpers.
+* Added standalone priority-change dialog.
+* Improved stage-change dialog and messages.
+* Added Persian badges.
+* Cleaned query params.
+* Standardized API function names.
+* Preserved list/detail invalidation.
+
+**Important files:**
+
+* `src/features/companies/components/CompanyForm.tsx`
+* `src/features/companies/components/ChangeCompanyPriorityDialog.tsx`
+* `src/features/companies/utils/companyDisplay.ts`
+* `src/features/companies/types/company.types.ts`
+* Related company page, dialog, service, and hook files
+
+**Assumptions and dependencies:**
+
+* Owner assignment remained disabled because users API was not available.
+* Company owner on create is taken from logged-in user.
+* Head office location uses province selector.
+
+**Verification status:**
+
+* Lint and production build passed.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
+## fix 000010 — Company people tab, contacts, and socials
+
+**Implemented items:**
+
+* Completed company People tab.
+* Added list pagination with page sizes 5, 10, and 20.
+* Added create, edit, and delete flows with confirmation.
+* Added complete person detail drawer.
+* Added CRUD for contact methods and social profiles.
+* Added shared forms and Zod validation.
+* Added Persian options.
+* Added role/permission-based access control.
+* Added cache invalidation for people, company, contacts, and socials.
+* Centralized APIs in dedicated services with no Axios calls inside components.
+
+**Important files:**
+
+* `src/features/people/types/person.types.ts`
+* `src/features/people/services/people.service.ts`
+* `src/features/people/hooks/usePeople.ts`
+* `src/features/people/components/PersonForm.tsx`
+* `src/features/people/components/PersonFormDialog.tsx`
+* `src/features/people/components/PeopleTab.tsx`
+* `src/features/people/components/PersonDetailDrawer.tsx`
+* `src/features/people/components/PersonContactForm.tsx`
+* `src/features/people/components/PersonSocialForm.tsx`
+
+**Assumptions and dependencies:**
+
+* Backend must support `OTHER` enum value for contact type and social platform.
+* Live API testing requires backend to be running.
+
+**Verification status:**
+
+* Lint and production build passed.
+
+---
+
+## fix 000011 — Company activity timeline and activity creation flow
+
+**Implemented items:**
+
+* Completed Activities tab in company details.
+* Displayed activities in a responsive timeline.
+* Added pagination with page sizes 5, 10, and 20.
+* Displayed activity type, related person, creator, notes, outcome, occurred time, next follow-up, and creation date.
+* Marked overdue, today, and future follow-ups.
+* Added activity creation form with Zod validation.
+* Selected real people from the company.
+* Converted dates to ISO.
+* Displayed `STAGE_CHANGE` without allowing manual creation.
+* Added access control.
+* Added invalidation for activities and company detail after create.
+
+**Important files:**
+
+* `src/features/activities/types/activity.types.ts`
+* `src/features/activities/services/activities.service.ts`
+* `src/features/activities/hooks/useActivities.ts`
+* `src/features/activities/components/ActivitiesTab.tsx`
+* `src/features/activities/components/ActivityForm.tsx`
+* `src/features/activities/components/ActivityFormDialog.tsx`
+* `src/features/companies/pages/CompanyDetailsPage.tsx`
+
+**Assumptions and dependencies:**
+
+* Depends on `GET /api/activities`, `POST /api/activities`, and company people API.
+* Backend must support activity pagination and defined `ActivityType` values.
+* No fake data was added.
+* Live API testing requires backend to be running.
+
+**Verification status:**
+
+* Lint and production build passed.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
+## fix 000012 — Company Call Card tab
+
+**Implemented items:**
+
+* Completed Call Card tab.
+* Added loading, empty, and error states.
+* Added create/edit Call Card flow.
+* Selected primary and secondary contacts from real company people.
+* Displayed contacts, strategy, opener texts, discovery questions, objections/responses, qualification, and follow-up sections.
+* Managed dynamic questions and objections with Zod.
+* Removed empty values.
+* Fetched and previewed backend suggestions.
+* Applied confirmed suggestions into the form without auto-saving.
+* Conservatively merged suggestions with existing data.
+* Added copy actions for email and LinkedIn message text.
+* Treated `404` or empty response as missing Call Card.
+* Added access control.
+* Added invalidation for Call Card and company details after save.
+
+**Important files:**
+
+* `src/features/callCards/types/callCard.types.ts`
+* `src/features/callCards/services/callCards.service.ts`
+* `src/features/callCards/hooks/useCallCards.ts`
+* `src/features/callCards/components/CallCardTab.tsx`
+* `src/features/callCards/components/CallCardView.tsx`
+* `src/features/callCards/components/CallCardForm.tsx`
+* `src/features/callCards/components/CallCardFormDialog.tsx`
+* `src/features/callCards/components/CallCardSuggestionDialog.tsx`
+* `src/features/callCards/utils/callCardDisplay.ts`
+* `src/features/companies/pages/CompanyDetailsPage.tsx`
+
+**Assumptions and dependencies:**
+
+* Depends on:
+
+  * `GET /api/companies/:companyId/call-card`
+  * `GET /api/companies/:companyId/call-card/suggest`
+  * `PUT /api/companies/:companyId/call-card`
+  * company people API
+* Unknown suggestion fields are kept as `unknown`.
+* Suggestions are not generated or auto-saved by frontend.
+* Live API testing requires backend to be running.
+
+**Verification status:**
+
+* Lint and production build passed.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
+## fix 000013 — Company branch management
+
+**Implemented items:**
+
+* Completed Branches tab in company details.
+* Displayed branches in table with name, city, address, phone, and last update.
+* Added create, edit, and delete flows with confirmation dialog.
+* Added shared create/edit form with Zod.
+* Required at least one non-empty field.
+* Trimmed strings and removed empty values before sending.
+* Added loading, empty, error, success, and pending states.
+* Applied view/manage/delete permissions.
+* Added invalidation for branches and company details after mutations.
+
+**Important files:**
+
+* `src/features/companyBranches/types/companyBranch.types.ts`
+* `src/features/companyBranches/services/companyBranches.service.ts`
+* `src/features/companyBranches/hooks/useCompanyBranches.ts`
+* `src/features/companyBranches/components/CompanyBranchesTab.tsx`
+* `src/features/companyBranches/components/CompanyBranchForm.tsx`
+* `src/features/companyBranches/components/CompanyBranchFormDialog.tsx`
+* `src/features/companies/pages/CompanyDetailsPage.tsx`
+
+**Assumptions and dependencies:**
+
+* Depends on:
+
+  * `GET /api/companies/:companyId/branches`
+  * `POST /api/companies/:companyId/branches`
+  * `PATCH /api/companies/:companyId/branches/:branchId`
+  * `DELETE /api/companies/:companyId/branches/:branchId`
+* Partial but non-empty branch data is allowed.
+* No fake data was added.
+* Live API testing requires backend to be running.
+
+**Verification status:**
+
+* Lint and production build passed.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
+## fix 000014 — Branch location selector aligned with company form
+
+**Implemented items:**
+
+* Replaced free-text branch city input with shared Iran province selector.
+* Displayed predefined Iran province list.
+* Preserved selected value during edit.
+* Disabled selector while submitting.
+
+**Important files:**
+
+* `src/features/companyBranches/components/CompanyBranchForm.tsx`
+* `src/shared/components/IranProvinceSelect.tsx`
+
+**Assumptions and dependencies:**
+
+* Payload field name remains `city` for backend compatibility.
+* Value is selected from Iran province list.
+* No new API or fake data was added.
+
+**Verification status:**
+
+* Lint and production build passed.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
+## fix 000015 — Company social channels
+
+**Implemented items:**
+
+* Completed independent Company Social Channels tab.
+* Displayed platform, URL/handle, and last update.
+* Added create, edit, and delete with confirmation.
+* Added shared create/edit form.
+* Added platform enum selection.
+* Required handle validation with Zod.
+* Trimmed values before sending.
+* Safely displayed valid links for website, LinkedIn, Instagram, YouTube, and Aparat.
+* Added loading, empty, error, success, and pending states.
+* Added permission control.
+* Added invalidation for channels and company details.
+
+**Important files:**
+
+* `src/features/companySocialChannels/types/companySocialChannel.types.ts`
+* `src/features/companySocialChannels/services/companySocialChannels.service.ts`
+* `src/features/companySocialChannels/hooks/useCompanySocialChannels.ts`
+* `src/features/companySocialChannels/components/CompanySocialChannelsTab.tsx`
+* `src/features/companySocialChannels/components/CompanySocialChannelForm.tsx`
+* `src/features/companySocialChannels/components/CompanySocialChannelFormDialog.tsx`
+* `src/features/companySocialChannels/utils/companySocialChannelDisplay.ts`
+* `src/features/companies/pages/CompanyDetailsPage.tsx`
+
+**Assumptions and dependencies:**
+
+* This module is separate from person socials.
+* Depends on:
+
+  * `GET /api/companies/:companyId/social-channels`
+  * `POST /api/companies/:companyId/social-channels`
+  * `PATCH /api/companies/:companyId/social-channels/:channelId`
+  * `DELETE /api/companies/:companyId/social-channels/:channelId`
+* `OTHER` was not added.
+* Handles are not forcibly converted to URLs.
+* Live update/delete testing requires backend to be running.
+
+**Verification status:**
+
+* Lint and production build passed.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
+## fix 000016 — Sales pipeline page
+
+**Implemented items:**
+
+* Added protected `/pipeline` route.
+* Added Pipeline menu item.
+* Displayed horizontal board with all sales stages.
+* Loaded first 20 companies per stage using cached queries and real company API.
+* Added debounced search and priority filter.
+* Displayed total count per column.
+* Warned about 20-item column limit.
+* Added compact company card with details, company link, and stage change action.
+* Reused stage-change dialog with success callback.
+* Added refresh and invalidation for pipeline, company list, and company detail.
+* Added independent loading, empty, and error states per column.
+
+**Important files:**
+
+* `src/features/pipeline/hooks/usePipeline.ts`
+* `src/features/pipeline/pages/PipelinePage.tsx`
+* `src/features/pipeline/components/PipelineColumn.tsx`
+* `src/features/pipeline/components/PipelineCompanyCard.tsx`
+* `src/features/companies/components/ChangeCompanyStageDialog.tsx`
+* `src/routes/index.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+
+**Assumptions and dependencies:**
+
+* Uses existing `GET /api/companies` and `PATCH /api/companies/:companyId/stage`.
+* No new endpoint was added.
+* Each stage displays up to 20 companies.
+* Search may be ignored until backend supports it.
+* Drag-and-drop and per-column pagination were not implemented.
+
+**Verification status:**
+
+* Lint and production build passed.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
+## fix 000017 — Due follow-ups page
+
+**Implemented items:**
+
+* Added protected `/follow-ups` route.
+* Added Follow-ups menu item.
+* Loaded real due follow-ups with pagination.
+* Supported page sizes 5, 10, 20, and 50.
+* Added summary cards for current page count, overdue items, and today’s items.
+* Added current-page client-side filters for all, overdue, today, and future.
+* Displayed status, activity type, company, person, creator, notes, outcome, occurred time, and next follow-up time.
+* Added links to company detail and person.
+* Added refresh while preserving previous data.
+* Added loading, empty, error, and permission states.
+
+**Important files:**
+
+* `src/features/followUps/types/followUp.types.ts`
+* `src/features/followUps/services/followUps.service.ts`
+* `src/features/followUps/hooks/useFollowUps.ts`
+* `src/features/followUps/utils/followUpDisplay.ts`
+* `src/features/followUps/components/FollowUpsSummaryCards.tsx`
+* `src/features/followUps/components/FollowUpCard.tsx`
+* `src/features/followUps/pages/FollowUpsPage.tsx`
+* `src/routes/index.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+
+**Assumptions and dependencies:**
+
+* Uses only `GET /api/activities/follow-ups/due`.
+* Array and paginated responses are normalized.
+* Status filters only filter current page data.
+* Complete, edit, and delete actions were not implemented due to missing confirmed endpoints at that time.
+
+**Verification status:**
+
+* Lint passed without errors or warnings.
+* Production build passed.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
+## fix 000018 — Reports and real dashboard metrics
+
+**Implemented items:**
+
+* Added protected `/reports` route.
+* Added conditional Reports menu item for allowed roles/permissions.
+* Added pipeline summary cards and progress bars.
+* Added conversion-rate table.
+* Added stage-duration report.
+* Added activity report with default 30-day range and date controls.
+* Safely normalized numeric and percentage values.
+* Added independent error handling per report section and for `403`.
+* Replaced sample dashboard data with seven real metrics from companies, conversion, and recent 30-day activities.
+* Kept dashboard usable for roles without report access.
+* Added refresh for all reports.
+* Added shared query caching.
+
+**Important files:**
+
+* `src/features/reports/types/report.types.ts`
+* `src/features/reports/services/reports.service.ts`
+* `src/features/reports/hooks/useReports.ts`
+* `src/features/reports/utils/reportDisplay.ts`
+* Reports components and page
+* `src/components/dashboard/MainGrid.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+* `src/routes/index.tsx`
+
+**Assumptions and dependencies:**
+
+* Depends on:
+
+  * `/api/reports/pipeline-summary`
+  * `/api/reports/conversion-rates`
+  * `/api/reports/stage-durations`
+  * `/api/reports/activities`
+* Default activity range is calculated from browser local date.
+* Export, drill-down, and new chart dependencies were not added.
+
+**Verification status:**
+
+* Lint passed without errors or warnings.
+* Production build passed.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
+## fix 000019 — Safe preparation for activity edit and follow-up reschedule
+
+**Implemented items:**
+
+* Audited Activities and Follow-ups services, hooks, and components for update, reschedule, and complete endpoints.
+* Added disabled edit action to activity items for permitted users.
+* Added disabled reschedule action next to the existing follow-up action.
+* Corrected complete action label to `انجام شد`.
+* Explicitly avoided local mutation or guessed endpoints.
+
+**Important files:**
+
+* `src/features/activities/components/ActivitiesTab.tsx`
+* `src/features/followUps/components/FollowUpCard.tsx`
+* Existing activity and follow-up services/hooks were reviewed.
+
+**Assumptions and dependencies:**
+
+* At that time, no confirmed endpoint existed for:
+
+  * `PATCH /api/activities/:activityId`
+  * reschedule
+  * complete
+* Because the repository was frontend-only, edit/reschedule/complete remained intentionally disabled.
+* After real endpoints were added, mutations and invalidation should be implemented.
+
+**Verification status:**
+
+* Lint passed without errors or warnings.
+* Production build passed.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
+## fix 000020 — Admin users, permissions, and owner assignment
+
+**Implemented items:**
+
+* Added `/admin/users` and `/admin/permissions` routes.
+* Added conditional Admin menu.
+* Implemented real users list, create, role/team change, activate, and deactivate flows.
+* Prevented deactivating the current user.
+* Supported `isActive` and `active`.
+* Implemented permission assign, revoke, bulk assign, bulk revoke, and create actions.
+* Used correct DELETE request body handling.
+* Clearly showed missing role-permission state endpoint instead of faking a matrix.
+* Hardened permission helper with ADMIN access.
+* Added `canAny` and `canAll`.
+* Enabled company owner assignment using real active REP/MANAGER users.
+
+**Important files:**
+
+* `src/features/admin/users`
+* `src/features/admin/permissions`
+* `src/features/auth/utils/permissions.ts`
+* `src/features/companies/components/ChangeCompanyOwnerDialog.tsx`
+* `src/features/companies/pages/CompanyDetailsPage.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+* `src/routes/index.tsx`
+
+**Assumptions and dependencies:**
+
+* Depends on `/api/users` and `/api/admin/permissions/*`.
+* Backend did not provide role permission state listing, so current role state was not faked.
+* `team` is required for MANAGER and REP in frontend.
+* Owner assignment only shows active REP/MANAGER users.
+
+**Verification status:**
+
+* Lint passed without errors or warnings.
+* Production build passed.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
+## fix 000021 — Stabilization, QA, and API contract cleanup
+
+**Implemented items:**
+
+* Audited protected routes, services, query keys, permissions, and response normalizers.
+* Added pipeline and report invalidation after company mutations.
+* Refreshed follow-ups and reports after activity creation.
+* Invalidated owner options after user mutations.
+* Hardened report response handling for missing arrays or summaries.
+* Verified no raw `fetch`, duplicated base URL, or `/api/api` path.
+* Ran manual QA with ADMIN and REP roles.
+* Checked direct route access, conditional menu, company details, and owner assignment.
+
+**Important files:**
+
+* `src/features/companies/hooks/useCompanies.ts`
+* `src/features/activities/hooks/useActivities.ts`
+* `src/features/admin/users/hooks/useAdminUsers.ts`
+* `src/features/reports/services/reports.service.ts`
+* `README.md`
+
+**Assumptions and limitations:**
+
+* Activity update, complete, and reschedule endpoints were not yet confirmed as executable in frontend.
+* Related actions remained disabled without fake success.
+* Role permission-state endpoint and final bulk-owner payload contract were not available.
+* Permission state or bulk-owner contract was not guessed.
+
+**Verification status:**
+
+* ADMIN and REP login succeeded in local QA.
+* Dashboard, companies, company detail, pipeline, follow-ups, reports, and Admin rendered according to roles.
+* No console error was observed.
+* Lint passed without errors or warnings.
+* Production build passed.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
+## Frontend API Contract Checklist
+
+All paths below are called relative to the shared Axios `baseURL`, which includes `/api`.
+
+**Companies:**
+
+* `GET /companies`
+* `POST /companies`
+* `GET /companies/:id`
+* `PATCH /companies/:id`
+* `PATCH /companies/:id/stage`
+* `PATCH /companies/:id/owner`
+
+**People:**
+
+* `GET /people`
+* `POST /people`
+* `GET /people/:id`
+* `PATCH /people/:id`
+* `DELETE /people/:id`
+* CRUD under `/people/:id/contacts`
+* CRUD under `/people/:id/socials`
+* Global people list accepts filters and pagination through query parameters.
+
+**Activities:**
+
+* `GET /activities`
+* `POST /activities`
+* `PATCH /activities/:id`
+* `PATCH /activities/:id/complete`
+* `PATCH /activities/:id/reschedule`
+* `GET /activities/follow-ups/due`
+
+**Call Card:**
+
+* `GET /companies/:id/call-card`
+* `PUT /companies/:id/call-card`
+* `GET /companies/:id/call-card/suggest`
+
+**Branches and social channels:**
+
+* CRUD under `/companies/:id/branches`
+* CRUD under `/companies/:id/social-channels`
+
+**Reports:**
+
+* `GET /reports/filter-options`
+* `GET /reports/pipeline-summary`
+* `GET /reports/conversion-rates`
+* `GET /reports/stage-durations`
+* `GET /reports/activities`
+* `GET /reports/activities/by-user`
+* `GET /reports/pipeline/by-owner`
+* Report filters are sent as query parameters.
+
+**Users:**
+
+* `GET /users`
+* `POST /users`
+* `GET /users/:id`
+* role, activate, and deactivate PATCH routes
+
+**Permissions:**
+
+* assign, bulk-assign, and create use POST routes.
+* revoke and bulk-revoke use DELETE routes with body as `{ data: payload }` where required by Axios/client behavior.
+
+**Libraries:**
+
+* Standard CRUD with:
+
+  * `/industries`
+  * `/lead-sources`
+  * `/pain-points`
+  * `/use-cases`
+  * `/personas`
+  * `/lookup-options`
+
+**Pipeline settings:**
+
+* `GET /pipeline/stages`
+* `PATCH /pipeline/stages/:id`
+* CRUD for transition rules under `/pipeline/transition-rules`
+
+---
+
+## fix 000022 — Connect activity and follow-up lifecycle to backend
+
+**Implemented items:**
+
+* Enabled activity editing for permitted roles/users.
+* Reused shared create/edit activity form.
+* Initialized person, type, dates, notes, and outcome.
+* Locked `STAGE_CHANGE` activity type.
+* Connected `PATCH /api/activities/:id`.
+* Enabled follow-up completion with outcome/note dialog.
+* Enabled rescheduling with future-date validation.
+* Connected complete and reschedule endpoints.
+* Added automatic invalidation for Activities, Follow-ups, Company Detail, Reports, and Dashboard after mutations.
+
+**Important files:**
+
+* Activity and Follow-up types/services/hooks
+* `ActivityForm.tsx`
+* `EditActivityDialog.tsx`
+* `ActivitiesTab.tsx`
+* `CompleteFollowUpDialog.tsx`
+* `RescheduleFollowUpDialog.tsx`
+* `FollowUpCard.tsx`
+
+**Assumptions and dependencies:**
+
+* Backend supports:
+
+  * `PATCH /api/activities/:activityId`
+  * `PATCH /api/activities/:activityId/complete`
+  * `PATCH /api/activities/:activityId/reschedule`
+* Optional edit fields are cleared with `null`.
+* Dates are converted to ISO.
+* No fake local completion or reschedule state is used.
+
+**Verification status:**
+
+* Lint passed without errors or warnings.
+* Production build passed.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
+## fix 000023 — Advanced filters and detailed reports
+
+**Implemented items:**
+
+* Added unified report filter panel.
+* Added date range filter.
+* Added multi-select filters for users, teams, owners, pipeline stages, priorities, industries, lead sources, and activity types.
+* Loaded filter options from backend.
+* Applied filters to pipeline summary, conversion rates, stage durations, and activities.
+* Dashboard uses the shared filter contract with default 30-day range.
+* Added activity-by-user table.
+* Added pipeline-by-owner table with stage breakdown.
+* Added loading, empty, error, refresh, clear-filter, and date-range validation states.
+
+**Important files:**
+
+* `src/features/reports/types/report.types.ts`
+* `src/features/reports/services/reports.service.ts`
+* `src/features/reports/hooks/useReports.ts`
+* `src/features/reports/components/ReportFilterPanel.tsx`
+* `src/features/reports/components/ActivityReportSection.tsx`
+* `src/features/reports/components/ActivityByUserSection.tsx`
+* `src/features/reports/components/PipelineByOwnerSection.tsx`
+* `src/features/reports/pages/ReportsPage.tsx`
+* `src/components/dashboard/MainGrid.tsx`
+* `README.md`
+
+**Assumptions and dependencies:**
+
+* Depends on:
+
+  * `GET /api/reports/filter-options`
+  * existing four report endpoints
+  * `GET /api/reports/activities/by-user`
+  * `GET /api/reports/pipeline/by-owner`
+* Query keys include:
+
+  * `startDate`
+  * `endDate`
+  * `userIds`
+  * `teams`
+  * `ownerIds`
+  * `stages`
+  * `priorities`
+  * `industries`
+  * `leadSources`
+  * `activityTypes`
+* Backend options are normalized from simple values or objects containing `value`, `id`, `code`, or `name`.
+* Live API testing requires backend to be running and was not performed.
+
+**Verification status:**
+
+* Lint passed without errors or warnings.
+* Production build passed.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
+## fix 000024 — Libraries and base data management
+
+**Implemented items:**
+
+* Added protected `/admin/libraries` route.
+* Added Libraries menu item under Admin.
+* Created six tabs:
+
+  * Industries
+  * Lead Sources
+  * Pain Points
+  * Use Cases
+  * Personas
+  * Lookup Options
+* Implemented list, create, edit, activate/deactivate through edit, and delete flows with real APIs.
+* Added loading, empty, and error states.
+* Replaced company industry and lead source text inputs with dropdowns containing active items only.
+* Replaced person department and persona fields with active lookup options.
+* Added no default or fake catalog data.
+
+**Important files:**
+
+* New `src/features/catalogs` feature:
+
+  * types
+  * service
+  * hooks
+  * dialogs
+  * tabs
+  * admin page
+* `src/features/companies/components/CompanyForm.tsx`
+* `src/features/people/components/PersonForm.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+* `src/routes/index.tsx`
+* `README.md`
+
+**Assumptions and dependencies:**
+
+* Frontend contract uses:
+
+  * `GET/POST /api/industries`
+  * `GET/POST /api/lead-sources`
+  * `GET/POST /api/pain-points`
+  * `GET/POST /api/use-cases`
+  * `GET/POST /api/personas`
+  * `GET/POST /api/lookup-options`
+  * `PATCH/DELETE /api/:resource/:id`
+* Generic library payload includes:
+
+  * `name`
+  * `description`
+  * `isActive`
+* Lookup option payload includes:
+
+  * `label`
+  * `value`
+  * `category`
+  * `description`
+  * `isActive`
+* `department` and `personaTag` use lookup options.
+* `seniorityLevel` was not added because it is not currently present in the Person type/payload.
+* Live CRUD testing requires backend to be running and was not performed.
+
+**Verification status:**
+
+* Lint passed without errors or warnings.
+* Production build passed.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
+## fix 000025 — Pipeline stages and transition rules settings
+
+**Implemented items:**
+
+* Added protected `/admin/pipeline` route.
+* Added Pipeline Settings menu item under Admin.
+* Created Stages and Transition Rules tabs.
+* Displayed and edited:
+
+  * label
+  * description
+  * display order
+  * color
+  * active status
+  * terminal-stage status
+* Listed, created, edited, and deleted transition rules.
+* Transition rules include:
+
+  * from stage
+  * to stage
+  * role
+  * allowed/blocked status
+* Pipeline board now uses backend-provided stage order, labels, active stages, and colors.
+* Stage-change dialog limits destination stages based on allowed backend rules for current stage and user role.
+* Real backend error is shown for invalid transitions.
+
+**Important files:**
+
+* New `src/features/pipelineConfig` feature:
+
+  * types
+  * service
+  * hooks
+  * dialogs
+  * tabs
+  * admin page
+* `src/features/pipeline/hooks/usePipeline.ts`
+* `src/features/pipeline/pages/PipelinePage.tsx`
+* `src/features/pipeline/components/PipelineColumn.tsx`
+* `src/features/companies/components/ChangeCompanyStageDialog.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+* `src/routes/index.tsx`
+* `README.md`
+
+**Assumptions and dependencies:**
+
+* Frontend contract depends on:
+
+  * `GET/PATCH /api/pipeline/stages`
+  * `GET/POST/PATCH/DELETE /api/pipeline/transition-rules`
+* Stage code must match the current company stage enum.
+* Unknown or inactive stages are not displayed on the board.
+* Destination stages are extracted only from `allowed=true` rules matching `fromStage` and user role.
+* No local/fake permission is created when rule fetching fails.
+* Live settings and transition testing requires backend to be running and was not performed.
+
+**Verification status:**
+
+* Lint passed without errors or warnings.
+* Production build passed.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
+## fix 000026 — Global People Directory
+
+**Implemented items:**
+
+* Added protected `/people` route.
+* Added People menu item for allowed roles/permissions.
+* Created global people table with:
+
+  * name
+  * title
+  * department
+  * persona
+  * primary contact
+  * company
+  * owner
+  * contact summary
+  * actions
+* Added server-side pagination with page sizes 5, 10, 20, and 50.
+* Added debounced search.
+* Added company filter with live company search.
+* Added owner and team filters from backend report options.
+* Added department and persona filters from lookup options.
+* Added filters for primary contact, has email, and has phone.
+* Added view company action.
+* Reused existing person drawer.
+* Displayed `—` for missing values.
+* Added loading, empty, and error states.
+
+**Important files:**
+
+* `src/features/people/pages/PeopleDirectoryPage.tsx`
+* `src/features/people/types/person.types.ts`
+* `src/features/people/services/people.service.ts`
+* `src/features/people/hooks/usePeople.ts`
+* `src/components/dashboard/SideMenu.tsx`
+* `src/routes/index.tsx`
+* `README.md`
+
+**Assumptions and dependencies:**
+
+* Directory uses real `GET /api/people` with query params:
+
+  * `page`
+  * `limit`
+  * `search`
+  * `companyId`
+  * `ownerId`
+  * `team`
+  * `department`
+  * `personaTag`
+  * `isPrimaryContact`
+  * `hasEmail`
+  * `hasPhone`
+* Person response may include company and owner relations.
+* Person response may include `emailSummary` and `phoneSummary`.
+* If summaries are missing, frontend falls back to `email`, `phone`, and `contacts`.
+* Company options come from `GET /api/companies`.
+* Owner/team options come from `/api/reports/filter-options`.
+* Lookup options come from `/api/lookup-options`.
+* Live filter and scope testing requires backend to be running and was not performed.
+
+**Verification status:**
+
+* Lint passed without errors or warnings.
+* Production build passed.
+* Only a non-blocking bundle-size warning remained.
+
+---
+
+**Built with ❤️ for sales team**
+
+---
