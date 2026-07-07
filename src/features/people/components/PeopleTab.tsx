@@ -20,11 +20,28 @@ import { useAuthStore } from '@/store/authStore';
 import PersonDetailDrawer from './PersonDetailDrawer';
 import PersonFormDialog from './PersonFormDialog';
 import { useDeletePerson, usePeople } from '../hooks/usePeople';
-import type { Person } from '../types/person.types';
-
+import { getContactTypeLabel, type Person } from '../types/person.types';
 interface PeopleTabProps {
   companyId: string;
 }
+function primaryContactSummary(person: Person): string {
+  const contacts = person.contacts ?? [];
+
+  const primary = contacts.find((item) => item.isPrimary && item.value?.trim());
+
+  if (primary) {
+    return `${getContactTypeLabel(primary.type)}: ${primary.value}`;
+  }
+
+  const fallback = contacts.find((item) => item.value?.trim());
+
+  if (fallback) {
+    return `${getContactTypeLabel(fallback.type)}: ${fallback.value}`;
+  }
+
+  return '—';
+}
+
 
 export default function PeopleTab({ companyId }: PeopleTabProps) {
   const user = useAuthStore((state) => state.user);
@@ -65,8 +82,15 @@ export default function PeopleTab({ companyId }: PeopleTabProps) {
       minWidth: 105,
       renderCell: ({ value }: GridRenderCellParams<Person, boolean>) => value ? 'بله' : '—',
     },
-    { field: 'email', headerName: 'ایمیل', minWidth: 190, flex: 0.8 },
-    { field: 'phone', headerName: 'تلفن', minWidth: 140 },
+    // { field: 'email', headerName: 'ایمیل', minWidth: 190, flex: 0.8 },
+    // { field: 'phone', headerName: 'تلفن', minWidth: 140 },
+    {
+      field: 'primaryContactSummary',
+      headerName: 'راه تماس اصلی',
+      minWidth: 220,
+      flex: 0.9,
+      valueGetter: (_value, row) => primaryContactSummary(row),
+    },
     {
       field: 'actions',
       headerName: 'عملیات',

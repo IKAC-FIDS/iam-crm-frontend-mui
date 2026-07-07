@@ -13,17 +13,36 @@ import { useCatalog } from '@/features/catalogs/hooks/useCatalogs';
 import { getCatalogItemLabel, isCatalogItemActive } from '@/features/catalogs/types/catalog.types';
 import PersonDetailDrawer from '../components/PersonDetailDrawer';
 import { usePeopleDirectory } from '../hooks/usePeople';
-import type { DirectoryPerson, PeopleDirectoryParams } from '../types/person.types';
+import {
+  getContactTypeLabel,
+  type DirectoryPerson,
+  type PeopleDirectoryParams,
+} from '../types/person.types';
 
 type BooleanFilter = '' | 'true' | 'false';
 const display = (value?: string | null) => value?.trim() || '—';
 const booleanValue = (value: BooleanFilter): boolean | undefined => value === '' ? undefined : value === 'true';
 
-function contactSummary(person: DirectoryPerson): string {
-  const emails = [person.emailSummary, person.email, ...(person.contacts ?? []).filter((item) => item.type.includes('EMAIL')).map((item) => item.value)].filter(Boolean);
-  const phones = [person.phoneSummary, person.phone, ...(person.contacts ?? []).filter((item) => !item.type.includes('EMAIL')).map((item) => item.value)].filter(Boolean);
-  const values = [...new Set([...emails, ...phones])];
-  return values.length ? values.join(' • ') : '—';
+function primaryContactSummary(person: DirectoryPerson): string {
+  const contacts = person.contacts ?? [];
+
+  const primary = contacts.find((item) => item.isPrimary && item.value?.trim());
+
+  if (primary) {
+    return `${getContactTypeLabel(primary.type)}: ${primary.value}`;
+  }
+
+  const fallback = contacts.find((item) => item.value?.trim());
+
+  if (fallback) {
+    return `${getContactTypeLabel(fallback.type)}: ${fallback.value}`;
+  }
+
+  const legacyValue =
+    person.phoneSummary?.trim() ||
+    person.emailSummary?.trim();
+
+  return legacyValue || '—';
 }
 
 export default function PeopleDirectoryPage() {
@@ -60,7 +79,13 @@ export default function PeopleDirectoryPage() {
     { field: 'isPrimaryContact', headerName: 'مخاطب اصلی', minWidth: 110, renderCell: ({ value }) => <Chip size="small" color={value ? 'success' : 'default'} label={value ? 'بله' : 'خیر'} /> },
     { field: 'company', headerName: 'شرکت', minWidth: 180, flex: 1, valueGetter: (_value, row) => row.company?.legalName ?? '—' },
     { field: 'owner', headerName: 'مالک', minWidth: 150, valueGetter: (_value, row) => row.owner?.fullName ?? row.company?.owner?.fullName ?? '—' },
-    { field: 'contactSummary', headerName: 'اطلاعات تماس', minWidth: 240, flex: 1, valueGetter: (_value, row) => contactSummary(row) },
+    {
+      field: 'primaryContactSummary',
+      headerName: 'راه تماس اصلی',
+      minWidth: 240,
+      flex: 1,
+      valueGetter: (_value, row) => primaryContactSummary(row),
+    },
     { field: 'actions', headerName: 'عملیات', minWidth: 210, sortable: false, filterable: false, renderCell: ({ row }: GridRenderCellParams<DirectoryPerson>) => <Stack direction="row" sx={{ height: '100%', alignItems: 'center' }}><Button size="small" disabled={!row.companyId} onClick={() => navigate(`/companies/${row.companyId}`)}>مشاهده شرکت</Button><Button size="small" onClick={() => setOpenPersonId(row.id)}>بازکردن شخص</Button></Stack> },
   ], [navigate]);
 

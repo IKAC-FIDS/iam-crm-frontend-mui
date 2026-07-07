@@ -70,9 +70,9 @@ export interface Person {
   title?: string | null;
   department?: string | null;
   personaTag?: string | null;
-  linkedinUrl?: string | null;
-  email?: string | null;
-  phone?: string | null;
+  // linkedinUrl?: string | null;
+  // email?: string | null;
+  // phone?: string | null;
   isPrimaryContact?: boolean;
   isSecondaryContact?: boolean;
   createdAt?: string;
@@ -103,9 +103,9 @@ export interface CreatePersonPayload {
   title?: string;
   department?: string;
   personaTag?: string;
-  linkedinUrl?: string;
-  email?: string;
-  phone?: string;
+  // linkedinUrl?: string;
+  // email?: string;
+  // phone?: string;
   isPrimaryContact?: boolean;
   isSecondaryContact?: boolean;
   contacts?: CreatePersonContactPayload[];

@@ -49,6 +49,7 @@ Users can:
   * Automatic token injection into API requests
   * Automatic logout on unauthorized responses
   * Auth state managed with Zustand
+  * Optional usernameless Passkey/WebAuthn login
 
 * **Persian RTL interface**
 
@@ -427,6 +428,19 @@ http://localhost:3000/api/companies
 
 ```http
 POST /auth/login
+POST /auth/passkeys/authentication/options
+POST /auth/passkeys/authentication/verify
+```
+
+---
+
+### Account Passkeys
+
+```http
+GET /me/passkeys
+POST /me/passkeys/registration/options
+POST /me/passkeys/registration/verify
+DELETE /me/passkeys/:id
 ```
 
 ---
@@ -692,7 +706,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000026
+fix 000001 → fix 000040
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -2393,6 +2407,53 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * build نسخه production پاس شد.
 * هشدار غیرمسدودکننده بزرگ‌بودن bundle همچنان باقی است.
 * هر سه URL بدون پارامتر، با `includeArchived=true` و با `archivedOnly=true` به backend محلی رسیدند و بدون token پاسخ `401` دادند؛ بررسی زنده نتیجه فیلترها و داده‌ها انجام نشد.
+
+---
+
+## fix 000040 — افزودن ورود و مدیریت Passkey بدون نیاز به ایمیل
+
+**موارد پیاده‌سازی‌شده:**
+
+* وابستگی `@simplewebauthn/browser` اضافه شد و flowهای `startRegistration` و `startAuthentication` با گزینه‌های JSON بک‌اند استفاده شدند.
+* ورود ایمیل/رمز عبور بدون حذف یا تغییر قرارداد قبلی حفظ شد.
+* دکمه جداگانه «ورود با Passkey» به صفحه login اضافه شد؛ این دکمه فرم ایمیل/رمز عبور را validate نمی‌کند و برای شروع authentication بدنه خالی `{}` می‌فرستد.
+* login موفق Passkey همان منطق موفقیت login معمولی را استفاده می‌کند: ذخیره `accessToken`، ثبت user در auth store و انتقال به dashboard.
+* خطاهای کاربرپسند برای مرورگر/دستگاه ناسازگار، لغو عملیات توسط کاربر، challenge منقضی‌شده و login ناموفق اضافه شد.
+* صفحه protected `/account/security` برای «امنیت حساب» و «کلیدهای ورود / Passkeys» اضافه شد.
+* لیست Passkeyها شامل نام دستگاه یا «کلید بدون نام»، تاریخ ثبت، آخرین استفاده یا «هرگز استفاده نشده»، transports، backedUp و credentialDeviceType نمایش داده می‌شود.
+* ثبت Passkey جدید با نام دستگاه و حذف Passkey از صفحه امنیت حساب اضافه شد.
+* routeهای Passkey به مستندات قرارداد API در README اضافه شدند.
+
+**فایل‌های مهم:**
+
+* `package.json`
+* `package-lock.json`
+* `src/features/auth/pages/LoginPage.tsx`
+* `src/features/auth/services/auth.service.ts`
+* `src/features/auth/hooks/usePasskeyLogin.ts`
+* `src/features/auth/utils/passkeyErrors.ts`
+* `src/features/accountSecurity/`
+* `src/components/dashboard/AppNavbar.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+* `src/routes/index.tsx`
+* `README.md`
+
+**فرضیات و وابستگی‌ها:**
+
+* baseURL Axios طبق قرارداد موجود شامل `/api` است و endpointها بدون prefix اضافی صدا زده می‌شوند.
+* پاسخ `POST /me/passkeys/registration/options` مستقیماً `PublicKeyCredentialCreationOptionsJSON` است.
+* پاسخ `POST /auth/passkeys/authentication/options` شامل `{ challengeId, options }` است.
+* پاسخ موفق `POST /auth/passkeys/authentication/verify` همان shape ورود با رمز عبور را دارد.
+* نسخه درخواستی `@simplewebauthn/browser@^13.3.2` در npm registry موجود نبود؛ نزدیک‌ترین نسخه موجود و سازگار، `^13.3.0`، نصب شد.
+* تست زنده ثبت، حذف و ورود با Passkey به backend فعال، HTTPS/localhost سازگار با WebAuthn، نشست احراز هویت‌شده و authenticator واقعی نیاز دارد.
+
+**وضعیت بررسی:**
+
+* Lint بدون خطا پاس شد.
+* build نسخه production پاس شد.
+* هشدار غیرمسدودکننده بزرگ‌بودن bundle همچنان باقی است.
+* تست زنده API و تست واقعی Passkey انجام نشد.
+* تغییرات ثبت‌نشده قبلی در فایل‌های people، opportunities، pipeline، pipelineConfig و reports حفظ شد و revert نشد.
 
 ---
 

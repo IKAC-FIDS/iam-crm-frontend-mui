@@ -173,9 +173,12 @@ export default function PersonDetailDrawer({
                 <Info label="سمت" value={personQuery.data.title} />
                 <Info label="دپارتمان" value={personQuery.data.department} />
                 <Info label="پرسونا" value={personQuery.data.personaTag} />
-                <Info label="لینکدین" value={personQuery.data.linkedinUrl} />
+                {/* <Info label="لینکدین" value={personQuery.data.linkedinUrl} />
                 <Info label="ایمیل" value={personQuery.data.email} />
-                <Info label="تلفن" value={personQuery.data.phone} />
+                <Info label="تلفن" value={personQuery.data.phone} /> */}
+                {/* <Alert severity="info">
+                  راه‌های تماس و شبکه‌های اجتماعی از بخش‌های جداگانه پایین همین پنل مدیریت می‌شوند.
+                </Alert> */}
                 <Info label="مخاطب اصلی" value={personQuery.data.isPrimaryContact ? 'بله' : 'خیر'} />
                 <Info label="مخاطب دوم" value={personQuery.data.isSecondaryContact ? 'بله' : 'خیر'} />
               </Stack>

@@ -15,6 +15,7 @@ import AdminLibrariesPage from '@/features/catalogs/pages/AdminLibrariesPage';
 import AdminPipelinePage from '@/features/pipelineConfig/pages/AdminPipelinePage';
 import PeopleDirectoryPage from '@/features/people/pages/PeopleDirectoryPage';
 import AuditLogsPage from '@/features/auditLogs/pages/AuditLogsPage';
+import AccountSecurityPage from '@/features/accountSecurity/pages/AccountSecurityPage';
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +33,7 @@ export const router = createBrowserRouter([
           { path: 'pipeline', element: <PipelinePage /> },
           { path: 'follow-ups', element: <FollowUpsPage /> },
           { path: 'reports', element: <ReportsPage /> },
+          { path: 'account/security', element: <AccountSecurityPage /> },
           { path: 'admin/users', element: <AdminUsersPage /> },
           { path: 'admin/permissions', element: <AdminPermissionsPage /> },
           { path: 'admin/libraries', element: <AdminLibrariesPage /> },

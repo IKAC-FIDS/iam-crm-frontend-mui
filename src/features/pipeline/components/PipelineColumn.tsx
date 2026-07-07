@@ -1,6 +1,70 @@
 import { Alert, Box, CircularProgress, Paper, Stack, Typography } from '@mui/material';
 import type { UseQueryResult } from '@tanstack/react-query';
-import type { Opportunity, OpportunityPage } from '@/features/opportunities/types/opportunity.types';
-import type { PipelineStageConfig } from '@/features/pipelineConfig/types/pipelineConfig.types';
+
 import OpportunityCard from '@/features/opportunities/components/OpportunityCard';
-export default function PipelineColumn({ stage, query, canChangeStage, onChangeStage }: { stage: PipelineStageConfig; query: UseQueryResult<OpportunityPage, Error>; canChangeStage: boolean; onChangeStage: (item: Opportunity) => void }) { const items = query.data?.data ?? []; const total = query.data?.meta.total ?? items.length; return <Paper sx={{ width: 310, minWidth: 310, p: 2, bgcolor: 'background.default', borderTop: 4, borderTopColor: stage.color || 'primary.main' }}><Stack spacing={2}><Typography variant="subtitle1" sx={{ fontWeight: 700 }}>{stage.label} â€” {total.toLocaleString('fa-IR')}</Typography>{query.isLoading ? <Stack sx={{ alignItems: 'center', py: 5 }}><CircularProgress size={26} /></Stack> : query.isError ? <Alert severity="error">Ø®Ø·Ø§ Ø¯Ø± Ø¯Ø±ÛŒØ§ÙØª ÙØ±ØµØªâ€ŒÙ‡Ø§ÛŒ Ø§ÛŒÙ† Ù…Ø±Ø­Ù„Ù‡.</Alert> : items.length ? <Stack spacing={1.5}>{items.map((item) => <OpportunityCard key={item.id} opportunity={item} canChangeStage={canChangeStage} onChangeStage={onChangeStage} />)}</Stack> : <Box sx={{ py: 4, textAlign: 'center' }}><Typography color="text.secondary">ÙØ±ØµØªÛŒ Ø¯Ø± Ø§ÛŒÙ† Ù…Ø±Ø­Ù„Ù‡ Ù†ÛŒØ³Øª.</Typography></Box>}</Stack></Paper>; }
+import type {
+  Opportunity,
+  OpportunityPage,
+} from '@/features/opportunities/types/opportunity.types';
+import type { PipelineStageConfig } from '@/features/pipelineConfig/types/pipelineConfig.types';
+
+export default function PipelineColumn({
+  stage,
+  query,
+  canChangeStage,
+  onChangeStage,
+}: {
+  stage: PipelineStageConfig;
+  query: UseQueryResult<OpportunityPage, Error>;
+  canChangeStage: boolean;
+  onChangeStage: (item: Opportunity) => void;
+}) {
+  const items = query.data?.data ?? [];
+  const total = query.data?.meta.total ?? items.length;
+
+  return (
+    <Paper
+      sx={{
+        width: 310,
+        minWidth: 310,
+        p: 2,
+        bgcolor: 'background.default',
+        borderTop: 4,
+        borderTopColor: stage.color || 'primary.main',
+      }}
+    >
+      <Stack spacing={2}>
+        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+          {stage.label} — {total.toLocaleString('fa-IR')}
+        </Typography>
+
+        {query.isLoading ? (
+          <Stack sx={{ alignItems: 'center', py: 5 }}>
+            <CircularProgress size={26} />
+          </Stack>
+        ) : query.isError ? (
+          <Alert severity="error">
+            خطا در دریافت فرصت‌های این مرحله.
+          </Alert>
+        ) : items.length ? (
+          <Stack spacing={1.5}>
+            {items.map((item) => (
+              <OpportunityCard
+                key={item.id}
+                opportunity={item}
+                canChangeStage={canChangeStage}
+                onChangeStage={onChangeStage}
+              />
+            ))}
+          </Stack>
+        ) : (
+          <Box sx={{ py: 4, textAlign: 'center' }}>
+            <Typography color="text.secondary">
+              فرصتی در این مرحله نیست.
+            </Typography>
+          </Box>
+        )}
+      </Stack>
+    </Paper>
+  );
+}

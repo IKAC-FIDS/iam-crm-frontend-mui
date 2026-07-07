@@ -1,10 +1,46 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { pipelineConfigService } from '../services/pipelineConfig.service';
 import type { CreatePipelineStagePayload, ReorderStagesPayload, TransitionRulePayload, UpdatePipelineStagePayload } from '../types/pipelineConfig.types';
-export const pipelineConfigQueryKeys = { all: ['pipeline-config'] as const, stages: () => ['pipeline-stages'] as const, rules: () => ['pipeline-transitions'] as const };
+export const pipelineConfigQueryKeys = {
+  all: ['pipeline-config'] as const,
+  stages: () => ['pipeline-stages'] as const,
+  rules: () => ['pipeline-transitions'] as const,
+  runtimeStages: () => ['pipeline-runtime-stages'] as const,
+  runtimeRules: () => ['pipeline-runtime-transitions'] as const,
+};
+export function useRuntimePipelineStages(enabled = true) {
+  return useQuery({
+    queryKey: pipelineConfigQueryKeys.runtimeStages(),
+    queryFn: pipelineConfigService.getRuntimeStages,
+    enabled,
+    staleTime: 60_000,
+  });
+}
+
+export function useRuntimeTransitionRules(enabled = true) {
+  return useQuery({
+    queryKey: pipelineConfigQueryKeys.runtimeRules(),
+    queryFn: pipelineConfigService.getRuntimeTransitionRules,
+    enabled,
+    staleTime: 60_000,
+  });
+}
 export function usePipelineStages(enabled = true) { return useQuery({ queryKey: pipelineConfigQueryKeys.stages(), queryFn: pipelineConfigService.getStages, enabled, staleTime: 60_000 }); }
 export function useTransitionRules(enabled = true) { return useQuery({ queryKey: pipelineConfigQueryKeys.rules(), queryFn: pipelineConfigService.getTransitionRules, enabled, staleTime: 60_000 }); }
-function useInvalidateAll() { const c = useQueryClient(); return () => Promise.all([c.invalidateQueries({ queryKey: pipelineConfigQueryKeys.stages() }), c.invalidateQueries({ queryKey: pipelineConfigQueryKeys.rules() }), c.invalidateQueries({ queryKey: ['pipeline'] }), c.invalidateQueries({ queryKey: ['opportunities'] }), c.invalidateQueries({ queryKey: ['reports'] })]); }
+function useInvalidateAll() {
+  const c = useQueryClient();
+
+  return () =>
+    Promise.all([
+      c.invalidateQueries({ queryKey: pipelineConfigQueryKeys.stages() }),
+      c.invalidateQueries({ queryKey: pipelineConfigQueryKeys.rules() }),
+      c.invalidateQueries({ queryKey: pipelineConfigQueryKeys.runtimeStages() }),
+      c.invalidateQueries({ queryKey: pipelineConfigQueryKeys.runtimeRules() }),
+      c.invalidateQueries({ queryKey: ['pipeline'] }),
+      c.invalidateQueries({ queryKey: ['opportunities'] }),
+      c.invalidateQueries({ queryKey: ['reports'] }),
+    ]);
+}
 export function useCreatePipelineStage() { const invalidate = useInvalidateAll(); return useMutation({ mutationFn: (p: CreatePipelineStagePayload) => pipelineConfigService.createStage(p), onSuccess: invalidate }); }
 export function useUpdatePipelineStage() { const invalidate = useInvalidateAll(); return useMutation({ mutationFn: ({ id, payload }: { id: string; payload: UpdatePipelineStagePayload }) => pipelineConfigService.updateStage(id, payload), onSuccess: invalidate }); }
 export function useDeactivatePipelineStage() { const invalidate = useInvalidateAll(); return useMutation({ mutationFn: ({ id, replacementStageId }: { id: string; replacementStageId?: string }) => pipelineConfigService.deactivateStage(id, replacementStageId), onSuccess: invalidate }); }

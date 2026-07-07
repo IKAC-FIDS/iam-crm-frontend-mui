@@ -24,6 +24,10 @@ export default function AppNavbar({ onOpenNavigation }: AppNavbarProps) {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => setAnchorEl(null);
+  const handleSecurity = () => {
+    handleClose();
+    navigate('/account/security');
+  };
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
     clearUser();
@@ -55,14 +59,14 @@ export default function AppNavbar({ onOpenNavigation }: AppNavbarProps) {
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
             onClose={handleClose}
-            anchorOrigin={{ vertical: 'top', horizontal: 'left' }} // منو از چپ
+            anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
           >
             <MenuItem onClick={handleClose}>
               <AccountCircle sx={{ ml: 1 }} /> پروفایل
             </MenuItem>
-            <MenuItem onClick={handleClose}>
-              <Settings sx={{ ml: 1 }} /> تنظیمات
+            <MenuItem onClick={handleSecurity}>
+              <Settings sx={{ ml: 1 }} /> امنیت حساب
             </MenuItem>
             <MenuItem onClick={handleLogout}>
               <Logout sx={{ ml: 1 }} /> خروج

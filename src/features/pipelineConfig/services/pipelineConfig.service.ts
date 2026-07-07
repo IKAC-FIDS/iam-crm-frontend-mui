@@ -7,14 +7,65 @@ const ref = (value: unknown) => { if (!value || typeof value !== 'object') retur
 const rule = (item: unknown): TransitionRule => { const r = item as Record<string, unknown>; const from = ref(r.fromStage); const to = ref(r.toStage); return { id: String(r.id), fromStageId: r.fromStageId == null ? from?.id ?? null : String(r.fromStageId), toStageId: String(r.toStageId ?? to?.id), fromStage: from ?? null, toStage: to, role: r.role == null ? null : r.role as TransitionRule['role'], allowed: Boolean(r.isAllowed ?? r.allowed) }; };
 const transitionPayload = (p: TransitionRulePayload) => ({ fromStageId: p.fromStageId ?? null, toStageId: p.toStageId, role: p.role ?? null, isAllowed: p.allowed });
 export const pipelineConfigService = {
-  getStages: async () => list((await axiosInstance.get('/admin/pipeline/stages')).data).map(stage).sort((a, b) => a.sortOrder - b.sortOrder),
-  getStage: async (id: string) => stage(unwrap((await axiosInstance.get(`/admin/pipeline/stages/${id}`)).data)),
-  createStage: async (payload: CreatePipelineStagePayload) => stage(unwrap((await axiosInstance.post('/admin/pipeline/stages', payload)).data)),
-  updateStage: async (id: string, payload: UpdatePipelineStagePayload) => stage(unwrap((await axiosInstance.patch(`/admin/pipeline/stages/${id}`, payload)).data)),
-  deactivateStage: async (id: string, replacementStageId?: string) => stage(unwrap((await axiosInstance.delete(`/admin/pipeline/stages/${id}`, { params: { replacementStageId } })).data)),
-  reorderStages: async (payload: ReorderStagesPayload) => list((await axiosInstance.patch('/admin/pipeline/stages/reorder', payload)).data).map(stage),
-  getTransitionRules: async () => list((await axiosInstance.get('/admin/pipeline/transitions')).data).map(rule),
-  createTransitionRule: async (payload: TransitionRulePayload) => rule(unwrap((await axiosInstance.post('/admin/pipeline/transitions', transitionPayload(payload))).data)),
-  updateTransitionRule: async (id: string, payload: TransitionRulePayload) => rule(unwrap((await axiosInstance.patch(`/admin/pipeline/transitions/${id}`, transitionPayload(payload))).data)),
-  deleteTransitionRule: async (id: string) => { await axiosInstance.delete(`/admin/pipeline/transitions/${id}`); },
+  getStages: async () =>
+    list((await axiosInstance.get('/admin/pipeline/stages')).data)
+      .map(stage)
+      .sort((a, b) => a.sortOrder - b.sortOrder),
+
+  getStage: async (id: string) =>
+    stage(unwrap((await axiosInstance.get(`/admin/pipeline/stages/${id}`)).data)),
+
+  createStage: async (payload: CreatePipelineStagePayload) =>
+    stage(unwrap((await axiosInstance.post('/admin/pipeline/stages', payload)).data)),
+
+  updateStage: async (id: string, payload: UpdatePipelineStagePayload) =>
+    stage(unwrap((await axiosInstance.patch(`/admin/pipeline/stages/${id}`, payload)).data)),
+
+  deactivateStage: async (id: string, replacementStageId?: string) =>
+    stage(
+      unwrap(
+        (
+          await axiosInstance.delete(`/admin/pipeline/stages/${id}`, {
+            params: { replacementStageId },
+          })
+        ).data
+      )
+    ),
+
+  reorderStages: async (payload: ReorderStagesPayload) =>
+    list((await axiosInstance.patch('/admin/pipeline/stages/reorder', payload)).data).map(stage),
+
+  getTransitionRules: async () =>
+    list((await axiosInstance.get('/admin/pipeline/transitions')).data).map(rule),
+
+  createTransitionRule: async (payload: TransitionRulePayload) =>
+    rule(
+      unwrap(
+        (await axiosInstance.post('/admin/pipeline/transitions', transitionPayload(payload))).data
+      )
+    ),
+
+  updateTransitionRule: async (id: string, payload: TransitionRulePayload) =>
+    rule(
+      unwrap(
+        (
+          await axiosInstance.patch(
+            `/admin/pipeline/transitions/${id}`,
+            transitionPayload(payload)
+          )
+        ).data
+      )
+    ),
+
+  deleteTransitionRule: async (id: string) => {
+    await axiosInstance.delete(`/admin/pipeline/transitions/${id}`);
+  },
+
+  getRuntimeStages: async () =>
+    list((await axiosInstance.get('/pipeline/stages')).data)
+      .map(stage)
+      .sort((a, b) => a.sortOrder - b.sortOrder),
+
+  getRuntimeTransitionRules: async () =>
+    list((await axiosInstance.get('/pipeline/transitions')).data).map(rule),
 };

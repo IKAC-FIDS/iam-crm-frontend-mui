@@ -32,18 +32,60 @@ export interface ReportFilters {
   activityTypes?: string[];
 }
 
+export interface ReportStageBreakdownItem {
+  stage: string;
+  stageId?: string;
+  label?: string;
+  sortOrder?: number;
+  count: NumericValue;
+  percentage?: NumericValue;
+}
+
 export interface PipelineSummaryReport {
-  stages: Array<{ stage: string; count: NumericValue; percentage: NumericValue }>;
-  summary: { totalCompanies: NumericValue; activeCompanies: NumericValue; lostCompanies: NumericValue; lostRate: NumericValue };
+  stages: ReportStageBreakdownItem[];
+  summary: {
+    totalCompanies: NumericValue;
+    activeCompanies: NumericValue;
+    lostCompanies: NumericValue;
+    lostRate: NumericValue;
+
+    totalOpportunities?: NumericValue;
+    activeOpportunities?: NumericValue;
+    wonOpportunities?: NumericValue;
+    lostOpportunities?: NumericValue;
+    wonRate?: NumericValue;
+    lostOpportunityRate?: NumericValue;
+  };
 }
 
 export interface ConversionRatesReport {
-  stages: Array<{ fromStage: string; toStage: string; fromCount: NumericValue; toCount: NumericValue; conversionRate: NumericValue }>;
-  summary: { totalCompanies: NumericValue; completedCompanies: NumericValue; overallConversionRate: NumericValue };
+  stages: Array<{
+    fromStageId?: string | null;
+    fromStage?: string | null;
+    fromLabel?: string;
+    toStageId?: string;
+    toStage: string;
+    toLabel?: string;
+    fromCount: NumericValue;
+    toCount: NumericValue;
+    conversionRate: NumericValue;
+  }>;
+  summary: {
+    totalCompanies: NumericValue;
+    completedCompanies: NumericValue;
+    overallConversionRate: NumericValue;
+
+    totalOpportunities?: NumericValue;
+    wonOpportunities?: NumericValue;
+    overallOpportunityConversionRate?: NumericValue;
+  };
 }
 
 export interface StageDurationReportItem {
   stage: string;
+  stageId?: string;
+  label?: string;
+  sortOrder?: number;
   sample_count: NumericValue;
   avg_duration_days: NumericValue;
   min_duration_days: NumericValue;
@@ -54,7 +96,11 @@ export interface ActivityReport {
   startDate: string;
   endDate: string;
   totalActivities: NumericValue;
-  breakdown: Array<{ type: ActivityType | string; count: NumericValue; percentage: NumericValue }>;
+  breakdown: Array<{
+    type: ActivityType | string;
+    count: NumericValue;
+    percentage: NumericValue;
+  }>;
 }
 
 export interface ActivityByUserReportItem {
@@ -71,16 +117,33 @@ export interface ActivityByUserReportItem {
   linkedinEngagements: NumericValue;
 }
 
+export interface PipelineByOwnerStageItem {
+  stage: string;
+  stageId?: string;
+  label?: string;
+  sortOrder?: number;
+  count: NumericValue;
+}
+
 export interface PipelineByOwnerReportItem {
   ownerId?: string;
   ownerName?: string;
   fullName?: string;
   team?: string | null;
+
   totalCompanies: NumericValue;
   activeCompanies: NumericValue;
   doneCompanies: NumericValue;
   lostCompanies: NumericValue;
+
+  totalOpportunities?: NumericValue;
+  activeOpportunities?: NumericValue;
+  wonOpportunities?: NumericValue;
+  lostOpportunities?: NumericValue;
+
   conversionRate: NumericValue;
   lostRate: NumericValue;
-  stageBreakdown?: Array<{ stage: string; count: NumericValue }> | Record<string, NumericValue>;
+
+  stageBreakdown?: PipelineByOwnerStageItem[] | Record<string, NumericValue>;
+  stages?: PipelineByOwnerStageItem[];
 }

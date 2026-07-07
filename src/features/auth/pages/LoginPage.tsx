@@ -1,7 +1,3 @@
-// ============================================================
-// مسیر: src/features/auth/pages/LoginPage.tsx
-// ============================================================
-
 import { useState } from 'react';
 import {
   Box,
@@ -21,7 +17,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import axios from 'axios';
+
 import { useAuth } from '../hooks/useAuth';
+import { usePasskeyLogin } from '../hooks/usePasskeyLogin';
+import { passkeyErrorMessage } from '../utils/passkeyErrors';
 
 interface ApiErrorResponse {
   message?: string;
@@ -36,6 +35,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const { login, isLoading } = useAuth();
+  const { loginWithPasskey, isPasskeyLoading } = usePasskeyLogin();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -60,6 +60,15 @@ export default function LoginPage() {
     }
   };
 
+  const handlePasskeyLogin = async () => {
+    try {
+      setError(null);
+      await loginWithPasskey();
+    } catch (err) {
+      setError(passkeyErrorMessage(err));
+    }
+  };
+
   const autofillSx = {
     '& input:-webkit-autofill': {
       WebkitBoxShadow: '0 0 0 30px var(--color-bg-paper) inset !important',
@@ -74,6 +83,8 @@ export default function LoginPage() {
       WebkitBoxShadow: '0 0 0 30px var(--color-bg-paper) inset !important',
     },
   };
+
+  const disabled = isLoading || isPasskeyLoading;
 
   return (
     <Box
@@ -212,7 +223,7 @@ export default function LoginPage() {
                 py: 1.5,
                 mb: 2,
               }}
-              disabled={isLoading}
+              disabled={disabled}
             >
               {isLoading ? 'در حال ورود...' : 'ورود'}
             </Button>
@@ -226,14 +237,17 @@ export default function LoginPage() {
             <Stack direction="row" spacing={1}>
               <Button
                 fullWidth
+                type="button"
                 variant="outlined"
                 color="primary"
                 startIcon={<Fingerprint />}
                 sx={{
                   py: 1.5,
                 }}
+                disabled={disabled}
+                onClick={handlePasskeyLogin}
               >
-                ورود بدون کلمه عبور
+                {isPasskeyLoading ? 'در حال بررسی Passkey...' : 'ورود با Passkey'}
               </Button>
             </Stack>
           </Box>
