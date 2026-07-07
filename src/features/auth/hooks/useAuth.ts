@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/auth.service';
 import type { LoginRequest } from '../services/auth.service';
 import { useAuthStore } from '@/store/authStore';
+import { queryClient } from '@/lib/queryClient';
 import { toast } from 'sonner';
 import type { AxiosError } from 'axios';
 
@@ -21,6 +22,7 @@ export function useAuth() {
   const { mutateAsync: login, isPending } = useMutation({
     mutationFn: (data: LoginRequest) => authService.login(data),
     onSuccess: (response) => {
+      queryClient.clear();
       localStorage.setItem('accessToken', response.accessToken);
       setUser(response.user);
       toast.success('ورود موفق!');

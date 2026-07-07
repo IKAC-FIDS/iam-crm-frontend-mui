@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { authService } from '../services/auth.service';
 import { passkeyErrorMessage } from '../utils/passkeyErrors';
 import { useAuthStore } from '@/store/authStore';
+import { queryClient } from '@/lib/queryClient';
 
 export function usePasskeyLogin() {
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ export function usePasskeyLogin() {
       });
     },
     onSuccess: (response) => {
+      queryClient.clear();
       localStorage.setItem('accessToken', response.accessToken);
       setUser(response.user);
       toast.success('ورود موفق!');

@@ -706,7 +706,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000040
+fix 000001 → fix 000041
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -2454,6 +2454,42 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * هشدار غیرمسدودکننده بزرگ‌بودن bundle همچنان باقی است.
 * تست زنده API و تست واقعی Passkey انجام نشد.
 * تغییرات ثبت‌نشده قبلی در فایل‌های people، opportunities، pipeline، pipelineConfig و reports حفظ شد و revert نشد.
+
+---
+
+## fix 000041 — جداسازی کش Passkey بین کاربران
+
+**موارد پیاده‌سازی‌شده:**
+
+* کلید React Query مربوط به لیست Passkeyها از کلید عمومی `['passkeys']` به کلید وابسته به کاربر `['passkeys', 'list', userId]` تغییر کرد.
+* query لیست Passkey فقط وقتی اجرا می‌شود که کاربر احراز هویت‌شده و `user.id` موجود باشد.
+* برای جلوگیری از نمایش داده کاربر قبلی، query لیست Passkey با `staleTime: 0`، `gcTime: 0`، `refetchOnMount: 'always'` و `refetchOnWindowFocus: true` تنظیم شد.
+* mutationهای ثبت و حذف Passkey فقط query لیست Passkey همان کاربر فعلی را invalidate می‌کنند.
+* هنگام logout از مسیرهای مرکزی `clearUser`، توکن حذف می‌شود، user از auth store پاک می‌شود و cache سراسری React Query با `queryClient.clear()` پاک می‌شود.
+* هنگام login موفق با ایمیل/رمز عبور و login موفق با Passkey، cache کاربر قبلی قبل از ذخیره token و user جدید پاک می‌شود.
+* مسیر 401 در Axios هم به پاک‌سازی auth store و React Query cache وصل شد تا logout اجباری هم داده کاربر قبلی را نگه ندارد.
+
+**فایل‌های مهم:**
+
+* `src/features/accountSecurity/hooks/usePasskeys.ts`
+* `src/features/auth/hooks/useAuth.ts`
+* `src/features/auth/hooks/usePasskeyLogin.ts`
+* `src/lib/axios.ts`
+* `src/store/authStore.ts`
+* `README.md`
+
+**فرضیات و وابستگی‌ها:**
+
+* قرارداد backend تغییر نکرده و endpointهای `/me/passkeys` و `/auth/passkeys/...` همان قرارداد fix 000040 را حفظ می‌کنند.
+* Axios baseURL همچنان شامل `/api` است و مسیرهای سرویس Passkey بدون prefix اضافی باقی ماندند.
+* تست زنده سناریوی admin به BOARDS به نشست‌های واقعی، backend فعال و Passkeyهای ثبت‌شده نیاز دارد.
+
+**وضعیت بررسی:**
+
+* Lint بدون خطا پاس شد.
+* build نسخه production پاس شد.
+* هشدار غیرمسدودکننده بزرگ‌بودن bundle همچنان باقی است.
+* تست زنده API و تست واقعی جابه‌جایی کاربر انجام نشد.
 
 ---
 
