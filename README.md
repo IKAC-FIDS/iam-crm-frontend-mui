@@ -2252,19 +2252,18 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Only a non-blocking bundle-size warning remained.
 
 ---
+## fix 000036 — Connect Global People Directory to backend contract
 
-## fix 000036 — اتصال دایرکتوری سراسری افراد به قرارداد بک‌اند
+**Implemented items:**
 
-**موارد پیاده‌سازی‌شده:**
+* Connected the global `/people` page to `GET /api/people/directory` instead of calling `GET /api/people` without `companyId`.
+* Sent `page`, `limit`, `search`, `companyId`, `ownerId`, `team`, `department`, `personaTag`, `isPrimaryContact`, `hasEmail`, and `hasPhone` filters to the directory endpoint.
+* Normalized the paginated `{ data, meta }` response into the existing directory table model, including company, owner, contacts, socials, and backend-provided email/phone summaries.
+* Restricted page access and the People side-menu item to `people:directory:view`, while preserving the internal `ADMIN` role fallback in the permission helper.
+* Kept the company-scoped `GET /api/people?companyId=...` endpoint and the People tab in Company Details unchanged.
+* Filter options are still loaded from the real Companies, Reports, and Department/Persona lookup endpoints. No fake data was added.
 
-* اتصال صفحه سراسری `/people` به `GET /api/people/directory` به‌جای فراخوانی بدون `companyId` روی `GET /api/people`.
-* ارسال فیلترهای `page`، `limit`، `search`، `companyId`، `ownerId`، `team`، `department`، `personaTag`، `isPrimaryContact`، `hasEmail` و `hasPhone` به endpoint دایرکتوری.
-* نرمال‌سازی پاسخ صفحه‌بندی‌شده `data` و `meta` به مدل فعلی جدول دایرکتوری، شامل اطلاعات شرکت، مالک، تماس‌ها، شبکه‌های اجتماعی و خلاصه ایمیل/تلفنِ برگشتی از بک‌اند.
-* محدودکردن دسترسی صفحه و آیتم منوی افراد به مجوز `people:directory:view` با حفظ fallback داخلی نقش `ADMIN` در helper مجوزها.
-* حفظ endpoint شرکت‌محور `GET /api/people?companyId=...` و تب افراد در جزئیات شرکت بدون تغییر.
-* گزینه‌های فیلتر همچنان از endpointهای واقعی شرکت‌ها، گزارش‌ها و lookupهای دپارتمان و پرسونا دریافت می‌شوند و داده ساختگی اضافه نشده است.
-
-**فایل‌های مهم:**
+**Important files:**
 
 * `src/features/people/services/people.service.ts`
 * `src/features/people/types/person.types.ts`
@@ -2272,38 +2271,38 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * `src/components/dashboard/SideMenu.tsx`
 * `README.md`
 
-**فرضیات و وابستگی‌ها:**
+**Assumptions and dependencies:**
 
-* این تغییر به backend fix 000011 وابسته است؛ وجود route، DTO، فیلترها، scope نقش‌ها و شکل پاسخ از commit `ad74325c` در repository بک‌اند بررسی شد.
-* endpoint دایرکتوری مجوز `people:directory:view` می‌خواهد و پاسخ `{ data, meta }` برمی‌گرداند.
-* تست زنده API فقط در صورت اجرای بک‌اند و وجود نشست احراز هویت‌شده ممکن است.
+* This change depends on backend fix `000011`; the route, DTO, filters, role scope, and response shape were checked from backend repository commit `ad74325c`.
+* The directory endpoint requires the `people:directory:view` permission and returns `{ data, meta }`.
+* Live API testing requires the backend to be running with an authenticated session.
 
-**وضعیت بررسی:**
+**Verification status:**
 
-* Lint بدون خطا یا هشدار پاس شد.
-* build نسخه production پاس شد.
-* هشدار غیرمسدودکننده بزرگ‌بودن bundle همچنان باقی است.
-* endpoint محلی دایرکتوری در دسترس بود و بدون توکن پاسخ `401` داد؛ تست زنده احراز هویت‌شده صفحه، فیلترها، drawer و لینک شرکت انجام نشد.
+* Lint passed without errors or warnings.
+* Production build passed.
+* The non-blocking bundle-size warning remains.
+* The local directory endpoint was reachable and returned `401` without a token; authenticated live testing for the page, filters, drawer, and company link was not performed.
 
 ---
 
-## fix 000037 — انتقال پایپ‌لاین فروش از شرکت‌ها به فرصت‌ها
+## fix 000037 — Move sales pipeline from companies to opportunities
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* ایجاد feature مستقل `opportunities` شامل typeها، service، hookهای React Query، فرم ایجاد/ویرایش، تغییر مرحله، تغییر مالک، کارت فرصت و تب فرصت‌های شرکت.
-* انتقال برد `/pipeline` از queryهای مرحله‌ای شرکت‌ها به `GET /api/opportunities?stageId=...` بر اساس شناسه مراحل داینامیک بک‌اند.
-* نمایش عنوان فرصت، شرکت مرتبط، مالک، اولویت، تاریخ بسته‌شدن مورد انتظار و ارزش تخمینی روی کارت‌های پایپ‌لاین.
-* جایگزینی تغییر مرحله شرکت در برد با `PATCH /api/opportunities/:id/stage` و payload مبتنی بر `stageId`.
-* افزودن تب «فرصت‌ها» به جزئیات شرکت بدون حذف یا تغییر تب‌های افراد، فعالیت‌ها، کال کارت، شعب و کانال‌های اجتماعی.
-* افزودن ایجاد شرکت‌محور با `POST /api/companies/:companyId/opportunities`، فهرست شرکت‌محور، ویرایش، تغییر مالک، بایگانی و بازیابی فرصت.
-* افزودن انتخاب اختیاری فرصت هنگام ثبت فعالیت؛ فعالیت سطح شرکت همچنان بدون `opportunityId` قابل ثبت است.
-* تغییر برچسب شاخص‌های پایپ‌لاین و نرخ تبدیل در داشبورد و گزارش‌ها از «شرکت» به «فرصت»، بدون تغییر کلیدهای legacy پاسخ بک‌اند.
-* استفاده از permissionهای `opportunity:view`، `opportunity:create`، `opportunity:update`، `opportunity:change-stage`، `opportunity:change-owner`، `opportunity:archive` و `opportunity:restore` با fallback داخلی ADMIN.
-* invalidation کش‌های opportunities، pipeline، company-opportunities، جزئیات شرکت و reports پس از mutationها.
-* برد تکراری یا داده فرصت ساختگی اضافه نشد؛ کنترل‌های legacy مرحله شرکت فقط در metadata جزئیات شرکت برای سازگاری باقی ماندند و برد جدید از API شرکت برای تغییر مرحله استفاده نمی‌کند.
+* Created an independent `opportunities` feature, including types, service, React Query hooks, create/edit form, stage-change dialog, owner-change flow, opportunity card, and company opportunities tab.
+* Moved the `/pipeline` board from stage-based company queries to `GET /api/opportunities?stageId=...` using backend dynamic stage IDs.
+* Displayed opportunity title, related company, owner, priority, expected close date, and estimated value on pipeline cards.
+* Replaced company stage changes on the board with `PATCH /api/opportunities/:id/stage` using a `stageId`-based payload.
+* Added an “Opportunities” tab to Company Details without removing or changing the People, Activities, Call Card, Branches, or Social Channels tabs.
+* Added company-scoped opportunity creation with `POST /api/companies/:companyId/opportunities`, company-scoped listing, edit, owner change, archive, and restore flows.
+* Added optional opportunity selection when creating an activity; company-level activities can still be created without `opportunityId`.
+* Updated dashboard and report labels from “company” to “opportunity” for pipeline and conversion metrics without changing legacy backend response keys.
+* Used `opportunity:view`, `opportunity:create`, `opportunity:update`, `opportunity:change-stage`, `opportunity:change-owner`, `opportunity:archive`, and `opportunity:restore` permissions with internal `ADMIN` fallback.
+* Invalidated opportunity, pipeline, company-opportunity, company-detail, and report caches after mutations.
+* No duplicate board or fake opportunity data was added; legacy company-stage controls remain only in company metadata for compatibility, and the new board does not use the company API for stage changes.
 
-**فایل‌های مهم:**
+**Important files:**
 
 * `src/features/opportunities/`
 * `src/features/pipeline/`
@@ -2316,40 +2315,40 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * `src/features/reports/components/ConversionRatesSection.tsx`
 * `README.md`
 
-**فرضیات و وابستگی‌ها:**
+**Assumptions and dependencies:**
 
-* قراردادها مستقیماً از backend fix 000012 در commit `ab501e44` و مهاجرت مراحل داینامیک fix 000013 در commit `3297cfec` بررسی شدند؛ به همین دلیل frontend برای فیلتر و mutation مرحله از `stageId` استفاده می‌کند.
-* گزارش‌های بک‌اند اکنون بر اساس Opportunity محاسبه می‌شوند، اما برخی کلیدهای response برای سازگاری هنوز نام‌هایی مانند `totalCompanies` دارند و frontend کلید wire را تغییر نداده است.
-* endpointهای استفاده‌شده شامل `/opportunities`، `/opportunities/:id`، actionهای `stage`، `owner`، `archive` و `restore` و `/companies/:companyId/opportunities` هستند.
-* تست زنده کامل به نشست احراز هویت‌شده، permissionهای seedشده و داده فرصت در بک‌اند نیاز دارد.
+* Contracts were checked directly from backend fix `000012` in commit `ab501e44` and the dynamic stage migration in backend fix `000013` in commit `3297cfec`; therefore, the frontend uses `stageId` for stage filtering and stage mutations.
+* Backend reports are now calculated from Opportunities, but some response keys are still named `totalCompanies` for backward compatibility, so the frontend did not change those wire keys.
+* Used endpoints include `/opportunities`, `/opportunities/:id`, the `stage`, `owner`, `archive`, and `restore` actions, and `/companies/:companyId/opportunities`.
+* Full live testing requires an authenticated session, seeded permissions, and opportunity data in the backend.
 
-**وضعیت بررسی:**
+**Verification status:**
 
-* Lint بدون خطا یا هشدار پاس شد.
-* build نسخه production پاس شد.
-* هشدار غیرمسدودکننده بزرگ‌بودن bundle همچنان باقی است.
-* backend محلی در زمان بررسی برای `GET /api/opportunities` پاسخ `404` داد؛ بنابراین تست زنده برد، CRUD، تغییر مرحله/مالک، بایگانی/بازیابی و اتصال فعالیت انجام نشد و اجرای build جدید backend لازم است.
+* Lint passed without errors or warnings.
+* Production build passed.
+* The non-blocking bundle-size warning remains.
+* The local backend returned `404` for `GET /api/opportunities` during verification; therefore, live testing for the board, CRUD, stage/owner changes, archive/restore, and activity integration was not performed. A new backend build must be run.
 
 ---
 
-## fix 000038 — پشتیبانی کامل از مراحل داینامیک پایپ‌لاین
+## fix 000038 — Full dynamic pipeline stage support
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* حذف وابستگی typeهای تنظیمات پایپ‌لاین و گزارش‌ها به enum ثابت `PipelineStage` و استفاده از `code: string` و شناسه واقعی مرحله.
-* تکمیل مدل مرحله با `terminalType`، `isDefault`، زمان ایجاد/ویرایش و payloadهای مستقل ایجاد، ویرایش و reorder.
-* اتصال ایجاد، دریافت جزئیات، ویرایش، غیرفعال‌سازی با مرحله جایگزین و reorder به routeهای نهایی `/admin/pipeline/stages`.
-* افزودن فرم ایجاد مرحله با validation کد، عنوان، رنگ، ترتیب، وضعیت فعال/پایانی، نوع پایان و مرحله پیش‌فرض؛ کد در حالت ویرایش قابل تغییر نیست.
-* افزودن confirmation غیرفعال‌سازی و selector مرحله جایگزین؛ پیام conflict یا validation بک‌اند به کاربر نمایش داده می‌شود.
-* افزودن reorder بدون dependency جدید drag-and-drop، با کنترل‌های بالا/پایین و ارسال آرایه `{ id, sortOrder }` به بک‌اند.
-* اصلاح normalization قوانین انتقال از responseهای nested بک‌اند و جایگزینی codeهای enumمحور با `fromStageId` و `toStageId`.
-* تکمیل ایجاد، ویرایش و حذف قوانین انتقال، شامل قانون عمومی با role خالی و نمایش labelهای واقعی مراحل.
-* تغییر dialog جابه‌جایی فرصت برای استفاده از مراحل فعال و قوانین انتقال واقعی متناسب با مرحله فعلی و نقش کاربر؛ در خطای دریافت قوانین هیچ مقصد ساختگی نمایش داده نمی‌شود.
-* حفظ برد فرصت‌محور با ستون‌های مراحل فعال، مرتب‌شده بر اساس `sortOrder` و label/color بک‌اند و فیلتر فرصت‌ها با `stageId`.
-* report filterها همچنان گزینه مراحل را از `/reports/filter-options` می‌گیرند و typeهای گزارش دیگر enum ثابت مرحله را require نمی‌کنند.
-* invalidation پس از mutationها شامل مراحل، قوانین، pipeline، opportunities و reports است.
+* Removed dependency on the fixed `PipelineStage` enum from pipeline settings and report types, and replaced it with `code: string` and real stage IDs.
+* Completed the stage model with `terminalType`, `isDefault`, creation/update timestamps, and independent create, update, and reorder payloads.
+* Connected stage creation, detail loading, update, deactivation with replacement stage, and reorder to the final `/admin/pipeline/stages` routes.
+* Added a create-stage form with validation for code, label, color, order, active status, terminal status, terminal type, and default-stage status; the code is locked in edit mode.
+* Added a deactivation confirmation and replacement-stage selector; backend conflict or validation errors are displayed to the user.
+* Added reorder support without a new drag-and-drop dependency, using up/down controls and sending an array of `{ id, sortOrder }` to the backend.
+* Fixed transition-rule normalization from nested backend responses and replaced enum-based stage codes with `fromStageId` and `toStageId`.
+* Completed create, edit, and delete flows for transition rules, including global rules with an empty role and real stage labels.
+* Updated the opportunity stage-change dialog to use active stages and real transition rules matching the current stage and user role; when rule loading fails, no fake destination stage is shown.
+* Kept the opportunity-based board using active stages sorted by `sortOrder`, backend labels/colors, and `stageId` opportunity filtering.
+* Report filters still load stage options from `/reports/filter-options`, and report types no longer require the fixed stage enum.
+* Cache invalidation after mutations now includes stages, transition rules, pipeline, opportunities, and reports.
 
-**فایل‌های مهم:**
+**Important files:**
 
 * `src/features/pipelineConfig/types/pipelineConfig.types.ts`
 * `src/features/pipelineConfig/services/pipelineConfig.service.ts`
@@ -2363,68 +2362,68 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * `src/features/reports/types/report.types.ts`
 * `README.md`
 
-**فرضیات و وابستگی‌ها:**
+**Assumptions and dependencies:**
 
-* قرارداد نهایی مستقیماً از backend fix 000013 در commit `3297cfec` بررسی شد.
-* بک‌اند از permissionهای `pipeline:config:view`، `pipeline:config:manage`، `pipeline:transition:view` و `pipeline:transition:manage` استفاده می‌کند؛ permission ساختگی `pipeline:manage` اضافه نشد.
-* DELETE مرحله عملیات غیرفعال‌سازی است و در صورت استفاده‌شدن مرحله، `replacementStageId` را به‌صورت query parameter می‌پذیرد.
-* transitionهای backend بر اساس stage ID هستند و rule مخصوص role نسبت به rule عمومی اولویت دارد.
-* enum قدیمی مرحله فقط در flow سازگاری metadata شرکت باقی مانده و برای admin stages، opportunity pipeline، opportunity stage changes یا report typeها لازم نیست.
+* The final contract was checked directly from backend fix `000013` in commit `3297cfec`.
+* The backend uses `pipeline:config:view`, `pipeline:config:manage`, `pipeline:transition:view`, and `pipeline:transition:manage`; no fake `pipeline:manage` permission was added.
+* Deleting a stage is a deactivation operation and accepts `replacementStageId` as a query parameter when the stage is already in use.
+* Backend transitions are stage-ID based, and role-specific rules take priority over global rules.
+* The old stage enum remains only in the compatibility flow for company metadata and is not required for admin stages, the opportunity pipeline, opportunity stage changes, or report types.
 
-**وضعیت بررسی:**
+**Verification status:**
 
-* Lint بدون خطا یا هشدار پاس شد.
-* build نسخه production پاس شد.
-* هشدار غیرمسدودکننده بزرگ‌بودن bundle همچنان باقی است.
-* route محلی `GET /api/admin/pipeline/stages` در دسترس بود و بدون token پاسخ `401` داد؛ تست زنده احراز هویت‌شده CRUD مراحل، reorder، قوانین انتقال و dialog تغییر مرحله انجام نشد.
+* Lint passed without errors or warnings.
+* Production build passed.
+* The non-blocking bundle-size warning remains.
+* The local `GET /api/admin/pipeline/stages` route was reachable and returned `401` without a token; authenticated live testing for stage CRUD, reorder, transition rules, and the stage-change dialog was not performed.
 
 ---
 
-## fix 000039 — هماهنگ‌سازی فیلتر بایگانی شرکت‌ها با قرارداد API
+## fix 000039 — Align company archive filter with API contract
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* حفظ state رابط کاربری `archiveStatus` با مقادیر `ACTIVE`، `ALL` و `ARCHIVED` بدون ارسال مستقیم آن به بک‌اند.
-* نگاشت `ACTIVE` به درخواست بدون پارامتر بایگانی، `ALL` به `includeArchived=true` و `ARCHIVED` به `archivedOnly=true`.
-* حذف default اجباری `archiveStatus=ACTIVE` از درخواست `GET /api/companies`.
-* عدم ارسال `includeArchived=false` یا پارامتر اضافی غیرضروری.
-* اصلاح توضیح قرارداد بایگانی در fix 000029 بر اساس DTO فعلی بک‌اند.
+* Preserved the UI `archiveStatus` state with `ACTIVE`, `ALL`, and `ARCHIVED` values without sending it directly to the backend.
+* Mapped `ACTIVE` to a request with no archive parameter, `ALL` to `includeArchived=true`, and `ARCHIVED` to `archivedOnly=true`.
+* Removed the forced default `archiveStatus=ACTIVE` parameter from `GET /api/companies` requests.
+* Avoided sending `includeArchived=false` or any unnecessary extra parameter.
+* Updated the archive contract explanation in fix `000029` according to the current backend DTO.
 
-**فایل‌های مهم:**
+**Important files:**
 
 * `src/features/companies/services/companies.service.ts`
 * `README.md`
 
-**فرضیات و وابستگی‌ها:**
+**Assumptions and dependencies:**
 
-* قرارداد مستقیماً از `FindCompaniesDto` و controller فعلی repository بک‌اند بررسی شد؛ DTO فقط `includeArchived` و `archivedOnly` را می‌پذیرد.
-* فیلتر UI حذف یا تغییر ظاهری نکرده است و mapping فقط در مرز service انجام می‌شود.
-* تست زنده رفتار فیلترها به نشست احراز هویت‌شده و داده active/archived نیاز دارد.
+* The contract was checked directly from the current backend repository’s `FindCompaniesDto` and controller; the DTO only accepts `includeArchived` and `archivedOnly`.
+* The UI filter was not removed or visually changed; the mapping only happens at the service boundary.
+* Live filter behavior testing requires an authenticated session and active/archived company data.
 
-**وضعیت بررسی:**
+**Verification status:**
 
-* Lint بدون خطا یا هشدار پاس شد.
-* build نسخه production پاس شد.
-* هشدار غیرمسدودکننده بزرگ‌بودن bundle همچنان باقی است.
-* هر سه URL بدون پارامتر، با `includeArchived=true` و با `archivedOnly=true` به backend محلی رسیدند و بدون token پاسخ `401` دادند؛ بررسی زنده نتیجه فیلترها و داده‌ها انجام نشد.
+* Lint passed without errors or warnings.
+* Production build passed.
+* The non-blocking bundle-size warning remains.
+* All three URL variants reached the local backend and returned `401` without a token: no archive parameter, `includeArchived=true`, and `archivedOnly=true`; live result/data verification was not performed.
 
 ---
 
-## fix 000040 — افزودن ورود و مدیریت Passkey بدون نیاز به ایمیل
+## fix 000040 — Add usernameless Passkey login and account Passkey management
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* وابستگی `@simplewebauthn/browser` اضافه شد و flowهای `startRegistration` و `startAuthentication` با گزینه‌های JSON بک‌اند استفاده شدند.
-* ورود ایمیل/رمز عبور بدون حذف یا تغییر قرارداد قبلی حفظ شد.
-* دکمه جداگانه «ورود با Passkey» به صفحه login اضافه شد؛ این دکمه فرم ایمیل/رمز عبور را validate نمی‌کند و برای شروع authentication بدنه خالی `{}` می‌فرستد.
-* login موفق Passkey همان منطق موفقیت login معمولی را استفاده می‌کند: ذخیره `accessToken`، ثبت user در auth store و انتقال به dashboard.
-* خطاهای کاربرپسند برای مرورگر/دستگاه ناسازگار، لغو عملیات توسط کاربر، challenge منقضی‌شده و login ناموفق اضافه شد.
-* صفحه protected `/account/security` برای «امنیت حساب» و «کلیدهای ورود / Passkeys» اضافه شد.
-* لیست Passkeyها شامل نام دستگاه یا «کلید بدون نام»، تاریخ ثبت، آخرین استفاده یا «هرگز استفاده نشده»، transports، backedUp و credentialDeviceType نمایش داده می‌شود.
-* ثبت Passkey جدید با نام دستگاه و حذف Passkey از صفحه امنیت حساب اضافه شد.
-* routeهای Passkey به مستندات قرارداد API در README اضافه شدند.
+* Added the `@simplewebauthn/browser` dependency and used `startRegistration` and `startAuthentication` with backend-provided JSON options.
+* Preserved the existing email/password login without removing or changing its contract.
+* Added a separate “Login with Passkey” button to the login page; this button does not validate the email/password form and sends an empty `{}` body to start authentication.
+* Successful Passkey login uses the same success flow as normal login: storing `accessToken`, setting the user in the auth store, and redirecting to the dashboard.
+* Added user-friendly errors for unsupported browsers/devices, user-cancelled operations, expired challenges, and failed login.
+* Added the protected `/account/security` page for account security and Passkey management.
+* The Passkey list displays device name or “Unnamed key”, registration date, last used date or “Never used”, transports, `backedUp`, and `credentialDeviceType`.
+* Added new Passkey registration with a device name and Passkey deletion from the Account Security page.
+* Added Passkey routes to the README API contract documentation.
 
-**فایل‌های مهم:**
+**Important files:**
 
 * `package.json`
 * `package-lock.json`
@@ -2438,38 +2437,38 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * `src/routes/index.tsx`
 * `README.md`
 
-**فرضیات و وابستگی‌ها:**
+**Assumptions and dependencies:**
 
-* baseURL Axios طبق قرارداد موجود شامل `/api` است و endpointها بدون prefix اضافی صدا زده می‌شوند.
-* پاسخ `POST /me/passkeys/registration/options` مستقیماً `PublicKeyCredentialCreationOptionsJSON` است.
-* پاسخ `POST /auth/passkeys/authentication/options` شامل `{ challengeId, options }` است.
-* پاسخ موفق `POST /auth/passkeys/authentication/verify` همان shape ورود با رمز عبور را دارد.
-* نسخه درخواستی `@simplewebauthn/browser@^13.3.2` در npm registry موجود نبود؛ نزدیک‌ترین نسخه موجود و سازگار، `^13.3.0`، نصب شد.
-* تست زنده ثبت، حذف و ورود با Passkey به backend فعال، HTTPS/localhost سازگار با WebAuthn، نشست احراز هویت‌شده و authenticator واقعی نیاز دارد.
+* The Axios `baseURL` already includes `/api`, and Passkey endpoints are called without an extra prefix.
+* `POST /me/passkeys/registration/options` directly returns `PublicKeyCredentialCreationOptionsJSON`.
+* `POST /auth/passkeys/authentication/options` returns `{ challengeId, options }`.
+* A successful `POST /auth/passkeys/authentication/verify` response has the same shape as password login.
+* The requested `@simplewebauthn/browser@^13.3.2` version was not available in the npm registry; the nearest available compatible version, `^13.3.0`, was installed.
+* Live registration, deletion, and Passkey login testing requires an active backend, HTTPS or localhost compatible with WebAuthn, an authenticated session, and a real authenticator.
 
-**وضعیت بررسی:**
+**Verification status:**
 
-* Lint بدون خطا پاس شد.
-* build نسخه production پاس شد.
-* هشدار غیرمسدودکننده بزرگ‌بودن bundle همچنان باقی است.
-* تست زنده API و تست واقعی Passkey انجام نشد.
-* تغییرات ثبت‌نشده قبلی در فایل‌های people، opportunities، pipeline، pipelineConfig و reports حفظ شد و revert نشد.
+* Lint passed without errors.
+* Production build passed.
+* The non-blocking bundle-size warning remains.
+* Live API testing and real Passkey testing were not performed.
+* Existing uncommitted changes in People, Opportunities, Pipeline, Pipeline Config, and Reports files were preserved and not reverted.
 
 ---
 
-## fix 000041 — جداسازی کش Passkey بین کاربران
+## fix 000041 — Separate Passkey cache between users
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* کلید React Query مربوط به لیست Passkeyها از کلید عمومی `['passkeys']` به کلید وابسته به کاربر `['passkeys', 'list', userId]` تغییر کرد.
-* query لیست Passkey فقط وقتی اجرا می‌شود که کاربر احراز هویت‌شده و `user.id` موجود باشد.
-* برای جلوگیری از نمایش داده کاربر قبلی، query لیست Passkey با `staleTime: 0`، `gcTime: 0`، `refetchOnMount: 'always'` و `refetchOnWindowFocus: true` تنظیم شد.
-* mutationهای ثبت و حذف Passkey فقط query لیست Passkey همان کاربر فعلی را invalidate می‌کنند.
-* هنگام logout از مسیرهای مرکزی `clearUser`، توکن حذف می‌شود، user از auth store پاک می‌شود و cache سراسری React Query با `queryClient.clear()` پاک می‌شود.
-* هنگام login موفق با ایمیل/رمز عبور و login موفق با Passkey، cache کاربر قبلی قبل از ذخیره token و user جدید پاک می‌شود.
-* مسیر 401 در Axios هم به پاک‌سازی auth store و React Query cache وصل شد تا logout اجباری هم داده کاربر قبلی را نگه ندارد.
+* Changed the React Query key for the Passkey list from the generic `['passkeys']` key to the user-scoped `['passkeys', 'list', userId]` key.
+* The Passkey list query now only runs when the user is authenticated and `user.id` exists.
+* To prevent showing the previous user’s data, the Passkey list query now uses `staleTime: 0`, `gcTime: 0`, `refetchOnMount: 'always'`, and `refetchOnWindowFocus: true`.
+* Passkey registration and deletion mutations only invalidate the Passkey list query for the current user.
+* On logout through the central `clearUser` path, the token is removed, the user is cleared from the auth store, and the global React Query cache is cleared with `queryClient.clear()`.
+* On successful email/password login and successful Passkey login, the previous user’s cache is cleared before storing the new token and user.
+* The Axios `401` flow is also connected to auth store cleanup and React Query cache cleanup so forced logout does not retain previous-user data.
 
-**فایل‌های مهم:**
+**Important files:**
 
 * `src/features/accountSecurity/hooks/usePasskeys.ts`
 * `src/features/auth/hooks/useAuth.ts`
@@ -2478,18 +2477,18 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * `src/store/authStore.ts`
 * `README.md`
 
-**فرضیات و وابستگی‌ها:**
+**Assumptions and dependencies:**
 
-* قرارداد backend تغییر نکرده و endpointهای `/me/passkeys` و `/auth/passkeys/...` همان قرارداد fix 000040 را حفظ می‌کنند.
-* Axios baseURL همچنان شامل `/api` است و مسیرهای سرویس Passkey بدون prefix اضافی باقی ماندند.
-* تست زنده سناریوی admin به BOARDS به نشست‌های واقعی، backend فعال و Passkeyهای ثبت‌شده نیاز دارد.
+* The backend contract did not change, and `/me/passkeys` plus `/auth/passkeys/...` endpoints keep the same contract as fix `000040`.
+* The Axios `baseURL` still includes `/api`, and Passkey service paths remain without an extra prefix.
+* Live testing for the admin-to-BOARDS user-switching scenario requires real sessions, an active backend, and registered Passkeys.
 
-**وضعیت بررسی:**
+**Verification status:**
 
-* Lint بدون خطا پاس شد.
-* build نسخه production پاس شد.
-* هشدار غیرمسدودکننده بزرگ‌بودن bundle همچنان باقی است.
-* تست زنده API و تست واقعی جابه‌جایی کاربر انجام نشد.
+* Lint passed without errors.
+* Production build passed.
+* The non-blocking bundle-size warning remains.
+* Live API testing and real user-switch Passkey testing were not performed.
 
 ---
 
