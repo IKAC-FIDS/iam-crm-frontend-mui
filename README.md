@@ -706,7 +706,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000043
+fix 000001 → fix 000044
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -2581,6 +2581,44 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Lint passed without errors.
 * Production build passed.
 * The non-blocking Vite bundle-size warning remains.
+
+---
+
+## fix 000044 — Add product catalog and opportunity line items UI
+
+**Implemented items:**
+
+* Added a `productCatalog` feature module with typed API service, React Query hooks, server-side paginated product table, search/category/status filters, create/edit dialog, and activate/deactivate actions.
+* Added Product Catalog as the `محصولات` tab inside Admin Libraries and extended sidebar visibility so users with `product:view` can reach the catalog UI.
+* Added an `opportunityLineItems` feature module with typed API service, React Query hooks, decimal-safe money utilities, line-item table, create/edit dialog, delete confirmation, product selector, product default-price prefill, and calculated frontend preview.
+* Replaced the Opportunity Details `آیتم‌ها` placeholder with the real line-items tab while keeping later tabs for commercial documents, payments, tasks, attachments, and activities unchanged.
+* Added permission gates for `product:view`, `product:manage`, `opportunity-line-item:view`, and `opportunity-line-item:manage`.
+* Invalidated line-item list, opportunity detail/list caches, pipeline, company opportunity/detail caches, and reports after line-item create/update/delete mutations.
+* Preserved decimal payload values as strings where entered and used backend-calculated `lineTotal` as the source of truth after saves.
+
+**Important files:**
+
+* `src/features/productCatalog/`
+* `src/features/opportunityLineItems/`
+* `src/features/catalogs/pages/AdminLibrariesPage.tsx`
+* `src/features/opportunities/pages/OpportunityDetailsPage.tsx`
+* `src/features/opportunities/types/opportunity.types.ts`
+* `src/components/dashboard/SideMenu.tsx`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* Depends on backend fix `000033` for `/product-catalog` and `/opportunities/:opportunityId/line-items` APIs.
+* Depends on backend fix `000030` standardized response contract and the frontend API response helpers from fix `000042`.
+* Depends on frontend fix `000043` for the dedicated Opportunity Details page and `آیتم‌ها` tab location.
+* The backend remains the source of truth for authorization, line total calculation, and `Opportunity.estimatedValue` recalculation.
+
+**Verification status:**
+
+* Lint passed without errors.
+* Production build passed.
+* The non-blocking Vite bundle-size warning remains.
+* Live authenticated API testing was not performed in this fix.
 
 ---
 

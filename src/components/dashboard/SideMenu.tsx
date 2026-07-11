@@ -57,6 +57,8 @@ const menuItems = [
       'library:persona:manage',
       'library:lead-source:manage',
       'lookup:manage',
+      'product:view',
+      'product:manage',
     ],
   },
   {

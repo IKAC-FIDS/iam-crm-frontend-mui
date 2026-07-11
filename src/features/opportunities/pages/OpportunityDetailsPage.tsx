@@ -6,6 +6,7 @@ import { Alert, Box, Button, Chip, Divider, Grid, Link, Paper, Stack, Tab, Tabs,
 import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
 import { formatDateTime, getPriorityLabel } from '@/features/companies/utils/companyDisplay';
+import OpportunityLineItemsTab from '@/features/opportunityLineItems/components/OpportunityLineItemsTab';
 import ChangeOpportunityOwnerDialog from '../components/ChangeOpportunityOwnerDialog';
 import ChangeOpportunityStageDialog from '../components/ChangeOpportunityStageDialog';
 import OpportunityFormDialog from '../components/OpportunityFormDialog';
@@ -122,7 +123,7 @@ export default function OpportunityDetailsPage() {
         </Tabs>
       </Paper>
       {tab === 'overview' && <Overview opportunity={opportunity} />}
-      {tab === 'items' && <PlaceholderCard text={placeholder.items} />}
+      {tab === 'items' && <OpportunityLineItemsTab opportunityId={opportunity.id} companyId={opportunity.companyId} />}
       {tab === 'documents' && <PlaceholderCard text={placeholder.documents} />}
       {tab === 'payments' && <PlaceholderCard text={placeholder.payments} />}
       {tab === 'tasks' && <PlaceholderCard text={placeholder.tasks} />}
