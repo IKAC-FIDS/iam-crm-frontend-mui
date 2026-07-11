@@ -706,7 +706,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000044
+fix 000001 → fix 000045
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -2612,6 +2612,44 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Depends on backend fix `000030` standardized response contract and the frontend API response helpers from fix `000042`.
 * Depends on frontend fix `000043` for the dedicated Opportunity Details page and `آیتم‌ها` tab location.
 * The backend remains the source of truth for authorization, line total calculation, and `Opportunity.estimatedValue` recalculation.
+
+**Verification status:**
+
+* Lint passed without errors.
+* Production build passed.
+* The non-blocking Vite bundle-size warning remains.
+* Live authenticated API testing was not performed in this fix.
+
+---
+
+## fix 000045 — Add commercial documents and payment tracking UI
+
+**Implemented items:**
+
+* Added a `commercialDocuments` feature module with typed API service, React Query hooks, display helpers, server-side paginated table, search/type/status filters, create/edit dialog, status-change dialog, delete confirmation, and safe external `fileUrl` links.
+* Added a `payments` feature module with typed API service, React Query hooks, display helpers, server-side paginated table, status filter, create/edit dialog, mark-paid dialog, cancel dialog, and delete confirmation.
+* Replaced the Opportunity Details `اسناد تجاری` and `پرداخت‌ها` placeholders with real tabs while preserving the line-items tab from fix `000044` and the later task/attachment/activity placeholders.
+* Added permission gates for `commercial-document:view`, `commercial-document:manage`, `payment:view`, and `payment:manage`.
+* Payment forms can select a real related commercial document from the same opportunity when the user has document view access; no fake document options were added.
+* Status-change flows use backend endpoints as the source of truth and surface standardized backend error messages when a transition/action is rejected.
+* Invalidation now refreshes commercial documents, payments, opportunity detail/list caches, pipeline, company opportunity/detail caches, and related summaries after document/payment mutations.
+* No secure file upload/download, attachment management, tasks, or notification UI was added in this fix.
+
+**Important files:**
+
+* `src/features/commercialDocuments/`
+* `src/features/payments/`
+* `src/features/opportunities/pages/OpportunityDetailsPage.tsx`
+* `src/features/opportunities/types/opportunity.types.ts`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* Depends on backend fix `000034` for commercial document and opportunity payment APIs.
+* Depends on backend fix `000030` standardized response contract and the frontend API response helpers from fix `000042`.
+* Depends on frontend fix `000043` for the dedicated Opportunity Details page.
+* References frontend fix `000044` by preserving the existing line-items tab and shared money formatting utility.
+* Backend DTOs were checked from the local backend repository: commercial document status change accepts `{ status, notes }`; payment cancel accepts no request body.
 
 **Verification status:**
 

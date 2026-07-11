@@ -6,7 +6,9 @@ import { Alert, Box, Button, Chip, Divider, Grid, Link, Paper, Stack, Tab, Tabs,
 import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
 import { formatDateTime, getPriorityLabel } from '@/features/companies/utils/companyDisplay';
+import CommercialDocumentsTab from '@/features/commercialDocuments/components/CommercialDocumentsTab';
 import OpportunityLineItemsTab from '@/features/opportunityLineItems/components/OpportunityLineItemsTab';
+import PaymentsTab from '@/features/payments/components/PaymentsTab';
 import ChangeOpportunityOwnerDialog from '../components/ChangeOpportunityOwnerDialog';
 import ChangeOpportunityStageDialog from '../components/ChangeOpportunityStageDialog';
 import OpportunityFormDialog from '../components/OpportunityFormDialog';
@@ -124,8 +126,8 @@ export default function OpportunityDetailsPage() {
       </Paper>
       {tab === 'overview' && <Overview opportunity={opportunity} />}
       {tab === 'items' && <OpportunityLineItemsTab opportunityId={opportunity.id} companyId={opportunity.companyId} />}
-      {tab === 'documents' && <PlaceholderCard text={placeholder.documents} />}
-      {tab === 'payments' && <PlaceholderCard text={placeholder.payments} />}
+      {tab === 'documents' && <CommercialDocumentsTab opportunityId={opportunity.id} companyId={opportunity.companyId} />}
+      {tab === 'payments' && <PaymentsTab opportunityId={opportunity.id} companyId={opportunity.companyId} />}
       {tab === 'tasks' && <PlaceholderCard text={placeholder.tasks} />}
       {tab === 'attachments' && <PlaceholderCard text={placeholder.attachments} />}
       {tab === 'activities' && <PlaceholderCard text={placeholder.activities} />}

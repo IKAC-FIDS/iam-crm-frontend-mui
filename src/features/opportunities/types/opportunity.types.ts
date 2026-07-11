@@ -1,5 +1,7 @@
 import type { Priority } from '@/features/companies/types/company.types';
+import type { CommercialDocument } from '@/features/commercialDocuments/types/commercialDocument.types';
 import type { OpportunityLineItem } from '@/features/opportunityLineItems/types/opportunityLineItem.types';
+import type { OpportunityPayment } from '@/features/payments/types/payment.types';
 
 export interface OpportunityStage { id: string; code: string; label: string; sortOrder: number; color?: string | null; isTerminal?: boolean; terminalType?: string | null }
 export interface Opportunity {
@@ -10,8 +12,8 @@ export interface Opportunity {
   estimatedValue?: number | string | null; expectedCloseDate?: string | null; source?: string | null;
   archivedAt?: string | null; archiveReason?: string | null; createdAt: string; updatedAt: string;
   lineItems?: OpportunityLineItem[];
-  commercialDocuments?: unknown[];
-  payments?: unknown[];
+  commercialDocuments?: CommercialDocument[];
+  payments?: OpportunityPayment[];
   tasks?: unknown[];
   _count?: {
     lineItems?: number;
