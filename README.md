@@ -2850,6 +2850,45 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Live authenticated admin organization API testing was not performed in this fix.
 
 ---
+## fix 000051 — Add SSO login and admin SSO provider management UI
+
+**Implemented items:**
+
+* Added a `sso` feature module with typed SSO provider models, public/admin API service methods, React Query hooks, display helpers, safe backend redirect URL builder, login buttons, SSO callback page, admin provider page, provider form dialog, provider status/delete dialog, and sensitive-secret warning.
+* Verified backend SSO routes from the sibling backend source and used the actual paths: `/auth/sso/providers`, `/auth/oidc/:providerId/login`, `/auth/saml/:providerId/login`, `/auth/sso/exchange`, and `/admin/sso-providers`.
+* Added SSO provider buttons to the login page without changing password login or Passkey login.
+* Added `/auth/sso/callback` to exchange backend-issued SSO tickets for the normal CRM login response, clear React Query cache, store the access token, and set the same auth user state used by password/passkey login.
+* Added `/admin/sso-providers` route and sidebar item gated by `sso-provider:view` or `sso-provider:manage`.
+* Added admin provider listing with search, type, and active-state filters, plus create/edit, activate, disable, delete, and test-login actions.
+* Provider forms use backend field names including `entityId`, `ssoUrl`, `x509Certificate`, `scopes`, `defaultRole`, `allowedDomains`, and SAML signature flags.
+* Existing client secrets and certificates are never displayed; new secret/certificate values are sent only when entered.
+* The frontend does not implement OIDC/SAML protocol internals. It redirects to backend login endpoints and exchanges backend-issued tickets only.
+
+**Important files:**
+
+* `src/features/sso/`
+* `src/features/auth/pages/LoginPage.tsx`
+* `src/routes/index.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* Depends on backend fix `000021` for SSO relying-party foundation.
+* Depends on backend fix `000022` for OIDC relying-party login.
+* Depends on backend fix `000023` for SAML service-provider login.
+* Depends on backend fix `000030` standardized response contract.
+* Depends on frontend fix `000042` auth/API response compatibility.
+* Backend remains the source of truth for provider configuration validation, callback handling, state/nonce/ticket validation, user resolution, and session cookie handling.
+
+**Verification status:**
+
+* Lint passed without errors.
+* Production build passed.
+* The non-blocking Vite bundle-size warning remains.
+* Live authenticated SSO provider management and external IdP login testing were not performed in this fix.
+
+---
 **Built with ❤️ for sales team**
 
 ---

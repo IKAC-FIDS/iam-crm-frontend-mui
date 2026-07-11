@@ -15,6 +15,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import HistoryIcon from '@mui/icons-material/History';
 import KeyIcon from '@mui/icons-material/Key';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import LoginIcon from '@mui/icons-material/Login';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import PeopleIcon from '@mui/icons-material/People';
@@ -51,6 +52,7 @@ const menuItems = [
   { text: 'امنیت حساب', icon: <KeyIcon />, path: '/account/security' },
   { text: 'کاربران', icon: <PeopleIcon />, path: '/admin/users', permission: 'user:manage' },
   { text: 'سازمان‌ها', icon: <CorporateFareIcon />, path: '/admin/organizations', permission: 'organization:manage' },
+  { text: 'ورود سازمانی', icon: <LoginIcon />, path: '/admin/sso-providers', permissions: ['sso-provider:view', 'sso-provider:manage'] },
   { text: 'مجوزها', icon: <SecurityIcon />, path: '/admin/permissions', permission: 'permission:manage' },
   {
     text: 'کتابخانه‌ها',

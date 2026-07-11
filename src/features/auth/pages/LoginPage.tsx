@@ -18,6 +18,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
 import { getApiErrorMessage } from '@/lib/apiResponse';
+import SsoLoginButtons from '@/features/sso/components/SsoLoginButtons';
 import { useAuth } from '../hooks/useAuth';
 import { usePasskeyLogin } from '../hooks/usePasskeyLogin';
 import { passkeyErrorMessage } from '../utils/passkeyErrors';
@@ -242,6 +243,7 @@ export default function LoginPage() {
                 {isPasskeyLoading ? 'در حال بررسی Passkey...' : 'ورود با Passkey'}
               </Button>
             </Stack>
+            <SsoLoginButtons disabled={disabled} />
           </Box>
         </CardContent>
       </Card>

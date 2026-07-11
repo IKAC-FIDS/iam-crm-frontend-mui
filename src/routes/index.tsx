@@ -21,6 +21,8 @@ import OpportunityDetailsPage from '@/features/opportunities/pages/OpportunityDe
 import TasksPage from '@/features/tasks/pages/TasksPage';
 import NotificationsPage from '@/features/notifications/pages/NotificationsPage';
 import AdminOrganizationsPage from '@/features/organizations/pages/AdminOrganizationsPage';
+import SsoCallbackPage from '@/features/sso/pages/SsoCallbackPage';
+import AdminSsoProvidersPage from '@/features/sso/pages/AdminSsoProvidersPage';
 
 export const router = createBrowserRouter([
   {
@@ -45,6 +47,7 @@ export const router = createBrowserRouter([
           { path: 'account/security', element: <AccountSecurityPage /> },
           { path: 'admin/users', element: <AdminUsersPage /> },
           { path: 'admin/organizations', element: <AdminOrganizationsPage /> },
+          { path: 'admin/sso-providers', element: <AdminSsoProvidersPage /> },
           { path: 'admin/permissions', element: <AdminPermissionsPage /> },
           { path: 'admin/libraries', element: <AdminLibrariesPage /> },
           { path: 'admin/pipeline', element: <AdminPipelinePage /> },
@@ -57,5 +60,9 @@ export const router = createBrowserRouter([
     path: '/login',
     element: <AuthLayout />,
     children: [{ index: true, element: <LoginPage /> }],
+  },
+  {
+    path: '/auth/sso/callback',
+    element: <SsoCallbackPage />,
   },
 ]);
