@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { Alert, Box, Button, Stack, Typography } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
+import { Alert, Box, Button, Paper, Stack, Typography } from '@mui/material';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { useQueryClient } from '@tanstack/react-query';
 import { can } from '@/features/auth/utils/permissions';
@@ -29,6 +31,10 @@ function initialFilters(): ReportFilters { return defaultActivityDateRange(); }
 export default function ReportsPage() {
   const user = useAuthStore((state) => state.user);
   const hasAccess = can(user, 'report:view', ['ADMIN', 'MANAGER', 'BOARDS']);
+  const canViewOpportunities = can(user, 'opportunity:view', ['ADMIN', 'MANAGER', 'REP', 'BOARDS']);
+  const canViewTasks = can(user, 'task:view', ['ADMIN', 'MANAGER', 'REP', 'BOARDS']);
+  const canViewNotifications = can(user, 'notification:view', ['ADMIN']);
+  const canViewProducts = can(user, 'product:view', ['ADMIN']);
   const queryClient = useQueryClient();
   const [draft, setDraft] = useState<ReportFilters>(initialFilters);
   const [filters, setFilters] = useState<ReportFilters>(initialFilters);
@@ -51,9 +57,30 @@ export default function ReportsPage() {
     setFilters(next);
   };
 
+  const operationalLinks = [
+    { label: 'فرصت‌های فروش', to: '/opportunities', visible: canViewOpportunities },
+    { label: 'کارهای باز', to: '/tasks', visible: canViewTasks },
+    { label: 'اعلان‌ها', to: '/notifications', visible: canViewNotifications },
+    { label: 'کاتالوگ محصولات', to: '/admin/libraries', visible: canViewProducts },
+  ].filter((item) => item.visible);
+
   return <Box sx={{ minWidth: 0 }}>
-    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mb: 3, justifyContent: 'space-between', alignItems: { sm: 'center' } }}><Box><Typography variant="h4">گزارش‌ها</Typography><Typography color="text.secondary">نمای کلی عملکرد پایپ‌لاین و فعالیت‌های فروش با فیلترهای پیشرفته.</Typography></Box><Button variant="outlined" startIcon={<RefreshIcon />} onClick={() => queryClient.invalidateQueries({ queryKey: reportQueryKeys.all })}>بروزرسانی گزارش‌ها</Button></Stack>
+    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mb: 3, justifyContent: 'space-between', alignItems: { sm: 'center' } }}><Box><Typography variant="h4">گزارش‌ها</Typography><Typography color="text.secondary">نمای کلی عملکرد فرصت‌های فروش، پایپ‌لاین و فعالیت‌های فروش با فیلترهای پیشرفته.</Typography></Box><Button variant="outlined" startIcon={<RefreshIcon />} onClick={() => queryClient.invalidateQueries({ queryKey: reportQueryKeys.all })}>بروزرسانی گزارش‌ها</Button></Stack>
     <Stack spacing={4}>
+      {operationalLinks.length > 0 && (
+        <Paper sx={{ p: 2 }}>
+          <Stack spacing={2}>
+            <Typography variant="h6">لینک‌های عملیاتی</Typography>
+            <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
+              {operationalLinks.map((link) => (
+                <Button key={link.to} component={RouterLink} to={link.to} variant="outlined" size="small" startIcon={<ArrowForwardIcon />}>
+                  {link.label}
+                </Button>
+              ))}
+            </Stack>
+          </Stack>
+        </Paper>
+      )}
       <ReportFilterPanel draft={draft} options={filterOptions.data} isLoading={filterOptions.isLoading} isError={filterOptions.isError} isApplying={reports.some((query) => query.isFetching)} onChange={setDraft} onApply={() => setFilters({ ...draft })} onReset={reset} />
       <PipelineSummarySection data={pipeline.data} isLoading={pipeline.isLoading} isError={pipeline.isError} />
       <ConversionRatesSection data={conversion.data} isLoading={conversion.isLoading} isError={conversion.isError} />

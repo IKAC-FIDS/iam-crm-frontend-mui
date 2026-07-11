@@ -2889,6 +2889,42 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Live authenticated SSO provider management and external IdP login testing were not performed in this fix.
 
 ---
+## fix 000052 — Update dashboard, sidebar, and reports for new backend modules
+
+**Implemented items:**
+
+* Reorganized the sidebar into `عملیات فروش`, `مدیریت`, and `حساب` groups while preserving mobile drawer behavior, RTL layout, route highlighting, and permission-based visibility.
+* Audited sidebar links against implemented routes through frontend fixes `000043` تا `000051`, including opportunities, tasks, notifications, organizations, SSO providers, reports, and existing admin pages.
+* Expanded the dashboard with real backend-backed cards for companies, opportunities, pipeline reports, conversion rate, open/overdue tasks, unread notifications, recent activities, and current organization status.
+* Added permission-aware dashboard quick links for opportunities, tasks, notifications, reports, product catalog via Admin Libraries, admin organizations, and SSO providers.
+* Kept dashboard failures isolated: each metric card can show unavailable/loading state without breaking the rest of the dashboard.
+* Updated Reports copy to emphasize the opportunity-first pipeline model and added an operational links section for real existing routes.
+* Confirmed existing reports still use standardized response helpers and preserve legacy backend field names while displaying opportunity-oriented labels.
+* Did not add new backend reporting endpoints and did not fabricate unavailable payment/document/global metrics.
+
+**Important files:**
+
+* `src/components/dashboard/MainGrid.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+* `src/features/reports/pages/ReportsPage.tsx`
+* `README.md`
+
+**Assumptions and backend/frontend dependencies:**
+
+* Depends on backend fix `000030` standardized response contract.
+* Depends on backend fixes `000033`, `000034`, `000035`, `000036`, `000037`, and `000038` for product/line items, documents/payments, attachments, tasks, notifications, and organizations.
+* Includes navigation for SSO from backend fixes `000021` تا `000023`.
+* Depends on frontend fixes `000043` تا `000051` for the implemented opportunity, catalog, document/payment, attachment, task, notification, organization, and SSO pages.
+* Payment and commercial-document global report cards remain a future backend reporting dependency because current frontend APIs are opportunity-scoped.
+
+**Verification status:**
+
+* Lint passed without errors.
+* Production build passed.
+* The non-blocking Vite bundle-size warning remains.
+* Live authenticated dashboard/report API testing was not performed in this fix.
+
+---
 **Built with ❤️ for sales team**
 
 ---
