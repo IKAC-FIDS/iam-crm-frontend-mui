@@ -10,6 +10,7 @@ import { formatDateTime, getPriorityLabel } from '@/features/companies/utils/com
 import CommercialDocumentsTab from '@/features/commercialDocuments/components/CommercialDocumentsTab';
 import OpportunityLineItemsTab from '@/features/opportunityLineItems/components/OpportunityLineItemsTab';
 import PaymentsTab from '@/features/payments/components/PaymentsTab';
+import OpportunityTasksTab from '@/features/tasks/components/OpportunityTasksTab';
 import ChangeOpportunityOwnerDialog from '../components/ChangeOpportunityOwnerDialog';
 import ChangeOpportunityStageDialog from '../components/ChangeOpportunityStageDialog';
 import OpportunityFormDialog from '../components/OpportunityFormDialog';
@@ -129,7 +130,7 @@ export default function OpportunityDetailsPage() {
       {tab === 'items' && <OpportunityLineItemsTab opportunityId={opportunity.id} companyId={opportunity.companyId} />}
       {tab === 'documents' && <CommercialDocumentsTab opportunityId={opportunity.id} companyId={opportunity.companyId} />}
       {tab === 'payments' && <PaymentsTab opportunityId={opportunity.id} companyId={opportunity.companyId} />}
-      {tab === 'tasks' && <PlaceholderCard text={placeholder.tasks} />}
+      {tab === 'tasks' && <OpportunityTasksTab opportunityId={opportunity.id} />}
       {tab === 'attachments' && <AttachmentsTab entityType="OPPORTUNITY" entityId={opportunity.id} title="پیوست‌های فرصت" emptyMessage="هنوز پیوستی برای این فرصت ثبت نشده است." />}
       {tab === 'activities' && <PlaceholderCard text={placeholder.activities} />}
       {formOpen && <OpportunityFormDialog companyId={opportunity.companyId} opportunity={opportunity} open onClose={() => setFormOpen(false)} />}

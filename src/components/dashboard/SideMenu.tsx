@@ -8,6 +8,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import AssessmentIcon from '@mui/icons-material/Assessment';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import BusinessIcon from '@mui/icons-material/Business';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import HistoryIcon from '@mui/icons-material/History';
@@ -40,6 +41,7 @@ const menuItems = [
   { text: 'شرکت‌ها', icon: <BusinessIcon />, path: '/companies' },
   { text: 'افراد', icon: <PeopleIcon />, path: '/people', peopleOnly: true },
   { text: 'فرصت‌ها', icon: <WorkIcon />, path: '/opportunities', permission: 'opportunity:view', fallbackRoles: ['ADMIN', 'MANAGER', 'REP', 'BOARDS'] },
+  { text: 'کارها', icon: <AssignmentIcon />, path: '/tasks', permission: 'task:view', fallbackRoles: ['ADMIN', 'MANAGER', 'REP', 'BOARDS'] },
   { text: 'پایپ‌لاین', icon: <ViewKanbanIcon />, path: '/pipeline' },
   { text: 'پیگیری‌ها', icon: <NotificationsActiveIcon />, path: '/follow-ups' },
   { text: 'گزارش‌ها', icon: <AssessmentIcon />, path: '/reports', reportOnly: true },

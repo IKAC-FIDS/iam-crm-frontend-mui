@@ -706,7 +706,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000046
+fix 000001 → fix 000047
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -2699,6 +2699,44 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 ---
 
+## fix 000047 - Add dedicated task management UI
+
+**Implemented items:**
+
+* Added a `tasks` feature module with typed task models, API service, React Query hooks, Persian display helpers, global page, reusable task table, and focused dialogs for create/edit, status change, assignment, completion, rescheduling, and deletion.
+* Added protected `/tasks` route and sidebar task item gated by `task:view`.
+* Added server-side paginated task listing with search, status, priority, assignee, and due-date filters.
+* Added summary cards for total tasks, TODO tasks, overdue tasks, and DONE tasks on the global task page.
+* Replaced the Opportunity Details task placeholder with a real opportunity-scoped task tab using `GET /tasks?opportunityId=...`.
+* Reused real `/users/owner-options` data for task assignment; no fake assignees or fake linked-entity selectors were added.
+* Implemented permission gates for `task:view`, `task:create`, `task:update`, `task:assign`, `task:complete`, and `task:delete`.
+* Task mutations invalidate task lists/details, opportunity detail/list caches, company detail cache when relevant, and pipeline queries where counts may be affected.
+* Existing `/follow-ups` page and activity follow-up complete/reschedule flows remain available and were not removed or changed.
+* No notification center UI was added in this fix.
+
+**Important files:**
+
+* `src/features/tasks/`
+* `src/routes/index.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+* `src/features/opportunities/pages/OpportunityDetailsPage.tsx`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* Depends on backend fix `000036` for dedicated task management APIs.
+* Depends on backend fix `000030` standardized response contract and the frontend API response helpers from fix `000042`.
+* Depends on frontend fix `000043` for the dedicated Opportunity Details page.
+* Backend DTOs were checked from the local backend repository: status changes accept `{ status, note }`, assignment accepts `{ assignedToId }`, completion accepts `{ completionNote }`, and reschedule accepts `{ dueAt, reminderAt }`.
+
+**Verification status:**
+
+* Lint passed without errors.
+* Production build passed.
+* The non-blocking Vite bundle-size warning remains.
+* Live authenticated task API testing was not performed in this fix.
+
+---
 **Built with ❤️ for sales team**
 
 ---
