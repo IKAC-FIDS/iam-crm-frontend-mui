@@ -20,6 +20,7 @@ import OpportunitiesPage from '@/features/opportunities/pages/OpportunitiesPage'
 import OpportunityDetailsPage from '@/features/opportunities/pages/OpportunityDetailsPage';
 import TasksPage from '@/features/tasks/pages/TasksPage';
 import NotificationsPage from '@/features/notifications/pages/NotificationsPage';
+import AdminOrganizationsPage from '@/features/organizations/pages/AdminOrganizationsPage';
 
 export const router = createBrowserRouter([
   {
@@ -43,6 +44,7 @@ export const router = createBrowserRouter([
           { path: 'reports', element: <ReportsPage /> },
           { path: 'account/security', element: <AccountSecurityPage /> },
           { path: 'admin/users', element: <AdminUsersPage /> },
+          { path: 'admin/organizations', element: <AdminOrganizationsPage /> },
           { path: 'admin/permissions', element: <AdminPermissionsPage /> },
           { path: 'admin/libraries', element: <AdminLibrariesPage /> },
           { path: 'admin/pipeline', element: <AdminPipelinePage /> },

@@ -10,6 +10,7 @@ import Toolbar from '@mui/material/Toolbar';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import BusinessIcon from '@mui/icons-material/Business';
+import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import HistoryIcon from '@mui/icons-material/History';
 import KeyIcon from '@mui/icons-material/Key';
@@ -49,6 +50,7 @@ const menuItems = [
   { text: 'گزارش‌ها', icon: <AssessmentIcon />, path: '/reports', reportOnly: true },
   { text: 'امنیت حساب', icon: <KeyIcon />, path: '/account/security' },
   { text: 'کاربران', icon: <PeopleIcon />, path: '/admin/users', permission: 'user:manage' },
+  { text: 'سازمان‌ها', icon: <CorporateFareIcon />, path: '/admin/organizations', permission: 'organization:manage' },
   { text: 'مجوزها', icon: <SecurityIcon />, path: '/admin/permissions', permission: 'permission:manage' },
   {
     text: 'کتابخانه‌ها',

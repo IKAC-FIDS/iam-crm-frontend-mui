@@ -2814,6 +2814,42 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Live authenticated organization API testing was not performed in this fix.
 
 ---
+## fix 000050 — Add admin organizations management UI
+
+**Implemented items:**
+
+* Extended the `organizations` feature module with admin organization types, API service methods, React Query hooks, Persian display helpers, admin page, server-side paginated table, create/edit form dialog, and activate/suspend confirmation dialog.
+* Connected admin organization list, detail, create, update, activate, and suspend flows to `/admin/organizations` APIs through the shared Axios client and standardized API response helpers.
+* Added stable organization query keys for current organization, lists, list params, and details.
+* Organization create/update/activate/suspend mutations invalidate organization lists/details and refresh the current organization query when the changed organization matches the logged-in user's `organizationId`.
+* Added protected `/admin/organizations` route and sidebar item gated by `organization:manage`.
+* Added server-side filters for search and status, status chips, Persian date formatting, and empty/error/loading states.
+* Organization form validates technical organization code format, defaults create values to `Asia/Tehran`, `fa-IR`, and `ACTIVE`, and accepts optional settings as validated JSON object text.
+* Reused the current organization context from fix `000049` without adding organization switching or changing auth token behavior.
+* Organization switching, user-to-organization assignment, delete/archive organization, and tenant-scoped library/settings management are not implemented in this fix.
+
+**Important files:**
+
+* `src/features/organizations/`
+* `src/routes/index.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* Depends on backend fix `000038` for tenant/organization foundation and admin organization APIs.
+* Depends on backend fix `000030` standardized response contract.
+* Depends on frontend fix `000049` current organization context.
+* Backend remains the source of truth for organization authorization, code uniqueness, lifecycle rules, and tenant scoping.
+
+**Verification status:**
+
+* Lint passed without errors.
+* Production build passed.
+* The non-blocking Vite bundle-size warning remains.
+* Live authenticated admin organization API testing was not performed in this fix.
+
+---
 **Built with ❤️ for sales team**
 
 ---

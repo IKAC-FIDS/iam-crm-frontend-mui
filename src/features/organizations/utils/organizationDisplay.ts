@@ -24,3 +24,31 @@ export function getOrganizationStatusAlertText(status: OrganizationStatus): stri
 
   return null;
 }
+
+export const organizationStatusOptions: { value: OrganizationStatus; label: string }[] = [
+  { value: 'ACTIVE', label: getOrganizationStatusLabel('ACTIVE') },
+  { value: 'SUSPENDED', label: getOrganizationStatusLabel('SUSPENDED') },
+  { value: 'ARCHIVED', label: getOrganizationStatusLabel('ARCHIVED') },
+];
+
+export function formatOrganizationDate(value?: string | null): string {
+  if (!value) return '—';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '—';
+  return new Intl.DateTimeFormat('fa-IR', {
+    dateStyle: 'short',
+    timeStyle: 'short',
+  }).format(date);
+}
+
+export function getOrganizationLocaleLabel(locale: string): string {
+  if (locale === 'fa-IR') return 'فارسی (ایران)';
+  if (locale === 'en-US') return 'English (US)';
+  return locale || '—';
+}
+
+export function getOrganizationTimezoneLabel(timezone: string): string {
+  if (timezone === 'Asia/Tehran') return 'Asia/Tehran';
+  if (timezone === 'UTC') return 'UTC';
+  return timezone || '—';
+}

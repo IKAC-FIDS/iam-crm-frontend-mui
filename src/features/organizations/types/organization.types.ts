@@ -15,3 +15,28 @@ export interface Organization {
 }
 
 export type CurrentOrganizationResponse = Organization;
+
+export interface FindOrganizationsParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  status?: OrganizationStatus;
+}
+
+export interface CreateOrganizationPayload {
+  code: string;
+  name: string;
+  status?: OrganizationStatus;
+  timezone?: string;
+  locale?: string;
+  settings?: Record<string, unknown>;
+}
+
+export interface UpdateOrganizationPayload {
+  code?: string;
+  name?: string;
+  status?: OrganizationStatus;
+  timezone?: string;
+  locale?: string;
+  settings?: Record<string, unknown>;
+}

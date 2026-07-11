@@ -6,6 +6,9 @@ import { organizationsService } from '../services/organizations.service';
 export const organizationQueryKeys = {
   all: ['organizations'] as const,
   current: (organizationId?: string | null) => ['organizations', 'current', organizationId ?? 'none'] as const,
+  lists: () => ['organizations', 'list'] as const,
+  list: (params: object) => ['organizations', 'list', params] as const,
+  detail: (id: string) => ['organizations', 'detail', id] as const,
 };
 
 export function useCurrentOrganization(enabled = true) {
