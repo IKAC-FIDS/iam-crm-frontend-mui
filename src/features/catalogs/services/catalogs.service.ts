@@ -1,9 +1,9 @@
 import axiosInstance from '@/lib/axios';
+import { unwrapApiResponse } from '@/lib/apiResponse';
 import { CATALOG_DEFINITIONS } from '../types/catalog.types';
 import type { CatalogItem, CatalogKind, CatalogPayload, CatalogQueryOptions, LookupGroup } from '../types/catalog.types';
 
-function unwrap(payload: unknown): unknown { return payload && typeof payload === 'object' && 'data' in payload ? (payload as { data: unknown }).data : payload; }
-function list(payload: unknown): unknown[] { const data = unwrap(payload); if (Array.isArray(data)) return data; return data && typeof data === 'object' && 'items' in data && Array.isArray((data as { items: unknown }).items) ? (data as { items: unknown[] }).items : []; }
+function list(payload: unknown): unknown[] { const data = unwrapApiResponse<unknown>(payload); if (Array.isArray(data)) return data; return data && typeof data === 'object' && 'items' in data && Array.isArray((data as { items: unknown }).items) ? (data as { items: unknown[] }).items : []; }
 function raw(item: unknown): Record<string, unknown> { return item as Record<string, unknown>; }
 function normalize(item: unknown): CatalogItem {
   const value = raw(item);
@@ -41,10 +41,10 @@ export const catalogsService = {
     return fetchItems(kind, options.group, kind === 'leadSources' || kind === 'lookupOptions' ? true : undefined);
   },
   createItem: async (kind: CatalogKind, payload: CatalogPayload, group?: LookupGroup): Promise<CatalogItem> => {
-    const response = await axiosInstance.post(endpoint(kind, group), requestPayload(kind, payload)); return normalize(unwrap(response.data));
+    const response = await axiosInstance.post(endpoint(kind, group), requestPayload(kind, payload)); return normalize(unwrapApiResponse<unknown>(response.data));
   },
   updateItem: async (kind: CatalogKind, id: string, payload: CatalogPayload, group?: LookupGroup): Promise<CatalogItem> => {
-    const response = await axiosInstance.patch(`${endpoint(kind, group)}/${id}`, requestPayload(kind, payload)); return normalize(unwrap(response.data));
+    const response = await axiosInstance.patch(`${endpoint(kind, group)}/${id}`, requestPayload(kind, payload)); return normalize(unwrapApiResponse<unknown>(response.data));
   },
   deleteItem: async (kind: CatalogKind, id: string, group?: LookupGroup): Promise<void> => { await axiosInstance.delete(`${endpoint(kind, group)}/${id}`); },
 };

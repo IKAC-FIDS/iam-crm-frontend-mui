@@ -1,4 +1,5 @@
 import axiosInstance from '@/lib/axios';
+import { unwrapApiResponse } from '@/lib/apiResponse';
 import { USER_ROLES } from '../../users/types/adminUser.types';
 import type { UserRole } from '../../users/types/adminUser.types';
 import type { BulkRolePermissionPayload, CreatePermissionPayload, PermissionMatrixRow, RolePermissionPayload } from '../types/adminPermission.types';
@@ -13,7 +14,7 @@ const actionFrom = (value: unknown): string | null => {
 };
 
 function normalizeMatrix(response: unknown): PermissionMatrixRow[] {
-  const root = response && typeof response === 'object' && 'data' in response ? (response as { data: unknown }).data : response;
+  const root = unwrapApiResponse<unknown>(response);
   const source = root && typeof root === 'object' && 'matrix' in root ? (root as { matrix: unknown }).matrix : root;
   const rows = new Map<string, PermissionMatrixRow>();
   const ensure = (action: string, description?: string | null) => {

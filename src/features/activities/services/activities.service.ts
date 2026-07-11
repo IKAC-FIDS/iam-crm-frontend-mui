@@ -1,4 +1,5 @@
 import axiosInstance from '@/lib/axios';
+import { unwrapApiResponse, unwrapPaginatedApiResponse } from '@/lib/apiResponse';
 import type { PaginatedResult } from '@/features/companies/types/company.types';
 import type {
   Activity,
@@ -63,12 +64,6 @@ function normalizeActivities(
   };
 }
 
-function unwrap<T>(payload: T | { data: T }): T {
-  return typeof payload === 'object' && payload !== null && 'data' in payload
-    ? payload.data
-    : payload;
-}
-
 export const activitiesService = {
   getActivitiesByCompany: async (
     params: GetActivitiesParams,
@@ -76,7 +71,7 @@ export const activitiesService = {
     const response = await axiosInstance.get<Activity[] | ActivitiesEnvelope>('/activities', {
       params,
     });
-    return normalizeActivities(response.data, params);
+    return normalizeActivities(unwrapPaginatedApiResponse<Activity>(response.data), params);
   },
 
   createActivity: async (payload: CreateActivityPayload): Promise<Activity> => {
@@ -84,7 +79,7 @@ export const activitiesService = {
       '/activities',
       payload,
     );
-    return unwrap(response.data);
+    return unwrapApiResponse<Activity>(response.data);
   },
 
   updateActivity: async (activityId: string, payload: UpdateActivityPayload): Promise<Activity> => {
@@ -92,6 +87,6 @@ export const activitiesService = {
       `/activities/${activityId}`,
       payload,
     );
-    return unwrap(response.data);
+    return unwrapApiResponse<Activity>(response.data);
   },
 };

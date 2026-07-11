@@ -4,6 +4,7 @@ import type {
 } from '@simplewebauthn/browser';
 
 import axiosInstance from '@/lib/axios';
+import { unwrapApiResponse } from '@/lib/apiResponse';
 import type { Passkey } from '../types/passkey.types';
 
 function normalizePasskey(item: unknown): Passkey {
@@ -25,10 +26,11 @@ function normalizePasskey(item: unknown): Passkey {
 }
 
 function normalizePasskeys(payload: unknown): Passkey[] {
-  const data = Array.isArray(payload)
-    ? payload
-    : Array.isArray((payload as { data?: unknown }).data)
-      ? (payload as { data: unknown[] }).data
+  const value = unwrapApiResponse<unknown>(payload);
+  const data = Array.isArray(value)
+    ? value
+    : value && typeof value === 'object' && 'items' in value && Array.isArray((value as { items?: unknown }).items)
+      ? (value as { items: unknown[] }).items
       : [];
 
   return data.map(normalizePasskey);
@@ -46,7 +48,7 @@ export const passkeysService = {
       '/me/passkeys/registration/options',
       { deviceName }
     );
-    return response.data;
+    return unwrapApiResponse<PublicKeyCredentialCreationOptionsJSON>(response.data);
   },
   verifyRegistration: async (data: {
     deviceName: string;

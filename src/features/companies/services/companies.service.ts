@@ -1,4 +1,5 @@
 import axiosInstance from '@/lib/axios';
+import { unwrapApiResponse, unwrapPaginatedApiResponse } from '@/lib/apiResponse';
 import type {
   GetCompaniesParams,
   PaginatedResult,
@@ -94,7 +95,7 @@ export const companiesService = {
       params: cleanRequestParams(params),
     });
 
-    return normalizeCompaniesResponse(response.data, params);
+    return normalizeCompaniesResponse(unwrapPaginatedApiResponse<CompanyListItem>(response.data), params);
   },
 
   getCompanyById: async (companyId: string): Promise<Company> => {
@@ -102,7 +103,7 @@ export const companiesService = {
       `/companies/${companyId}`,
     );
 
-    return 'data' in response.data ? response.data.data : response.data;
+    return unwrapApiResponse<Company>(response.data);
   },
 
   createCompany: async (payload: CreateCompanyPayload): Promise<Company> => {
@@ -111,7 +112,7 @@ export const companiesService = {
       payload,
     );
 
-    return 'data' in response.data ? response.data.data : response.data;
+    return unwrapApiResponse<Company>(response.data);
   },
 
   updateCompany: async (
@@ -123,7 +124,7 @@ export const companiesService = {
       payload,
     );
 
-    return 'data' in response.data ? response.data.data : response.data;
+    return unwrapApiResponse<Company>(response.data);
   },
 
   changeCompanyStage: async (
@@ -135,7 +136,7 @@ export const companiesService = {
       payload,
     );
 
-    return 'data' in response.data ? response.data.data : response.data;
+    return unwrapApiResponse<Company>(response.data);
   },
 
   changeCompanyOwner: async (
@@ -147,14 +148,14 @@ export const companiesService = {
       payload,
     );
 
-    return 'data' in response.data ? response.data.data : response.data;
+    return unwrapApiResponse<Company>(response.data);
   },
   archiveCompany: async (companyId: string, payload: ArchiveCompanyPayload): Promise<Company> => {
     const response = await axiosInstance.patch<Company | { data: Company }>(`/companies/${companyId}/archive`, payload);
-    return 'data' in response.data ? response.data.data : response.data;
+    return unwrapApiResponse<Company>(response.data);
   },
   restoreCompany: async (companyId: string): Promise<Company> => {
     const response = await axiosInstance.patch<Company | { data: Company }>(`/companies/${companyId}/restore`);
-    return 'data' in response.data ? response.data.data : response.data;
+    return unwrapApiResponse<Company>(response.data);
   },
 };

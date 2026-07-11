@@ -1,6 +1,6 @@
-import axios from 'axios';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogTitle } from '@mui/material';
+import { getApiErrorMessage } from '@/lib/apiResponse';
 import { usePeople } from '@/features/people/hooks/usePeople';
 import { useCompanyOpportunities } from '@/features/opportunities/hooks/useOpportunities';
 import ActivityForm from './ActivityForm';
@@ -12,10 +12,6 @@ interface ActivityFormDialogProps {
   companyId: string;
   open: boolean;
   onClose: () => void;
-}
-
-interface ApiErrorBody {
-  message?: string;
 }
 
 export default function ActivityFormDialog({
@@ -54,8 +50,8 @@ export default function ActivityFormDialog({
     }
   };
 
-  const apiMessage = axios.isAxiosError<ApiErrorBody>(createActivity.error)
-    ? createActivity.error.response?.data?.message
+  const apiMessage = createActivity.error
+    ? getApiErrorMessage(createActivity.error, 'خطا در ثبت فعالیت.')
     : undefined;
 
   return (

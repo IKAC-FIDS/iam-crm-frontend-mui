@@ -13,6 +13,7 @@ export interface AuthUser {
   role: string;
   team: string | null;
   permissions: string[];
+  organizationId?: string | null;
 }
 
 interface AuthState {

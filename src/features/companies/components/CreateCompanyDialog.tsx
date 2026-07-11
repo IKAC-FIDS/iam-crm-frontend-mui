@@ -1,6 +1,6 @@
-import axios from 'axios';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogTitle } from '@mui/material';
+import { getApiErrorMessage } from '@/lib/apiResponse';
 import { useAuthStore } from '@/store/authStore';
 import CompanyForm from './CompanyForm';
 import { useCreateCompany } from '../hooks/useCompanies';
@@ -9,10 +9,6 @@ import type { CreateCompanyPayload, UpdateCompanyPayload } from '../types/compan
 interface CreateCompanyDialogProps {
   open: boolean;
   onClose: () => void;
-}
-
-interface ApiErrorBody {
-  message?: string;
 }
 
 export default function CreateCompanyDialog({ open, onClose }: CreateCompanyDialogProps) {
@@ -45,8 +41,8 @@ export default function CreateCompanyDialog({ open, onClose }: CreateCompanyDial
     }
   };
 
-  const apiMessage = axios.isAxiosError<ApiErrorBody>(createCompany.error)
-    ? createCompany.error.response?.data?.message
+  const apiMessage = createCompany.error
+    ? getApiErrorMessage(createCompany.error, 'خطا در ایجاد شرکت.')
     : undefined;
 
   return (

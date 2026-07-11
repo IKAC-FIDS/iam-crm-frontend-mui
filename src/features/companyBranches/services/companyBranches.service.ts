@@ -1,19 +1,17 @@
 import axiosInstance from '@/lib/axios';
+import { unwrapApiResponse } from '@/lib/apiResponse';
 import type {
   CompanyBranch,
   CreateCompanyBranchPayload,
   UpdateCompanyBranchPayload,
 } from '../types/companyBranch.types';
 
-function unwrap<T>(payload: T | { data: T }): T {
-  return typeof payload === 'object' && payload !== null && 'data' in payload
-    ? payload.data
-    : payload;
-}
-
-function unwrapList(payload: CompanyBranch[] | { data?: CompanyBranch[]; items?: CompanyBranch[] }) {
-  if (Array.isArray(payload)) return payload;
-  return payload.data ?? payload.items ?? [];
+function unwrapList(payload: unknown) {
+  const value = unwrapApiResponse<unknown>(payload);
+  if (Array.isArray(value)) return value as CompanyBranch[];
+  return value && typeof value === 'object' && 'items' in value && Array.isArray((value as { items?: unknown }).items)
+    ? (value as { items: CompanyBranch[] }).items
+    : [];
 }
 
 export const companyBranchesService = {
@@ -32,7 +30,7 @@ export const companyBranchesService = {
       `/companies/${companyId}/branches`,
       payload,
     );
-    return unwrap(response.data);
+    return unwrapApiResponse<CompanyBranch>(response.data);
   },
 
   updateCompanyBranch: async (
@@ -44,7 +42,7 @@ export const companyBranchesService = {
       `/companies/${companyId}/branches/${branchId}`,
       payload,
     );
-    return unwrap(response.data);
+    return unwrapApiResponse<CompanyBranch>(response.data);
   },
 
   deleteCompanyBranch: async (companyId: string, branchId: string): Promise<void> => {

@@ -1,4 +1,5 @@
 import axiosInstance from '@/lib/axios';
+import { unwrapApiResponse, unwrapPaginatedApiResponse } from '@/lib/apiResponse';
 import type { PaginatedResult } from '@/features/companies/types/company.types';
 import type {
   CreatePersonContactPayload,
@@ -34,15 +35,13 @@ interface PeopleEnvelope<T = Person> {
   totalPages?: number;
 }
 
-function unwrap<T>(payload: T | { data: T }): T {
-  return typeof payload === 'object' && payload !== null && 'data' in payload
-    ? payload.data
-    : payload;
-}
-
-function unwrapList<T>(payload: T[] | { data?: T[]; items?: T[] }): T[] {
-  if (Array.isArray(payload)) return payload;
-  return payload.data ?? payload.items ?? [];
+function unwrapList<T>(payload: unknown): T[] {
+  const value = unwrapApiResponse<unknown>(payload);
+  if (Array.isArray(value)) return value as T[];
+  if (value && typeof value === 'object' && 'items' in value && Array.isArray((value as { items?: unknown }).items)) {
+    return (value as { items: T[] }).items;
+  }
+  return [];
 }
 
 function normalizePeople<T>(
@@ -90,22 +89,22 @@ export const peopleService = {
     const response = await axiosInstance.get<PeopleEnvelope<DirectoryPerson>>('/people/directory', {
       params: cleanParams(params),
     });
-    return normalizePeople(response.data, params);
+    return normalizePeople(unwrapPaginatedApiResponse<DirectoryPerson>(response.data), params);
   },
 
   getPeopleByCompany: async (params: GetPeopleParams): Promise<PaginatedResult<Person>> => {
     const response = await axiosInstance.get<Person[] | PeopleEnvelope>('/people', { params });
-    return normalizePeople(response.data, params);
+    return normalizePeople(unwrapPaginatedApiResponse<Person>(response.data), params);
   },
 
   getPersonById: async (personId: string): Promise<Person> => {
     const response = await axiosInstance.get<Person | { data: Person }>(`/people/${personId}`);
-    return unwrap(response.data);
+    return unwrapApiResponse<Person>(response.data);
   },
 
   createPerson: async (payload: CreatePersonPayload): Promise<Person> => {
     const response = await axiosInstance.post<Person | { data: Person }>('/people', payload);
-    return unwrap(response.data);
+    return unwrapApiResponse<Person>(response.data);
   },
 
   updatePerson: async (personId: string, payload: UpdatePersonPayload): Promise<Person> => {
@@ -113,7 +112,7 @@ export const peopleService = {
       `/people/${personId}`,
       payload,
     );
-    return unwrap(response.data);
+    return unwrapApiResponse<Person>(response.data);
   },
 
   deletePerson: async (personId: string): Promise<void> => {
@@ -124,7 +123,7 @@ export const peopleService = {
     const response = await axiosInstance.get<
       PersonContact[] | { data?: PersonContact[]; items?: PersonContact[] }
     >(`/people/${personId}/contacts`);
-    return unwrapList(response.data);
+    return unwrapList<PersonContact>(response.data);
   },
 
   createPersonContact: async (
@@ -135,7 +134,7 @@ export const peopleService = {
       `/people/${personId}/contacts`,
       payload,
     );
-    return unwrap(response.data);
+    return unwrapApiResponse<PersonContact>(response.data);
   },
 
   updatePersonContact: async (
@@ -147,7 +146,7 @@ export const peopleService = {
       `/people/${personId}/contacts/${contactId}`,
       payload,
     );
-    return unwrap(response.data);
+    return unwrapApiResponse<PersonContact>(response.data);
   },
 
   deletePersonContact: async (personId: string, contactId: string): Promise<void> => {
@@ -158,7 +157,7 @@ export const peopleService = {
     const response = await axiosInstance.get<
       PersonSocial[] | { data?: PersonSocial[]; items?: PersonSocial[] }
     >(`/people/${personId}/socials`);
-    return unwrapList(response.data);
+    return unwrapList<PersonSocial>(response.data);
   },
 
   createPersonSocial: async (
@@ -169,7 +168,7 @@ export const peopleService = {
       `/people/${personId}/socials`,
       payload,
     );
-    return unwrap(response.data);
+    return unwrapApiResponse<PersonSocial>(response.data);
   },
 
   updatePersonSocial: async (
@@ -181,7 +180,7 @@ export const peopleService = {
       `/people/${personId}/socials/${socialId}`,
       payload,
     );
-    return unwrap(response.data);
+    return unwrapApiResponse<PersonSocial>(response.data);
   },
 
   deletePersonSocial: async (personId: string, socialId: string): Promise<void> => {

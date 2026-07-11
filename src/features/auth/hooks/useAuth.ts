@@ -8,12 +8,8 @@ import { authService } from '../services/auth.service';
 import type { LoginRequest } from '../services/auth.service';
 import { useAuthStore } from '@/store/authStore';
 import { queryClient } from '@/lib/queryClient';
+import { getApiErrorMessage } from '@/lib/apiResponse';
 import { toast } from 'sonner';
-import type { AxiosError } from 'axios';
-
-interface ApiErrorResponse {
-  message?: string;
-}
 
 export function useAuth() {
   const navigate = useNavigate();
@@ -28,8 +24,8 @@ export function useAuth() {
       toast.success('ورود موفق!');
       navigate('/dashboard');
     },
-    onError: (error: AxiosError<ApiErrorResponse>) => {
-      toast.error(error.response?.data?.message || 'خطا در ورود');
+    onError: (error) => {
+      toast.error(getApiErrorMessage(error, 'خطا در ورود'));
     },
   });
 

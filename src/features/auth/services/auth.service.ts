@@ -3,6 +3,7 @@
 // ============================================================
 
 import axiosInstance from '@/lib/axios';
+import { unwrapApiResponse, type ApiWrappedResponse } from '@/lib/apiResponse';
 import type {
   AuthenticationResponseJSON,
   PublicKeyCredentialRequestOptionsJSON,
@@ -22,6 +23,7 @@ export interface LoginResponse {
     role: string;
     team: string | null;
     permissions: string[];
+    organizationId?: string | null;
   };
 }
 
@@ -37,23 +39,23 @@ export interface PasskeyAuthenticationVerifyRequest {
 
 export const authService = {
   login: async (data: LoginRequest): Promise<LoginResponse> => {
-    const response = await axiosInstance.post<LoginResponse>('/auth/login', data);
-    return response.data;
+    const response = await axiosInstance.post<ApiWrappedResponse<LoginResponse>>('/auth/login', data);
+    return unwrapApiResponse<LoginResponse>(response.data);
   },
   getPasskeyAuthenticationOptions: async (): Promise<PasskeyAuthenticationOptionsResponse> => {
-    const response = await axiosInstance.post<PasskeyAuthenticationOptionsResponse>(
+    const response = await axiosInstance.post<ApiWrappedResponse<PasskeyAuthenticationOptionsResponse>>(
       '/auth/passkeys/authentication/options',
       {}
     );
-    return response.data;
+    return unwrapApiResponse<PasskeyAuthenticationOptionsResponse>(response.data);
   },
   verifyPasskeyAuthentication: async (
     data: PasskeyAuthenticationVerifyRequest
   ): Promise<LoginResponse> => {
-    const response = await axiosInstance.post<LoginResponse>(
+    const response = await axiosInstance.post<ApiWrappedResponse<LoginResponse>>(
       '/auth/passkeys/authentication/verify',
       data
     );
-    return response.data;
+    return unwrapApiResponse<LoginResponse>(response.data);
   },
 };

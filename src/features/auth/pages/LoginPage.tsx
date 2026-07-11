@@ -16,15 +16,11 @@ import { Email, Fingerprint, Lock, Visibility, VisibilityOff } from '@mui/icons-
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import axios from 'axios';
 
+import { getApiErrorMessage } from '@/lib/apiResponse';
 import { useAuth } from '../hooks/useAuth';
 import { usePasskeyLogin } from '../hooks/usePasskeyLogin';
 import { passkeyErrorMessage } from '../utils/passkeyErrors';
-
-interface ApiErrorResponse {
-  message?: string;
-}
 
 const loginSchema = z.object({
   email: z.string().email('ایمیل نامعتبر است'),
@@ -52,11 +48,7 @@ export default function LoginPage() {
       setError(null);
       await login(data);
     } catch (err: unknown) {
-      const message = axios.isAxiosError<ApiErrorResponse>(err)
-        ? err.response?.data?.message
-        : undefined;
-
-      setError(message || 'خطا در ورود به سیستم');
+      setError(getApiErrorMessage(err, 'خطا در ورود به سیستم'));
     }
   };
 

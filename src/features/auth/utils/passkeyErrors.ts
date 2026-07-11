@@ -1,8 +1,5 @@
 import axios from 'axios';
-
-interface ApiErrorResponse {
-  message?: string;
-}
+import { getApiErrorMessage } from '@/lib/apiResponse';
 
 export function passkeyErrorMessage(error: unknown): string {
   if (error instanceof DOMException) {
@@ -27,9 +24,9 @@ export function passkeyErrorMessage(error: unknown): string {
     }
   }
 
-  if (axios.isAxiosError<ApiErrorResponse>(error)) {
+  if (axios.isAxiosError(error)) {
     const status = error.response?.status;
-    const backendMessage = error.response?.data?.message;
+    const backendMessage = getApiErrorMessage(error, '');
 
     if (status === 400 || status === 404 || status === 410) {
       return backendMessage || 'چالش Passkey منقضی شده است. دوباره تلاش کنید.';

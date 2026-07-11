@@ -1,4 +1,5 @@
 import axiosInstance from '@/lib/axios';
+import { unwrapApiResponse } from '@/lib/apiResponse';
 import type {
   ActivityByUserReportItem,
   ActivityReport,
@@ -10,10 +11,6 @@ import type {
   ReportFilters,
   StageDurationReportItem,
 } from '../types/report.types';
-
-function unwrap<T>(payload: T | { data: T }): T {
-  return typeof payload === 'object' && payload !== null && 'data' in payload ? payload.data : payload;
-}
 
 function option(value: unknown): ReportFilterOption | null {
   if (typeof value === 'string' || typeof value === 'number') return { value: String(value), label: String(value) };
@@ -43,7 +40,7 @@ function requestParams(filters: ReportFilters): Record<string, string | string[]
 
 async function getList<T>(url: string, filters: ReportFilters): Promise<T[]> {
   const response = await axiosInstance.get<T[] | { data: T[] } | { items: T[] }>(url, { params: requestParams(filters) });
-  const payload = unwrap(response.data);
+  const payload = unwrapApiResponse<T[] | { items: T[] }>(response.data);
   if (Array.isArray(payload)) return payload;
   return 'items' in payload && Array.isArray(payload.items) ? payload.items : [];
 }
@@ -51,7 +48,7 @@ async function getList<T>(url: string, filters: ReportFilters): Promise<T[]> {
 export const reportsService = {
   getFilterOptions: async (): Promise<ReportFilterOptions> => {
     const response = await axiosInstance.get<Record<string, unknown> | { data: Record<string, unknown> }>('/reports/filter-options');
-    const data = unwrap(response.data);
+    const data = unwrapApiResponse<Record<string, unknown>>(response.data);
     return {
       users: options(data.users),
       teams: options(data.teams),
@@ -65,18 +62,18 @@ export const reportsService = {
   },
   getPipelineSummaryReport: async (filters: ReportFilters = {}): Promise<PipelineSummaryReport> => {
     const response = await axiosInstance.get<PipelineSummaryReport | { data: PipelineSummaryReport }>('/reports/pipeline-summary', { params: requestParams(filters) });
-    const data = unwrap(response.data);
+    const data = unwrapApiResponse<PipelineSummaryReport>(response.data);
     return { ...data, stages: data.stages ?? [], summary: data.summary ?? { totalCompanies: 0, activeCompanies: 0, lostCompanies: 0, lostRate: 0 } };
   },
   getConversionRatesReport: async (filters: ReportFilters = {}): Promise<ConversionRatesReport> => {
     const response = await axiosInstance.get<ConversionRatesReport | { data: ConversionRatesReport }>('/reports/conversion-rates', { params: requestParams(filters) });
-    const data = unwrap(response.data);
+    const data = unwrapApiResponse<ConversionRatesReport>(response.data);
     return { ...data, stages: data.stages ?? [], summary: data.summary ?? { totalCompanies: 0, completedCompanies: 0, overallConversionRate: 0 } };
   },
   getStageDurationsReport: async (filters: ReportFilters = {}): Promise<StageDurationReportItem[]> => getList('/reports/stage-durations', filters),
   getActivityReport: async (filters: ReportFilters = {}): Promise<ActivityReport> => {
     const response = await axiosInstance.get<ActivityReport | { data: ActivityReport }>('/reports/activities', { params: requestParams(filters) });
-    const data = unwrap(response.data);
+    const data = unwrapApiResponse<ActivityReport>(response.data);
     return { ...data, breakdown: data.breakdown ?? [], totalActivities: data.totalActivities ?? 0 };
   },
   getActivitiesByUserReport: (filters: ReportFilters = {}): Promise<ActivityByUserReportItem[]> => getList('/reports/activities/by-user', filters),

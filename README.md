@@ -706,7 +706,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000041
+fix 000001 → fix 000042
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -2489,6 +2489,57 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Production build passed.
 * The non-blocking bundle-size warning remains.
 * Live API testing and real user-switch Passkey testing were not performed.
+
+---
+
+## fix 000042 — Sync frontend API client with standardized backend response contract
+
+**Implemented items:**
+
+* Added centralized API response/error contract helpers in `src/lib/apiResponse.ts`.
+* Added support for both raw legacy responses and standardized `{ success, data, meta }` responses.
+* Added centralized paginated unwrapping that preserves the frontend `{ data, meta }` shape.
+* Updated auth login and Passkey authentication verify to unwrap both direct and standardized response shapes.
+* Updated auth error handling to read standardized `error.message` before legacy `message`.
+* Added optional `organizationId` to the authenticated frontend user type.
+* Updated selected high-impact services to use centralized response helpers, including auth, companies, opportunities, activities, people, reports, passkeys, admin users, admin permissions, catalogs, pipeline config, follow-ups, audit logs, call cards, branches, and social channels.
+* Preserved existing React Query cache clearing on login/logout and Axios 401 handling.
+* Kept API endpoint paths unchanged; Axios baseURL still owns the `/api` prefix.
+
+**Important files:**
+
+* `src/lib/apiResponse.ts`
+* `src/features/auth/services/auth.service.ts`
+* `src/features/auth/hooks/useAuth.ts`
+* `src/features/auth/pages/LoginPage.tsx`
+* `src/features/auth/utils/passkeyErrors.ts`
+* `src/store/authStore.ts`
+* `src/features/companies/services/companies.service.ts`
+* `src/features/opportunities/services/opportunities.service.ts`
+* `src/features/activities/services/activities.service.ts`
+* `src/features/people/services/people.service.ts`
+* `src/features/reports/services/reports.service.ts`
+* `src/features/accountSecurity/services/passkeys.service.ts`
+* `src/features/admin/users/services/adminUsers.service.ts`
+* `src/features/admin/permissions/services/adminPermissions.service.ts`
+* `src/features/catalogs/services/catalogs.service.ts`
+* `src/features/pipelineConfig/services/pipelineConfig.service.ts`
+* `src/features/followUps/services/followUps.service.ts`
+* `src/features/auditLogs/services/auditLogs.service.ts`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* Depends on the standardized backend response/error contract from backend fix 000030.
+* Depends on `organizationId` being present in the authenticated user payload from backend fix 000038 when available.
+* Frontend still accepts legacy raw responses for compatibility during rollout.
+* No live API testing was performed in this fix.
+
+**Verification status:**
+
+* Lint passed without errors.
+* Production build passed.
+* The non-blocking Vite bundle-size warning remains.
 
 ---
 
