@@ -2775,6 +2775,45 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Live authenticated notification API testing was not performed in this fix.
 
 ---
+## fix 000049 — Add organization context and current organization UI
+
+**Implemented items:**
+
+* Added an `organizations` feature module with typed organization models, current-organization API service, React Query hook, Persian display helpers, compact current organization badge, and suspended/archived status alert.
+* Connected `GET /organizations/current` through the shared Axios client and standardized API response helpers while supporting raw and wrapped organization response shapes.
+* Added an organization-aware current query key using `user.organizationId`, a 5-minute stale time, no polling, and no global cache clearing from the organization hook.
+* Gated current organization fetching behind authenticated `organization:view` access so users without access do not call `/organizations/current`.
+* Added the current organization badge to the dashboard app navbar near the notification/account area without removing notification bell, profile, logout, sidebar, or layout behavior.
+* Added a non-blocking authenticated-layout warning banner for `SUSPENDED` and `ARCHIVED` organizations; frontend routing is not blocked and users are not logged out due to organization status.
+* Reviewed auth compatibility: `AuthUser` and login/passkey login response typing already include optional `organizationId`, and login/passkey login still clear React Query cache before storing the new user.
+* Admin organization management and organization switching are not implemented in this fix.
+
+**Important files:**
+
+* `src/features/organizations/`
+* `src/components/dashboard/AppNavbar.tsx`
+* `src/layouts/DashboardLayout.tsx`
+* `src/store/authStore.ts`
+* `src/features/auth/services/auth.service.ts`
+* `src/features/auth/hooks/useAuth.ts`
+* `src/features/auth/hooks/usePasskeyLogin.ts`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* Depends on backend fix `000038` for tenant/organization foundation and `GET /organizations/current`.
+* Depends on backend fix `000030` standardized response contract.
+* Depends on frontend fix `000042` auth/user payload compatibility and shared API response helpers.
+* Backend remains the source of truth for organization authorization, status enforcement, and tenant scoping.
+
+**Verification status:**
+
+* Lint passed without errors.
+* Production build passed.
+* The non-blocking Vite bundle-size warning remains.
+* Live authenticated organization API testing was not performed in this fix.
+
+---
 **Built with ❤️ for sales team**
 
 ---

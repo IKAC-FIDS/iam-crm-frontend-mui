@@ -11,6 +11,7 @@ import { AccountCircle, Logout, Menu as MenuIcon, Settings } from '@mui/icons-ma
 import { useAuthStore } from '@/store/authStore';
 import { useNavigate } from 'react-router-dom';
 import NotificationBell from '@/features/notifications/components/NotificationBell';
+import CurrentOrganizationBadge from '@/features/organizations/components/CurrentOrganizationBadge';
 
 interface AppNavbarProps {
   onOpenNavigation: () => void;
@@ -50,7 +51,8 @@ export default function AppNavbar({ onOpenNavigation }: AppNavbarProps) {
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           IAM CRM
         </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, sm: 1 } }}>
+          <CurrentOrganizationBadge />
           <NotificationBell />
           <IconButton onClick={handleMenu} color="inherit">
             <Avatar sx={{ width: 32, height: 32, bgcolor: 'secondary.main' }}>

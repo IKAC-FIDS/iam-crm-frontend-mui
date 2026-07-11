@@ -4,6 +4,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Toolbar from '@mui/material/Toolbar';
 import AppNavbar from '@/components/dashboard/AppNavbar';
 import SideMenu from '@/components/dashboard/SideMenu';
+import OrganizationStatusAlert from '@/features/organizations/components/OrganizationStatusAlert';
 import { Outlet } from 'react-router-dom';
 
 export default function DashboardLayout() {
@@ -29,6 +30,7 @@ export default function DashboardLayout() {
       >
         <Toolbar />
         <Box sx={{ p: { xs: 2, sm: 3 } }}>
+          <OrganizationStatusAlert />
           <Outlet />
         </Box>
       </Box>
