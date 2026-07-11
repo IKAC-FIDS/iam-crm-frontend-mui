@@ -706,7 +706,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000042
+fix 000001 → fix 000043
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -2534,6 +2534,47 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Depends on `organizationId` being present in the authenticated user payload from backend fix 000038 when available.
 * Frontend still accepts legacy raw responses for compatibility during rollout.
 * No live API testing was performed in this fix.
+
+**Verification status:**
+
+* Lint passed without errors.
+* Production build passed.
+* The non-blocking Vite bundle-size warning remains.
+
+---
+
+## fix 000043 — Add dedicated opportunity detail page and opportunity navigation
+
+**Implemented items:**
+
+* Added protected `/opportunities` and `/opportunities/:opportunityId` routes.
+* Added a global opportunities list page with server-side pagination, search, priority filter, backend-driven stage filter, archive filter, loading/error/empty states, and row actions.
+* Added a dedicated opportunity detail page with loading/error states, back navigation state, summary fields, company link, edit/stage/owner/archive actions, and an overview tab.
+* Added placeholder tabs for line items, commercial documents, payments, tasks, attachments, and activities without fake data or CRUD.
+* Extended opportunity types for optional backend-expanded `lineItems`, `commercialDocuments`, `payments`, `tasks`, and `_count`.
+* Added `useOpportunity` detail query and improved opportunity mutation invalidation to include list, detail, company opportunity list, pipeline, company detail, and reports caches.
+* Added a sidebar entry for `فرصت‌ها`.
+* Added “مشاهده جزئیات” navigation from the company opportunities tab.
+* Added opportunity detail navigation from pipeline opportunity cards while preserving company navigation and stage-change behavior.
+
+**Important files:**
+
+* `src/routes/index.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+* `src/features/opportunities/pages/OpportunitiesPage.tsx`
+* `src/features/opportunities/pages/OpportunityDetailsPage.tsx`
+* `src/features/opportunities/hooks/useOpportunities.ts`
+* `src/features/opportunities/types/opportunity.types.ts`
+* `src/features/opportunities/components/CompanyOpportunitiesTab.tsx`
+* `src/features/opportunities/components/OpportunityCard.tsx`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* Depends on existing backend opportunity APIs for list, detail, create/update, stage change, owner change, archive, and restore.
+* Uses the standardized backend response contract from backend fix 000030 through the existing frontend API helpers.
+* `lineItems`, `commercialDocuments`, `payments`, and `tasks` may be expanded by the backend, but full UI and CRUD for those relations are deferred to later fixes.
+* Live API testing was not performed in this fix.
 
 **Verification status:**
 

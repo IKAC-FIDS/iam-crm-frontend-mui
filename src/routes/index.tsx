@@ -16,6 +16,8 @@ import AdminPipelinePage from '@/features/pipelineConfig/pages/AdminPipelinePage
 import PeopleDirectoryPage from '@/features/people/pages/PeopleDirectoryPage';
 import AuditLogsPage from '@/features/auditLogs/pages/AuditLogsPage';
 import AccountSecurityPage from '@/features/accountSecurity/pages/AccountSecurityPage';
+import OpportunitiesPage from '@/features/opportunities/pages/OpportunitiesPage';
+import OpportunityDetailsPage from '@/features/opportunities/pages/OpportunityDetailsPage';
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +32,8 @@ export const router = createBrowserRouter([
           { path: 'companies', element: <CompaniesPage /> },
           { path: 'companies/:companyId', element: <CompanyDetailsPage /> },
           { path: 'people', element: <PeopleDirectoryPage /> },
+          { path: 'opportunities', element: <OpportunitiesPage /> },
+          { path: 'opportunities/:opportunityId', element: <OpportunityDetailsPage /> },
           { path: 'pipeline', element: <PipelinePage /> },
           { path: 'follow-ups', element: <FollowUpsPage /> },
           { path: 'reports', element: <ReportsPage /> },

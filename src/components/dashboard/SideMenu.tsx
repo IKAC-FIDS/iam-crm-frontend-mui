@@ -1,3 +1,4 @@
+import { useLocation, useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
@@ -6,19 +7,20 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import BusinessIcon from '@mui/icons-material/Business';
-import ViewKanbanIcon from '@mui/icons-material/ViewKanban';
-import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import AssessmentIcon from '@mui/icons-material/Assessment';
-import PeopleIcon from '@mui/icons-material/People';
-import SecurityIcon from '@mui/icons-material/Security';
+import BusinessIcon from '@mui/icons-material/Business';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import HistoryIcon from '@mui/icons-material/History';
 import KeyIcon from '@mui/icons-material/Key';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
-import HistoryIcon from '@mui/icons-material/History';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import PeopleIcon from '@mui/icons-material/People';
+import SecurityIcon from '@mui/icons-material/Security';
+import ViewKanbanIcon from '@mui/icons-material/ViewKanban';
+import WorkIcon from '@mui/icons-material/Work';
+
 import { can, canAny } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
-import { useNavigate, useLocation } from 'react-router-dom';
 
 const drawerWidth = 260;
 
@@ -37,6 +39,7 @@ const menuItems = [
   { text: 'داشبورد', icon: <DashboardIcon />, path: '/dashboard' },
   { text: 'شرکت‌ها', icon: <BusinessIcon />, path: '/companies' },
   { text: 'افراد', icon: <PeopleIcon />, path: '/people', peopleOnly: true },
+  { text: 'فرصت‌ها', icon: <WorkIcon />, path: '/opportunities', permission: 'opportunity:view', fallbackRoles: ['ADMIN', 'MANAGER', 'REP', 'BOARDS'] },
   { text: 'پایپ‌لاین', icon: <ViewKanbanIcon />, path: '/pipeline' },
   { text: 'پیگیری‌ها', icon: <NotificationsActiveIcon />, path: '/follow-ups' },
   { text: 'گزارش‌ها', icon: <AssessmentIcon />, path: '/reports', reportOnly: true },
@@ -81,7 +84,7 @@ export default function SideMenu({ mobileOpen, onClose }: SideMenuProps) {
     (item) =>
       (!item.reportOnly || canViewReports) &&
       (!item.peopleOnly || canViewPeople) &&
-      (!item.permission || can(user, item.permission, ['ADMIN'])) &&
+      (!item.permission || can(user, item.permission, item.fallbackRoles ?? ['ADMIN'])) &&
       (!item.permissions || canAny(user, item.permissions, ['ADMIN']))
   );
 

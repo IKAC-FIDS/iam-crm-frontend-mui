@@ -54,6 +54,20 @@ export default function OpportunityCard({
             <Button
               size="small"
               onClick={() =>
+                navigate(`/opportunities/${opportunity.id}`, {
+                  state: {
+                    backTo: '/pipeline',
+                    backLabel: 'بازگشت به پایپ‌لاین',
+                  },
+                })
+              }
+            >
+              مشاهده
+            </Button>
+
+            <Button
+              size="small"
+              onClick={() =>
                 navigate(`/companies/${opportunity.companyId}`, {
                   state: {
                     backTo: '/pipeline',

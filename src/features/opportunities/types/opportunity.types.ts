@@ -8,6 +8,16 @@ export interface Opportunity {
   stageId: string; stage: OpportunityStage; priority: Priority | string;
   estimatedValue?: number | string | null; expectedCloseDate?: string | null; source?: string | null;
   archivedAt?: string | null; archiveReason?: string | null; createdAt: string; updatedAt: string;
+  lineItems?: unknown[];
+  commercialDocuments?: unknown[];
+  payments?: unknown[];
+  tasks?: unknown[];
+  _count?: {
+    lineItems?: number;
+    commercialDocuments?: number;
+    payments?: number;
+    tasks?: number;
+  };
 }
 export interface OpportunityListParams { page: number; limit: number; search?: string; companyId?: string; ownerId?: string; team?: string; stageId?: string; priority?: Priority; source?: string; includeArchived?: boolean; archivedOnly?: boolean }
 export interface OpportunityPayload { companyId: string; title: string; description?: string; ownerId?: string; stageId?: string; priority?: Priority; estimatedValue?: number; expectedCloseDate?: string; source?: string }
