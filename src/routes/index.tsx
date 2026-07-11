@@ -19,6 +19,7 @@ import AccountSecurityPage from '@/features/accountSecurity/pages/AccountSecurit
 import OpportunitiesPage from '@/features/opportunities/pages/OpportunitiesPage';
 import OpportunityDetailsPage from '@/features/opportunities/pages/OpportunityDetailsPage';
 import TasksPage from '@/features/tasks/pages/TasksPage';
+import NotificationsPage from '@/features/notifications/pages/NotificationsPage';
 
 export const router = createBrowserRouter([
   {
@@ -36,6 +37,7 @@ export const router = createBrowserRouter([
           { path: 'opportunities', element: <OpportunitiesPage /> },
           { path: 'opportunities/:opportunityId', element: <OpportunityDetailsPage /> },
           { path: 'tasks', element: <TasksPage /> },
+          { path: 'notifications', element: <NotificationsPage /> },
           { path: 'pipeline', element: <PipelinePage /> },
           { path: 'follow-ups', element: <FollowUpsPage /> },
           { path: 'reports', element: <ReportsPage /> },

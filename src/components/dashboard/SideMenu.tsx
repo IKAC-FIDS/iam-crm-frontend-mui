@@ -14,6 +14,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import HistoryIcon from '@mui/icons-material/History';
 import KeyIcon from '@mui/icons-material/Key';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import PeopleIcon from '@mui/icons-material/People';
 import SecurityIcon from '@mui/icons-material/Security';
@@ -42,6 +43,7 @@ const menuItems = [
   { text: 'افراد', icon: <PeopleIcon />, path: '/people', peopleOnly: true },
   { text: 'فرصت‌ها', icon: <WorkIcon />, path: '/opportunities', permission: 'opportunity:view', fallbackRoles: ['ADMIN', 'MANAGER', 'REP', 'BOARDS'] },
   { text: 'کارها', icon: <AssignmentIcon />, path: '/tasks', permission: 'task:view', fallbackRoles: ['ADMIN', 'MANAGER', 'REP', 'BOARDS'] },
+  { text: 'اعلان‌ها', icon: <NotificationsIcon />, path: '/notifications', permission: 'notification:view', fallbackRoles: ['ADMIN'] },
   { text: 'پایپ‌لاین', icon: <ViewKanbanIcon />, path: '/pipeline' },
   { text: 'پیگیری‌ها', icon: <NotificationsActiveIcon />, path: '/follow-ups' },
   { text: 'گزارش‌ها', icon: <AssessmentIcon />, path: '/reports', reportOnly: true },

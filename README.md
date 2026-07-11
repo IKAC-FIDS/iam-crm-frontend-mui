@@ -2737,6 +2737,44 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Live authenticated task API testing was not performed in this fix.
 
 ---
+## fix 000048 — Add notification center UI
+
+**Implemented items:**
+
+* Added a `notifications` feature module with typed notification models, API service, React Query hooks, Persian display helpers, safe action URL navigation, notification bell, recent menu, full notification center page, table, send dialog, and delete confirmation.
+* Connected notification listing, unread count, detail, create, mark read/unread, read-all, archive/unarchive, and delete flows to `/notifications` APIs using the shared Axios client and standardized response helpers.
+* Added unread-count polling every 60 seconds and mutation invalidation for notification lists, unread count, and affected notification details. No WebSocket, SSE, service worker push, or browser push was added.
+* Added protected `/notifications` route, sidebar item gated by `notification:view`, and app header bell/menu gated by `notification:view`.
+* Added server-side paginated notification listing with search, status, type, priority, entity type, and archive filters.
+* Added permission gates for `notification:view`, `notification:manage`, and `notification:send`; view-only users can open notifications but cannot mark, archive, unarchive, delete, or send.
+* Manual notification sending uses the existing real `/users/owner-options` user source through existing hooks. No fake recipients were added.
+* Safe action URL handling only routes internal app paths or same-origin URLs that resolve to known frontend route prefixes; unsafe external URLs are not opened automatically.
+
+**Important files:**
+
+* `src/features/notifications/`
+* `src/routes/index.tsx`
+* `src/components/dashboard/AppNavbar.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+* `src/components/dashboard/Header.tsx`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* Depends on backend fix `000037` for notification center APIs.
+* Depends on backend fix `000036` because task management can generate task notifications.
+* Depends on backend fix `000030` standardized response contract and the frontend API response helpers from fix `000042`.
+* Links to frontend fix `000047` task management UI when notification `actionUrl` points at task routes.
+* Backend remains the source of truth for recipient scoping, authorization, notification creation rules, and archive/read state.
+
+**Verification status:**
+
+* Lint passed without errors.
+* Production build passed.
+* The non-blocking Vite bundle-size warning remains.
+* Live authenticated notification API testing was not performed in this fix.
+
+---
 **Built with ❤️ for sales team**
 
 ---

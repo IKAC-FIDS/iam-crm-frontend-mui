@@ -10,6 +10,7 @@ import Box from '@mui/material/Box';
 import { AccountCircle, Logout, Menu as MenuIcon, Settings } from '@mui/icons-material';
 import { useAuthStore } from '@/store/authStore';
 import { useNavigate } from 'react-router-dom';
+import NotificationBell from '@/features/notifications/components/NotificationBell';
 
 interface AppNavbarProps {
   onOpenNavigation: () => void;
@@ -49,7 +50,8 @@ export default function AppNavbar({ onOpenNavigation }: AppNavbarProps) {
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           IAM CRM
         </Typography>
-        <Box>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <NotificationBell />
           <IconButton onClick={handleMenu} color="inherit">
             <Avatar sx={{ width: 32, height: 32, bgcolor: 'secondary.main' }}>
               {user?.fullName?.charAt(0) || 'U'}

@@ -7,6 +7,7 @@ const breadcrumbMap: Record<string, string> = {
   dashboard: 'داشبورد',
   companies: 'شرکت‌ها',
   people: 'اشخاص',
+  notifications: 'اعلان‌ها',
   activities: 'فعالیت‌ها',
   'call-card': 'Call Card',
   import: 'واردات SAM',
