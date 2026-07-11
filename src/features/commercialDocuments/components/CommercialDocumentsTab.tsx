@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Link, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
 import { DataGrid, type GridColDef, type GridPaginationModel, type GridRenderCellParams } from '@mui/x-data-grid';
+import AttachmentsTab from '@/features/attachments/components/AttachmentsTab';
 import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
 import { formatDateTime } from '@/features/companies/utils/companyDisplay';
@@ -29,6 +30,7 @@ export default function CommercialDocumentsTab({ opportunityId, companyId }: { o
   const [editing, setEditing] = useState<CommercialDocument | null | undefined>(undefined);
   const [changing, setChanging] = useState<CommercialDocument | null>(null);
   const [deleting, setDeleting] = useState<CommercialDocument | null>(null);
+  const [attachments, setAttachments] = useState<CommercialDocument | null>(null);
 
   const confirmDelete = async () => {
     if (!deleting) return;
@@ -56,12 +58,13 @@ export default function CommercialDocumentsTab({ opportunityId, companyId }: { o
     {
       field: 'actions',
       headerName: 'عملیات',
-      minWidth: 250,
+      minWidth: 330,
       sortable: false,
       renderCell: ({ row }: GridRenderCellParams<CommercialDocument>) => (
         <Stack direction="row" spacing={1}>
           <Button size="small" disabled={!canManage} onClick={() => setEditing(row)}>ویرایش</Button>
           <Button size="small" disabled={!canManage} onClick={() => setChanging(row)}>وضعیت</Button>
+          <Button size="small" onClick={() => setAttachments(row)}>پیوست‌ها</Button>
           <Button size="small" color="error" disabled={!canManage || remove.isPending} onClick={() => setDeleting(row)}>حذف</Button>
         </Stack>
       ),
@@ -87,6 +90,7 @@ export default function CommercialDocumentsTab({ opportunityId, companyId }: { o
       </Paper>
       {editing !== undefined && <CommercialDocumentFormDialog key={editing?.id ?? 'new'} opportunityId={opportunityId} companyId={companyId} document={editing} open onClose={() => setEditing(undefined)} />}
       {changing && <ChangeCommercialDocumentStatusDialog key={changing.id} opportunityId={opportunityId} companyId={companyId} document={changing} open onClose={() => setChanging(null)} />}
+      <Dialog open={Boolean(attachments)} onClose={() => setAttachments(null)} fullWidth maxWidth="md"><DialogTitle>پیوست‌های سند تجاری</DialogTitle><DialogContent>{attachments && <AttachmentsTab entityType="COMMERCIAL_DOCUMENT" entityId={attachments.id} title={attachments.title} emptyMessage="هنوز پیوستی برای این سند تجاری ثبت نشده است." />}</DialogContent><DialogActions><Button onClick={() => setAttachments(null)}>بستن</Button></DialogActions></Dialog>
       <Dialog open={Boolean(deleting)} onClose={() => !remove.isPending && setDeleting(null)}><DialogTitle>حذف سند تجاری</DialogTitle><DialogContent>آیا از حذف «{deleting?.title ?? ''}» مطمئن هستید؟</DialogContent><DialogActions><Button onClick={() => setDeleting(null)} disabled={remove.isPending}>انصراف</Button><Button color="error" variant="contained" onClick={confirmDelete} disabled={remove.isPending}>حذف</Button></DialogActions></Dialog>
     </Stack>
   );

@@ -5,6 +5,7 @@ import { Alert, Box, Button, Chip, Divider, Grid, Link, Paper, Stack, Tab, Tabs,
 
 import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
+import AttachmentsTab from '@/features/attachments/components/AttachmentsTab';
 import { formatDateTime, getPriorityLabel } from '@/features/companies/utils/companyDisplay';
 import CommercialDocumentsTab from '@/features/commercialDocuments/components/CommercialDocumentsTab';
 import OpportunityLineItemsTab from '@/features/opportunityLineItems/components/OpportunityLineItemsTab';
@@ -129,7 +130,7 @@ export default function OpportunityDetailsPage() {
       {tab === 'documents' && <CommercialDocumentsTab opportunityId={opportunity.id} companyId={opportunity.companyId} />}
       {tab === 'payments' && <PaymentsTab opportunityId={opportunity.id} companyId={opportunity.companyId} />}
       {tab === 'tasks' && <PlaceholderCard text={placeholder.tasks} />}
-      {tab === 'attachments' && <PlaceholderCard text={placeholder.attachments} />}
+      {tab === 'attachments' && <AttachmentsTab entityType="OPPORTUNITY" entityId={opportunity.id} title="پیوست‌های فرصت" emptyMessage="هنوز پیوستی برای این فرصت ثبت نشده است." />}
       {tab === 'activities' && <PlaceholderCard text={placeholder.activities} />}
       {formOpen && <OpportunityFormDialog companyId={opportunity.companyId} opportunity={opportunity} open onClose={() => setFormOpen(false)} />}
       {stageOpen && <ChangeOpportunityStageDialog opportunity={opportunity} open onClose={() => setStageOpen(false)} />}

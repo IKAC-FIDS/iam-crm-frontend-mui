@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
 import { DataGrid, type GridColDef, type GridPaginationModel, type GridRenderCellParams } from '@mui/x-data-grid';
+import AttachmentsTab from '@/features/attachments/components/AttachmentsTab';
 import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
 import { formatDateTime } from '@/features/companies/utils/companyDisplay';
@@ -34,6 +35,7 @@ export default function PaymentsTab({ opportunityId, companyId }: { opportunityI
   const [markingPaid, setMarkingPaid] = useState<OpportunityPayment | null>(null);
   const [cancelling, setCancelling] = useState<OpportunityPayment | null>(null);
   const [deleting, setDeleting] = useState<OpportunityPayment | null>(null);
+  const [attachments, setAttachments] = useState<OpportunityPayment | null>(null);
 
   const confirmDelete = async () => {
     if (!deleting) return;
@@ -58,13 +60,14 @@ export default function PaymentsTab({ opportunityId, companyId }: { opportunityI
     {
       field: 'actions',
       headerName: 'عملیات',
-      minWidth: 330,
+      minWidth: 400,
       sortable: false,
       renderCell: ({ row }: GridRenderCellParams<OpportunityPayment>) => (
         <Stack direction="row" spacing={1}>
           <Button size="small" disabled={!canManage} onClick={() => setEditing(row)}>ویرایش</Button>
           <Button size="small" disabled={!canManage || row.status === 'PAID' || row.status === 'CANCELLED'} onClick={() => setMarkingPaid(row)}>پرداخت شد</Button>
           <Button size="small" color="warning" disabled={!canManage || row.status === 'CANCELLED'} onClick={() => setCancelling(row)}>لغو</Button>
+          <Button size="small" onClick={() => setAttachments(row)}>پیوست‌ها</Button>
           <Button size="small" color="error" disabled={!canManage || remove.isPending} onClick={() => setDeleting(row)}>حذف</Button>
         </Stack>
       ),
@@ -89,6 +92,7 @@ export default function PaymentsTab({ opportunityId, companyId }: { opportunityI
       {editing !== undefined && <PaymentFormDialog key={editing?.id ?? 'new'} opportunityId={opportunityId} companyId={companyId} payment={editing} open onClose={() => setEditing(undefined)} />}
       {markingPaid && <MarkPaymentPaidDialog key={markingPaid.id} opportunityId={opportunityId} companyId={companyId} payment={markingPaid} open onClose={() => setMarkingPaid(null)} />}
       {cancelling && <CancelPaymentDialog key={cancelling.id} opportunityId={opportunityId} companyId={companyId} payment={cancelling} open onClose={() => setCancelling(null)} />}
+      <Dialog open={Boolean(attachments)} onClose={() => setAttachments(null)} fullWidth maxWidth="md"><DialogTitle>پیوست‌های پرداخت</DialogTitle><DialogContent>{attachments && <AttachmentsTab entityType="PAYMENT" entityId={attachments.id} title="پیوست‌های پرداخت" emptyMessage="هنوز پیوستی برای این پرداخت ثبت نشده است." />}</DialogContent><DialogActions><Button onClick={() => setAttachments(null)}>بستن</Button></DialogActions></Dialog>
       <Dialog open={Boolean(deleting)} onClose={() => !remove.isPending && setDeleting(null)}><DialogTitle>حذف پرداخت</DialogTitle><DialogContent>آیا از حذف این پرداخت مطمئن هستید؟</DialogContent><DialogActions><Button onClick={() => setDeleting(null)} disabled={remove.isPending}>انصراف</Button><Button color="error" variant="contained" onClick={confirmDelete} disabled={remove.isPending}>حذف</Button></DialogActions></Dialog>
     </Stack>
   );

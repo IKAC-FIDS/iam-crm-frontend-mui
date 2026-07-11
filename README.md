@@ -706,7 +706,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000045
+fix 000001 → fix 000046
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -2657,6 +2657,45 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Production build passed.
 * The non-blocking Vite bundle-size warning remains.
 * Live authenticated API testing was not performed in this fix.
+
+---
+
+## fix 000046 — Add secure attachment UI
+
+**Implemented items:**
+
+* Added an `attachments` feature module with typed attachment models, API service, React Query hooks, display utilities, upload dialog, delete confirmation dialog, and reusable `AttachmentsTab`.
+* Connected attachment listing, upload, protected download, and delete flows to `/attachments` APIs using the shared authenticated Axios client.
+* Upload uses `multipart/form-data` through `FormData` and explicitly avoids forcing a JSON content type so the browser can set the multipart boundary.
+* Download always uses the protected backend `/attachments/:id/download` endpoint with `responseType: 'blob'`; no MinIO/local storage paths or public URLs are exposed.
+* Replaced the Opportunity Details `پیوست‌ها` placeholder with real opportunity attachments for `entityType="OPPORTUNITY"`.
+* Added `پیوست‌ها` row actions for commercial documents and payments, opening dialog-scoped attachment lists for `COMMERCIAL_DOCUMENT` and `PAYMENT`.
+* Added permission gates for `attachment:view` and `attachment:manage`; users without manage access can view/download but cannot upload/delete.
+* Added file-size, MIME label, safe filename, and content-disposition filename helpers. Client-side size/MIME messaging is only a hint; backend validation remains authoritative.
+* No task management UI or notification center was added in this fix.
+
+**Important files:**
+
+* `src/features/attachments/`
+* `src/features/opportunities/pages/OpportunityDetailsPage.tsx`
+* `src/features/commercialDocuments/components/CommercialDocumentsTab.tsx`
+* `src/features/payments/components/PaymentsTab.tsx`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* Depends on backend fix `000035` for secure attachment list, upload, protected download, and delete APIs.
+* Depends on backend fix `000030` standardized response contract and the frontend API response helpers from fix `000042`.
+* Depends on frontend fix `000043` for the dedicated Opportunity Details page.
+* Integrates with frontend fix `000045` commercial document and payment UI.
+* Backend DTOs were checked from the local backend repository: upload fields are `file`, `entityType`, `entityId`, and optional `description`; list requires `entityType` and `entityId`.
+
+**Verification status:**
+
+* Lint passed without errors.
+* Production build passed.
+* The non-blocking Vite bundle-size warning remains.
+* Live authenticated file upload/download testing was not performed in this fix.
 
 ---
 
