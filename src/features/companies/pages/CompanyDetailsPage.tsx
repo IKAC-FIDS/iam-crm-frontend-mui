@@ -18,7 +18,6 @@ import Header from '@/components/dashboard/Header';
 import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
 import ChangeCompanyPriorityDialog from '../components/ChangeCompanyPriorityDialog';
-import ChangeCompanyStageDialog from '../components/ChangeCompanyStageDialog';
 import EditCompanyDialog from '../components/EditCompanyDialog';
 import ChangeCompanyOwnerDialog from '../components/ChangeCompanyOwnerDialog';
 import ArchiveCompanyDialog from '../components/ArchiveCompanyDialog';
@@ -35,7 +34,6 @@ import {
   formatDateTime,
   getOwnershipLabel,
   getPriorityLabel,
-  getStageLabel,
 } from '../utils/companyDisplay';
 
 const detailTabs = [
@@ -82,13 +80,11 @@ export default function CompanyDetailsPage() {
   const { data: company, isLoading, isError } = useCompany(companyId);
   const [activeTab, setActiveTab] = useState<DetailTab>('overview');
   const [editOpen, setEditOpen] = useState(false);
-  const [stageOpen, setStageOpen] = useState(false);
   const [priorityOpen, setPriorityOpen] = useState(false);
   const [ownerOpen, setOwnerOpen] = useState(false);
   const [archiveOpen, setArchiveOpen] = useState(false);
   const [restoreOpen, setRestoreOpen] = useState(false);
   const canEditCompany = can(user, 'company:update', ['ADMIN', 'MANAGER', 'REP']);
-  const canChangeStage = can(user, 'company:change-stage', ['ADMIN', 'MANAGER', 'REP']);
   const canAssignOwner = can(user, 'company:change-owner', ['ADMIN', 'MANAGER']);
   const canArchiveCompany = can(user, 'company:archive', ['ADMIN', 'MANAGER']);
 
@@ -109,7 +105,6 @@ export default function CompanyDetailsPage() {
     );
   }
 
-  const stageLabel = getStageLabel(company.stage);
   const priorityLabel = getPriorityLabel(company.priority);
   const archived = isCompanyArchived(company);
 
@@ -129,7 +124,6 @@ export default function CompanyDetailsPage() {
               {company.brandName || 'بدون نام برند'}
             </Typography>
             <Stack direction="row" spacing={1} sx={{ mt: 1.5, flexWrap: 'wrap', gap: 1 }}>
-              <Chip label={stageLabel} color="primary" variant="outlined" />
               <Chip label={priorityLabel} color="secondary" variant="outlined" />
               <Chip label={`مالک: ${company.owner?.fullName || 'بدون مالک'}`} variant="outlined" />
               {archived && <Chip label="بایگانی‌شده" color="warning" />}
@@ -168,11 +162,6 @@ export default function CompanyDetailsPage() {
                   ویرایش اطلاعات شرکت
                 </Button>
               )}
-              {canChangeStage && !archived && (
-                <Button variant="outlined" onClick={() => setStageOpen(true)}>
-                  تغییر مرحله
-                </Button>
-              )}
               {canAssignOwner && !archived && (
                 <Button variant="outlined" onClick={() => setOwnerOpen(true)}>
                   تخصیص مالک
@@ -193,7 +182,6 @@ export default function CompanyDetailsPage() {
               <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="نام برند" value={company.brandName} /></Grid>
               <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="صنعت" value={company.industry} /></Grid>
               <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="نوع مالکیت" value={getOwnershipLabel(company.ownership)} /></Grid>
-              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="مرحله فروش" value={stageLabel} /></Grid>
               <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="اولویت" value={priorityLabel} /></Grid>
               <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="مالک" value={company.owner?.fullName} /></Grid>
               <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="تیم مالک" value={getTeamName(company.owner?.team)} /></Grid>
@@ -205,6 +193,16 @@ export default function CompanyDetailsPage() {
               {archived && <><Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="تاریخ بایگانی" value={formatDateTime(company.archivedAt)} /></Grid><Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="دلیل بایگانی" value={company.archiveReason} /></Grid></>}
             </Grid>
           </Paper>
+          <Alert
+            severity="info"
+            action={
+              <Button color="inherit" size="small" onClick={() => setActiveTab('opportunities')}>
+                مشاهده فرصت‌های فروش
+              </Button>
+            }
+          >
+            مرحله فروش از طریق فرصت‌های فروش این شرکت مدیریت می‌شود.
+          </Alert>
         </Stack>
       ) : activeTab === 'people' ? (
         <PeopleTab companyId={company.id} />
@@ -244,15 +242,6 @@ export default function CompanyDetailsPage() {
           onOpenChange={setOwnerOpen}
         />
       )}
-      {canChangeStage && (
-        <ChangeCompanyStageDialog
-          companyId={company.id}
-          currentStage={company.stage}
-          open={stageOpen}
-          onOpenChange={setStageOpen}
-        />
-      )}
-
       {canEditCompany && (
         <ChangeCompanyPriorityDialog
           companyId={company.id}

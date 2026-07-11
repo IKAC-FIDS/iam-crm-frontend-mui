@@ -1,23 +1,3 @@
-export const COMPANY_STAGES = [
-  'LEAD',
-  'CONTACTED',
-  'INTERESTED',
-  'QUALIFIED',
-  'NEEDS_ASSESSMENT',
-  'PENDING_PRE_INVOICE_APPROVAL',
-  'POC_PILOT_SCHEDULED',
-  'POC_PILOT_IN_PROGRESS',
-  'PENDING_POC_PILOT_APPROVAL',
-  'PENDING_PAYMENT_INVOICE_APPROVAL',
-  'INSTALLATION_SCHEDULED',
-  'INSTALLATION_IN_PROGRESS',
-  'PENDING_CUSTOMER_ACCEPTANCE',
-  'DONE',
-  'ON_HOLD',
-  'LOST',
-  'NO_RESPONSE',
-] as const;
-
 export const COMPANY_PRIORITIES = ['LOW', 'MEDIUM', 'HIGH', 'STRATEGIC'] as const;
 export const COMPANY_OWNERSHIPS = [
   'PRIVATE',
@@ -29,33 +9,11 @@ export const COMPANY_OWNERSHIPS = [
 ] as const;
 export const COMPANY_PAGE_SIZES = [5, 10, 20] as const;
 
-export type PipelineStage = (typeof COMPANY_STAGES)[number];
 export type Priority = (typeof COMPANY_PRIORITIES)[number];
-export type CompanyStage = PipelineStage;
 export type CompanyPriority = Priority;
 export type CompanyOwnership = (typeof COMPANY_OWNERSHIPS)[number];
 export type CompanyPageSize = (typeof COMPANY_PAGE_SIZES)[number];
 export type CompanyArchiveStatus = 'ACTIVE' | 'ARCHIVED' | 'ALL';
-
-export const COMPANY_STAGE_OPTIONS: readonly { value: PipelineStage; label: string }[] = [
-  { value: 'LEAD', label: 'سرنخ' },
-  { value: 'CONTACTED', label: 'تماس گرفته شده' },
-  { value: 'INTERESTED', label: 'علاقه‌مند' },
-  { value: 'QUALIFIED', label: 'واجد شرایط' },
-  { value: 'NEEDS_ASSESSMENT', label: 'نیازسنجی' },
-  { value: 'PENDING_PRE_INVOICE_APPROVAL', label: 'در انتظار تأیید پیش‌فاکتور' },
-  { value: 'POC_PILOT_SCHEDULED', label: 'پایلوت زمان‌بندی شده' },
-  { value: 'POC_PILOT_IN_PROGRESS', label: 'پایلوت در حال انجام' },
-  { value: 'PENDING_POC_PILOT_APPROVAL', label: 'در انتظار تأیید پایلوت' },
-  { value: 'PENDING_PAYMENT_INVOICE_APPROVAL', label: 'در انتظار تأیید فاکتور پرداخت' },
-  { value: 'INSTALLATION_SCHEDULED', label: 'نصب زمان‌بندی شده' },
-  { value: 'INSTALLATION_IN_PROGRESS', label: 'نصب در حال انجام' },
-  { value: 'PENDING_CUSTOMER_ACCEPTANCE', label: 'در انتظار پذیرش مشتری' },
-  { value: 'DONE', label: 'انجام شده' },
-  { value: 'ON_HOLD', label: 'متوقف شده' },
-  { value: 'LOST', label: 'از دست رفته' },
-  { value: 'NO_RESPONSE', label: 'بدون پاسخ' },
-];
 
 export const COMPANY_PRIORITY_OPTIONS: readonly { value: Priority; label: string }[] = [
   { value: 'LOW', label: 'کم' },
@@ -90,7 +48,8 @@ export interface Company {
   brandName?: string | null;
   industry?: string | null;
   ownership?: CompanyOwnership | null;
-  stage?: PipelineStage | null;
+  /** Legacy backend field kept for response compatibility. Sales pipeline stage belongs to Opportunity. */
+  stage?: string | null;
   priority?: Priority | null;
   ownerId?: string | null;
   owner?: CompanyOwner | null;
@@ -117,7 +76,6 @@ export type CompanyListItem = Pick<
   | 'legalName'
   | 'brandName'
   | 'industry'
-  | 'stage'
   | 'priority'
   | 'owner'
   | 'headOfficeCity'
@@ -129,10 +87,6 @@ export type CompanyListItem = Pick<
 >;
 
 export type UpdateCompanyPayload = Partial<CreateCompanyPayload>;
-
-export interface ChangeCompanyStagePayload {
-  stage: CompanyStage;
-}
 
 export interface ChangeCompanyOwnerPayload {
   newOwnerId: string;
@@ -155,7 +109,6 @@ export interface CreateCompanyPayload {
 export interface GetCompaniesParams {
   page: number;
   limit: CompanyPageSize;
-  stage?: CompanyStage;
   priority?: CompanyPriority;
   withoutOwner?: boolean;
   search?: string;
@@ -177,10 +130,6 @@ export interface PaginatedResult<T> {
   };
 }
 
-export const companyStageLabels = Object.fromEntries(
-  COMPANY_STAGE_OPTIONS.map((option) => [option.value, option.label]),
-) as Record<PipelineStage, string>;
-
 export const companyPriorityLabels = Object.fromEntries(
   COMPANY_PRIORITY_OPTIONS.map((option) => [option.value, option.label]),
 ) as Record<Priority, string>;
@@ -188,10 +137,6 @@ export const companyPriorityLabels = Object.fromEntries(
 export const companyOwnershipLabels = Object.fromEntries(
   COMPANY_OWNERSHIP_OPTIONS.map((option) => [option.value, option.label]),
 ) as Record<CompanyOwnership, string>;
-
-export function isCompanyStage(value: string): value is CompanyStage {
-  return COMPANY_STAGES.some((stage) => stage === value);
-}
 
 export function isCompanyPriority(value: string): value is CompanyPriority {
   return COMPANY_PRIORITIES.some((priority) => priority === value);

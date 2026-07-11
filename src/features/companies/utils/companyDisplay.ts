@@ -1,20 +1,13 @@
 import {
   companyOwnershipLabels,
   companyPriorityLabels,
-  companyStageLabels,
   isCompanyOwnership,
   isCompanyPriority,
-  isCompanyStage,
 } from '../types/company.types';
 import type {
   CompanyOwnership,
-  PipelineStage,
   Priority,
 } from '../types/company.types';
-
-export function getStageLabel(stage?: PipelineStage | string | null): string {
-  return stage && isCompanyStage(stage) ? companyStageLabels[stage] : '—';
-}
 
 export function getPriorityLabel(priority?: Priority | string | null): string {
   return priority && isCompanyPriority(priority) ? companyPriorityLabels[priority] : '—';

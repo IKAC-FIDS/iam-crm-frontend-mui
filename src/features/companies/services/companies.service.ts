@@ -5,7 +5,6 @@ import type {
   PaginatedResult,
   Company,
   CompanyListItem,
-  ChangeCompanyStagePayload,
   ChangeCompanyOwnerPayload,
   CreateCompanyPayload,
   UpdateCompanyPayload,
@@ -121,18 +120,6 @@ export const companiesService = {
   ): Promise<Company> => {
     const response = await axiosInstance.patch<Company | { data: Company }>(
       `/companies/${companyId}`,
-      payload,
-    );
-
-    return unwrapApiResponse<Company>(response.data);
-  },
-
-  changeCompanyStage: async (
-    companyId: string,
-    payload: ChangeCompanyStagePayload,
-  ): Promise<Company> => {
-    const response = await axiosInstance.patch<Company | { data: Company }>(
-      `/companies/${companyId}/stage`,
       payload,
     );
 

@@ -2925,6 +2925,43 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Live authenticated dashboard/report API testing was not performed in this fix.
 
 ---
+## fix 000053 — حذف مرحله فروش از نمای شرکت
+
+**Implemented items:**
+
+* Removed company sales-stage display from Company Details header chips and overview fields.
+* Removed company stage change action and the deprecated company stage dialog from Company Details.
+* Removed company stage column and stage filter from the Companies list.
+* Stopped sending company `stage` as a list filter and removed the deprecated `/companies/:id/stage` frontend service/hook path.
+* Kept the legacy optional `Company.stage?: string | null` field only for backend response compatibility, with a note that sales pipeline stage belongs to Opportunity.
+* Added a small Company Overview helper message that sales stage is managed through the company's sales opportunities, with a button to open the Opportunities tab.
+* Preserved Opportunity stage display/change flows in Opportunities, Opportunity Detail, Company Opportunities tab, and Pipeline.
+
+**Important files:**
+
+* `src/features/companies/pages/CompanyDetailsPage.tsx`
+* `src/features/companies/pages/CompaniesPage.tsx`
+* `src/features/companies/services/companies.service.ts`
+* `src/features/companies/hooks/useCompanies.ts`
+* `src/features/companies/types/company.types.ts`
+* `src/features/companies/utils/companyDisplay.ts`
+* `src/features/companies/components/ChangeCompanyStageDialog.tsx`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* Depends on backend fix `000026` deprecating company pipeline mutation and enforcing opportunity pipeline.
+* Depends on frontend fix `000043` for the dedicated Opportunity detail page.
+* Company no longer displays sales stage in overview; sales stage is managed through Opportunity pages and Pipeline.
+* Existing Company Opportunities tab remains available.
+
+**Verification status:**
+
+* Lint passed without errors.
+* Production build passed.
+* The non-blocking Vite bundle-size warning remains.
+
+---
 **Built with ❤️ for sales team**
 
 ---

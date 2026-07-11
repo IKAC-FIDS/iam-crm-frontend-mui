@@ -31,22 +31,18 @@ import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import {
   COMPANY_PAGE_SIZES,
   COMPANY_PRIORITY_OPTIONS,
-  COMPANY_STAGE_OPTIONS,
   isCompanyPriority,
-  isCompanyStage,
   isCompanyArchived,
 } from '../types/company.types';
 import {
   formatDateTime,
   getPriorityLabel,
-  getStageLabel,
 } from '../utils/companyDisplay';
 import type {
   GetCompaniesParams,
   CompanyListItem,
   CompanyPageSize,
   CompanyPriority,
-  CompanyStage,
   CompanyArchiveStatus,
 } from '../types/company.types';
 
@@ -66,7 +62,6 @@ export default function CompaniesPage() {
     page: 0,
     pageSize: 10,
   });
-  const [stage, setStage] = useState<CompanyStage | ''>('');
   const [priority, setPriority] = useState<CompanyPriority | ''>('');
   const [ownerFilter, setOwnerFilter] = useState<OwnerFilter>('ALL');
   const [ownerId] = useState('');
@@ -80,14 +75,13 @@ export default function CompaniesPage() {
     () => ({
       page: paginationModel.page + 1,
       limit: paginationModel.pageSize as CompanyPageSize,
-      ...(stage && { stage }),
       ...(priority && { priority }),
       ...(ownerFilter === 'WITHOUT_OWNER' && { withoutOwner: true }),
       ...(ownerFilter === 'SPECIFIC_OWNER' && ownerId && { ownerId }),
       ...(debouncedSearch && { search: debouncedSearch }),
       archiveStatus,
     }),
-    [archiveStatus, debouncedSearch, ownerFilter, ownerId, paginationModel, priority, stage],
+    [archiveStatus, debouncedSearch, ownerFilter, ownerId, paginationModel, priority],
   );
 
   const { data, isError, isFetching } = useCompanies(queryParams);
@@ -101,15 +95,6 @@ export default function CompaniesPage() {
       { field: 'legalName', headerName: 'نام حقوقی', minWidth: 180, flex: 1 },
       { field: 'brandName', headerName: 'نام برند', minWidth: 140, flex: 0.8 },
       { field: 'industry', headerName: 'صنعت', minWidth: 130, flex: 0.7 },
-      {
-        field: 'stage',
-        headerName: 'مرحله',
-        minWidth: 170,
-        flex: 0.9,
-        renderCell: ({ value }: GridRenderCellParams<CompanyListItem, string | null>) => (
-          <Chip size="small" label={getStageLabel(value)} variant="outlined" color="primary" />
-        ),
-      },
       {
         field: 'priority',
         headerName: 'اولویت',
@@ -183,26 +168,6 @@ export default function CompaniesPage() {
             placeholder="نام حقوقی، برند یا صنعت"
           />
 
-          <FormControl fullWidth>
-            <InputLabel id="company-stage-label">مرحله</InputLabel>
-            <Select
-              labelId="company-stage-label"
-              label="مرحله"
-              value={stage}
-              onChange={(event) => {
-                const value = event.target.value;
-                setStage(value && isCompanyStage(value) ? value : '');
-                resetToFirstPage();
-              }}
-            >
-              <MenuItem value="">همه مراحل</MenuItem>
-              {COMPANY_STAGE_OPTIONS.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
           <FormControl fullWidth>
             <InputLabel id="company-archive-filter-label">وضعیت بایگانی</InputLabel>
             <Select labelId="company-archive-filter-label" label="وضعیت بایگانی" value={archiveStatus} onChange={(event) => { setArchiveStatus(event.target.value as CompanyArchiveStatus); resetToFirstPage(); }}>
