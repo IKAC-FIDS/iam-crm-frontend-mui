@@ -706,7 +706,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000058
+fix 000001 → fix 000059
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -3138,6 +3138,33 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 **Verification status:**
 
+* Lint passed without errors.
+* Production build passed.
+* The non-blocking Vite bundle-size warning remains.
+
+---
+## fix 000059 — رفع خطای اجرای فیلد انتخاب تاریخ شمسی
+
+**Implemented items:**
+
+* guard توسعه‌ای `JalaliDateField` که با `typeof Component === 'function'` کامپوننت‌های معتبر React را رد می‌کرد حذف شد.
+* importهای `DatePicker` و `TimePicker` به import پیش‌فرض مستندشده از `react-multi-date-picker` و plugin زمان برگشتند.
+* importهای `DateObject`، تقویم Persian و locale `persian_fa` در شکل صحیح حفظ شدند.
+* `JalaliDatePicker`، `JalaliDateTimePicker` و `JalaliDateRangePicker` همچنان بدون تغییر قرارداد backend مقدار ISO/Gregorian-compatible تولید می‌کنند.
+
+**Important files:**
+
+* `src/shared/components/JalaliDateField.tsx`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* این fix فقط frontend است و هیچ API contract یا dependency سمت backend را تغییر نمی‌دهد.
+* خطای runtime ناشی از guard محلی بود، نه نیاز به تغییر فرم‌ها یا endpointها.
+
+**Verification status:**
+
+* Vite cache cleared.
 * Lint passed without errors.
 * Production build passed.
 * The non-blocking Vite bundle-size warning remains.

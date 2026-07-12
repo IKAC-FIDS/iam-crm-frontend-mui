@@ -3,8 +3,8 @@ import type { TextFieldProps } from '@mui/material';
 import type { ChangeEvent, ReactNode } from 'react';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ClearIcon from '@mui/icons-material/Clear';
-import DatePickerModule from 'react-multi-date-picker';
-import TimePickerModule from 'react-multi-date-picker/plugins/time_picker';
+import DatePicker from 'react-multi-date-picker';
+import TimePicker from 'react-multi-date-picker/plugins/time_picker';
 import DateObject from 'react-date-object';
 import persian from 'react-date-object/calendars/persian';
 import persian_fa from 'react-date-object/locales/persian_fa';
@@ -12,7 +12,6 @@ import { toEndOfDayIso } from '@/shared/utils/jalaliDate';
 import 'react-multi-date-picker/styles/layouts/mobile.css';
 
 type PickerValue = DateObject | null;
-type DefaultWrapped<T> = T | { default: T };
 
 type BasePickerProps = Omit<TextFieldProps, 'value' | 'onChange' | 'type'> & {
   value?: string | null;
@@ -23,17 +22,6 @@ interface RangePickerProps extends Omit<TextFieldProps, 'value' | 'onChange' | '
   startValue?: string | null;
   endValue?: string | null;
   onChange: (range: { start?: string; end?: string }) => void;
-}
-
-function unwrapDefault<T>(module: DefaultWrapped<T>): T {
-  return typeof module === 'object' && module !== null && 'default' in module ? module.default : module;
-}
-
-const DatePicker = unwrapDefault(DatePickerModule as DefaultWrapped<typeof DatePickerModule>);
-const TimePicker = unwrapDefault(TimePickerModule as DefaultWrapped<typeof TimePickerModule>);
-
-if (import.meta.env.DEV && (typeof DatePicker !== 'function' || typeof TimePicker !== 'function')) {
-  throw new Error('Jalali date picker dependencies did not resolve to React components.');
 }
 
 function isoToDateObject(value?: string | null): PickerValue {
