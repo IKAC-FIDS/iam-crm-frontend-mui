@@ -1,6 +1,6 @@
-export const LOOKUP_GROUPS = ['teams', 'departments', 'seniority-levels', 'persona-tags', 'contact-types', 'person-social-platforms', 'company-sources'] as const;
+export const LOOKUP_GROUPS = ['teams', 'departments', 'job-titles', 'seniority-levels', 'persona-roles', 'contact-types', 'person-social-platforms', 'company-sources'] as const;
 export type LookupGroup = (typeof LOOKUP_GROUPS)[number];
-export const LOOKUP_GROUP_LABELS: Record<LookupGroup, string> = { teams: 'تیم‌ها', departments: 'دپارتمان‌ها', 'seniority-levels': 'سطح ارشدیت', 'persona-tags': 'برچسب‌های پرسونا', 'contact-types': 'انواع تماس', 'person-social-platforms': 'شبکه‌های اجتماعی اشخاص', 'company-sources': 'منابع شرکت' };
+export const LOOKUP_GROUP_LABELS: Record<LookupGroup, string> = { teams: 'تیم‌ها', departments: 'دپارتمان‌ها', 'job-titles': 'سمت‌ها', 'seniority-levels': 'سطح ارشدیت', 'persona-roles': 'نقش‌های فروش', 'contact-types': 'انواع تماس', 'person-social-platforms': 'شبکه‌های اجتماعی اشخاص', 'company-sources': 'منابع شرکت' };
 
 export const CATALOG_DEFINITIONS = {
   industries: { label: 'صنایع', endpoint: '/industries' },

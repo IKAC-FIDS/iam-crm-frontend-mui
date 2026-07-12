@@ -46,7 +46,7 @@ function initial(value?: Partial<Activity>): FormData {
 
 function nullable(value: string): string | null { return value.trim() || null; }
 function nullableDate(value: string): string | null { if (!value) return null; const date = new Date(value); return Number.isNaN(date.getTime()) ? null : date.toISOString(); }
-function personLabel(person: Person): string { const details = [person.title, person.department].filter(Boolean).join('، '); return details ? `${person.fullName} (${details})` : person.fullName; }
+function personLabel(person: Person): string { const details = [person.jobTitle ?? person.title, person.department].filter(Boolean).join('، '); return details ? `${person.fullName} (${details})` : person.fullName; }
 
 export default function ActivityForm({ mode, initialValues, people = [], opportunities = [], isPeopleLoading = false, isSubmitting = false, errorMessage, onSubmit, onCancel }: ActivityFormProps) {
   const { control, handleSubmit, register, formState: { errors } } = useForm<FormData>({ resolver: zodResolver(schema), defaultValues: initial(initialValues) });

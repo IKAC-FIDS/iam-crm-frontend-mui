@@ -706,7 +706,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000047
+fix 000001 → fix 000054
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -2954,6 +2954,44 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Depends on frontend fix `000043` for the dedicated Opportunity detail page.
 * Company no longer displays sales stage in overview; sales stage is managed through Opportunity pages and Pipeline.
 * Existing Company Opportunities tab remains available.
+
+**Verification status:**
+
+* Lint passed without errors.
+* Production build passed.
+* The non-blocking Vite bundle-size warning remains.
+
+---
+## fix 000054 — اصلاح فرم اشخاص برای تفکیک دپارتمان، سمت و نقش فروش
+
+**Implemented items:**
+
+* فرم ایجاد و ویرایش شخص را از فیلد متنی سمت و منبع قدیمی Persona Library جدا کرد و به گزینه‌های پایه متصل کرد.
+* دپارتمان از گروه `departments`، سمت سازمانی از گروه `job-titles`، نقش در فرآیند فروش از گروه `persona-roles` و سطح ارشدیت از گروه `seniority-levels` خوانده می‌شود.
+* ارسال فرم از aliasهای جدید backend یعنی `jobTitle` و `personaRole` استفاده می‌کند و برای داده‌های قدیمی همچنان `title` و `personaTag` را نمایش می‌دهد.
+* فهرست افراد شرکت، فهرست سراسری افراد، فیلترهای دایرکتوری، جزئیات شخص، فرم فعالیت و انتخاب مخاطب Call Card با برچسب‌های جدید هماهنگ شد.
+* گروه‌های گزینه‌های پایه در Admin Libraries با `job-titles` و `persona-roles` هماهنگ شد و برچسب‌های «سمت‌ها» و «نقش‌های فروش» جایگزین نام مبهم پرسونا شدند.
+* تایپ‌های frontend برای `jobTitle`، `personaRole` و `seniorityLevel` به مدل‌های شخص و مخاطب Call Card اضافه شد.
+
+**Important files:**
+
+* `src/features/people/components/PersonForm.tsx`
+* `src/features/people/components/PeopleTab.tsx`
+* `src/features/people/components/PersonDetailDrawer.tsx`
+* `src/features/people/pages/PeopleDirectoryPage.tsx`
+* `src/features/people/types/person.types.ts`
+* `src/features/catalogs/types/catalog.types.ts`
+* `src/features/activities/components/ActivityForm.tsx`
+* `src/features/callCards/components/CallCardForm.tsx`
+* `src/features/callCards/types/callCard.types.ts`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* Depends on backend lookup groups `departments`, `job-titles`, `persona-roles`, and `seniority-levels`.
+* Depends on backend person DTO aliases `jobTitle` and `personaRole`, which map to legacy persisted fields `title` and `personaTag`.
+* Existing records with only `title` or `personaTag` remain displayable through frontend fallbacks.
+* Live authenticated API testing was not performed in this fix.
 
 **Verification status:**
 

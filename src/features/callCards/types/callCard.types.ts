@@ -11,8 +11,11 @@ export interface CallCardPerson {
   id: string;
   fullName: string;
   title?: string | null;
+  jobTitle?: string | null;
   department?: string | null;
   personaTag?: string | null;
+  personaRole?: string | null;
+  seniorityLevel?: string | null;
 }
 
 export interface CallCard {

@@ -170,9 +170,10 @@ export default function PersonDetailDrawer({
               <Typography variant="h6" sx={{ mb: 2 }}>اطلاعات شخص</Typography>
               <Stack spacing={1.5}>
                 <Info label="نام کامل" value={personQuery.data.fullName} />
-                <Info label="سمت" value={personQuery.data.title} />
                 <Info label="دپارتمان" value={personQuery.data.department} />
-                <Info label="پرسونا" value={personQuery.data.personaTag} />
+                <Info label="سمت سازمانی" value={personQuery.data.jobTitle ?? personQuery.data.title} />
+                <Info label="نقش در فرآیند فروش" value={personQuery.data.personaRole ?? personQuery.data.personaTag} />
+                <Info label="سطح ارشدیت" value={personQuery.data.seniorityLevel} />
                 {/* <Info label="لینکدین" value={personQuery.data.linkedinUrl} />
                 <Info label="ایمیل" value={personQuery.data.email} />
                 <Info label="تلفن" value={personQuery.data.phone} /> */}

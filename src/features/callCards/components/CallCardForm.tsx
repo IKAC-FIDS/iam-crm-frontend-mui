@@ -93,7 +93,7 @@ function optionalDate(value: string): string | undefined {
 }
 
 function personLabel(person: CallCardPerson): string {
-  return [person.fullName, person.title, person.department].filter(Boolean).join(' - ');
+  return [person.fullName, person.jobTitle ?? person.title, person.department].filter(Boolean).join(' - ');
 }
 
 function normalizeQuestions(items: FormData['discoveryQs']) {

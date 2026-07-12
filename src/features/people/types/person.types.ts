@@ -67,9 +67,14 @@ export interface Person {
   id: string;
   companyId: string;
   fullName: string;
+  /** Backend persistence field kept for compatibility; use jobTitle in UI code. */
   title?: string | null;
+  jobTitle?: string | null;
   department?: string | null;
+  /** Backend persistence field kept for compatibility; use personaRole in UI code. */
   personaTag?: string | null;
+  personaRole?: string | null;
+  seniorityLevel?: string | null;
   // linkedinUrl?: string | null;
   // email?: string | null;
   // phone?: string | null;
@@ -101,8 +106,11 @@ export interface CreatePersonPayload {
   companyId: string;
   fullName: string;
   title?: string;
+  jobTitle?: string;
   department?: string;
   personaTag?: string;
+  personaRole?: string;
+  seniorityLevel?: string;
   // linkedinUrl?: string;
   // email?: string;
   // phone?: string;
@@ -130,7 +138,10 @@ export interface PeopleDirectoryParams {
   ownerId?: string;
   team?: string;
   department?: string;
+  jobTitle?: string;
   personaTag?: string;
+  personaRole?: string;
+  seniorityLevel?: string;
   isPrimaryContact?: boolean;
   hasEmail?: boolean;
   hasPhone?: boolean;

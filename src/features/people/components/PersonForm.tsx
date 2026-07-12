@@ -39,9 +39,10 @@ interface PersonFormProps {
 
 const personFormSchema = z.object({
   fullName: z.string().trim().min(1, 'نام کامل الزامی است'),
-  title: z.string(),
+  jobTitle: z.string(),
   department: z.string(),
-  personaTag: z.string(),
+  personaRole: z.string(),
+  seniorityLevel: z.string(),
   isPrimaryContact: z.boolean(),
   isSecondaryContact: z.boolean(),
 });
@@ -51,9 +52,10 @@ type PersonFormData = z.infer<typeof personFormSchema>;
 function getValues(initialValues?: Partial<Person>): PersonFormData {
   return {
     fullName: initialValues?.fullName ?? '',
-    title: initialValues?.title ?? '',
+    jobTitle: initialValues?.jobTitle ?? initialValues?.title ?? '',
     department: initialValues?.department ?? '',
-    personaTag: initialValues?.personaTag ?? '',
+    personaRole: initialValues?.personaRole ?? initialValues?.personaTag ?? '',
+    seniorityLevel: initialValues?.seniorityLevel ?? '',
     isPrimaryContact: initialValues?.isPrimaryContact ?? false,
     isSecondaryContact: initialValues?.isSecondaryContact ?? false,
   };
@@ -76,10 +78,22 @@ export default function PersonForm({
     group: 'departments',
   });
 
-  const personas = useCatalog('personas', true);
+  const jobTitles = useCatalog('lookupOptions', true, {
+    group: 'job-titles',
+  });
+
+  const personaRoles = useCatalog('lookupOptions', true, {
+    group: 'persona-roles',
+  });
+
+  const seniorityLevels = useCatalog('lookupOptions', true, {
+    group: 'seniority-levels',
+  });
 
   const departmentOptions = (departments.data ?? []).filter(isCatalogItemActive);
-  const personaOptions = (personas.data ?? []).filter(isCatalogItemActive);
+  const jobTitleOptions = (jobTitles.data ?? []).filter(isCatalogItemActive);
+  const personaRoleOptions = (personaRoles.data ?? []).filter(isCatalogItemActive);
+  const seniorityLevelOptions = (seniorityLevels.data ?? []).filter(isCatalogItemActive);
 
   const {
     control,
@@ -99,9 +113,10 @@ export default function PersonForm({
   const submit = (data: PersonFormData) => {
     const common: UpdatePersonPayload = {
       fullName: data.fullName.trim(),
-      title: optional(data.title),
+      jobTitle: optional(data.jobTitle),
       department: optional(data.department),
-      personaTag: optional(data.personaTag),
+      personaRole: optional(data.personaRole),
+      seniorityLevel: optional(data.seniorityLevel),
       isPrimaryContact: data.isPrimaryContact,
       isSecondaryContact: data.isSecondaryContact,
     };
@@ -125,8 +140,6 @@ export default function PersonForm({
         helperText={errors.fullName?.message}
         {...register('fullName')}
       />
-
-      <TextField label="سمت" {...register('title')} />
 
       <Controller
         name="department"
@@ -157,24 +170,24 @@ export default function PersonForm({
       />
 
       <Controller
-        name="personaTag"
+        name="jobTitle"
         control={control}
         render={({ field }) => (
-          <FormControl fullWidth disabled={personas.isLoading || personas.isError}>
-            <InputLabel id={`${mode}-person-persona`}>
-              پرسونا
+          <FormControl fullWidth disabled={jobTitles.isLoading || jobTitles.isError}>
+            <InputLabel id={`${mode}-person-job-title`}>
+              سمت سازمانی
             </InputLabel>
 
             <Select
               {...field}
-              labelId={`${mode}-person-persona`}
-              label="پرسونا"
+              labelId={`${mode}-person-job-title`}
+              label="سمت سازمانی"
             >
               <MenuItem value="">
                 انتخاب نشده
               </MenuItem>
 
-              {personaOptions.map((item) => (
+              {jobTitleOptions.map((item) => (
                 <MenuItem key={item.id} value={item.value}>
                   {getCatalogItemLabel(item)}
                 </MenuItem>
@@ -184,9 +197,65 @@ export default function PersonForm({
         )}
       />
 
-      {(departments.isError || personas.isError) && (
+      <Controller
+        name="personaRole"
+        control={control}
+        render={({ field }) => (
+          <FormControl fullWidth disabled={personaRoles.isLoading || personaRoles.isError}>
+            <InputLabel id={`${mode}-person-persona`}>
+              نقش در فرآیند فروش
+            </InputLabel>
+
+            <Select
+              {...field}
+              labelId={`${mode}-person-persona`}
+              label="نقش در فرآیند فروش"
+            >
+              <MenuItem value="">
+                انتخاب نشده
+              </MenuItem>
+
+              {personaRoleOptions.map((item) => (
+                <MenuItem key={item.id} value={item.value}>
+                  {getCatalogItemLabel(item)}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )}
+      />
+
+      <Controller
+        name="seniorityLevel"
+        control={control}
+        render={({ field }) => (
+          <FormControl fullWidth disabled={seniorityLevels.isLoading || seniorityLevels.isError}>
+            <InputLabel id={`${mode}-person-seniority`}>
+              سطح ارشدیت
+            </InputLabel>
+
+            <Select
+              {...field}
+              labelId={`${mode}-person-seniority`}
+              label="سطح ارشدیت"
+            >
+              <MenuItem value="">
+                انتخاب نشده
+              </MenuItem>
+
+              {seniorityLevelOptions.map((item) => (
+                <MenuItem key={item.id} value={item.value}>
+                  {getCatalogItemLabel(item)}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )}
+      />
+
+      {(departments.isError || jobTitles.isError || personaRoles.isError || seniorityLevels.isError) && (
         <Alert severity="error">
-          خطا در دریافت گزینه‌های دپارتمان و پرسونا.
+          خطا در دریافت گزینه‌های دپارتمان، سمت، نقش فروش یا سطح ارشدیت.
         </Alert>
       )}
 
@@ -196,9 +265,15 @@ export default function PersonForm({
         </Alert>
       )}
 
-      {!personas.isLoading && !personas.isError && personaOptions.length === 0 && (
+      {!jobTitles.isLoading && !jobTitles.isError && jobTitleOptions.length === 0 && (
         <Alert severity="info">
-          هنوز پرسونا تعریف نشده است. از بخش کتابخانه‌ها، تب پرسوناها را تکمیل کنید.
+          هنوز سمتی تعریف نشده است. از بخش کتابخانه‌ها، گزینه‌های پایه، گروه سمت‌ها را تکمیل کنید.
+        </Alert>
+      )}
+
+      {!personaRoles.isLoading && !personaRoles.isError && personaRoleOptions.length === 0 && (
+        <Alert severity="info">
+          هنوز نقش فروشی تعریف نشده است. از بخش کتابخانه‌ها، گزینه‌های پایه، گروه نقش‌های فروش را تکمیل کنید.
         </Alert>
       )}
 

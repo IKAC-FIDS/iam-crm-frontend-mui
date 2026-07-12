@@ -66,9 +66,10 @@ export default function PeopleTab({ companyId }: PeopleTabProps) {
 
   const columns = useMemo<GridColDef<Person>[]>(() => [
     { field: 'fullName', headerName: 'نام', minWidth: 170, flex: 1 },
-    { field: 'title', headerName: 'سمت', minWidth: 130, flex: 0.7 },
+    { field: 'jobTitle', headerName: 'سمت سازمانی', minWidth: 150, flex: 0.7, valueGetter: (_value, row) => row.jobTitle ?? row.title ?? '—' },
     { field: 'department', headerName: 'دپارتمان', minWidth: 130, flex: 0.7 },
-    { field: 'personaTag', headerName: 'پرسونا', minWidth: 120 },
+    { field: 'personaRole', headerName: 'نقش در فرآیند فروش', minWidth: 170, valueGetter: (_value, row) => row.personaRole ?? row.personaTag ?? '—' },
+    { field: 'seniorityLevel', headerName: 'سطح ارشدیت', minWidth: 125 },
     {
       field: 'isPrimaryContact',
       headerName: 'مخاطب اصلی',
