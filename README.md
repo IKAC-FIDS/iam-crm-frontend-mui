@@ -706,7 +706,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000056
+fix 000001 → fix 000057
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -3073,6 +3073,41 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Backend همچنان تاریخ‌ها را به صورت Gregorian/ISO دریافت و ذخیره می‌کند؛ این fix فقط لایه UI را شمسی می‌کند.
 * ورودی مشترک فعلا متن شمسی کنترل‌شده است و Date Picker تقویمی تصویری اضافه نشده تا تغییر UI کم‌ریسک و متمرکز بماند.
 * فیلدهای date-only به ISO محلی تبدیل می‌شوند و برای `to` در فیلترهای بازه‌ای انتهای روز ارسال می‌شود.
+* Live authenticated API testing was not performed in this fix.
+
+**Verification status:**
+
+* Lint passed without errors.
+* Production build passed.
+* The non-blocking Vite bundle-size warning remains.
+
+---
+## fix 000057 — افزودن انتخابگر تقویم شمسی برای فیلدهای تاریخ و زمان
+
+**Implemented items:**
+
+* وابستگی `react-multi-date-picker` اضافه شد تا کاربران تاریخ‌ها را از تقویم شمسی انتخاب کنند و مجبور به تایپ دستی نباشند.
+* کامپوننت‌های مشترک `JalaliDatePicker`، `JalaliDateTimePicker` و `JalaliDateRangePicker` با تقویم Persian، locale فارسی، چیدمان RTL-friendly، دکمه پاک‌کردن و input مبتنی بر MUI اضافه شدند.
+* کامپوننت سازگار `JalaliDateField` حفظ شد و اکنون به جای ورودی متنی ساده، از انتخابگر تقویم شمسی استفاده می‌کند.
+* فیلترهای بازه‌ای کارها، گزارش‌ها و Audit Log به `JalaliDateRangePicker` منتقل شدند.
+* انتخابگرهای date-time برای فعالیت‌ها، پیگیری‌ها، کارها، یادآوری‌ها و کال‌کارت از plugin زمان استفاده می‌کنند و ساعت/دقیقه انتخاب‌شده را به ISO backend تبدیل می‌کنند.
+* قرارداد backend بدون تغییر باقی ماند و همه خروجی‌های انتخابگرها همچنان ISO/Gregorian-compatible هستند.
+
+**Important files:**
+
+* `src/shared/components/JalaliDateField.tsx`
+* `src/shared/utils/jalaliDate.ts`
+* `src/features/tasks/components/TasksTable.tsx`
+* `src/features/reports/components/ReportFilterPanel.tsx`
+* `src/features/auditLogs/pages/AuditLogsPage.tsx`
+* `package.json`
+* `package-lock.json`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* Backend همچنان تاریخ‌ها را به صورت ISO/Gregorian دریافت و ذخیره می‌کند.
+* این fix از همان تبدیل‌های مرکزی fix `000056` استفاده می‌کند و منطق تبدیل تاریخ در فرم‌ها پخش نشده است.
 * Live authenticated API testing was not performed in this fix.
 
 **Verification status:**

@@ -6,8 +6,7 @@ import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
 import { useDebouncedValue } from '@/features/companies/hooks/useDebouncedValue';
 import { useOwnerOptions } from '@/features/admin/users/hooks/useAdminUsers';
-import JalaliDateField from '@/shared/components/JalaliDateField';
-import { toEndOfDayIso } from '@/shared/utils/jalaliDate';
+import { JalaliDateRangePicker } from '@/shared/components/JalaliDateField';
 import { useTasks } from '../hooks/useTasks';
 import {
   formatTaskDate,
@@ -68,7 +67,7 @@ export default function TasksTable({
     priority: priority || fixedParams.priority,
     assignedToId: compact ? fixedParams.assignedToId : assignedToId || fixedParams.assignedToId,
     dueFrom: compact ? fixedParams.dueFrom : dueFrom || fixedParams.dueFrom,
-    dueTo: compact ? fixedParams.dueTo : toEndOfDayIso(dueTo) || fixedParams.dueTo,
+    dueTo: compact ? fixedParams.dueTo : dueTo || fixedParams.dueTo,
   };
   const query = useTasks(params, canView);
   const [form, setForm] = useState<Task | null | undefined>(undefined);
@@ -124,8 +123,7 @@ export default function TasksTable({
             <TextField fullWidth select label="مسئول" value={assignedToId} disabled={owners.isError} onChange={(event) => { setAssignedToId(event.target.value); resetPage(); }}><MenuItem value="">همه</MenuItem>{(owners.data ?? []).map((owner) => <MenuItem key={owner.id} value={owner.id}>{owner.fullName}</MenuItem>)}</TextField>
           </Stack>
           <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ mt: 2 }}>
-            <JalaliDateField fullWidth label="از سررسید" value={dueFrom} onChange={(next) => { setDueFrom(next ?? ''); resetPage(); }} />
-            <JalaliDateField fullWidth label="تا سررسید" value={dueTo} onChange={(next) => { setDueTo(next ?? ''); resetPage(); }} />
+            <JalaliDateRangePicker fullWidth label="بازه سررسید" startValue={dueFrom} endValue={dueTo} onChange={(range) => { setDueFrom(range.start ?? ''); setDueTo(range.end ?? ''); resetPage(); }} />
           </Stack>
         </Paper>
       )}
