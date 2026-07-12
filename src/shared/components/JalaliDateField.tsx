@@ -3,15 +3,16 @@ import type { TextFieldProps } from '@mui/material';
 import type { ChangeEvent, ReactNode } from 'react';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ClearIcon from '@mui/icons-material/Clear';
-import DatePicker from 'react-multi-date-picker';
-import TimePicker from 'react-multi-date-picker/plugins/time_picker';
+import DatePickerModule from 'react-multi-date-picker';
+import TimePickerModule from 'react-multi-date-picker/plugins/time_picker';
 import DateObject from 'react-date-object';
 import persian from 'react-date-object/calendars/persian';
-import persianFa from 'react-date-object/locales/persian_fa';
+import persian_fa from 'react-date-object/locales/persian_fa';
 import { toEndOfDayIso } from '@/shared/utils/jalaliDate';
 import 'react-multi-date-picker/styles/layouts/mobile.css';
 
 type PickerValue = DateObject | null;
+type DefaultWrapped<T> = T | { default: T };
 
 type BasePickerProps = Omit<TextFieldProps, 'value' | 'onChange' | 'type'> & {
   value?: string | null;
@@ -24,11 +25,22 @@ interface RangePickerProps extends Omit<TextFieldProps, 'value' | 'onChange' | '
   onChange: (range: { start?: string; end?: string }) => void;
 }
 
+function unwrapDefault<T>(module: DefaultWrapped<T>): T {
+  return typeof module === 'object' && module !== null && 'default' in module ? module.default : module;
+}
+
+const DatePicker = unwrapDefault(DatePickerModule as DefaultWrapped<typeof DatePickerModule>);
+const TimePicker = unwrapDefault(TimePickerModule as DefaultWrapped<typeof TimePickerModule>);
+
+if (import.meta.env.DEV && (typeof DatePicker !== 'function' || typeof TimePicker !== 'function')) {
+  throw new Error('Jalali date picker dependencies did not resolve to React components.');
+}
+
 function isoToDateObject(value?: string | null): PickerValue {
   if (!value) return null;
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return null;
-  return new DateObject({ date, calendar: persian, locale: persianFa });
+  return new DateObject({ date, calendar: persian, locale: persian_fa });
 }
 
 function dateObjectToIso(value: DateObject | null | undefined, includeTime = false): string | undefined {
@@ -111,7 +123,7 @@ export function JalaliDatePicker({
   return (
     <DatePicker
       calendar={persian}
-      locale={persianFa}
+      locale={persian_fa}
       calendarPosition="bottom-right"
       format="YYYY/MM/DD"
       value={isoToDateObject(value)}
@@ -152,7 +164,7 @@ export function JalaliDateTimePicker({
   return (
     <DatePicker
       calendar={persian}
-      locale={persianFa}
+      locale={persian_fa}
       calendarPosition="bottom-right"
       format="YYYY/MM/DD HH:mm"
       value={isoToDateObject(value)}
@@ -196,7 +208,7 @@ export function JalaliDateRangePicker({
     <DatePicker
       range
       calendar={persian}
-      locale={persianFa}
+      locale={persian_fa}
       calendarPosition="bottom-right"
       format="YYYY/MM/DD"
       value={[isoToDateObject(startValue), isoToDateObject(endValue)].filter(Boolean) as DateObject[]}

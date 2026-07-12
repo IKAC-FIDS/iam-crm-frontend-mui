@@ -706,7 +706,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000057
+fix 000001 → fix 000058
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -3109,6 +3109,32 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Backend همچنان تاریخ‌ها را به صورت ISO/Gregorian دریافت و ذخیره می‌کند.
 * این fix از همان تبدیل‌های مرکزی fix `000056` استفاده می‌کند و منطق تبدیل تاریخ در فرم‌ها پخش نشده است.
 * Live authenticated API testing was not performed in this fix.
+
+**Verification status:**
+
+* Lint passed without errors.
+* Production build passed.
+* The non-blocking Vite bundle-size warning remains.
+
+---
+## fix 000058 — رفع خطای اجرای انتخابگر تاریخ شمسی
+
+**Implemented items:**
+
+* importهای `react-multi-date-picker` و plugin زمان در `JalaliDateField` به‌صورت defensive unwrap شدند تا در زمان اجرا به‌جای module object، خود کامپوننت React رندر شود.
+* importهای `DateObject`، تقویم Persian و locale فارسی در همان قرارداد صحیح نگه داشته شدند و locale به نام `persian_fa` یکسان‌سازی شد.
+* برای محیط توسعه یک guard کوچک اضافه شد تا اگر dependencyها دوباره به کامپوننت معتبر resolve نشوند، خطای واضح‌تری نمایش داده شود.
+* قرارداد ارسال تاریخ‌ها به backend بدون تغییر باقی ماند.
+
+**Important files:**
+
+* `src/shared/components/JalaliDateField.tsx`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* این fix فقط frontend است و هیچ API contract یا dependency سمت backend را تغییر نمی‌دهد.
+* فرم‌های استفاده‌کننده از `JalaliDatePicker`، `JalaliDateTimePicker` و `JalaliDateRangePicker` از همان کامپوننت مشترک استفاده می‌کنند.
 
 **Verification status:**
 
