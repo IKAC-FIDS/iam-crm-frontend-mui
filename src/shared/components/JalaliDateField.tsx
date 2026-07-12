@@ -12,6 +12,7 @@ import { toEndOfDayIso } from '@/shared/utils/jalaliDate';
 import 'react-multi-date-picker/styles/layouts/mobile.css';
 
 type PickerValue = DateObject | null;
+type DefaultExport<T> = T | { default: DefaultExport<T> };
 
 type BasePickerProps = Omit<TextFieldProps, 'value' | 'onChange' | 'type'> & {
   value?: string | null;
@@ -23,6 +24,24 @@ interface RangePickerProps extends Omit<TextFieldProps, 'value' | 'onChange' | '
   endValue?: string | null;
   onChange: (range: { start?: string; end?: string }) => void;
 }
+
+function resolveDefaultExport<T>(module: DefaultExport<T>): T {
+  let resolved = module;
+
+  while (
+    typeof resolved === 'object' &&
+    resolved !== null &&
+    !('$$typeof' in resolved) &&
+    'default' in resolved
+  ) {
+    resolved = resolved.default;
+  }
+
+  return resolved as T;
+}
+
+const ResolvedDatePicker = resolveDefaultExport(DatePicker as DefaultExport<typeof DatePicker>);
+const ResolvedTimePicker = resolveDefaultExport(TimePicker as DefaultExport<typeof TimePicker>);
 
 function isoToDateObject(value?: string | null): PickerValue {
   if (!value) return null;
@@ -109,7 +128,7 @@ export function JalaliDatePicker({
   ...props
 }: BasePickerProps) {
   return (
-    <DatePicker
+    <ResolvedDatePicker
       calendar={persian}
       locale={persian_fa}
       calendarPosition="bottom-right"
@@ -150,14 +169,14 @@ export function JalaliDateTimePicker({
   ...props
 }: BasePickerProps) {
   return (
-    <DatePicker
+    <ResolvedDatePicker
       calendar={persian}
       locale={persian_fa}
       calendarPosition="bottom-right"
       format="YYYY/MM/DD HH:mm"
       value={isoToDateObject(value)}
       disabled={disabled}
-      plugins={[<TimePicker key="time" position="bottom" hideSeconds />]}
+      plugins={[<ResolvedTimePicker key="time" position="bottom" hideSeconds />]}
       onChange={(date) => onChange(dateObjectToIso(date as DateObject | null, true))}
       render={(inputValue, openCalendar, handleValueChange) => (
         <PickerTextField
@@ -193,7 +212,7 @@ export function JalaliDateRangePicker({
   ...props
 }: RangePickerProps) {
   return (
-    <DatePicker
+    <ResolvedDatePicker
       range
       calendar={persian}
       locale={persian_fa}

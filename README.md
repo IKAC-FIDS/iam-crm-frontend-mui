@@ -706,7 +706,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000059
+fix 000001 → fix 000060
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -3161,6 +3161,33 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 * این fix فقط frontend است و هیچ API contract یا dependency سمت backend را تغییر نمی‌دهد.
 * خطای runtime ناشی از guard محلی بود، نه نیاز به تغییر فرم‌ها یا endpointها.
+
+**Verification status:**
+
+* Vite cache cleared.
+* Lint passed without errors.
+* Production build passed.
+* The non-blocking Vite bundle-size warning remains.
+
+---
+## fix 000060 — رفع خطای رندر انتخابگر تاریخ شمسی
+
+**Implemented items:**
+
+* JSX خط گزارش‌شده در `JalaliDatePicker` بررسی شد و tag مشکل‌دار، `DatePicker`، به خروجی default واقعی dependency resolve شد.
+* برای `DatePicker` و `TimePicker` یک interop resolver بدون guard و بدون log اضافه شد تا module namespace object مستقیم به React داده نشود.
+* resolver کامپوننت‌های object-shaped معتبر React مثل `forwardRef` را به‌عنوان کامپوننت معتبر حفظ می‌کند.
+* importهای `react-multi-date-picker`، `react-date-object`، تقویم Persian، locale `persian_fa` و آیکن‌های MUI در شکل صحیح باقی ماندند.
+
+**Important files:**
+
+* `src/shared/components/JalaliDateField.tsx`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* این fix فقط frontend است و هیچ API contract یا dependency سمت backend را تغییر نمی‌دهد.
+* فرم فرصت‌ها و سایر فرم‌ها از همان کامپوننت مشترک `JalaliDateField` استفاده می‌کنند.
 
 **Verification status:**
 
