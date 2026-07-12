@@ -15,6 +15,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import JalaliDateField from '@/shared/components/JalaliDateField';
 import type {
   CallCard,
   CallCardPerson,
@@ -53,14 +54,6 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-function toLocalDateTime(value?: string | null): string {
-  if (!value) return '';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '';
-  const offset = date.getTimezoneOffset() * 60_000;
-  return new Date(date.getTime() - offset).toISOString().slice(0, 16);
-}
-
 function getValues(value?: Partial<CallCard>): FormData {
   return {
     primaryContactId: value?.primaryContactId ?? '',
@@ -77,8 +70,8 @@ function getValues(value?: Partial<CallCard>): FormData {
     callGoal: value?.callGoal ?? '',
     qualificationCriteria: value?.qualificationCriteria ?? '',
     disqualificationCriteria: value?.disqualificationCriteria ?? '',
-    followUpNoResponseAt: toLocalDateTime(value?.followUpNoResponseAt),
-    followUpInterestAt: toLocalDateTime(value?.followUpInterestAt),
+    followUpNoResponseAt: value?.followUpNoResponseAt ?? '',
+    followUpInterestAt: value?.followUpInterestAt ?? '',
   };
 }
 
@@ -87,9 +80,7 @@ function optional(value: string): string | undefined {
 }
 
 function optionalDate(value: string): string | undefined {
-  if (!value) return undefined;
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
+  return value || undefined;
 }
 
 function personLabel(person: CallCardPerson): string {
@@ -215,8 +206,8 @@ export default function CallCardForm({
       <Divider />
       <Typography variant="h6">پیگیری</Typography>
       <TextField label="درخواست جلسه" multiline minRows={2} {...register('meetingAsk')} />
-      <TextField label="پیگیری در صورت عدم پاسخ" type="datetime-local" slotProps={{ inputLabel: { shrink: true } }} {...register('followUpNoResponseAt')} />
-      <TextField label="پیگیری در صورت علاقه‌مندی" type="datetime-local" slotProps={{ inputLabel: { shrink: true } }} {...register('followUpInterestAt')} />
+      <Controller name="followUpNoResponseAt" control={control} render={({ field }) => <JalaliDateField label="پیگیری در صورت عدم پاسخ" includeTime value={field.value} onChange={(next) => field.onChange(next ?? '')} />} />
+      <Controller name="followUpInterestAt" control={control} render={({ field }) => <JalaliDateField label="پیگیری در صورت علاقه‌مندی" includeTime value={field.value} onChange={(next) => field.onChange(next ?? '')} />} />
 
       <Stack direction="row" spacing={1} sx={{ justifyContent: 'flex-end' }}>
         {onCancel && <Button onClick={onCancel} disabled={isSubmitting}>انصراف</Button>}

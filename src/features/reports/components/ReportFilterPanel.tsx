@@ -1,4 +1,6 @@
 import { Alert, Autocomplete, Button, Grid, Paper, Stack, TextField, Typography } from '@mui/material';
+import JalaliDateField from '@/shared/components/JalaliDateField';
+import { toEndOfDayIso } from '@/shared/utils/jalaliDate';
 import type { ReportFilterOption, ReportFilterOptions, ReportFilters } from '../types/report.types';
 
 interface Props {
@@ -36,8 +38,8 @@ export default function ReportFilterPanel({ draft, options, isLoading, isError, 
         {isError && <Alert severity="error">خطا در دریافت گزینه‌های فیلتر. دوباره تلاش کنید.</Alert>}
         <Typography variant="subtitle2">بازه تاریخ</Typography>
         <Grid container spacing={2}>
-          <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth label="از تاریخ" type="date" value={draft.startDate ?? ''} onChange={(event) => onChange({ ...draft, startDate: event.target.value || undefined })} slotProps={{ inputLabel: { shrink: true } }} /></Grid>
-          <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth label="تا تاریخ" type="date" value={draft.endDate ?? ''} onChange={(event) => onChange({ ...draft, endDate: event.target.value || undefined })} slotProps={{ inputLabel: { shrink: true } }} /></Grid>
+          <Grid size={{ xs: 12, sm: 6 }}><JalaliDateField fullWidth label="از تاریخ" value={draft.startDate ?? ''} onChange={(next) => onChange({ ...draft, startDate: next })} /></Grid>
+          <Grid size={{ xs: 12, sm: 6 }}><JalaliDateField fullWidth label="تا تاریخ" value={draft.endDate ?? ''} onChange={(next) => onChange({ ...draft, endDate: toEndOfDayIso(next) })} /></Grid>
           {fields.map(({ key, optionKey, label }) => {
             const available = options?.[optionKey] ?? [];
             return <Grid key={key} size={{ xs: 12, sm: 6, md: 4 }}><Autocomplete multiple options={available} value={selected(key, available)} loading={isLoading} disabled={isError} disableCloseOnSelect getOptionLabel={(item) => item.team ? `${item.label} — ${item.team}` : item.label} isOptionEqualToValue={(item, value) => item.value === value.value} onChange={(_, value) => onChange({ ...draft, [key]: value.map((item) => item.value) })} renderInput={(params) => <TextField {...params} label={label} placeholder={available.length ? 'انتخاب کنید' : 'گزینه‌ای موجود نیست'} />} /></Grid>;

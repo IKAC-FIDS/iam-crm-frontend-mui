@@ -1,4 +1,5 @@
 import type { ChipProps } from '@mui/material/Chip';
+import { formatJalaliDateTime } from '@/shared/utils/jalaliDate';
 import type { OrganizationStatus } from '../types/organization.types';
 
 export function getOrganizationStatusLabel(status: OrganizationStatus): string {
@@ -32,13 +33,7 @@ export const organizationStatusOptions: { value: OrganizationStatus; label: stri
 ];
 
 export function formatOrganizationDate(value?: string | null): string {
-  if (!value) return '—';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '—';
-  return new Intl.DateTimeFormat('fa-IR', {
-    dateStyle: 'short',
-    timeStyle: 'short',
-  }).format(date);
+  return formatJalaliDateTime(value);
 }
 
 export function getOrganizationLocaleLabel(locale: string): string {

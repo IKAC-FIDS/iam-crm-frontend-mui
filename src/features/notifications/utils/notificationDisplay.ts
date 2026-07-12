@@ -1,4 +1,5 @@
 import type { ChipProps } from '@mui/material/Chip';
+import { formatJalaliDateTime } from '@/shared/utils/jalaliDate';
 import type {
   Notification,
   NotificationEntityType,
@@ -70,11 +71,5 @@ export function getNotificationStatusLabel(notification: Notification): string {
 }
 
 export function formatNotificationDate(value?: string | null): string {
-  if (!value) return '—';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '—';
-  return new Intl.DateTimeFormat('fa-IR', {
-    dateStyle: 'short',
-    timeStyle: 'short',
-  }).format(date);
+  return formatJalaliDateTime(value);
 }

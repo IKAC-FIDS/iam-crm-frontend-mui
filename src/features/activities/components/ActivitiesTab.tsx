@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
+import { formatJalaliDateTime } from '@/shared/utils/jalaliDate';
 import ActivityFormDialog from './ActivityFormDialog';
 import EditActivityDialog from './EditActivityDialog';
 import { useActivities } from '../hooks/useActivities';
@@ -30,13 +31,7 @@ function display(value?: string | null): string {
 }
 
 function formatDateTime(value?: string | null): string {
-  if (!value) return '—';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '—';
-  return new Intl.DateTimeFormat('fa-IR', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(date);
+  return formatJalaliDateTime(value);
 }
 
 function getFollowUpStatus(value: string): FollowUpStatus | null {

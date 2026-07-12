@@ -706,7 +706,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000055
+fix 000001 → fix 000056
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -3030,6 +3030,49 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Depends on backend lookup group `opportunity-sources` and opportunity DTO fields `sourceOptionId`, `opportunitySource`, `primaryContactId`, `probability`, and `competitor`.
 * Product / service is managed through Opportunity Line Items and was not duplicated in the opportunity definition form.
 * No `useCase` field exists on the inspected opportunity DTO, so no non-working use-case field was added.
+* Live authenticated API testing was not performed in this fix.
+
+**Verification status:**
+
+* Lint passed without errors.
+* Production build passed.
+* The non-blocking Vite bundle-size warning remains.
+
+---
+## fix 000056 — شمسی‌سازی ورودی و نمایش تاریخ‌ها در رابط کاربری
+
+**Implemented items:**
+
+* وابستگی سبک `jalaali-js` برای تبدیل تاریخ شمسی/میلادی اضافه شد.
+* ابزار مشترک `jalaliDate` برای تبدیل مقدار backend ISO به نمایش شمسی، تبدیل ورودی شمسی به ISO، نرمال‌سازی ارقام فارسی/عربی و ساخت بازه انتهای روز اضافه شد.
+* کامپوننت مشترک `JalaliDateField` اضافه شد تا فرم‌ها تاریخ شمسی را با الگوهای `۱۴۰۳/۰۵/۲۰` و `۱۴۰۳/۰۵/۲۰ ۱۴:۳۰` دریافت کنند و مقدار ISO به API بدهند.
+* ورودی‌های تاریخ/زمان در فعالیت‌ها، کال‌کارت، فرصت، کارها، زمان‌بندی مجدد کار، زمان‌بندی مجدد پیگیری، اسناد تجاری، پرداخت‌ها، فیلتر کارها، فیلتر گزارش‌ها و فیلتر Audit Log از ورودی native میلادی به ورودی شمسی مشترک منتقل شد.
+* نمایش‌های عمومی تاریخ از جمله شرکت‌ها، کارها، فعالیت‌ها، اعلان‌ها، سازمان‌ها، SSO، فرصت‌ها، اسناد، پرداخت‌ها، پیوست‌ها و لاگ‌ها از مسیرهای formatter مشترک به نمایش شمسی `YYYY/MM/DD - HH:mm` منتقل شدند.
+* برای فیلترهای بازه‌ای، مقدار شروع روز و انتهای روز به صورت ISO به backend ارسال می‌شود تا قرارداد backend تغییر نکند.
+
+**Important files:**
+
+* `src/shared/utils/jalaliDate.ts`
+* `src/shared/components/JalaliDateField.tsx`
+* `src/types/jalaali-js.d.ts`
+* `src/features/companies/utils/companyDisplay.ts`
+* `src/features/tasks/`
+* `src/features/activities/components/`
+* `src/features/followUps/components/RescheduleFollowUpDialog.tsx`
+* `src/features/opportunities/components/OpportunityForm.tsx`
+* `src/features/payments/components/`
+* `src/features/commercialDocuments/components/CommercialDocumentFormDialog.tsx`
+* `src/features/reports/components/ReportFilterPanel.tsx`
+* `src/features/auditLogs/pages/AuditLogsPage.tsx`
+* `package.json`
+* `package-lock.json`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* Backend همچنان تاریخ‌ها را به صورت Gregorian/ISO دریافت و ذخیره می‌کند؛ این fix فقط لایه UI را شمسی می‌کند.
+* ورودی مشترک فعلا متن شمسی کنترل‌شده است و Date Picker تقویمی تصویری اضافه نشده تا تغییر UI کم‌ریسک و متمرکز بماند.
+* فیلدهای date-only به ISO محلی تبدیل می‌شوند و برای `to` در فیلترهای بازه‌ای انتهای روز ارسال می‌شود.
 * Live authenticated API testing was not performed in this fix.
 
 **Verification status:**

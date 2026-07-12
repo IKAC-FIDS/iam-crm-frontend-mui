@@ -1,6 +1,7 @@
 import type { GridValidRowModel } from '@mui/x-data-grid';
 import type { Priority } from '@/features/companies/types/company.types';
 import { getPriorityLabel } from '@/features/companies/utils/companyDisplay';
+import { formatJalaliDateTime } from '@/shared/utils/jalaliDate';
 import type { Task, TaskStatus } from '../types/task.types';
 
 export const taskStatusOptions: { value: TaskStatus; label: string }[] = [
@@ -41,10 +42,7 @@ export function getTaskPriorityColor(priority?: Priority | string | null): 'defa
 }
 
 export function formatTaskDate(value?: string | null): string {
-  if (!value) return '—';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '—';
-  return new Intl.DateTimeFormat('fa-IR', { dateStyle: 'medium', timeStyle: 'short' }).format(date);
+  return formatJalaliDateTime(value);
 }
 
 export function isTaskOverdue(task: Task): boolean {

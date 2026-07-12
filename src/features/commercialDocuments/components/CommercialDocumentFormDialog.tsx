@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Stack, TextField } from '@mui/material';
+import JalaliDateField from '@/shared/components/JalaliDateField';
 import { getApiErrorMessage } from '@/lib/apiResponse';
 import { useCreateCommercialDocument, useUpdateCommercialDocument } from '../hooks/useCommercialDocuments';
 import { commercialDocumentStatusOptions, commercialDocumentTypeOptions } from '../utils/commercialDocumentDisplay';
 import type { CommercialDocument, CommercialDocumentStatus, CommercialDocumentType, CreateCommercialDocumentPayload } from '../types/commercialDocument.types';
-
-const dateValue = (value?: string | null) => value ? value.slice(0, 10) : '';
-const isoDate = (value: string) => value ? new Date(value).toISOString() : undefined;
 
 export default function CommercialDocumentFormDialog({
   opportunityId,
@@ -32,8 +30,8 @@ export default function CommercialDocumentFormDialog({
   const [description, setDescription] = useState(document?.description ?? '');
   const [amount, setAmount] = useState(String(document?.amount ?? ''));
   const [currency, setCurrency] = useState(document?.currency ?? 'IRR');
-  const [validUntil, setValidUntil] = useState(dateValue(document?.validUntil));
-  const [issuedAt, setIssuedAt] = useState(dateValue(document?.issuedAt));
+  const [validUntil, setValidUntil] = useState(document?.validUntil ?? '');
+  const [issuedAt, setIssuedAt] = useState(document?.issuedAt ?? '');
   const [fileUrl, setFileUrl] = useState(document?.fileUrl ?? '');
   const [externalRef, setExternalRef] = useState(document?.externalRef ?? '');
   const [notes, setNotes] = useState(document?.notes ?? '');
@@ -48,8 +46,8 @@ export default function CommercialDocumentFormDialog({
     description: description.trim() || undefined,
     amount: amount.trim() || undefined,
     currency: currency.trim() || 'IRR',
-    validUntil: isoDate(validUntil),
-    issuedAt: isoDate(issuedAt),
+    validUntil: validUntil || undefined,
+    issuedAt: issuedAt || undefined,
     fileUrl: fileUrl.trim() || undefined,
     externalRef: externalRef.trim() || undefined,
     notes: notes.trim() || undefined,
@@ -82,8 +80,8 @@ export default function CommercialDocumentFormDialog({
           <TextField label="توضیحات" multiline minRows={2} value={description} onChange={(event) => setDescription(event.target.value)} />
           <TextField label="مبلغ" inputMode="decimal" value={amount} onChange={(event) => setAmount(event.target.value)} />
           <TextField label="ارز" value={currency} onChange={(event) => setCurrency(event.target.value.toUpperCase())} />
-          <TextField label="اعتبار تا" type="date" value={validUntil} onChange={(event) => setValidUntil(event.target.value)} slotProps={{ inputLabel: { shrink: true } }} />
-          <TextField label="تاریخ صدور" type="date" value={issuedAt} onChange={(event) => setIssuedAt(event.target.value)} slotProps={{ inputLabel: { shrink: true } }} />
+          <JalaliDateField label="اعتبار تا" value={validUntil} onChange={(next) => setValidUntil(next ?? '')} />
+          <JalaliDateField label="تاریخ صدور" value={issuedAt} onChange={(next) => setIssuedAt(next ?? '')} />
           <TextField label="لینک فایل" value={fileUrl} onChange={(event) => setFileUrl(event.target.value)} />
           <TextField label="شناسه خارجی" value={externalRef} onChange={(event) => setExternalRef(event.target.value)} />
           <TextField label="یادداشت" multiline minRows={2} value={notes} onChange={(event) => setNotes(event.target.value)} />

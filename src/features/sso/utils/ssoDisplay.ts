@@ -1,4 +1,5 @@
 import type { ChipProps } from '@mui/material/Chip';
+import { formatJalaliDateTime } from '@/shared/utils/jalaliDate';
 import type { PublicSsoProvider, SsoProvider, SsoProviderType } from '../types/sso.types';
 
 export const ssoProviderTypeOptions: { value: SsoProviderType; label: string }[] = [
@@ -28,10 +29,7 @@ export function getSsoProviderDisplayName(provider: SsoProvider | PublicSsoProvi
 }
 
 export function formatSsoDate(value?: string | null): string {
-  if (!value) return '—';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '—';
-  return new Intl.DateTimeFormat('fa-IR', { dateStyle: 'short', timeStyle: 'short' }).format(date);
+  return formatJalaliDateTime(value);
 }
 
 export function splitCommaList(value: string): string[] {

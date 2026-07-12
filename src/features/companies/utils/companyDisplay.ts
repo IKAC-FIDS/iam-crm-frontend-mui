@@ -8,6 +8,7 @@ import type {
   CompanyOwnership,
   Priority,
 } from '../types/company.types';
+import { formatJalaliDateTime } from '@/shared/utils/jalaliDate';
 
 export function getPriorityLabel(priority?: Priority | string | null): string {
   return priority && isCompanyPriority(priority) ? companyPriorityLabels[priority] : '—';
@@ -22,13 +23,5 @@ export function getOwnershipLabel(
 }
 
 export function formatDateTime(value?: string | null): string {
-  if (!value) return '—';
-
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '—';
-
-  return new Intl.DateTimeFormat('fa-IR', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(date);
+  return formatJalaliDateTime(value);
 }

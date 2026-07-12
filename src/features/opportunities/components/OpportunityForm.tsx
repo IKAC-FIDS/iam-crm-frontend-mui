@@ -9,6 +9,7 @@ import {
   TextField,
 } from '@mui/material';
 import { useOwnerOptions } from '@/features/admin/users/hooks/useAdminUsers';
+import JalaliDateField from '@/shared/components/JalaliDateField';
 import { COMPANY_PRIORITY_OPTIONS, type Priority } from '@/features/companies/types/company.types';
 import { useCatalog } from '@/features/catalogs/hooks/useCatalogs';
 import {
@@ -44,7 +45,7 @@ function getInitialValue(opportunity?: Opportunity | null): CompanyOpportunityPa
     stageId: opportunity?.stageId,
     priority: (opportunity?.priority as Priority | undefined) ?? 'MEDIUM',
     estimatedValue: opportunity?.estimatedValue == null ? undefined : Number(opportunity.estimatedValue),
-    expectedCloseDate: opportunity?.expectedCloseDate?.slice(0, 10),
+    expectedCloseDate: opportunity?.expectedCloseDate ?? undefined,
     sourceOptionId: opportunity?.sourceOptionId ?? opportunity?.sourceOption?.id ?? undefined,
     opportunitySource: opportunity?.opportunitySource ?? undefined,
     source: opportunity?.source ?? undefined,
@@ -162,12 +163,10 @@ export default function OpportunityForm({
         onChange={(event) => update({ estimatedValue: numberOrUndefined(event.target.value) })}
       />
 
-      <TextField
+      <JalaliDateField
         label="تاریخ پیش‌بینی‌شده بستن فرصت"
-        type="date"
-        slotProps={{ inputLabel: { shrink: true } }}
         value={value.expectedCloseDate ?? ''}
-        onChange={(event) => update({ expectedCloseDate: event.target.value || undefined })}
+        onChange={(next) => update({ expectedCloseDate: next })}
       />
 
       <FormControl disabled={sourceQuery.isLoading || sourceQuery.isError}>
