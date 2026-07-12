@@ -5,7 +5,7 @@ import { Alert, Button, Chip, Paper, Stack, Typography } from '@mui/material';
 import { DataGrid, type GridColDef, type GridPaginationModel, type GridRenderCellParams } from '@mui/x-data-grid';
 
 import { can } from '@/features/auth/utils/permissions';
-import { getPriorityLabel } from '@/features/companies/utils/companyDisplay';
+import { formatDateTime, getPriorityLabel } from '@/features/companies/utils/companyDisplay';
 import { useAuthStore } from '@/store/authStore';
 import { useArchiveOpportunity, useCompanyOpportunities, useRestoreOpportunity } from '../hooks/useOpportunities';
 import type { Opportunity } from '../types/opportunity.types';
@@ -39,9 +39,13 @@ export default function CompanyOpportunitiesTab({ companyId }: { companyId: stri
 
   const columns: GridColDef<Opportunity>[] = [
     { field: 'title', headerName: 'عنوان فرصت', minWidth: 220, flex: 1 },
-    { field: 'stage', headerName: 'مرحله', minWidth: 150, valueGetter: (_value, row) => row.stage?.label ?? '—' },
-    { field: 'owner', headerName: 'مالک', minWidth: 160, valueGetter: (_value, row) => row.owner?.fullName ?? '—' },
+    { field: 'stage', headerName: 'مرحله فروش', minWidth: 150, valueGetter: (_value, row) => row.stage?.label ?? '—' },
+    { field: 'owner', headerName: 'مسئول فرصت', minWidth: 160, valueGetter: (_value, row) => row.owner?.fullName ?? '—' },
     { field: 'priority', headerName: 'اولویت', minWidth: 120, valueFormatter: (value) => getPriorityLabel(value) },
+    { field: 'estimatedValue', headerName: 'ارزش تخمینی فرصت', minWidth: 160, valueFormatter: (value) => value == null ? '—' : Number(value).toLocaleString('fa-IR') },
+    { field: 'expectedCloseDate', headerName: 'تاریخ پیش‌بینی‌شده بستن فرصت', minWidth: 220, valueFormatter: (value) => formatDateTime(value) },
+    { field: 'source', headerName: 'منبع ایجاد فرصت', minWidth: 160, valueGetter: (_value, row) => row.sourceOption?.label || row.opportunitySource || row.source || '—' },
+    { field: 'primaryContact', headerName: 'مخاطب اصلی', minWidth: 150, valueGetter: (_value, row) => row.primaryContact?.fullName ?? '—' },
     { field: 'archivedAt', headerName: 'وضعیت', minWidth: 120, renderCell: ({ row }) => <Chip size="small" color={row.archivedAt ? 'default' : 'success'} label={row.archivedAt ? 'بایگانی' : 'فعال'} /> },
     {
       field: 'actions',
@@ -52,8 +56,8 @@ export default function CompanyOpportunitiesTab({ companyId }: { companyId: stri
         <Stack direction="row" spacing={1}>
           <Button size="small" onClick={() => navigate(`/opportunities/${row.id}`, { state: { backTo: `/companies/${companyId}`, backLabel: 'بازگشت به شرکت' } })}>مشاهده جزئیات</Button>
           <Button size="small" disabled={!can(user, 'opportunity:update') || Boolean(row.archivedAt)} onClick={() => setForm(row)}>ویرایش</Button>
-          <Button size="small" disabled={!can(user, 'opportunity:change-stage') || Boolean(row.archivedAt)} onClick={() => setStage(row)}>مرحله</Button>
-          <Button size="small" disabled={!can(user, 'opportunity:change-owner') || Boolean(row.archivedAt)} onClick={() => setOwner(row)}>مالک</Button>
+          <Button size="small" disabled={!can(user, 'opportunity:change-stage') || Boolean(row.archivedAt)} onClick={() => setStage(row)}>مرحله فروش</Button>
+          <Button size="small" disabled={!can(user, 'opportunity:change-owner') || Boolean(row.archivedAt)} onClick={() => setOwner(row)}>مسئول فرصت</Button>
           <Button size="small" color="warning" disabled={!can(user, row.archivedAt ? 'opportunity:restore' : 'opportunity:archive')} onClick={() => archiveToggle(row)}>{row.archivedAt ? 'بازیابی' : 'بایگانی'}</Button>
         </Stack>
       ),

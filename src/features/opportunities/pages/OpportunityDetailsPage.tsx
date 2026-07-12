@@ -36,6 +36,7 @@ function PlaceholderCard({ text }: { text: string }) {
 
 function Overview({ opportunity }: { opportunity: Opportunity }) {
   const companyName = opportunity.company?.brandName || opportunity.company?.legalName;
+  const opportunitySource = opportunity.sourceOption?.label || opportunity.opportunitySource || opportunity.source;
   return (
     <Paper sx={{ p: 3 }}>
       <Grid container spacing={2}>
@@ -44,12 +45,15 @@ function Overview({ opportunity }: { opportunity: Opportunity }) {
           <Typography variant="caption" color="text.secondary">شرکت</Typography>
           <Typography sx={{ mt: 0.5 }}>{companyName ? <Link component={RouterLink} to={`/companies/${opportunity.companyId}`}>{companyName}</Link> : '—'}</Typography>
         </Grid>
-        <Field label="مرحله" value={opportunity.stage?.label} />
+        <Field label="مرحله فروش" value={opportunity.stage?.label} />
         <Field label="اولویت" value={getPriorityLabel(opportunity.priority)} />
-        <Field label="مالک" value={opportunity.owner?.fullName} />
-        <Field label="ارزش تخمینی" value={opportunity.estimatedValue == null ? '—' : Number(opportunity.estimatedValue).toLocaleString('fa-IR')} />
-        <Field label="تاریخ بستن مورد انتظار" value={formatDateTime(opportunity.expectedCloseDate)} />
-        <Field label="منبع" value={opportunity.source} />
+        <Field label="مسئول فرصت" value={opportunity.owner?.fullName} />
+        <Field label="ارزش تخمینی فرصت" value={opportunity.estimatedValue == null ? '—' : Number(opportunity.estimatedValue).toLocaleString('fa-IR')} />
+        <Field label="تاریخ پیش‌بینی‌شده بستن فرصت" value={formatDateTime(opportunity.expectedCloseDate)} />
+        <Field label="منبع ایجاد فرصت" value={opportunitySource} />
+        <Field label="مخاطب اصلی" value={opportunity.primaryContact?.fullName} />
+        <Field label="احتمال موفقیت" value={opportunity.probability == null ? '—' : `${opportunity.probability.toLocaleString('fa-IR')}٪`} />
+        <Field label="رقیب احتمالی" value={opportunity.competitor} />
         <Field label="تاریخ ایجاد" value={formatDateTime(opportunity.createdAt)} />
         <Field label="آخرین بروزرسانی" value={formatDateTime(opportunity.updatedAt)} />
         <Field label="وضعیت بایگانی" value={opportunity.archivedAt ? 'بایگانی' : 'فعال'} />
@@ -57,7 +61,7 @@ function Overview({ opportunity }: { opportunity: Opportunity }) {
         {opportunity.archivedAt && <Field label="دلیل بایگانی" value={opportunity.archiveReason} />}
         <Grid size={{ xs: 12 }}>
           <Divider sx={{ my: 1 }} />
-          <Typography variant="caption" color="text.secondary">توضیحات</Typography>
+          <Typography variant="caption" color="text.secondary">شرح نیازمندی / توضیحات فرصت</Typography>
           <Typography sx={{ mt: 0.5, whiteSpace: 'pre-wrap' }}>{opportunity.description || '—'}</Typography>
         </Grid>
       </Grid>

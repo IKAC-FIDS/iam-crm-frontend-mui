@@ -706,7 +706,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000054
+fix 000001 → fix 000055
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -2991,6 +2991,45 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Depends on backend lookup groups `departments`, `job-titles`, `persona-roles`, and `seniority-levels`.
 * Depends on backend person DTO aliases `jobTitle` and `personaRole`, which map to legacy persisted fields `title` and `personaTag`.
 * Existing records with only `title` or `personaTag` remain displayable through frontend fallbacks.
+* Live authenticated API testing was not performed in this fix.
+
+**Verification status:**
+
+* Lint passed without errors.
+* Production build passed.
+* The non-blocking Vite bundle-size warning remains.
+
+---
+## fix 000055 — اصلاح فرم تعریف فرصت و شفاف‌سازی منبع ایجاد فرصت
+
+**Implemented items:**
+
+* برچسب‌های فرم فرصت را شفاف‌تر کرد تا `source` فرصت با «منبع جذب شرکت» اشتباه نشود.
+* فیلد «منبع» در فرم فرصت به «منبع ایجاد فرصت» تغییر کرد و به گروه گزینه‌های پایه `opportunity-sources` متصل شد.
+* گروه `opportunity-sources` با برچسب «منابع ایجاد فرصت» در Admin Libraries / گزینه‌های پایه قابل مدیریت شد.
+* فرم ایجاد فرصت برای «مسئول فرصت»، «مرحله فروش»، «ارزش تخمینی فرصت»، «تاریخ پیش‌بینی‌شده بستن فرصت»، «مخاطب اصلی»، «احتمال موفقیت»، «رقیب احتمالی» و «شرح نیازمندی / توضیحات فرصت» شفاف‌سازی شد.
+* مخاطب اصلی فقط از افراد همان شرکت فرصت خوانده می‌شود.
+* تایپ‌های فرصت برای `sourceOptionId`، `opportunitySource`، `sourceOption`، `primaryContactId`، `primaryContact`، `probability` و `competitor` تکمیل شد.
+* فهرست فرصت‌ها، تب فرصت‌های شرکت، جزئیات فرصت و دیالوگ تغییر مسئول فرصت با برچسب‌های جدید هماهنگ شد.
+* فیلتر «منبع ایجاد فرصت» به فهرست سراسری فرصت‌ها اضافه شد.
+
+**Important files:**
+
+* `src/features/opportunities/components/OpportunityForm.tsx`
+* `src/features/opportunities/components/OpportunityFormDialog.tsx`
+* `src/features/opportunities/components/CompanyOpportunitiesTab.tsx`
+* `src/features/opportunities/components/ChangeOpportunityOwnerDialog.tsx`
+* `src/features/opportunities/pages/OpportunitiesPage.tsx`
+* `src/features/opportunities/pages/OpportunityDetailsPage.tsx`
+* `src/features/opportunities/types/opportunity.types.ts`
+* `src/features/catalogs/types/catalog.types.ts`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* Depends on backend lookup group `opportunity-sources` and opportunity DTO fields `sourceOptionId`, `opportunitySource`, `primaryContactId`, `probability`, and `competitor`.
+* Product / service is managed through Opportunity Line Items and was not duplicated in the opportunity definition form.
+* No `useCase` field exists on the inspected opportunity DTO, so no non-working use-case field was added.
 * Live authenticated API testing was not performed in this fix.
 
 **Verification status:**
