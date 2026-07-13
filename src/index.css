@@ -57,6 +57,16 @@ pre,
   text-align: left;
 }
 
+.ltr input,
+.ltr textarea,
+[data-ltr='true'] input,
+[data-ltr='true'] textarea,
+input[dir='ltr'],
+textarea[dir='ltr'] {
+  direction: ltr;
+  text-align: left;
+}
+
 code,
 pre {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',

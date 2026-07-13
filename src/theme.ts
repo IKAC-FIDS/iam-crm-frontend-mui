@@ -105,6 +105,16 @@ const sharedComponents: Components<Theme> = {
         borderRadius: theme.shape.borderRadius,
         paddingInline: theme.spacing(2),
         whiteSpace: 'nowrap',
+        flexShrink: 0,
+        maxWidth: '100%',
+        '& .MuiButton-startIcon': {
+          marginInlineStart: theme.spacing(-0.5),
+          marginInlineEnd: theme.spacing(1),
+        },
+        '& .MuiButton-endIcon': {
+          marginInlineStart: theme.spacing(1),
+          marginInlineEnd: theme.spacing(-0.5),
+        },
       }),
       sizeSmall: {
         minHeight: 32,
@@ -137,6 +147,60 @@ const sharedComponents: Components<Theme> = {
     defaultProps: {
       size: 'small',
     },
+    styleOverrides: {
+      root: {
+        minWidth: 0,
+      },
+      inputRoot: ({ theme }) => ({
+        flexWrap: 'wrap',
+        gap: theme.spacing(0.5),
+        '& .MuiAutocomplete-input': {
+          minWidth: 48,
+          textAlign: 'right',
+          direction: 'rtl',
+        },
+        '& .MuiAutocomplete-input[dir="ltr"], & .MuiAutocomplete-input.ltr, & .MuiAutocomplete-input[data-ltr="true"]': {
+          textAlign: 'left',
+          direction: 'ltr',
+        },
+      }),
+      paper: {
+        direction: 'rtl',
+      },
+      listbox: {
+        direction: 'rtl',
+      },
+      option: {
+        justifyContent: 'flex-start',
+        textAlign: 'right',
+      },
+      tag: {
+        maxWidth: '100%',
+      },
+    },
+  },
+  MuiInputBase: {
+    styleOverrides: {
+      root: {
+        direction: 'rtl',
+        minWidth: 0,
+      },
+      input: {
+        direction: 'rtl',
+        textAlign: 'right',
+        minWidth: 0,
+        '&::placeholder': {
+          textAlign: 'right',
+        },
+        '&[dir="ltr"], &.ltr, &[data-ltr="true"]': {
+          direction: 'ltr',
+          textAlign: 'left',
+          '&::placeholder': {
+            textAlign: 'left',
+          },
+        },
+      },
+    },
   },
   MuiOutlinedInput: {
     styleOverrides: {
@@ -145,13 +209,53 @@ const sharedComponents: Components<Theme> = {
         borderRadius: theme.shape.borderRadius,
         backgroundColor: theme.palette.background.paper,
       }),
+      notchedOutline: {
+        textAlign: 'right',
+      },
     },
   },
   MuiInputLabel: {
     styleOverrides: {
       root: {
         textAlign: 'right',
+        transformOrigin: 'top right',
+        '&.MuiInputLabel-shrink': {
+          transformOrigin: 'top right',
+        },
       },
+    },
+  },
+  MuiSelect: {
+    styleOverrides: {
+      select: ({ theme }) => ({
+        textAlign: 'right',
+        minWidth: 0,
+        paddingInlineStart: theme.spacing(1.75),
+        paddingInlineEnd: theme.spacing(4.5),
+        '&[dir="ltr"], &.ltr, &[data-ltr="true"]': {
+          textAlign: 'left',
+          direction: 'ltr',
+        },
+      }),
+      icon: ({ theme }) => ({
+        insetInlineEnd: theme.spacing(1),
+        insetInlineStart: 'auto',
+      }),
+    },
+  },
+  MuiInputAdornment: {
+    styleOverrides: {
+      root: ({ theme }) => ({
+        flexShrink: 0,
+        '&.MuiInputAdornment-positionStart': {
+          marginInlineStart: 0,
+          marginInlineEnd: theme.spacing(1),
+        },
+        '&.MuiInputAdornment-positionEnd': {
+          marginInlineStart: theme.spacing(1),
+          marginInlineEnd: 0,
+        },
+      }),
     },
   },
   MuiFormHelperText: {
@@ -312,6 +416,51 @@ const sharedComponents: Components<Theme> = {
     styleOverrides: {
       paper: {
         boxShadow: appTokens.shadow.popover,
+        direction: 'rtl',
+      },
+    },
+  },
+  MuiMenuItem: {
+    styleOverrides: {
+      root: {
+        justifyContent: 'flex-start',
+        textAlign: 'right',
+      },
+    },
+  },
+  MuiTablePagination: {
+    defaultProps: {
+      labelRowsPerPage: 'تعداد ردیف در صفحه',
+      labelDisplayedRows: ({ from, to, count }) => `از ${from} تا ${to} از ${count === -1 ? `بیش از ${to}` : count}`,
+    },
+    styleOverrides: {
+      root: {
+        direction: 'rtl',
+      },
+      toolbar: ({ theme }) => ({
+        flexWrap: 'wrap',
+        gap: theme.spacing(1),
+        justifyContent: 'flex-end',
+      }),
+      selectLabel: {
+        margin: 0,
+      },
+      displayedRows: {
+        margin: 0,
+      },
+      actions: {
+        marginInlineStart: 0,
+      },
+    },
+  },
+  MuiPagination: {
+    defaultProps: {
+      showFirstButton: true,
+      showLastButton: true,
+    },
+    styleOverrides: {
+      ul: {
+        direction: 'rtl',
       },
     },
   },

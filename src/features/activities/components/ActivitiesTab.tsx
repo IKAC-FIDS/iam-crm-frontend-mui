@@ -202,8 +202,8 @@ export default function ActivitiesTab({ companyId }: ActivitiesTabProps) {
               setPage(1);
             }}
             rowsPerPageOptions={[5, 10, 20]}
-            labelRowsPerPage="تعداد در صفحه:"
-            labelDisplayedRows={({ from, to, count }) => `${from}–${to} از ${count}`}
+            labelRowsPerPage="تعداد ردیف در صفحه"
+            labelDisplayedRows={({ from, to, count }) => `از ${from} تا ${to} از ${count}`}
           />
         </Paper>
       ) : null}

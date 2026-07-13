@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import {
   Alert, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle,
@@ -6,8 +6,12 @@ import {
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import type { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import BlockOutlinedIcon from '@mui/icons-material/BlockOutlined';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import { can } from '@/features/auth/utils/permissions';
 import { formatDateTime } from '@/features/companies/utils/companyDisplay';
+import { RowActions } from '@/shared/components/RowActions';
 import { useAuthStore } from '@/store/authStore';
 import AdminUserFormDialog from './AdminUserFormDialog';
 import EditUserRoleDialog from './EditUserRoleDialog';
@@ -56,7 +60,37 @@ export default function AdminUsersPage() {
     { field: 'team', headerName: 'تیم', minWidth: 120, valueFormatter: (value) => value || '—' },
     { field: 'status', headerName: 'وضعیت', minWidth: 100, renderCell: ({ row }: GridRenderCellParams<AdminUser>) => <Chip size="small" color={isUserActive(row) ? 'success' : 'default'} label={isUserActive(row) ? 'فعال' : 'غیرفعال'} /> },
     { field: 'createdAt', headerName: 'تاریخ ایجاد', minWidth: 180, valueFormatter: formatDateTime },
-    { field: 'actions', headerName: 'عملیات', minWidth: 250, sortable: false, renderCell: ({ row }: GridRenderCellParams<AdminUser>) => <Stack direction="row"><Button size="small" onClick={() => setEditing(row)}>ویرایش نقش</Button><Button size="small" color={isUserActive(row) ? 'error' : 'success'} disabled={row.id === current?.id} onClick={() => setStatusUser(row)}>{isUserActive(row) ? 'غیرفعال‌سازی' : 'فعال‌سازی'}</Button></Stack> },
+    {
+      field: 'actions',
+      headerName: 'عملیات',
+      minWidth: 112,
+      width: 112,
+      align: 'center',
+      headerAlign: 'center',
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      renderCell: ({ row }: GridRenderCellParams<AdminUser>) => (
+        <RowActions
+          actions={[
+            {
+              key: 'role',
+              label: 'ویرایش نقش',
+              icon: <ManageAccountsOutlinedIcon fontSize="small" />,
+              onClick: () => setEditing(row),
+            },
+            {
+              key: 'status',
+              label: isUserActive(row) ? 'غیرفعال‌سازی' : 'فعال‌سازی',
+              icon: isUserActive(row) ? <BlockOutlinedIcon fontSize="small" /> : <CheckCircleOutlineIcon fontSize="small" />,
+              color: isUserActive(row) ? 'error' : 'success',
+              disabled: row.id === current?.id,
+              onClick: () => setStatusUser(row),
+            },
+          ]}
+        />
+      ),
+    },
   ], [current?.id]);
 
   if (!allowed) return <Alert severity="warning">شما دسترسی مدیریت کاربران را ندارید.</Alert>;

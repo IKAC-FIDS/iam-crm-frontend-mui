@@ -1,7 +1,11 @@
-import { useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import { Alert, Box, Button, Chip, MenuItem, Paper, Stack, TextField } from '@mui/material';
 import { DataGrid, type GridColDef, type GridPaginationModel, type GridRenderCellParams } from '@mui/x-data-grid';
+import BlockOutlinedIcon from '@mui/icons-material/BlockOutlined';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { useDebouncedValue } from '@/features/companies/hooks/useDebouncedValue';
+import { RowActions } from '@/shared/components/RowActions';
 import { useOrganizations } from '../hooks/useOrganizations';
 import {
   formatOrganizationDate,
@@ -55,28 +59,41 @@ export default function OrganizationsTable() {
     {
       field: 'actions',
       headerName: 'عملیات',
-      minWidth: 260,
+      minWidth: 136,
+      width: 136,
+      align: 'center',
+      headerAlign: 'center',
       sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
       renderCell: ({ row }: GridRenderCellParams<Organization>) => (
-        <Stack direction="row" spacing={1}>
-          <Button size="small" onClick={() => setFormOrganization(row)}>ویرایش</Button>
-          <Button
-            size="small"
-            color="success"
-            disabled={row.status === 'ACTIVE'}
-            onClick={() => setStatusAction({ organization: row, action: 'activate' })}
-          >
-            فعال‌سازی
-          </Button>
-          <Button
-            size="small"
-            color="warning"
-            disabled={row.status === 'SUSPENDED' || row.status === 'ARCHIVED'}
-            onClick={() => setStatusAction({ organization: row, action: 'suspend' })}
-          >
-            تعلیق
-          </Button>
-        </Stack>
+        <RowActions
+          actions={[
+            {
+              key: 'edit',
+              label: 'ویرایش',
+              icon: <EditOutlinedIcon fontSize="small" />,
+              onClick: () => setFormOrganization(row),
+            },
+            {
+              key: 'activate',
+              label: 'فعال‌سازی',
+              icon: <CheckCircleOutlineIcon fontSize="small" />,
+              color: 'success',
+              disabled: row.status === 'ACTIVE',
+              onClick: () => setStatusAction({ organization: row, action: 'activate' }),
+            },
+            {
+              key: 'suspend',
+              label: 'تعلیق',
+              icon: <BlockOutlinedIcon fontSize="small" />,
+              color: 'warning',
+              disabled: row.status === 'SUSPENDED' || row.status === 'ARCHIVED',
+              menuOnly: true,
+              onClick: () => setStatusAction({ organization: row, action: 'suspend' }),
+            },
+          ]}
+        />
       ),
     },
   ], []);

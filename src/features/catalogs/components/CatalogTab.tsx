@@ -1,9 +1,12 @@
-import { useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import { Alert, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Paper, Select, Stack } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import type { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { toast } from 'sonner';
 import { formatDateTime } from '@/features/companies/utils/companyDisplay';
+import { RowActions } from '@/shared/components/RowActions';
 import { useCatalog, useDeleteCatalogItem } from '../hooks/useCatalogs';
 import { getCatalogItemLabel, isCatalogItemActive } from '../types/catalog.types';
 import { LOOKUP_GROUP_LABELS, LOOKUP_GROUPS } from '../types/catalog.types';
@@ -25,7 +28,39 @@ export default function CatalogTab({ kind }: { kind: CatalogKind }) {
     { field: 'description', headerName: 'توضیحات', minWidth: 220, flex: 1, valueFormatter: (value) => value || '—' },
     { field: 'status', headerName: 'وضعیت', minWidth: 100, renderCell: ({ row }: GridRenderCellParams<CatalogItem>) => <Chip size="small" color={isCatalogItemActive(row) ? 'success' : 'default'} label={isCatalogItemActive(row) ? 'فعال' : 'غیرفعال'} /> },
     { field: 'updatedAt', headerName: 'آخرین بروزرسانی', minWidth: 180, valueFormatter: formatDateTime },
-    { field: 'actions', headerName: 'عملیات', minWidth: 150, sortable: false, renderCell: ({ row }: GridRenderCellParams<CatalogItem>) => <Stack direction="row"><Button size="small" onClick={() => { setEditing(row); setFormOpen(true); }}>ویرایش</Button><Button size="small" color="error" onClick={() => setDeleting(row)}>حذف</Button></Stack> },
+    {
+      field: 'actions',
+      headerName: 'عملیات',
+      minWidth: 104,
+      width: 104,
+      align: 'center',
+      headerAlign: 'center',
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      renderCell: ({ row }: GridRenderCellParams<CatalogItem>) => (
+        <RowActions
+          actions={[
+            {
+              key: 'edit',
+              label: 'ویرایش',
+              icon: <EditOutlinedIcon fontSize="small" />,
+              onClick: () => {
+                setEditing(row);
+                setFormOpen(true);
+              },
+            },
+            {
+              key: 'delete',
+              label: 'حذف',
+              icon: <DeleteOutlineIcon fontSize="small" />,
+              color: 'error',
+              onClick: () => setDeleting(row),
+            },
+          ]}
+        />
+      ),
+    },
   ], [kind]);
 
   const confirmDelete = async () => {

@@ -1,8 +1,13 @@
-import { useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import { Alert, Box, Button, Chip, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
 import { DataGrid, type GridColDef, type GridPaginationModel, type GridRenderCellParams } from '@mui/x-data-grid';
+import BlockOutlinedIcon from '@mui/icons-material/BlockOutlined';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import LoginIcon from '@mui/icons-material/Login';
 import { can, canAny } from '@/features/auth/utils/permissions';
+import { RowActions } from '@/shared/components/RowActions';
 import { useAuthStore } from '@/store/authStore';
 import { useDebouncedValue } from '@/features/companies/hooks/useDebouncedValue';
 import { ssoService } from '../services/sso.service';
@@ -75,24 +80,52 @@ export default function AdminSsoProvidersPage() {
     {
       field: 'actions',
       headerName: 'عملیات',
-      minWidth: 410,
+      minWidth: 136,
+      width: 136,
+      align: 'center',
+      headerAlign: 'center',
       sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
       renderCell: ({ row }: GridRenderCellParams<SsoProvider>) => {
         const activeProvider = isSsoProviderActive(row);
         return (
-          <Stack direction="row" spacing={1}>
-            <Button size="small" disabled={!canManage} onClick={() => setFormProvider(row)}>ویرایش</Button>
-            <Button size="small" startIcon={<LoginIcon />} disabled={!activeProvider} onClick={() => ssoService.startLogin(row)}>تست ورود</Button>
-            <Button
-              size="small"
-              color={activeProvider ? 'warning' : 'success'}
-              disabled={!canManage}
-              onClick={() => setPendingAction({ provider: row, action: activeProvider ? 'deactivate' : 'activate' })}
-            >
-              {activeProvider ? 'غیرفعال' : 'فعال'}
-            </Button>
-            <Button size="small" color="error" disabled={!canManage} onClick={() => setPendingAction({ provider: row, action: 'delete' })}>حذف</Button>
-          </Stack>
+          <RowActions
+            actions={[
+              {
+                key: 'edit',
+                label: 'ویرایش',
+                icon: <EditOutlinedIcon fontSize="small" />,
+                disabled: !canManage,
+                onClick: () => setFormProvider(row),
+              },
+              {
+                key: 'test',
+                label: 'تست ورود',
+                icon: <LoginIcon fontSize="small" />,
+                disabled: !activeProvider,
+                onClick: () => ssoService.startLogin(row),
+              },
+              {
+                key: 'active-toggle',
+                label: activeProvider ? 'غیرفعال‌سازی' : 'فعال‌سازی',
+                icon: activeProvider ? <BlockOutlinedIcon fontSize="small" /> : <CheckCircleOutlineIcon fontSize="small" />,
+                color: activeProvider ? 'warning' : 'success',
+                disabled: !canManage,
+                menuOnly: true,
+                onClick: () => setPendingAction({ provider: row, action: activeProvider ? 'deactivate' : 'activate' }),
+              },
+              {
+                key: 'delete',
+                label: 'حذف',
+                icon: <DeleteOutlineIcon fontSize="small" />,
+                color: 'error',
+                disabled: !canManage,
+                menuOnly: true,
+                onClick: () => setPendingAction({ provider: row, action: 'delete' }),
+              },
+            ]}
+          />
         );
       },
     },

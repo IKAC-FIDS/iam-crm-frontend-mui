@@ -1,9 +1,12 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Alert, Autocomplete, Box, Button, Chip, FormControl, InputLabel, MenuItem, Paper, Select, Stack, TextField, Typography } from '@mui/material';
+import { Alert, Autocomplete, Box, Chip, FormControl, InputLabel, MenuItem, Paper, Select, TextField, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import type { GridColDef, GridPaginationModel, GridRenderCellParams } from '@mui/x-data-grid';
+import BusinessOutlinedIcon from '@mui/icons-material/BusinessOutlined';
+import PersonSearchOutlinedIcon from '@mui/icons-material/PersonSearchOutlined';
 import { can } from '@/features/auth/utils/permissions';
+import { RowActions } from '@/shared/components/RowActions';
 import { useAuthStore } from '@/store/authStore';
 import { useCompanies } from '@/features/companies/hooks/useCompanies';
 import { useDebouncedValue } from '@/features/companies/hooks/useDebouncedValue';
@@ -91,7 +94,36 @@ export default function PeopleDirectoryPage() {
       flex: 1,
       valueGetter: (_value, row) => primaryContactSummary(row),
     },
-    { field: 'actions', headerName: 'عملیات', minWidth: 210, sortable: false, filterable: false, renderCell: ({ row }: GridRenderCellParams<DirectoryPerson>) => <Stack direction="row" sx={{ height: '100%', alignItems: 'center' }}><Button size="small" disabled={!row.companyId} onClick={() => navigate(`/companies/${row.companyId}`)}>مشاهده شرکت</Button><Button size="small" onClick={() => setOpenPersonId(row.id)}>بازکردن شخص</Button></Stack> },
+    {
+      field: 'actions',
+      headerName: 'عملیات',
+      minWidth: 112,
+      width: 112,
+      align: 'center',
+      headerAlign: 'center',
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      renderCell: ({ row }: GridRenderCellParams<DirectoryPerson>) => (
+        <RowActions
+          actions={[
+            {
+              key: 'company',
+              label: 'مشاهده شرکت',
+              icon: <BusinessOutlinedIcon fontSize="small" />,
+              disabled: !row.companyId,
+              onClick: () => navigate(`/companies/${row.companyId}`),
+            },
+            {
+              key: 'person',
+              label: 'بازکردن شخص',
+              icon: <PersonSearchOutlinedIcon fontSize="small" />,
+              onClick: () => setOpenPersonId(row.id),
+            },
+          ]}
+        />
+      ),
+    },
   ], [navigate]);
 
   if (!allowed) return <Alert severity="warning">شما دسترسی مشاهده افراد را ندارید.</Alert>;

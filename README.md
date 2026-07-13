@@ -706,7 +706,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000062
+fix 000001 → fix 000063
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -3274,6 +3274,64 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Lint passed without errors.
 * Production build passed.
 * The non-blocking Vite bundle-size warning remains.
+
+---
+## fix 000063 — تکمیل راست‌چین‌سازی کامپوننت‌ها و استانداردسازی عملیات گرید
+
+**Implemented items:**
+
+* زیرساخت کامل RTL برای MUI/Emotion اضافه شد؛ علاوه بر `dir="rtl"` در ریشه و `theme.direction = 'rtl'`، یک Emotion cache با `stylis-plugin-rtl` و `prefixer` به ریشه اپلیکیشن متصل شد.
+* رفتار داخلی `TextField`، `InputBase`، `OutlinedInput`، `InputLabel`، `Select`، `Autocomplete`، `InputAdornment`، `Menu`، `TablePagination` و `Pagination` در theme مرکزی برای متن فارسی، placeholder، label، notch، menu item و pagination راست‌چین شد.
+* helperهای LTR برای داده‌های فنی مثل تاریخ، ایمیل، شناسه، URL و کد حفظ و کامل‌تر شدند تا اصلاح global RTL فیلدهای فنی را خراب نکند.
+* مشکل هم‌پوشانی آیکن‌های فیلد تاریخ شمسی با متن در `JalaliDateField` از مسیر مشترک picker اصلاح شد؛ ورودی تاریخ همچنان LTR و قرارداد خروجی ISO/Gregorian-compatible باقی ماند.
+* کامپوننت مشترک `RowActions` و `RowActionButton` اضافه شد تا عملیات ردیفی با `IconButton`، tooltip فارسی، `aria-label` فارسی و منوی overflow قابل دسترس نمایش داده شوند.
+* ستون‌های عملیات متنی و عریض در گریدهای شرکت‌ها، فرصت‌ها، کارها، افراد، پیوست‌ها، اسناد تجاری، پرداخت‌ها، محصولات، سازمان‌ها، اعلان‌ها، SSO، کتابخانه‌ها، شعب، کانال‌های اجتماعی، آیتم‌های فرصت و تنظیمات پایپ‌لاین به عملیات آیکنی فشرده تبدیل شدند.
+* اکشن‌های پرتکرار مستقیم نگه داشته شدند و اکشن‌های ثانویه مانند تغییر وضعیت، ارجاع، بایگانی، حذف و تعلیق در منوی `MoreVert` قرار گرفتند.
+* عرض ستون‌های عملیات کنترل شد و برای اغلب گریدها به حدود 104 تا 136 پیکسل کاهش یافت.
+* labelهای pagination دستی در فعالیت‌ها و پیگیری‌ها با متن فارسی یکسان `تعداد ردیف در صفحه` و الگوی `از {from} تا {to} از {count}` هماهنگ شد.
+* wrap/flex-shrink دکمه‌ها و action containerها در theme بهبود یافت تا متن‌هایی مانند «به‌روزرسانی» از محدوده دکمه بیرون نزند.
+
+**Root cause found:**
+
+* اپلیکیشن فقط در لایه document/theme راست‌چین شده بود و Emotion cache برای تبدیل CSSهای MUI به RTL وجود نداشت.
+* بسیاری از input/select/autocompleteها رفتار داخلی پیش‌فرض LTR یا padding/adornment نامتناسب داشتند.
+* ستون‌های عملیات با دکمه‌های متنی طولانی ساخته شده بودند و باعث مصرف عرض زیاد، overflow و تجربه ضعیف در viewportهای کوچک می‌شدند.
+
+**Important files:**
+
+* `src/lib/rtlCache.ts`
+* `src/app/App.tsx`
+* `src/theme.ts`
+* `src/theme/customizations/dataGrid.ts`
+* `src/index.css`
+* `src/shared/components/RowActions.tsx`
+* `src/shared/components/JalaliDateField.tsx`
+* `src/features/**/**Table.tsx`
+* `src/features/**/**Tab.tsx`
+* `src/features/**/**Page.tsx`
+* `package.json`
+* `package-lock.json`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* این fix فقط frontend است و هیچ API contract، route، permission، payload، validation یا workflow سمت backend را تغییر نمی‌دهد.
+* رنگ‌های تاییدشده پروژه تغییر نکردند؛ تغییرات روی RTL، alignment، responsive behavior، accessibility و عرض ستون‌های عملیات متمرکز است.
+* برای اجرای RTL cache، وابستگی‌های سبک `@emotion/cache`، `stylis`، `stylis-plugin-rtl` و تایپ `@types/stylis` به صورت صریح به frontend اضافه شدند.
+* visual browser inspection با مرورگر در این fix انجام نشد.
+* Live API testing انجام نشد چون backend در این فرایند اجرا/تست نشد.
+
+**Verification status:**
+
+* Lint passed without errors: `npm run lint`.
+* TypeScript check passed as part of `npm run build`.
+* Production build passed: `npm run build`.
+* The non-blocking Vite bundle-size warning remains.
+
+**Remaining known limitations:**
+
+* دکمه‌های متنی داخل cardها و timelineها که عملیات ردیفی DataGrid/Table نیستند، برای حفظ خوانایی و workflow فعلی متنی باقی ماندند.
+* بازبینی تصویری چند viewport و تست زنده نقش‌ها/API هنوز باید در محیط دارای backend و مرورگر انجام شود.
 
 ---
 **Built with ❤️ for sales team**

@@ -1,10 +1,17 @@
-import { useCallback, useMemo, useState } from 'react';
+﻿import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import { Alert, Box, Button, Chip, MenuItem, Paper, Stack, TextField } from '@mui/material';
+import { Alert, Box, Chip, MenuItem, Paper, Stack, TextField } from '@mui/material';
 import { DataGrid, type GridColDef, type GridPaginationModel, type GridRenderCellParams } from '@mui/x-data-grid';
+import ArchiveOutlinedIcon from '@mui/icons-material/ArchiveOutlined';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined';
+import MarkEmailUnreadOutlinedIcon from '@mui/icons-material/MarkEmailUnreadOutlined';
+import RestoreOutlinedIcon from '@mui/icons-material/RestoreOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { getApiErrorMessage } from '@/lib/apiResponse';
 import { useDebouncedValue } from '@/features/companies/hooks/useDebouncedValue';
+import { RowActions } from '@/shared/components/RowActions';
 import {
   useArchiveNotification,
   useMarkNotificationRead,
@@ -123,20 +130,59 @@ export default function NotificationsTable({ canManage }: { canManage: boolean }
     {
       field: 'actions',
       headerName: 'عملیات',
-      minWidth: 470,
+      minWidth: 136,
+      width: 136,
+      align: 'center',
+      headerAlign: 'center',
       sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
       renderCell: ({ row }: GridRenderCellParams<Notification>) => (
-        <Stack direction="row" spacing={1}>
-          <Button size="small" onClick={() => openNotification(row)}>مشاهده</Button>
-          <Button size="small" disabled={!canManage || !isUnread(row)} onClick={() => runAction('اعلان خوانده شد.', 'خوانده کردن اعلان انجام نشد.', () => markRead.mutateAsync(row))}>خوانده شد</Button>
-          <Button size="small" disabled={!canManage || isUnread(row)} onClick={() => runAction('اعلان خوانده‌نشده شد.', 'خوانده‌نشده کردن اعلان انجام نشد.', () => markUnread.mutateAsync(row))}>خوانده‌نشده</Button>
-          {isArchived(row) ? (
-            <Button size="small" disabled={!canManage} onClick={() => runAction('اعلان از بایگانی خارج شد.', 'خروج از بایگانی انجام نشد.', () => unarchive.mutateAsync(row))}>خروج</Button>
-          ) : (
-            <Button size="small" color="warning" disabled={!canManage} onClick={() => runAction('اعلان بایگانی شد.', 'بایگانی اعلان انجام نشد.', () => archive.mutateAsync(row))}>بایگانی</Button>
-          )}
-          <Button size="small" color="error" disabled={!canManage} onClick={() => setDeleteNotification(row)}>حذف</Button>
-        </Stack>
+        <RowActions
+          actions={[
+            {
+              key: 'open',
+              label: 'مشاهده',
+              icon: <VisibilityOutlinedIcon fontSize="small" />,
+              onClick: () => openNotification(row),
+            },
+            {
+              key: 'read',
+              label: 'خوانده شد',
+              icon: <DraftsOutlinedIcon fontSize="small" />,
+              disabled: !canManage || !isUnread(row),
+              onClick: () => runAction('اعلان خوانده شد.', 'خوانده کردن اعلان انجام نشد.', () => markRead.mutateAsync(row)),
+            },
+            {
+              key: 'unread',
+              label: 'خوانده‌نشده',
+              icon: <MarkEmailUnreadOutlinedIcon fontSize="small" />,
+              disabled: !canManage || isUnread(row),
+              menuOnly: true,
+              onClick: () => runAction('اعلان خوانده‌نشده شد.', 'خوانده‌نشده کردن اعلان انجام نشد.', () => markUnread.mutateAsync(row)),
+            },
+            {
+              key: 'archive-toggle',
+              label: isArchived(row) ? 'خروج از بایگانی' : 'بایگانی',
+              icon: isArchived(row) ? <RestoreOutlinedIcon fontSize="small" /> : <ArchiveOutlinedIcon fontSize="small" />,
+              color: isArchived(row) ? undefined : 'warning',
+              disabled: !canManage,
+              menuOnly: true,
+              onClick: () => isArchived(row)
+                ? runAction('اعلان از بایگانی خارج شد.', 'خروج از بایگانی انجام نشد.', () => unarchive.mutateAsync(row))
+                : runAction('اعلان بایگانی شد.', 'بایگانی اعلان انجام نشد.', () => archive.mutateAsync(row)),
+            },
+            {
+              key: 'delete',
+              label: 'حذف',
+              icon: <DeleteOutlineIcon fontSize="small" />,
+              color: 'error',
+              disabled: !canManage,
+              menuOnly: true,
+              onClick: () => setDeleteNotification(row),
+            },
+          ]}
+        />
       ),
     },
   ], [archive, canManage, markRead, markUnread, openNotification, runAction, unarchive]);

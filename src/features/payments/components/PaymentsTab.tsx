@@ -1,7 +1,12 @@
-import { useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
 import { DataGrid, type GridColDef, type GridPaginationModel, type GridRenderCellParams } from '@mui/x-data-grid';
+import AttachFileOutlinedIcon from '@mui/icons-material/AttachFileOutlined';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import AttachmentsTab from '@/features/attachments/components/AttachmentsTab';
 import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
@@ -9,6 +14,7 @@ import { formatDateTime } from '@/features/companies/utils/companyDisplay';
 import { formatMoney } from '@/features/opportunityLineItems/utils/money';
 import { getCommercialDocumentTypeLabel } from '@/features/commercialDocuments/utils/commercialDocumentDisplay';
 import { getApiErrorMessage } from '@/lib/apiResponse';
+import { RowActions } from '@/shared/components/RowActions';
 import { useDeletePayment, usePayments } from '../hooks/usePayments';
 import { getPaymentMethodLabel, getPaymentStatusLabel, paymentStatusOptions } from '../utils/paymentDisplay';
 import type { OpportunityPayment, PaymentListParams, PaymentStatus } from '../types/payment.types';
@@ -60,16 +66,58 @@ export default function PaymentsTab({ opportunityId, companyId }: { opportunityI
     {
       field: 'actions',
       headerName: 'عملیات',
-      minWidth: 400,
+      minWidth: 136,
+      width: 136,
+      align: 'center',
+      headerAlign: 'center',
       sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
       renderCell: ({ row }: GridRenderCellParams<OpportunityPayment>) => (
-        <Stack direction="row" spacing={1}>
-          <Button size="small" disabled={!canManage} onClick={() => setEditing(row)}>ویرایش</Button>
-          <Button size="small" disabled={!canManage || row.status === 'PAID' || row.status === 'CANCELLED'} onClick={() => setMarkingPaid(row)}>پرداخت شد</Button>
-          <Button size="small" color="warning" disabled={!canManage || row.status === 'CANCELLED'} onClick={() => setCancelling(row)}>لغو</Button>
-          <Button size="small" onClick={() => setAttachments(row)}>پیوست‌ها</Button>
-          <Button size="small" color="error" disabled={!canManage || remove.isPending} onClick={() => setDeleting(row)}>حذف</Button>
-        </Stack>
+        <RowActions
+          actions={[
+            {
+              key: 'edit',
+              label: 'ویرایش',
+              icon: <EditOutlinedIcon fontSize="small" />,
+              disabled: !canManage,
+              onClick: () => setEditing(row),
+            },
+            {
+              key: 'attachments',
+              label: 'پیوست‌ها',
+              icon: <AttachFileOutlinedIcon fontSize="small" />,
+              onClick: () => setAttachments(row),
+            },
+            {
+              key: 'paid',
+              label: 'پرداخت شد',
+              icon: <CheckCircleOutlineIcon fontSize="small" />,
+              color: 'success',
+              disabled: !canManage || row.status === 'PAID' || row.status === 'CANCELLED',
+              menuOnly: true,
+              onClick: () => setMarkingPaid(row),
+            },
+            {
+              key: 'cancel',
+              label: 'لغو',
+              icon: <CancelOutlinedIcon fontSize="small" />,
+              color: 'warning',
+              disabled: !canManage || row.status === 'CANCELLED',
+              menuOnly: true,
+              onClick: () => setCancelling(row),
+            },
+            {
+              key: 'delete',
+              label: 'حذف',
+              icon: <DeleteOutlineIcon fontSize="small" />,
+              color: 'error',
+              disabled: !canManage || remove.isPending,
+              menuOnly: true,
+              onClick: () => setDeleting(row),
+            },
+          ]}
+        />
       ),
     },
   ], [canManage, remove.isPending]);

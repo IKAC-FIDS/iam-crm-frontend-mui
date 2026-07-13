@@ -1,12 +1,19 @@
-import { useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Alert, Box, Button, Chip, Link, MenuItem, Paper, Stack, TextField } from '@mui/material';
 import { DataGrid, type GridColDef, type GridPaginationModel, type GridRenderCellParams } from '@mui/x-data-grid';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import EventRepeatOutlinedIcon from '@mui/icons-material/EventRepeatOutlined';
+import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
+import SyncAltOutlinedIcon from '@mui/icons-material/SyncAltOutlined';
 import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
 import { useDebouncedValue } from '@/features/companies/hooks/useDebouncedValue';
 import { useOwnerOptions } from '@/features/admin/users/hooks/useAdminUsers';
 import { JalaliDateRangePicker } from '@/shared/components/JalaliDateField';
+import { RowActions } from '@/shared/components/RowActions';
 import { useTasks } from '../hooks/useTasks';
 import {
   formatTaskDate,
@@ -102,19 +109,68 @@ export default function TasksTable({
     {
       field: 'actions',
       headerName: 'عملیات',
-      minWidth: 460,
+      minWidth: 136,
+      width: 136,
+      align: 'center',
+      headerAlign: 'center',
       sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
       renderCell: ({ row }: GridRenderCellParams<Task>) => {
         const closed = row.status === 'DONE' || row.status === 'CANCELLED';
         return (
-          <Stack direction="row" spacing={1}>
-            <Button size="small" disabled={!canUpdate} onClick={() => setForm(row)}>ویرایش</Button>
-            <Button size="small" disabled={!canUpdate} onClick={() => setStatusTask(row)}>وضعیت</Button>
-            <Button size="small" disabled={!canAssign} onClick={() => setAssignTask(row)}>ارجاع</Button>
-            <Button size="small" disabled={!canComplete || closed} onClick={() => setCompleteTask(row)}>تکمیل</Button>
-            <Button size="small" disabled={!canUpdate || closed} onClick={() => setRescheduleTask(row)}>زمان</Button>
-            <Button size="small" color="error" disabled={!canDelete} onClick={() => setDeleteTask(row)}>حذف</Button>
-          </Stack>
+          <RowActions
+            actions={[
+              {
+                key: 'edit',
+                label: 'ویرایش',
+                icon: <EditOutlinedIcon fontSize="small" />,
+                disabled: !canUpdate,
+                onClick: () => setForm(row),
+              },
+              {
+                key: 'status',
+                label: 'تغییر وضعیت',
+                icon: <SyncAltOutlinedIcon fontSize="small" />,
+                disabled: !canUpdate,
+                onClick: () => setStatusTask(row),
+              },
+              {
+                key: 'assign',
+                label: 'ارجاع',
+                icon: <ManageAccountsOutlinedIcon fontSize="small" />,
+                disabled: !canAssign,
+                menuOnly: true,
+                onClick: () => setAssignTask(row),
+              },
+              {
+                key: 'complete',
+                label: 'تکمیل',
+                icon: <CheckCircleOutlineIcon fontSize="small" />,
+                color: 'success',
+                disabled: !canComplete || closed,
+                menuOnly: true,
+                onClick: () => setCompleteTask(row),
+              },
+              {
+                key: 'reschedule',
+                label: 'زمان‌بندی',
+                icon: <EventRepeatOutlinedIcon fontSize="small" />,
+                disabled: !canUpdate || closed,
+                menuOnly: true,
+                onClick: () => setRescheduleTask(row),
+              },
+              {
+                key: 'delete',
+                label: 'حذف',
+                icon: <DeleteOutlineIcon fontSize="small" />,
+                color: 'error',
+                disabled: !canDelete,
+                menuOnly: true,
+                onClick: () => setDeleteTask(row),
+              },
+            ]}
+          />
         );
       },
     },

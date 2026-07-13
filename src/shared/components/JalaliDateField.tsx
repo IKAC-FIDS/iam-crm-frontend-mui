@@ -69,6 +69,7 @@ function PickerTextField({
   disabled,
   fullWidth,
   placeholder,
+  sx,
 }: {
   label?: ReactNode;
   value: string;
@@ -81,6 +82,7 @@ function PickerTextField({
   disabled?: boolean;
   fullWidth?: boolean;
   placeholder?: string;
+  sx?: TextFieldProps['sx'];
 }) {
   return (
     <TextField
@@ -94,21 +96,32 @@ function PickerTextField({
       disabled={disabled}
       fullWidth={fullWidth}
       placeholder={placeholder}
+      sx={sx}
       slotProps={{
-        htmlInput: { dir: 'ltr' },
+        htmlInput: { dir: 'ltr', className: 'ltr' },
         input: {
-          endAdornment: (
-          <InputAdornment position="end">
-            {value && !disabled ? (
-              <IconButton size="small" onClick={(event) => { event.stopPropagation(); onClear(); }} aria-label="پاک‌کردن تاریخ">
-                <ClearIcon fontSize="small" />
+          startAdornment: (
+            <InputAdornment position="start">
+              {value && !disabled ? (
+                <IconButton size="small" onClick={(event) => { event.stopPropagation(); onClear(); }} aria-label="پاک‌کردن تاریخ">
+                  <ClearIcon fontSize="small" />
+                </IconButton>
+              ) : null}
+              <IconButton size="small" onClick={(event) => { event.stopPropagation(); openCalendar(); }} disabled={disabled} aria-label="بازکردن تقویم">
+                <CalendarMonthIcon fontSize="small" />
               </IconButton>
-            ) : null}
-            <IconButton size="small" onClick={(event) => { event.stopPropagation(); openCalendar(); }} disabled={disabled} aria-label="بازکردن تقویم">
-              <CalendarMonthIcon fontSize="small" />
-            </IconButton>
-          </InputAdornment>
+            </InputAdornment>
           ),
+          sx: {
+            '& .MuiInputBase-input': {
+              direction: 'ltr',
+              textAlign: 'left',
+              minWidth: 0,
+            },
+            '& .MuiInputAdornment-root': {
+              alignSelf: 'center',
+            },
+          },
         },
       }}
     />

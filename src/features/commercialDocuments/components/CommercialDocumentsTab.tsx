@@ -1,7 +1,11 @@
-import { useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Link, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
 import { DataGrid, type GridColDef, type GridPaginationModel, type GridRenderCellParams } from '@mui/x-data-grid';
+import AttachFileOutlinedIcon from '@mui/icons-material/AttachFileOutlined';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import SyncAltOutlinedIcon from '@mui/icons-material/SyncAltOutlined';
 import AttachmentsTab from '@/features/attachments/components/AttachmentsTab';
 import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
@@ -9,6 +13,7 @@ import { formatDateTime } from '@/features/companies/utils/companyDisplay';
 import { formatMoney } from '@/features/opportunityLineItems/utils/money';
 import { getApiErrorMessage } from '@/lib/apiResponse';
 import { useDebouncedValue } from '@/features/companies/hooks/useDebouncedValue';
+import { RowActions } from '@/shared/components/RowActions';
 import { useCommercialDocuments, useDeleteCommercialDocument } from '../hooks/useCommercialDocuments';
 import { commercialDocumentStatusOptions, commercialDocumentTypeOptions, getCommercialDocumentStatusLabel, getCommercialDocumentTypeLabel, safeExternalUrl } from '../utils/commercialDocumentDisplay';
 import type { CommercialDocument, CommercialDocumentListParams, CommercialDocumentStatus, CommercialDocumentType } from '../types/commercialDocument.types';
@@ -58,15 +63,48 @@ export default function CommercialDocumentsTab({ opportunityId, companyId }: { o
     {
       field: 'actions',
       headerName: 'عملیات',
-      minWidth: 330,
+      minWidth: 136,
+      width: 136,
+      align: 'center',
+      headerAlign: 'center',
       sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
       renderCell: ({ row }: GridRenderCellParams<CommercialDocument>) => (
-        <Stack direction="row" spacing={1}>
-          <Button size="small" disabled={!canManage} onClick={() => setEditing(row)}>ویرایش</Button>
-          <Button size="small" disabled={!canManage} onClick={() => setChanging(row)}>وضعیت</Button>
-          <Button size="small" onClick={() => setAttachments(row)}>پیوست‌ها</Button>
-          <Button size="small" color="error" disabled={!canManage || remove.isPending} onClick={() => setDeleting(row)}>حذف</Button>
-        </Stack>
+        <RowActions
+          actions={[
+            {
+              key: 'edit',
+              label: 'ویرایش',
+              icon: <EditOutlinedIcon fontSize="small" />,
+              disabled: !canManage,
+              onClick: () => setEditing(row),
+            },
+            {
+              key: 'attachments',
+              label: 'پیوست‌ها',
+              icon: <AttachFileOutlinedIcon fontSize="small" />,
+              onClick: () => setAttachments(row),
+            },
+            {
+              key: 'status',
+              label: 'تغییر وضعیت',
+              icon: <SyncAltOutlinedIcon fontSize="small" />,
+              disabled: !canManage,
+              menuOnly: true,
+              onClick: () => setChanging(row),
+            },
+            {
+              key: 'delete',
+              label: 'حذف',
+              icon: <DeleteOutlineIcon fontSize="small" />,
+              color: 'error',
+              disabled: !canManage || remove.isPending,
+              menuOnly: true,
+              onClick: () => setDeleting(row),
+            },
+          ]}
+        />
       ),
     },
   ], [canManage, remove.isPending]);

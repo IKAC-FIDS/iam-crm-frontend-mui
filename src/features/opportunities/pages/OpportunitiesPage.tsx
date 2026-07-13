@@ -1,11 +1,18 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Alert, Box, Button, Chip, FormControl, InputLabel, MenuItem, Paper, Select, Stack, TextField, Typography } from '@mui/material';
+import { Alert, Box, Chip, FormControl, InputLabel, MenuItem, Paper, Select, Stack, TextField, Typography } from '@mui/material';
 import { DataGrid, type GridColDef, type GridPaginationModel, type GridRenderCellParams } from '@mui/x-data-grid';
+import ArchiveOutlinedIcon from '@mui/icons-material/ArchiveOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
+import RestoreOutlinedIcon from '@mui/icons-material/RestoreOutlined';
+import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 
 import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
+import { RowActions } from '@/shared/components/RowActions';
 import { useDebouncedValue } from '@/features/companies/hooks/useDebouncedValue';
 import { COMPANY_PRIORITY_OPTIONS, type Priority } from '@/features/companies/types/company.types';
 import { formatDateTime, getPriorityLabel } from '@/features/companies/utils/companyDisplay';
@@ -80,16 +87,56 @@ export default function OpportunitiesPage() {
     {
       field: 'actions',
       headerName: 'عملیات',
-      minWidth: 520,
+      minWidth: 136,
+      width: 136,
+      align: 'center',
+      headerAlign: 'center',
       sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
       renderCell: ({ row }: GridRenderCellParams<Opportunity>) => (
-        <Stack direction="row" spacing={1}>
-          <Button size="small" onClick={() => openDetails(row)}>مشاهده جزئیات</Button>
-          <Button size="small" disabled={!can(user, 'opportunity:update') || Boolean(row.archivedAt)} onClick={() => setForm(row)}>ویرایش</Button>
-          <Button size="small" disabled={!can(user, 'opportunity:change-stage') || Boolean(row.archivedAt)} onClick={() => setStage(row)}>مرحله فروش</Button>
-          <Button size="small" disabled={!can(user, 'opportunity:change-owner') || Boolean(row.archivedAt)} onClick={() => setOwner(row)}>مسئول فرصت</Button>
-          <Button size="small" color="warning" disabled={!can(user, row.archivedAt ? 'opportunity:restore' : 'opportunity:archive')} onClick={() => archiveToggle(row)}>{row.archivedAt ? 'بازیابی' : 'بایگانی'}</Button>
-        </Stack>
+        <RowActions
+          actions={[
+            {
+              key: 'view',
+              label: 'مشاهده جزئیات',
+              icon: <VisibilityOutlinedIcon fontSize="small" />,
+              onClick: () => openDetails(row),
+            },
+            {
+              key: 'edit',
+              label: 'ویرایش',
+              icon: <EditOutlinedIcon fontSize="small" />,
+              disabled: !can(user, 'opportunity:update') || Boolean(row.archivedAt),
+              onClick: () => setForm(row),
+            },
+            {
+              key: 'stage',
+              label: 'مرحله فروش',
+              icon: <TrendingUpOutlinedIcon fontSize="small" />,
+              disabled: !can(user, 'opportunity:change-stage') || Boolean(row.archivedAt),
+              menuOnly: true,
+              onClick: () => setStage(row),
+            },
+            {
+              key: 'owner',
+              label: 'مسئول فرصت',
+              icon: <ManageAccountsOutlinedIcon fontSize="small" />,
+              disabled: !can(user, 'opportunity:change-owner') || Boolean(row.archivedAt),
+              menuOnly: true,
+              onClick: () => setOwner(row),
+            },
+            {
+              key: 'archive-toggle',
+              label: row.archivedAt ? 'بازیابی' : 'بایگانی',
+              icon: row.archivedAt ? <RestoreOutlinedIcon fontSize="small" /> : <ArchiveOutlinedIcon fontSize="small" />,
+              color: row.archivedAt ? 'success' : 'warning',
+              disabled: !can(user, row.archivedAt ? 'opportunity:restore' : 'opportunity:archive'),
+              menuOnly: true,
+              onClick: () => archiveToggle(row),
+            },
+          ]}
+        />
       ),
     },
   ];

@@ -51,7 +51,7 @@ export default function FollowUpsPage() {
           {query.isFetching && <Typography variant="caption" color="text.secondary">در حال بروزرسانی پیگیری‌ها...</Typography>}
           {filtered.length ? filtered.map((item) => <FollowUpCard key={item.id} followUp={item} />) : <Paper sx={{ p: 4, textAlign: 'center' }}><Typography color="text.secondary">موردی در این فیلتر وجود ندارد.</Typography></Paper>}
           <Paper>
-            <TablePagination component="div" count={query.data?.meta.total ?? 0} page={page - 1} onPageChange={(_, value) => setPage(value + 1)} rowsPerPage={limit} onRowsPerPageChange={(event) => { setLimit(Number(event.target.value) as 5 | 10 | 20 | 50); setPage(1); }} rowsPerPageOptions={[5, 10, 20, 50]} labelRowsPerPage="تعداد در صفحه:" labelDisplayedRows={({ from, to, count }) => `${from}–${to} از ${count}`} />
+            <TablePagination component="div" count={query.data?.meta.total ?? 0} page={page - 1} onPageChange={(_, value) => setPage(value + 1)} rowsPerPage={limit} onRowsPerPageChange={(event) => { setLimit(Number(event.target.value) as 5 | 10 | 20 | 50); setPage(1); }} rowsPerPageOptions={[5, 10, 20, 50]} labelRowsPerPage="تعداد ردیف در صفحه" labelDisplayedRows={({ from, to, count }) => `از ${from} تا ${to} از ${count}`} />
           </Paper>
         </Stack>
       )}

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import {
   Alert,
@@ -12,7 +12,10 @@ import {
   Typography,
 } from '@mui/material';
 import { DataGrid, type GridColDef, type GridRenderCellParams } from '@mui/x-data-grid';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { can } from '@/features/auth/utils/permissions';
+import { RowActions } from '@/shared/components/RowActions';
 import { useAuthStore } from '@/store/authStore';
 import { useDeleteOpportunityLineItem, useOpportunityLineItems } from '../hooks/useOpportunityLineItems';
 import type { OpportunityLineItem } from '../types/opportunityLineItem.types';
@@ -86,13 +89,33 @@ export default function OpportunityLineItemsTab({
     {
       field: 'actions',
       headerName: 'عملیات',
-      minWidth: 170,
+      minWidth: 104,
+      width: 104,
+      align: 'center',
+      headerAlign: 'center',
       sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
       renderCell: ({ row }: GridRenderCellParams<OpportunityLineItem>) => (
-        <Stack direction="row" spacing={1}>
-          <Button size="small" disabled={!canManage} onClick={() => setEditing(row)}>ویرایش</Button>
-          <Button size="small" color="error" disabled={!canManage || remove.isPending} onClick={() => setDeleting(row)}>حذف</Button>
-        </Stack>
+        <RowActions
+          actions={[
+            {
+              key: 'edit',
+              label: 'ویرایش',
+              icon: <EditOutlinedIcon fontSize="small" />,
+              disabled: !canManage,
+              onClick: () => setEditing(row),
+            },
+            {
+              key: 'delete',
+              label: 'حذف',
+              icon: <DeleteOutlineIcon fontSize="small" />,
+              color: 'error',
+              disabled: !canManage || remove.isPending,
+              onClick: () => setDeleting(row),
+            },
+          ]}
+        />
       ),
     },
   ], [canManage, currency, remove.isPending]);

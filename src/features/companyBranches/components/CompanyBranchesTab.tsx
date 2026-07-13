@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import {
   Alert,
@@ -14,7 +14,10 @@ import {
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import type { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { can } from '@/features/auth/utils/permissions';
+import { RowActions } from '@/shared/components/RowActions';
 import { useAuthStore } from '@/store/authStore';
 import { formatDateTime } from '@/features/companies/utils/companyDisplay';
 import CompanyBranchFormDialog from './CompanyBranchFormDialog';
@@ -46,14 +49,37 @@ export default function CompanyBranchesTab({ companyId }: { companyId: string })
     {
       field: 'actions',
       headerName: 'عملیات',
-      minWidth: 160,
+      minWidth: 104,
+      width: 104,
+      align: 'center',
+      headerAlign: 'center',
       sortable: false,
       filterable: false,
+      disableColumnMenu: true,
       renderCell: ({ row }: GridRenderCellParams<CompanyBranch>) => (
-        <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center', height: '100%' }}>
-          {canManage && <Button size="small" onClick={() => { setSelectedBranch(row); setFormMode('edit'); setFormOpen(true); }}>ویرایش</Button>}
-          {canDelete && <Button size="small" color="error" onClick={() => setDeletingBranch(row)}>حذف</Button>}
-        </Stack>
+        <RowActions
+          actions={[
+            {
+              key: 'edit',
+              label: 'ویرایش',
+              icon: <EditOutlinedIcon fontSize="small" />,
+              visible: canManage,
+              onClick: () => {
+                setSelectedBranch(row);
+                setFormMode('edit');
+                setFormOpen(true);
+              },
+            },
+            {
+              key: 'delete',
+              label: 'حذف',
+              icon: <DeleteOutlineIcon fontSize="small" />,
+              color: 'error',
+              visible: canDelete,
+              onClick: () => setDeletingBranch(row),
+            },
+          ]}
+        />
       ),
     },
   ], [canDelete, canManage]);

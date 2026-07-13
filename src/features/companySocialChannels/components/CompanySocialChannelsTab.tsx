@@ -1,9 +1,13 @@
-import { useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Link, Paper, Stack, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import type { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
 import { can } from '@/features/auth/utils/permissions';
+import { RowActions } from '@/shared/components/RowActions';
 import { useAuthStore } from '@/store/authStore';
 import { formatDateTime } from '@/features/companies/utils/companyDisplay';
 import CompanySocialChannelFormDialog from './CompanySocialChannelFormDialog';
@@ -33,13 +37,42 @@ export default function CompanySocialChannelsTab({ companyId }: { companyId: str
     },
     { field: 'updatedAt', headerName: 'آخرین بروزرسانی', minWidth: 190, valueFormatter: (value) => formatDateTime(value) },
     {
-      field: 'actions', headerName: 'عملیات', minWidth: 220, sortable: false, filterable: false,
+      field: 'actions', headerName: 'عملیات', minWidth: 136, width: 136, align: 'center', headerAlign: 'center', sortable: false, filterable: false, disableColumnMenu: true,
       renderCell: ({ row }: GridRenderCellParams<CompanySocialChannel>) => (
-        <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center', height: '100%' }}>
-          {canOpenSocialHandle(row.platform, row.handle) && <Button size="small" component="a" href={row.handle} target="_blank" rel="noreferrer">باز کردن</Button>}
-          {canManage && <Button size="small" onClick={() => { setSelected(row); setMode('edit'); setFormOpen(true); }}>ویرایش</Button>}
-          {canDelete && <Button size="small" color="error" onClick={() => setDeleting(row)}>حذف</Button>}
-        </Stack>
+        <RowActions
+          actions={[
+            {
+              key: 'open',
+              label: 'باز کردن',
+              icon: <OpenInNewOutlinedIcon fontSize="small" />,
+              visible: canOpenSocialHandle(row.platform, row.handle),
+              href: row.handle,
+              target: '_blank',
+              rel: 'noreferrer',
+              onClick: () => undefined,
+            },
+            {
+              key: 'edit',
+              label: 'ویرایش',
+              icon: <EditOutlinedIcon fontSize="small" />,
+              visible: canManage,
+              onClick: () => {
+                setSelected(row);
+                setMode('edit');
+                setFormOpen(true);
+              },
+            },
+            {
+              key: 'delete',
+              label: 'حذف',
+              icon: <DeleteOutlineIcon fontSize="small" />,
+              color: 'error',
+              visible: canDelete,
+              menuOnly: true,
+              onClick: () => setDeleting(row),
+            },
+          ]}
+        />
       ),
     },
   ], [canDelete, canManage]);

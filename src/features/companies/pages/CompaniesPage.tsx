@@ -20,9 +20,13 @@ import type {
   GridPaginationModel,
   GridRenderCellParams,
 } from '@mui/x-data-grid';
+import ArchiveOutlinedIcon from '@mui/icons-material/ArchiveOutlined';
+import RestoreOutlinedIcon from '@mui/icons-material/RestoreOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import Header from '@/components/dashboard/Header';
 import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
+import { RowActions } from '@/shared/components/RowActions';
 import CreateCompanyDialog from '../components/CreateCompanyDialog';
 import ArchiveCompanyDialog from '../components/ArchiveCompanyDialog';
 import RestoreCompanyDialog from '../components/RestoreCompanyDialog';
@@ -122,18 +126,32 @@ export default function CompaniesPage() {
       {
         field: 'actions',
         headerName: 'عملیات',
-        minWidth: 250,
+        minWidth: 112,
+        width: 112,
+        align: 'center',
+        headerAlign: 'center',
         sortable: false,
         filterable: false,
+        disableColumnMenu: true,
         renderCell: ({ row }: GridRenderCellParams<CompanyListItem>) => (
-          <Stack direction="row" spacing={1} sx={{ height: '100%', alignItems: 'center' }}>
-            <Button size="small" onClick={() => navigate(`/companies/${row.id}`, { state: { backTo: '/companies', backLabel: 'بازگشت به شرکت‌ها' } })}>
-              مشاهده جزئیات
-            </Button>
-            {canArchiveCompany && (isCompanyArchived(row)
-              ? <Button size="small" color="success" onClick={() => setRestoring(row)}>بازیابی</Button>
-              : <Button size="small" color="warning" onClick={() => setArchiving(row)}>بایگانی</Button>)}
-          </Stack>
+          <RowActions
+            actions={[
+              {
+                key: 'view',
+                label: 'مشاهده جزئیات',
+                icon: <VisibilityOutlinedIcon fontSize="small" />,
+                onClick: () => navigate(`/companies/${row.id}`, { state: { backTo: '/companies', backLabel: 'بازگشت به شرکت‌ها' } }),
+              },
+              {
+                key: 'archive-toggle',
+                label: isCompanyArchived(row) ? 'بازیابی' : 'بایگانی',
+                icon: isCompanyArchived(row) ? <RestoreOutlinedIcon fontSize="small" /> : <ArchiveOutlinedIcon fontSize="small" />,
+                color: isCompanyArchived(row) ? 'success' : 'warning',
+                visible: canArchiveCompany,
+                onClick: () => (isCompanyArchived(row) ? setRestoring(row) : setArchiving(row)),
+              },
+            ]}
+          />
         ),
       },
     ],

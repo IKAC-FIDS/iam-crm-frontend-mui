@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+﻿import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import {
   Alert,
@@ -14,10 +14,14 @@ import {
   TextField,
 } from '@mui/material';
 import { DataGrid, type GridColDef, type GridPaginationModel, type GridRenderCellParams } from '@mui/x-data-grid';
+import BlockOutlinedIcon from '@mui/icons-material/BlockOutlined';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
 import { useDebouncedValue } from '@/features/companies/hooks/useDebouncedValue';
 import { formatMoney } from '@/features/opportunityLineItems/utils/money';
+import { RowActions } from '@/shared/components/RowActions';
 import {
   useActivateProductCatalogItem,
   useDeactivateProductCatalogItem,
@@ -83,15 +87,33 @@ export default function ProductCatalogTable() {
     {
       field: 'actions',
       headerName: 'عملیات',
-      minWidth: 220,
+      minWidth: 112,
+      width: 112,
+      align: 'center',
+      headerAlign: 'center',
       sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
       renderCell: ({ row }: GridRenderCellParams<ProductCatalogItem>) => (
-        <Stack direction="row" spacing={1}>
-          <Button size="small" disabled={!canManage} onClick={() => setEditing(row)}>ویرایش</Button>
-          <Button size="small" color={row.isActive ? 'warning' : 'success'} disabled={!canManage || togglePending} onClick={() => toggleActive(row)}>
-            {row.isActive ? 'غیرفعال' : 'فعال'}
-          </Button>
-        </Stack>
+        <RowActions
+          actions={[
+            {
+              key: 'edit',
+              label: 'ویرایش',
+              icon: <EditOutlinedIcon fontSize="small" />,
+              disabled: !canManage,
+              onClick: () => setEditing(row),
+            },
+            {
+              key: 'active-toggle',
+              label: row.isActive ? 'غیرفعال‌سازی' : 'فعال‌سازی',
+              icon: row.isActive ? <BlockOutlinedIcon fontSize="small" /> : <CheckCircleOutlineIcon fontSize="small" />,
+              color: row.isActive ? 'warning' : 'success',
+              disabled: !canManage || togglePending,
+              onClick: () => toggleActive(row),
+            },
+          ]}
+        />
       ),
     },
   ], [canManage, toggleActive, togglePending]);
