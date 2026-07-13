@@ -134,7 +134,14 @@ export default function OpportunityDetailsPage() {
       {tab === 'items' && <OpportunityLineItemsTab opportunityId={opportunity.id} companyId={opportunity.companyId} />}
       {tab === 'documents' && <CommercialDocumentsTab opportunityId={opportunity.id} companyId={opportunity.companyId} />}
       {tab === 'payments' && <PaymentsTab opportunityId={opportunity.id} companyId={opportunity.companyId} />}
-      {tab === 'tasks' && <OpportunityTasksTab opportunityId={opportunity.id} />}
+      {tab === 'tasks' && (
+        <OpportunityTasksTab
+          opportunityId={opportunity.id}
+          opportunityTitle={opportunity.title}
+          companyId={opportunity.companyId}
+          companyName={opportunity.company?.brandName || opportunity.company?.legalName}
+        />
+      )}
       {tab === 'attachments' && <AttachmentsTab entityType="OPPORTUNITY" entityId={opportunity.id} title="پیوست‌های فرصت" emptyMessage="هنوز پیوستی برای این فرصت ثبت نشده است." />}
       {tab === 'activities' && <PlaceholderCard text={placeholder.activities} />}
       {formOpen && <OpportunityFormDialog companyId={opportunity.companyId} opportunity={opportunity} open onClose={() => setFormOpen(false)} />}

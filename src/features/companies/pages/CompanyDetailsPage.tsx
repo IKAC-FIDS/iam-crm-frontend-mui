@@ -28,6 +28,7 @@ import CallCardTab from '@/features/callCards/components/CallCardTab';
 import CompanyBranchesTab from '@/features/companyBranches/components/CompanyBranchesTab';
 import CompanySocialChannelsTab from '@/features/companySocialChannels/components/CompanySocialChannelsTab';
 import CompanyOpportunitiesTab from '@/features/opportunities/components/CompanyOpportunitiesTab';
+import CompanyTasksTab from '@/features/tasks/components/CompanyTasksTab';
 import { useCompany } from '../hooks/useCompanies';
 import { isCompanyArchived } from '../types/company.types';
 import {
@@ -40,6 +41,7 @@ const detailTabs = [
   { label: 'نمای کلی', value: 'overview' },
   { label: 'افراد', value: 'people' },
   { label: 'فرصت‌ها', value: 'opportunities' },
+  { label: 'کارها', value: 'tasks' },
   { label: 'فعالیت‌ها', value: 'activities' },
   { label: 'کال کارت', value: 'call-card' },
   { label: 'شعب', value: 'branches' },
@@ -208,6 +210,8 @@ export default function CompanyDetailsPage() {
         <PeopleTab companyId={company.id} />
       ) : activeTab === 'opportunities' ? (
         <CompanyOpportunitiesTab companyId={company.id} />
+      ) : activeTab === 'tasks' ? (
+        <CompanyTasksTab companyId={company.id} companyName={company.brandName || company.legalName} />
       ) : activeTab === 'activities' ? (
         <ActivitiesTab companyId={company.id} />
       ) : activeTab === 'call-card' ? (

@@ -35,11 +35,21 @@ function LinkedEntity({ task }: { task: Task }) {
 
 export default function TasksTable({
   fixedParams = {},
-  opportunityId,
+  contextOpportunityId,
+  contextOpportunityTitle,
+  contextCompanyId,
+  contextCompanyName,
+  lockOpportunity = false,
+  lockCompany = false,
   compact = false,
 }: {
   fixedParams?: FindTasksParams;
-  opportunityId?: string;
+  contextOpportunityId?: string;
+  contextOpportunityTitle?: string;
+  contextCompanyId?: string;
+  contextCompanyName?: string;
+  lockOpportunity?: boolean;
+  lockCompany?: boolean;
   compact?: boolean;
 }) {
   const user = useAuthStore((state) => state.user);
@@ -148,7 +158,20 @@ export default function TasksTable({
           sx={{ border: 0, minHeight: 360, '& .task-overdue-row': { bgcolor: 'warning.light' } }}
         />
       </Paper>
-      {form !== undefined && <TaskFormDialog key={form?.id ?? 'new'} task={form} opportunityId={opportunityId} open onClose={() => setForm(undefined)} />}
+      {form !== undefined && (
+        <TaskFormDialog
+          key={form?.id ?? 'new'}
+          task={form}
+          contextOpportunityId={contextOpportunityId}
+          contextOpportunityTitle={contextOpportunityTitle}
+          contextCompanyId={contextCompanyId}
+          contextCompanyName={contextCompanyName}
+          lockOpportunity={lockOpportunity}
+          lockCompany={lockCompany}
+          open
+          onClose={() => setForm(undefined)}
+        />
+      )}
       {statusTask && <ChangeTaskStatusDialog task={statusTask} open onClose={() => setStatusTask(null)} />}
       {assignTask && <AssignTaskDialog task={assignTask} open onClose={() => setAssignTask(null)} />}
       {completeTask && <CompleteTaskDialog task={completeTask} open onClose={() => setCompleteTask(null)} />}

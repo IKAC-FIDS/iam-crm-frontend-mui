@@ -706,7 +706,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000060
+fix 000001 → fix 000061
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -3192,6 +3192,43 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 **Verification status:**
 
 * Vite cache cleared.
+* Lint passed without errors.
+* Production build passed.
+* The non-blocking Vite bundle-size warning remains.
+
+---
+## fix 000061 — اصلاح فرم ایجاد کار بر اساس زمینه شرکت و فرصت
+
+**Implemented items:**
+
+* فیلدهای متنی raw برای `companyId` و `opportunityId` از فرم ایجاد/ویرایش کار حذف شدند.
+* فرم مشترک `TaskFormDialog` بر اساس زمینه شرکت و فرصت، context خواندنی نمایش می‌دهد و شناسه‌ها را از همان context ارسال می‌کند.
+* در ایجاد کار از داخل فرصت، شرکت و فرصت قفل و فقط به‌صورت خواندنی نمایش داده می‌شوند.
+* در ایجاد کار از داخل شرکت، شرکت قفل و به‌صورت خواندنی نمایش داده می‌شود.
+* در صفحه عمومی کارها، شرکت، فرصت و مخاطب با Autocomplete/selector مبتنی بر APIهای موجود انتخاب می‌شوند.
+* فرصت‌ها با شرکت انتخاب‌شده فیلتر می‌شوند و انتخاب فرصت، شرکت مرتبط را به‌صورت سازگار تنظیم می‌کند.
+* مخاطب‌ها فقط بر اساس شرکت انتخاب‌شده/current بارگذاری می‌شوند.
+* تب کارها به صفحه جزئیات شرکت اضافه شد تا ایجاد کار در زمینه شرکت امکان‌پذیر باشد.
+
+**Important files:**
+
+* `src/features/tasks/components/TaskFormDialog.tsx`
+* `src/features/tasks/components/TasksTable.tsx`
+* `src/features/tasks/components/OpportunityTasksTab.tsx`
+* `src/features/tasks/components/CompanyTasksTab.tsx`
+* `src/features/opportunities/pages/OpportunityDetailsPage.tsx`
+* `src/features/companies/pages/CompanyDetailsPage.tsx`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* این fix فقط frontend است و هیچ API contract سمت backend را تغییر نمی‌دهد.
+* payload کار همچنان با DTO موجود `CreateTaskPayload` / `UpdateTaskPayload` ارسال می‌شود.
+* برای سازگاری، وقتی context شرکت موجود است `companyId` همان context ارسال می‌شود؛ کاربر امکان ویرایش raw id ندارد.
+* Live authenticated API testing انجام نشد.
+
+**Verification status:**
+
 * Lint passed without errors.
 * Production build passed.
 * The non-blocking Vite bundle-size warning remains.
