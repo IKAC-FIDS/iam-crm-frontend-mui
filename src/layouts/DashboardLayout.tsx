@@ -6,6 +6,7 @@ import AppNavbar from '@/components/dashboard/AppNavbar';
 import SideMenu from '@/components/dashboard/SideMenu';
 import OrganizationStatusAlert from '@/features/organizations/components/OrganizationStatusAlert';
 import { Outlet } from 'react-router-dom';
+import { appTokens } from '@/theme/tokens';
 
 export default function DashboardLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -29,7 +30,14 @@ export default function DashboardLayout() {
         }}
       >
         <Toolbar />
-        <Box sx={{ p: { xs: 2, sm: 3 } }}>
+        <Box
+          sx={{
+            width: '100%',
+            maxWidth: appTokens.layout.contentMaxWidth,
+            mx: 'auto',
+            p: { xs: appTokens.layout.mobilePagePadding, sm: appTokens.layout.desktopPagePadding, xl: appTokens.layout.largePagePadding },
+          }}
+        >
           <OrganizationStatusAlert />
           <Outlet />
         </Box>

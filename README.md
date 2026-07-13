@@ -706,7 +706,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000061
+fix 000001 → fix 000062
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -3226,6 +3226,48 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * payload کار همچنان با DTO موجود `CreateTaskPayload` / `UpdateTaskPayload` ارسال می‌شود.
 * برای سازگاری، وقتی context شرکت موجود است `companyId` همان context ارسال می‌شود؛ کاربر امکان ویرایش raw id ندارد.
 * Live authenticated API testing انجام نشد.
+
+**Verification status:**
+
+* Lint passed without errors.
+* Production build passed.
+* The non-blocking Vite bundle-size warning remains.
+
+---
+## fix 000062 — پایه‌گذاری سیستم طراحی یکپارچه و RTL
+
+**Implemented items:**
+
+* theme مرکزی MUI با حفظ کامل palette تاییدشده توسعه داده شد و رنگ‌های پروژه تغییر نکردند.
+* tokenهای مشترک layout، اندازه‌ها، radius و shadow در `src/theme/tokens.ts` اضافه شدند.
+* customizationهای موجود MUI X برای DataGrid، Charts، Date Pickers و Tree View به theme اصلی متصل شدند.
+* default/style overrideهای مشترک برای Button، IconButton، TextField، FormControl، Autocomplete، Paper، Card، Dialog، Table، Tabs، Chip، Alert، Menu و Tooltip اضافه شد.
+* CSS پایه اپلیکیشن از کدهای قالب Vite پاک‌سازی شد و helperهای RTL/LTR و جلوگیری از overflow افقی اضافه شدند.
+* کامپوننت‌های مشترک `PageContainer`، `PageHeader`، `PageSection`، `FilterPanel`، `ResponsiveActionGroup` و `StateBlock` اضافه شدند.
+* layout اصلی داشبورد به container مرکزی با max-width و padding واکنش‌گرا منتقل شد.
+* Header داشبورد از inline style به MUI sx و typography استاندارد منتقل شد.
+* فاصله‌گذاری منطقی RTL در AppNavbar و SideMenu بهبود یافت.
+* صفحه مدیریت کارها به الگوی جدید PageContainer/PageHeader منتقل شد.
+
+**Important files:**
+
+* `src/theme.ts`
+* `src/theme/tokens.ts`
+* `src/shared/components/ui.tsx`
+* `src/index.css`
+* `src/layouts/DashboardLayout.tsx`
+* `src/components/dashboard/AppNavbar.tsx`
+* `src/components/dashboard/Header.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+* `src/features/tasks/pages/TasksPage.tsx`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* این fix فقط frontend و UI foundation است و هیچ API contract، route behavior، permission، validation یا business workflow را تغییر نمی‌دهد.
+* رنگ‌های موجود پروژه به‌عنوان source of truth حفظ شدند؛ تمرکز این fix روی spacing، density، RTL، responsive shell و component defaults است.
+* migration کامل همه صفحات به shared components در این fix انجام نشد؛ صفحات باقیمانده از طریق theme مرکزی یکدست‌تر شده‌اند اما هنوز می‌توانند در fixهای بعدی به `PageHeader`، `FilterPanel` و `PageSection` مهاجرت کنند.
+* visual browser inspection و live API testing انجام نشد.
 
 **Verification status:**
 

@@ -44,7 +44,7 @@ export default function AppNavbar({ onOpenNavigation }: AppNavbarProps) {
           aria-label="باز کردن منوی اصلی"
           onClick={onOpenNavigation}
           edge="start"
-          sx={{ display: { md: 'none' }, ml: 1 }}
+          sx={{ display: { md: 'none' }, marginInlineEnd: 1 }}
         >
           <MenuIcon />
         </IconButton>
@@ -67,13 +67,13 @@ export default function AppNavbar({ onOpenNavigation }: AppNavbarProps) {
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
           >
             <MenuItem onClick={handleClose}>
-              <AccountCircle sx={{ ml: 1 }} /> پروفایل
+              <AccountCircle sx={{ marginInlineEnd: 1 }} /> پروفایل
             </MenuItem>
             <MenuItem onClick={handleSecurity}>
-              <Settings sx={{ ml: 1 }} /> امنیت حساب
+              <Settings sx={{ marginInlineEnd: 1 }} /> امنیت حساب
             </MenuItem>
             <MenuItem onClick={handleLogout}>
-              <Logout sx={{ ml: 1 }} /> خروج
+              <Logout sx={{ marginInlineEnd: 1 }} /> خروج
             </MenuItem>
           </Menu>
         </Box>
@@ -81,3 +81,4 @@ export default function AppNavbar({ onOpenNavigation }: AppNavbarProps) {
     </AppBar>
   );
 }
+

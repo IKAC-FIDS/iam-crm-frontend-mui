@@ -27,8 +27,9 @@ import WorkIcon from '@mui/icons-material/Work';
 
 import { can, canAny } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
+import { appTokens } from '@/theme/tokens';
 
-const drawerWidth = 260;
+const drawerWidth = appTokens.layout.drawerWidth;
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
   width: drawerWidth,
@@ -115,7 +116,7 @@ export default function SideMenu({ mobileOpen, onClose }: SideMenuProps) {
             key={group}
             disablePadding
             subheader={
-              <ListSubheader component="div" sx={{ bgcolor: 'transparent', lineHeight: 2.5, textAlign: 'right' }}>
+              <ListSubheader component="div" sx={{ bgcolor: 'transparent', lineHeight: 2.5 }}>
                 {group}
               </ListSubheader>
             }
@@ -142,7 +143,7 @@ export default function SideMenu({ mobileOpen, onClose }: SideMenuProps) {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
+                  <ListItemIcon sx={{ minWidth: 40, color: 'inherit' }}>{item.icon}</ListItemIcon>
                   <ListItemText primary={item.text} />
                 </ListItemButton>
               </ListItem>

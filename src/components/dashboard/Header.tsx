@@ -1,6 +1,7 @@
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
+import Box from '@mui/material/Box';
 import { useLocation } from 'react-router-dom';
 
 const breadcrumbMap: Record<string, string> = {
@@ -24,16 +25,16 @@ export default function Header() {
       : breadcrumbMap[currentPage] || 'داشبورد';
 
   return (
-    <div style={{ width: '100%', padding: '16px 0' }}>
-      <Typography variant="h4" component="h1" sx={{ fontWeight: 600, textAlign: 'right' }}>
+    <Box sx={{ width: '100%', py: 2 }}>
+      <Typography variant="h4" component="h1">
         {pageTitle}
       </Typography>
-      <Breadcrumbs aria-label="breadcrumb" sx={{ justifyContent: 'flex-end' }}>
+      <Breadcrumbs aria-label="breadcrumb" sx={{ mt: 0.5 }}>
         <Link underline="hover" color="inherit" href="/">
           خانه
         </Link>
         <Typography color="text.primary">{pageTitle}</Typography>
       </Breadcrumbs>
-    </div>
+    </Box>
   );
 }
