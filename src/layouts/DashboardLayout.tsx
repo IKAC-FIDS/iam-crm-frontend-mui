@@ -12,7 +12,7 @@ export default function DashboardLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <Box sx={{ display: 'flex', direction: 'rtl', minHeight: '100vh' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <CssBaseline />
       <AppNavbar onOpenNavigation={() => setMobileMenuOpen(true)} />
       <SideMenu
@@ -26,7 +26,7 @@ export default function DashboardLayout() {
           minWidth: 0,
           overflow: 'auto',
           backgroundColor: (theme) => theme.palette.background.default,
-          textAlign: 'right',
+          textAlign: 'start',
         }}
       >
         <Toolbar />

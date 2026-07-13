@@ -30,6 +30,7 @@ import { useAuthStore } from '@/store/authStore';
 import { appTokens } from '@/theme/tokens';
 
 const drawerWidth = appTokens.layout.drawerWidth;
+const rtlDrawerAnchor = 'left';
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
   width: drawerWidth,
@@ -158,7 +159,7 @@ export default function SideMenu({ mobileOpen, onClose }: SideMenuProps) {
     <>
       <StyledDrawer
         variant="temporary"
-        anchor="right"
+        anchor={rtlDrawerAnchor}
         open={mobileOpen}
         onClose={onClose}
         ModalProps={{ keepMounted: true }}
@@ -168,7 +169,7 @@ export default function SideMenu({ mobileOpen, onClose }: SideMenuProps) {
       </StyledDrawer>
       <StyledDrawer
         variant="permanent"
-        anchor="right"
+        anchor={rtlDrawerAnchor}
         open
         sx={{ display: { xs: 'none', md: 'block' } }}
       >

@@ -53,7 +53,6 @@ export default function SsoCallbackPage() {
     <Box
       sx={{
         minHeight: '100vh',
-        direction: 'rtl',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

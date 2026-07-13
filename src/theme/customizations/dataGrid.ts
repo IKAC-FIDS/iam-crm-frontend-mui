@@ -17,7 +17,6 @@ export const dataGridCustomizations: DataGridComponents<Theme> = {
         overflow: 'clip',
         borderColor: theme.palette.divider,
         backgroundColor: theme.palette.background.default,
-        direction: 'rtl',
         [`& .${gridClasses.columnHeader}`]: {
           backgroundColor: theme.palette.background.paper,
         },
@@ -25,23 +24,18 @@ export const dataGridCustomizations: DataGridComponents<Theme> = {
           justifyContent: 'flex-start',
         },
         [`& .${gridClasses.columnHeaderTitle}`]: {
-          textAlign: 'right',
+          textAlign: 'start',
         },
         [`& .${gridClasses.footerContainer}`]: {
           backgroundColor: theme.palette.background.paper,
-          direction: 'rtl',
         },
         [`& .${gridClasses.cell}`]: {
-          textAlign: 'right',
+          textAlign: 'start',
           justifyContent: 'flex-start',
         },
         [`& .${gridClasses.cell}.MuiDataGrid-cell--textCenter`]: {
           justifyContent: 'center',
           textAlign: 'center',
-        },
-        [`& .${gridClasses.cell}.MuiDataGrid-cell--textLeft`]: {
-          justifyContent: 'flex-end',
-          textAlign: 'left',
         },
       }),
       cell: ({ theme }) => ({

@@ -57,7 +57,6 @@ const sharedComponents: Components<Theme> = {
   MuiCssBaseline: {
     styleOverrides: {
       html: {
-        direction: 'rtl',
         backgroundColor: 'var(--color-bg-default)',
       },
       body: {
@@ -156,23 +155,15 @@ const sharedComponents: Components<Theme> = {
         gap: theme.spacing(0.5),
         '& .MuiAutocomplete-input': {
           minWidth: 48,
-          textAlign: 'right',
-          direction: 'rtl',
+          textAlign: 'start',
         },
         '& .MuiAutocomplete-input[dir="ltr"], & .MuiAutocomplete-input.ltr, & .MuiAutocomplete-input[data-ltr="true"]': {
-          textAlign: 'left',
-          direction: 'ltr',
+          textAlign: 'start',
         },
       }),
-      paper: {
-        direction: 'rtl',
-      },
-      listbox: {
-        direction: 'rtl',
-      },
       option: {
         justifyContent: 'flex-start',
-        textAlign: 'right',
+        textAlign: 'start',
       },
       tag: {
         maxWidth: '100%',
@@ -182,21 +173,18 @@ const sharedComponents: Components<Theme> = {
   MuiInputBase: {
     styleOverrides: {
       root: {
-        direction: 'rtl',
         minWidth: 0,
       },
       input: {
-        direction: 'rtl',
-        textAlign: 'right',
+        textAlign: 'start',
         minWidth: 0,
         '&::placeholder': {
-          textAlign: 'right',
+          textAlign: 'start',
         },
         '&[dir="ltr"], &.ltr, &[data-ltr="true"]': {
-          direction: 'ltr',
-          textAlign: 'left',
+          textAlign: 'start',
           '&::placeholder': {
-            textAlign: 'left',
+            textAlign: 'start',
           },
         },
       },
@@ -210,31 +198,26 @@ const sharedComponents: Components<Theme> = {
         backgroundColor: theme.palette.background.paper,
       }),
       notchedOutline: {
-        textAlign: 'right',
+        textAlign: 'start',
       },
     },
   },
   MuiInputLabel: {
     styleOverrides: {
       root: {
-        textAlign: 'right',
-        transformOrigin: 'top right',
-        '&.MuiInputLabel-shrink': {
-          transformOrigin: 'top right',
-        },
+        textAlign: 'start',
       },
     },
   },
   MuiSelect: {
     styleOverrides: {
       select: ({ theme }) => ({
-        textAlign: 'right',
+        textAlign: 'start',
         minWidth: 0,
         paddingInlineStart: theme.spacing(1.75),
         paddingInlineEnd: theme.spacing(4.5),
         '&[dir="ltr"], &.ltr, &[data-ltr="true"]': {
-          textAlign: 'left',
-          direction: 'ltr',
+          textAlign: 'start',
         },
       }),
       icon: ({ theme }) => ({
@@ -416,7 +399,6 @@ const sharedComponents: Components<Theme> = {
     styleOverrides: {
       paper: {
         boxShadow: appTokens.shadow.popover,
-        direction: 'rtl',
       },
     },
   },
@@ -424,7 +406,7 @@ const sharedComponents: Components<Theme> = {
     styleOverrides: {
       root: {
         justifyContent: 'flex-start',
-        textAlign: 'right',
+        textAlign: 'start',
       },
     },
   },
@@ -434,9 +416,6 @@ const sharedComponents: Components<Theme> = {
       labelDisplayedRows: ({ from, to, count }) => `از ${from} تا ${to} از ${count === -1 ? `بیش از ${to}` : count}`,
     },
     styleOverrides: {
-      root: {
-        direction: 'rtl',
-      },
       toolbar: ({ theme }) => ({
         flexWrap: 'wrap',
         gap: theme.spacing(1),
@@ -457,11 +436,6 @@ const sharedComponents: Components<Theme> = {
     defaultProps: {
       showFirstButton: true,
       showLastButton: true,
-    },
-    styleOverrides: {
-      ul: {
-        direction: 'rtl',
-      },
     },
   },
   MuiTooltip: {

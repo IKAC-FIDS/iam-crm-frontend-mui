@@ -706,7 +706,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000064
+fix 000001 → fix 000065
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -3386,6 +3386,65 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 * تست authenticated navigation و live API انجام نشد، چون backend عملیاتی و session معتبر در این fix تست نشد.
 * نصب managed Chromium خود Playwright به دلیل خطای 403 CDN در موقعیت فعلی ممکن نبود؛ برای browser verification از Chrome نصب‌شده محلی استفاده شد.
+
+---
+## fix 000065 — رفع بازگشت ظاهری چیدمان به LTR بعد از فعال‌سازی RTL cache
+
+**Implemented items:**
+
+* علت ظاهری LTR شدن صفحات بعد از `fix 000064` بررسی و به double mirroring در استایل‌های تولیدشده توسط Emotion RTL cache محدود شد.
+* تنظیمات اصلی RTL یعنی `dir="rtl"` در document، `theme.direction = 'rtl'` و Emotion cache مبتنی بر `@mui/stylis-plugin-rtl` بدون تغییر حفظ شد.
+* `direction: 'rtl'` و `textAlign: 'right'`های دستی که داخل `sx`/theme overrides دوباره توسط Stylis معکوس می‌شدند حذف یا با `textAlign: 'start'` جایگزین شدند.
+* جهت محتوای فنی مثل ایمیل، رمز و فیلد تاریخ شمسی با `dir="ltr"` و کلاس `.ltr` در سطح خود input حفظ شد تا وابسته به ruleهای Emotion نباشد.
+* جایگاه drawer اصلی بعد از بررسی computed style اصلاح شد؛ با توجه به mirror شدن CSS فیزیکی `Drawer` توسط RTL cache، مقدار physical anchor در `SideMenu` طوری تنظیم شد که drawer در سمت راست viewport رندر شود.
+* overrideهای DataGrid برای alignment و direction پاک‌سازی شدند تا grid جهت را از document/theme بگیرد و ستون‌ها در RTL دوباره به LTR برنگردند.
+* مسیرهای ورود، SSO callback، layout داشبورد، فیلد تاریخ شمسی و صفحات گریدی بدون تغییر در API contract، route، permission، validation یا workflow اصلاح شدند.
+* cache بهینه‌سازی Vite در `node_modules/.vite` بعد از تغییرات RTL پاک شد.
+
+**Root cause:**
+
+* بعد از `fix 000064` زیرساخت RTL درست و بدون crash فعال بود، اما بخشی از theme و layout هنوز `direction: 'rtl'`، `textAlign: 'right'` یا `direction: 'ltr'` را از مسیر Emotion تولید می‌کرد.
+* `@mui/stylis-plugin-rtl` این CSSهای فیزیکی را mirror می‌کند؛ بنابراین ruleهای دستی مثل `direction: rtl` و `text-align: right` در خروجی مرورگر به `direction: ltr` و `text-align: left` تبدیل می‌شدند.
+* بررسی Chrome قبل از اصلاح نشان داد `html[dir="rtl"]` برقرار است اما computed style بعضی containerها و فرم ورود `direction: ltr` و `text-align: left` شده بود.
+
+**Important files:**
+
+* `src/theme.ts`
+* `src/theme/customizations/dataGrid.ts`
+* `src/layouts/DashboardLayout.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+* `src/shared/components/JalaliDateField.tsx`
+* `src/features/auth/pages/LoginPage.tsx`
+* `src/features/sso/pages/SsoCallbackPage.tsx`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* این fix فقط frontend است.
+* هیچ API contract، route behavior، authentication flow، permission، payload، validation یا business workflow سمت backend تغییر نکرد.
+* رنگ‌های تاییدشده پروژه تغییر نکردند.
+* برای تست صفحات authenticated از localStorage تستی با نقش `ADMIN` استفاده شد؛ backend live/API معتبر در این fix تست نشد.
+
+**Verification status:**
+
+* `Remove-Item -Recurse -Force .\node_modules\.vite`: اجرا شد تا Vite dependency cache بعد از تغییرات RTL تازه‌سازی شود.
+* `npm ls stylis @mui/stylis-plugin-rtl stylis-plugin-rtl`: همه مسیرهای Emotion/MUI به `stylis@4.2.0` dedupe شدند، `@mui/stylis-plugin-rtl@9.1.1` نصب است و package عمومی `stylis-plugin-rtl` در tree وجود ندارد.
+* `rg` برای `direction: 'rtl'`، `direction: 'ltr'`، `textAlign: 'right'` و `textAlign: 'left'` در `src`: فقط `theme.direction = 'rtl'` باقی ماند.
+* Dev server: `npm run dev -- --host 127.0.0.1 --port 5173` اجرا شد و `/login` با HTTP 200 پاسخ داد.
+* Browser verification با Chrome محلی از طریق Playwright/Node REPL انجام شد:
+  * `/login` در viewportهای 375 و 1280: `html` و فرم `rtl`، متن‌ها `text-align: start`، فیلدهای ایمیل/رمز `dir="ltr"`، بدون router error و بدون overflow افقی.
+  * `/dashboard` در viewportهای 375، 1280 و 1920: `html`، main، appbar و عنوان `rtl`، بدون overflow افقی، drawer دسکتاپ در سمت راست viewport و drawer موبایل از سمت راست باز شد.
+  * `/tasks` در viewport 1280: DataGrid و محتوای صفحه `rtl`، فیلد تاریخ `ltr`، بدون router error و بدون overflow افقی.
+* Browser console در این بررسی خطای مرتبط با Emotion/Stylis/RTL، `Element type is invalid` یا React Router ErrorBoundary نشان نداد.
+* `npm run lint`: passed without errors.
+* TypeScript check: passed as part of `npm run build`.
+* `npm run build`: passed.
+* Non-blocking warning: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان باقی است.
+
+**Remaining known limitations:**
+
+* live API testing با backend عملیاتی انجام نشد.
+* تست مرورگر روی نمونه‌های نماینده انجام شد، نه روی تک‌تک routeهای authenticated.
 
 ---
 **Built with ❤️ for sales team**

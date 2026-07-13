@@ -114,8 +114,6 @@ function PickerTextField({
           ),
           sx: {
             '& .MuiInputBase-input': {
-              direction: 'ltr',
-              textAlign: 'left',
               minWidth: 0,
             },
             '& .MuiInputAdornment-root': {

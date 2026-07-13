@@ -83,7 +83,6 @@ export default function LoginPage() {
     <Box
       sx={{
         width: '100%',
-        direction: 'rtl',
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
@@ -116,7 +115,7 @@ export default function LoginPage() {
         >
           <Typography
             variant="h4"
-            align="right"
+            align="inherit"
             sx={{
               fontWeight: 700,
               color: 'var(--color-text-primary)',
@@ -132,7 +131,7 @@ export default function LoginPage() {
             </Typography>
           )}
 
-          <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ textAlign: 'right' }}>
+          <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ textAlign: 'start' }}>
             <TextField
               fullWidth
               label="ایمیل"
@@ -141,6 +140,7 @@ export default function LoginPage() {
               error={!!errors.email}
               helperText={errors.email?.message}
               slotProps={{
+                htmlInput: { dir: 'ltr', className: 'ltr' },
                 input: {
                   startAdornment: (
                     <InputAdornment position="start">
@@ -164,6 +164,7 @@ export default function LoginPage() {
               error={!!errors.password}
               helperText={errors.password?.message}
               slotProps={{
+                htmlInput: { dir: 'ltr', className: 'ltr' },
                 input: {
                   startAdornment: (
                     <InputAdornment position="start">
