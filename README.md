@@ -706,7 +706,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000063
+fix 000001 → fix 000064
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -3332,6 +3332,60 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 * دکمه‌های متنی داخل cardها و timelineها که عملیات ردیفی DataGrid/Table نیستند، برای حفظ خوانایی و workflow فعلی متنی باقی ماندند.
 * بازبینی تصویری چند viewport و تست زنده نقش‌ها/API هنوز باید در محیط دارای backend و مرورگر انجام شود.
+
+---
+## fix 000064 — رفع خطای Runtime زیرساخت RTL و هماهنگ‌سازی Stylis با Emotion
+
+**Implemented items:**
+
+* خطای runtime مربوط به Emotion/Stylis در زمان رندر MUI TextField برطرف شد.
+* dependency عمومی `stylis-plugin-rtl` حذف و با پلاگین رسمی `@mui/stylis-plugin-rtl` جایگزین شد.
+* نسخه app-level `stylis` از `^4.4.0` به نسخه exact `4.2.0` pin شد تا با نسخه مورد استفاده `@emotion/cache@11.14.0` هماهنگ باشد.
+* import پلاگین RTL در `src/lib/rtlCache.ts` به `@mui/stylis-plugin-rtl` تغییر کرد و ترتیب `prefixer` قبل از `rtlPlugin` حفظ شد.
+* `CacheProvider`، `ThemeProvider`، `CssBaseline`، `RouterProvider` و `QueryProvider` با همان ترتیب قبلی حفظ شدند.
+* تنظیمات RTL ریشه (`dir="rtl"` و `lang="fa"`) و `theme.direction = 'rtl'` حفظ شد.
+* cache بهینه‌سازی Vite در `node_modules/.vite` پاک شد تا dependencyهای RTL دوباره bundle شوند.
+* `@types/stylis` بعد از تست حذف، به دلیل نیاز TypeScript به declaration برای import مستقیم `prefixer` حفظ شد.
+* رنگ‌ها، routeها، API contractها، authentication flow، permissionها و validationها تغییر نکردند.
+
+**Root cause:**
+
+* بازرسی dependency tree نشان داد `@emotion/cache@11.14.0` از `stylis@4.2.0` استفاده می‌کرد، اما import مستقیم `prefixer` و package عمومی `stylis-plugin-rtl@2.1.1` از `stylis@4.4.0` resolve می‌شدند.
+* این ترکیب باعث اجرای pluginهای Stylis با internalهای ناسازگار در مسیر Emotion serialization می‌شد و در زمان insertion استایل‌های MUI به خطای `Cannot read properties of undefined (reading 'push')` در `append/lift/prefixer` می‌رسید.
+* بعد از fix، `npm ls stylis` فقط `stylis@4.2.0` را برای Emotion، `prefixer` و `@mui/stylis-plugin-rtl` نشان می‌دهد.
+
+**Important files:**
+
+* `src/lib/rtlCache.ts`
+* `package.json`
+* `package-lock.json`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* این fix فقط frontend است.
+* هیچ API contract، route، authentication behavior، permission، payload یا validation سمت backend تغییر نکرد.
+* `npm dedupe` طبق دستور اجرا شد و lockfile را برای tree جدید هماهنگ کرد؛ یک patch transitive غیرعملکردی برای dependency داخلی `ignore` در مسیر TypeScript ESLint نیز در lockfile normalize شد.
+* Live API testing انجام نشد؛ backend عملیاتی در این fix هدف تست نبود.
+
+**Verification status:**
+
+* `npm ls stylis`: همه مسیرها به `stylis@4.2.0` dedupe شدند.
+* `npm ls @emotion/cache`: `@emotion/cache@11.14.0` معتبر و dedupe شده است.
+* `npm ls @mui/stylis-plugin-rtl`: `@mui/stylis-plugin-rtl@9.1.1` نصب است.
+* `npm ls stylis-plugin-rtl`: empty؛ package عمومی حذف شده است.
+* Dev server: `npm run dev -- --host 127.0.0.1 --port 5173` اجرا شد، Vite dependency optimization شروع شد و `/login` با HTTP 200 پاسخ داد.
+* Browser verification: با Chrome محلی از طریق Playwright، `/login` رندر شد؛ ۲ input قابل مشاهده بود، `dir="rtl"` و `lang="fa"` برقرار بود، page error وجود نداشت، React Router default ErrorBoundary نمایش داده نشد و خطاهای `Emotion Insertion`، `append`، `lift`، `prefixer` یا `Cannot read properties of undefined (reading 'push')` دیده نشد.
+* Browser console فقط خطای CORS برای درخواست `http://localhost:3000/api/auth/sso/providers` نشان داد، چون backend/live API در این تست در دسترس نبود؛ این خطا به fix RTL مربوط نیست.
+* `npm run lint`: passed without errors.
+* TypeScript check: passed as part of `npm run build`.
+* `npm run build`: passed.
+* Non-blocking warning: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان باقی است.
+
+**Remaining known limitations:**
+
+* تست authenticated navigation و live API انجام نشد، چون backend عملیاتی و session معتبر در این fix تست نشد.
+* نصب managed Chromium خود Playwright به دلیل خطای 403 CDN در موقعیت فعلی ممکن نبود؛ برای browser verification از Chrome نصب‌شده محلی استفاده شد.
 
 ---
 **Built with ❤️ for sales team**
