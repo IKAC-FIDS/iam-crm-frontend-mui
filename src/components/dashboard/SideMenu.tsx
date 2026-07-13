@@ -14,6 +14,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import BusinessIcon from '@mui/icons-material/Business';
 import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import GroupsIcon from '@mui/icons-material/Groups';
 import HistoryIcon from '@mui/icons-material/History';
 import KeyIcon from '@mui/icons-material/Key';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
@@ -54,6 +55,7 @@ const menuItems = [
   { group: 'عملیات فروش', text: 'افراد', icon: <PeopleIcon />, path: '/people', peopleOnly: true },
   { group: 'عملیات فروش', text: 'گزارش‌ها', icon: <AssessmentIcon />, path: '/reports', reportOnly: true },
   { group: 'مدیریت', text: 'کاربران', icon: <PeopleIcon />, path: '/admin/users', permission: 'user:manage' },
+  { group: 'مدیریت', text: 'تیم‌ها', icon: <GroupsIcon />, path: '/admin/teams', permission: 'team:manage' },
   { group: 'مدیریت', text: 'سازمان‌ها', icon: <CorporateFareIcon />, path: '/admin/organizations', permission: 'organization:manage' },
   { group: 'مدیریت', text: 'ورود سازمانی', icon: <LoginIcon />, path: '/admin/sso-providers', permissions: ['sso-provider:view', 'sso-provider:manage'] },
   { group: 'مدیریت', text: 'مجوزها', icon: <SecurityIcon />, path: '/admin/permissions', permission: 'permission:manage' },

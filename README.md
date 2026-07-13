@@ -706,7 +706,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000065
+fix 000001 → fix 000066
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -3445,6 +3445,73 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 * live API testing با backend عملیاتی انجام نشد.
 * تست مرورگر روی نمونه‌های نماینده انجام شد، نه روی تک‌تک routeهای authenticated.
+
+---
+## fix 000066 — افزودن مدیریت تیم‌ها و تبدیل تیم کاربران به انتخاب از تیم‌های تعریف‌شده
+
+**Implemented items:**
+
+* صفحه مدیریت تیم‌ها در مسیر `/admin/teams` اضافه شد.
+* آیتم «تیم‌ها» با permission `team:manage` به منوی بخش مدیریت اضافه شد.
+* feature مستقل `teams` برای types، service، hooks، صفحه لیست، فرم ایجاد/ویرایش و مدیریت اعضا اضافه شد.
+* لیست تیم‌ها نام، کد، مدیر، تعداد اعضا، وضعیت، تاریخ ایجاد/بروزرسانی و عملیات را نمایش می‌دهد.
+* عملیات ایجاد، ویرایش، فعال/غیرفعال‌سازی و مدیریت اعضای تیم از طریق Teams API پیاده‌سازی شد.
+* فرم تیم شامل نام تیم، کد تیم، مدیر تیم، توضیحات و وضعیت است.
+* مدیر تیم از بین کاربران فعال با نقش `ADMIN` یا `MANAGER` و از مسیر existing users/owner options انتخاب می‌شود و raw user id در UI نمایش داده نمی‌شود.
+* دیالوگ اعضای تیم اعضای فعلی را نمایش می‌دهد، افزودن عضو را با selector کاربر انجام می‌دهد، از انتخاب عضو تکراری جلوگیری می‌کند و حذف عضو را از مسیر member API انجام می‌دهد.
+* فیلد متنی آزاد «تیم» در `AdminUserFormDialog` حذف و با selector تیم‌های فعال جایگزین شد.
+* فیلد متنی آزاد «تیم» در `EditUserRoleDialog` حذف و با selector تیم‌های فعال جایگزین شد.
+* اعتبارسنجی موجود حفظ شد: برای نقش‌های `MANAGER` و `REP` انتخاب تیم الزامی است و برای `ADMIN` و `BOARDS` می‌تواند خالی بماند.
+* `AdminUsersPage` دیگر گزینه‌های فیلتر تیم را از مقدارهای `user.team` استخراج نمی‌کند و تیم‌ها را از Teams API می‌گیرد.
+* جدول کاربران نام تیم را نمایش می‌دهد و از نمایش raw `teamId` در UI عادی جلوگیری می‌کند.
+* type کاربر ادمین برای پشتیبانی از `teamId`، `teamName` و `teamCode` توسعه داده شد و compatibility با فیلد legacy `team` حفظ شد.
+* lookup group موجود `teams` حذف نشد؛ منبع assignment کاربران در این fix Teams API است.
+
+**Important files:**
+
+* `src/features/teams/types/team.types.ts`
+* `src/features/teams/services/teams.service.ts`
+* `src/features/teams/hooks/useTeams.ts`
+* `src/features/teams/pages/AdminTeamsPage.tsx`
+* `src/features/teams/components/TeamFormDialog.tsx`
+* `src/features/teams/components/TeamMembersDialog.tsx`
+* `src/features/admin/users/components/AdminUserFormDialog.tsx`
+* `src/features/admin/users/components/EditUserRoleDialog.tsx`
+* `src/features/admin/users/components/AdminUsersPage.tsx`
+* `src/features/admin/users/types/adminUser.types.ts`
+* `src/routes/index.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* این fix فقط frontend است و API contractهای موجود کاربران، routeها، permissionها و workflowهای غیرمرتبط را تغییر نمی‌دهد.
+* پیاده‌سازی Teams به backend واقعی برای endpointهای زیر وابسته است:
+  * `GET /teams`
+  * `POST /teams`
+  * `PATCH /teams/:id`
+  * `PATCH /teams/:id/activate`
+  * `PATCH /teams/:id/deactivate`
+  * `GET /teams/:id/members`
+  * `POST /teams/:id/members`
+  * `DELETE /teams/:id/members/:userId`
+* فرم‌های کاربر برای contract جدید `teamId` ارسال می‌کنند و دیگر مقدار typed/free-text تیم را ارسال نمی‌کنند.
+* compatibility نمایش و فیلتر با `team` legacy حفظ شد تا در دوره migration، کاربران قدیمی بدون `teamId` همچنان نام تیم را نمایش دهند.
+* اگر backend فقط assign کردن تیم روی User را پشتیبانی کند و endpoint مدیریت اعضای تیم را نداشته باشد، دیالوگ اعضا خطای backend را نمایش می‌دهد و member management ساختگی انجام نمی‌دهد.
+* live API testing انجام نشد، چون backend عملیاتی در این فرایند تست نشد.
+
+**Verification status:**
+
+* `rg`: فیلد متنی آزاد `TextField label="تیم"` در admin user/team code باقی نماند.
+* `npm run lint`: passed without errors.
+* TypeScript check: passed as part of `npm run build`.
+* `npm run build`: passed.
+* Non-blocking warning: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان باقی است.
+
+**Remaining known limitations:**
+
+* صحت runtime endpointهای Teams باید در محیط متصل به backend جدید بررسی شود.
+* صفحه مدیریت اعضا به پشتیبانی backend از endpointهای member management وابسته است.
 
 ---
 **Built with ❤️ for sales team**
