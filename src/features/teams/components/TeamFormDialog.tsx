@@ -22,6 +22,7 @@ import {
 import { useOwnerOptions } from '@/features/admin/users/hooks/useAdminUsers';
 import { isUserActive, USER_ROLE_LABELS } from '@/features/admin/users/types/adminUser.types';
 import type { AdminUser } from '@/features/admin/users/types/adminUser.types';
+import { isForbiddenError } from '@/lib/apiResponse';
 import { useCreateTeam, useUpdateTeam } from '../hooks/useTeams';
 import type { Team } from '../types/team.types';
 
@@ -34,6 +35,7 @@ const schema = z.object({
 });
 
 type FormData = z.infer<typeof schema>;
+const forbiddenMessage = 'شما مجوز ایجاد یا ویرایش تیم را ندارید.';
 
 function userLabel(user: AdminUser): string {
   return `${user.fullName} — ${USER_ROLE_LABELS[user.role] ?? user.role}`;
@@ -94,8 +96,8 @@ export default function TeamFormDialog({
         toast.success('تیم با موفقیت ایجاد شد.');
       }
       onClose();
-    } catch {
-      toast.error(team ? 'خطا در بروزرسانی تیم.' : 'خطا در ایجاد تیم.');
+    } catch (error) {
+      toast.error(isForbiddenError(error) ? forbiddenMessage : team ? 'خطا در بروزرسانی تیم.' : 'خطا در ایجاد تیم.');
     }
   };
 
@@ -104,7 +106,11 @@ export default function TeamFormDialog({
       <DialogTitle>{team ? 'ویرایش تیم' : 'افزودن تیم'}</DialogTitle>
       <DialogContent>
         <Stack component="form" id="team-form" onSubmit={handleSubmit(submit)} spacing={2} sx={{ pt: 1 }}>
-          {(create.isError || update.isError) && <Alert severity="error">عملیات تیم با خطا مواجه شد.</Alert>}
+          {(create.isError || update.isError) && (
+            <Alert severity={isForbiddenError(create.error ?? update.error) ? 'warning' : 'error'}>
+              {isForbiddenError(create.error ?? update.error) ? forbiddenMessage : 'عملیات تیم با خطا مواجه شد.'}
+            </Alert>
+          )}
           <TextField
             label="نام تیم"
             error={Boolean(errors.name)}

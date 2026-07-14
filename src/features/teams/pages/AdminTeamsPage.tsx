@@ -17,8 +17,9 @@ import BlockOutlinedIcon from '@mui/icons-material/BlockOutlined';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
-import { can } from '@/features/auth/utils/permissions';
+import { can, canAny } from '@/features/auth/utils/permissions';
 import { formatDateTime } from '@/features/companies/utils/companyDisplay';
+import { isForbiddenError } from '@/lib/apiResponse';
 import { PageContainer, PageHeader, PageSection } from '@/shared/components/ui';
 import { RowActions } from '@/shared/components/RowActions';
 import { useAuthStore } from '@/store/authStore';
@@ -38,8 +39,10 @@ import type { Team } from '../types/team.types';
 
 export default function AdminTeamsPage() {
   const user = useAuthStore((state) => state.user);
-  const allowed = can(user, 'team:manage', ['ADMIN']);
+  const allowed = canAny(user, ['team:view', 'team:manage'], ['ADMIN']);
+  const canManageTeams = can(user, 'team:manage', ['ADMIN']);
   const teamsQuery = useTeams({ includeInactive: true }, allowed);
+  const forbidden = teamsQuery.isError && isForbiddenError(teamsQuery.error);
   const activate = useActivateTeam();
   const deactivate = useDeactivateTeam();
   const [search, setSearch] = useState('');
@@ -57,7 +60,8 @@ export default function AdminTeamsPage() {
     });
   }, [search, teamsQuery.data]);
 
-  const columns = useMemo<GridColDef<Team>[]>(() => [
+  const columns = useMemo<GridColDef<Team>[]>(() => {
+    const baseColumns: GridColDef<Team>[] = [
     { field: 'name', headerName: 'نام تیم', minWidth: 170, flex: 1 },
     { field: 'code', headerName: 'کد', minWidth: 130, valueFormatter: (value) => value || '—' },
     {
@@ -83,7 +87,13 @@ export default function AdminTeamsPage() {
     },
     { field: 'createdAt', headerName: 'تاریخ ایجاد', minWidth: 170, valueFormatter: formatDateTime },
     { field: 'updatedAt', headerName: 'آخرین بروزرسانی', minWidth: 170, valueFormatter: formatDateTime },
-    {
+    ];
+
+    if (!canManageTeams) return baseColumns;
+
+    return [
+      ...baseColumns,
+      {
       field: 'actions',
       headerName: 'عملیات',
       minWidth: 136,
@@ -123,7 +133,8 @@ export default function AdminTeamsPage() {
         />
       ),
     },
-  ], []);
+    ];
+  }, [canManageTeams]);
 
   const closeForm = () => {
     setFormOpen(false);
@@ -142,7 +153,7 @@ export default function AdminTeamsPage() {
     }
   };
 
-  if (!allowed) {
+  if (!allowed || forbidden) {
     return <Alert severity="warning">شما دسترسی مدیریت تیم‌ها را ندارید.</Alert>;
   }
 
@@ -154,7 +165,7 @@ export default function AdminTeamsPage() {
         actions={
           <>
             <Button onClick={() => teamsQuery.refetch()}>بروزرسانی</Button>
-            <Button variant="contained" onClick={() => setFormOpen(true)}>افزودن تیم</Button>
+            {canManageTeams && <Button variant="contained" onClick={() => setFormOpen(true)}>افزودن تیم</Button>}
           </>
         }
       />

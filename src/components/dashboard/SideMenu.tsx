@@ -55,7 +55,7 @@ const menuItems = [
   { group: 'عملیات فروش', text: 'افراد', icon: <PeopleIcon />, path: '/people', peopleOnly: true },
   { group: 'عملیات فروش', text: 'گزارش‌ها', icon: <AssessmentIcon />, path: '/reports', reportOnly: true },
   { group: 'مدیریت', text: 'کاربران', icon: <PeopleIcon />, path: '/admin/users', permission: 'user:manage' },
-  { group: 'مدیریت', text: 'تیم‌ها', icon: <GroupsIcon />, path: '/admin/teams', permission: 'team:manage' },
+  { group: 'مدیریت', text: 'تیم‌ها', icon: <GroupsIcon />, path: '/admin/teams', permissions: ['team:view', 'team:manage'] },
   { group: 'مدیریت', text: 'سازمان‌ها', icon: <CorporateFareIcon />, path: '/admin/organizations', permission: 'organization:manage' },
   { group: 'مدیریت', text: 'ورود سازمانی', icon: <LoginIcon />, path: '/admin/sso-providers', permissions: ['sso-provider:view', 'sso-provider:manage'] },
   { group: 'مدیریت', text: 'مجوزها', icon: <SecurityIcon />, path: '/admin/permissions', permission: 'permission:manage' },

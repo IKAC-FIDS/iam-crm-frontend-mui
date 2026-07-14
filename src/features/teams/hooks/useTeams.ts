@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { adminUserQueryKeys } from '@/features/admin/users/hooks/useAdminUsers';
+import { isForbiddenError } from '@/lib/apiResponse';
 import { teamsService } from '../services/teams.service';
 import { isTeamActive } from '../types/team.types';
 import type { CreateTeamPayload, FindTeamsParams, Team, UpdateTeamPayload } from '../types/team.types';
@@ -10,6 +11,10 @@ export const teamQueryKeys = {
   active: ['teams', 'active'] as const,
   members: (teamId: string) => [...teamQueryKeys.all, teamId, 'members'] as const,
 };
+
+function retryUnlessForbidden(failureCount: number, error: unknown) {
+  return !isForbiddenError(error) && failureCount < 1;
+}
 
 function useInvalidateTeams() {
   const client = useQueryClient();
@@ -26,6 +31,7 @@ export function useTeams(params: FindTeamsParams = {}, enabled = true) {
     queryKey: teamQueryKeys.list(params),
     queryFn: () => teamsService.list(params),
     enabled,
+    retry: retryUnlessForbidden,
   });
 }
 
@@ -34,6 +40,7 @@ export function useActiveTeams(enabled = true) {
     queryKey: teamQueryKeys.active,
     queryFn: async () => (await teamsService.list({ includeInactive: true })).filter(isTeamActive),
     enabled,
+    retry: retryUnlessForbidden,
   });
 }
 
@@ -74,6 +81,7 @@ export function useTeamMembers(teamId: string, enabled = true) {
     queryKey: teamQueryKeys.members(teamId),
     queryFn: () => teamsService.listMembers(teamId),
     enabled: enabled && Boolean(teamId),
+    retry: retryUnlessForbidden,
   });
 }
 

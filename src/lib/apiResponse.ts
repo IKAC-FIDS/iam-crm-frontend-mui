@@ -181,3 +181,7 @@ export function getApiErrorCode(error: unknown): string | undefined {
   const code = body.error.code;
   return typeof code === 'string' && code.trim() ? code : undefined;
 }
+
+export function isForbiddenError(error: unknown): boolean {
+  return axios.isAxiosError(error) && error.response?.status === 403;
+}

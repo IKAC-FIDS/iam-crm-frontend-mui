@@ -706,7 +706,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000066
+fix 000001 → fix 000067
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -3512,6 +3512,46 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 * صحت runtime endpointهای Teams باید در محیط متصل به backend جدید بررسی شود.
 * صفحه مدیریت اعضا به پشتیبانی backend از endpointهای member management وابسته است.
+
+---
+## fix 000067 — بهبود کنترل دسترسی و خطای ۴۰۳ در مدیریت تیم‌ها
+
+**Implemented items:**
+
+* مسیر `/admin/teams` و آیتم منوی «تیم‌ها» بازبینی شد و مسیر API در `teams.service.ts` روی `/teams` باقی ماند، چون `axiosInstance` خودش `VITE_API_URL` یا پیش‌فرض `http://localhost:3000/api` را به عنوان baseURL دارد.
+* آیتم منوی «تیم‌ها» با permissionهای backend-aligned `team:view` یا `team:manage` نمایش داده می‌شود.
+* صفحه مدیریت تیم‌ها برای دسترسی صفحه از `team:view` یا `team:manage` استفاده می‌کند و عملیات ایجاد/ویرایش/مدیریت اعضا/تغییر وضعیت را فقط برای `team:manage` نمایش می‌دهد.
+* اگر `GET /teams?includeInactive=true` با ۴۰۳ برگردد، صفحه پیام هشدار «شما دسترسی مدیریت تیم‌ها را ندارید.» را نمایش می‌دهد و grid/form شکسته را رندر نمی‌کند.
+* queryهای Teams روی خطای ۴۰۳ retry نمی‌شوند تا خطای permission به صورت noisy تکرار نشود.
+* برای خطای ۴۰۳ در ایجاد یا ویرایش تیم، فرم پیام روشن «شما مجوز ایجاد یا ویرایش تیم را ندارید.» را در toast و alert داخلی نمایش می‌دهد.
+* helper مشترک `isForbiddenError` به `src/lib/apiResponse.ts` اضافه شد تا تشخیص خطای ۴۰۳ فقط در feature محلی تکرار نشود.
+
+**Important files:**
+
+* `src/lib/apiResponse.ts`
+* `src/features/teams/hooks/useTeams.ts`
+* `src/features/teams/pages/AdminTeamsPage.tsx`
+* `src/features/teams/components/TeamFormDialog.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* این fix امنیت backend را دور نمی‌زند و فقط UX خطای permission را در frontend بهتر می‌کند.
+* backend همچنان منبع نهایی authorization برای `team:view` و `team:manage` است.
+* خطای runtime گزارش‌شده برای `GET /api/teams?includeInactive=true` و `POST /api/teams` با ۴۰۳ به permission backend وابسته است.
+* live API testing انجام نشد؛ نتیجه ۴۰۳ بر اساس گزارش runtime و handling frontend پیاده‌سازی شد.
+
+**Verification status:**
+
+* `npm run lint`: passed without errors.
+* TypeScript check: passed as part of `npm run build`.
+* `npm run build`: passed.
+* Non-blocking warning: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان باقی است.
+
+**Remaining known limitations:**
+
+* برای رفع اصل ۴۰۳ باید permissionهای backend/user token با `team:view` و `team:manage` هماهنگ شوند.
 
 ---
 **Built with ❤️ for sales team**
