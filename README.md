@@ -1,3 +1,78 @@
+ChatGPT Plus
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Pasted markdown.md
+File
+میشه readme‌هایی که بهت میدم رو کامل انگلیسی با ادبیات یکسان بکنی؟
+
+
+Memory updated
+Worked for 5m 41s
+انجام شد. README آپلودشده 
+
+ با این استانداردها بازنویسی شد:
+
+تمام بخش‌های فارسی Changelog از fix 000039 تا fix 000048 به انگلیسی حرفه‌ای تبدیل شدند.
+
+لحن Fixها، عناوین، وضعیت تست‌ها، وابستگی فرانت‌اند و الزامات Migration یکدست شدند.
+
+ساختار Markdown، APIها، کدها، مسیر فایل‌ها، enumها و شماره Fixها حفظ شدند.
+
+عنوان Change log به Changelog و عنوان ناهماهنگ backend fix 000038 نیز اصلاح شد.
+
+عبارت‌های فارسی جدول Import Excel عمداً به‌عنوان نام دقیق ستون‌های ورودی حفظ شده‌اند و معنی انگلیسی آن‌ها نیز اضافه شده است.
+
+README.backend.english.md
+
+
+
+Pasted markdown(1).md
+File
+
+Worked for 6m 52s
+انجام شد. README فرانت‌اند 
+
+ به انگلیسی حرفه‌ای و یکدست تبدیل شد.
+
+تمام متن‌های فارسی، به‌ویژه fix 000053 تا fix 000070، ترجمه شدند.
+
+۲۶۲ خط فارسی یا ترکیبی بازنویسی شد.
+
+ساختار Markdown، جدول‌ها و ۳۴ بلوک کد بدون تغییر حفظ شدند.
+
+مسیرهای API، نام فایل‌ها، enumها، permissionها و شناسه‌های فنی تغییر نکردند.
+
+شماره Fixها عیناً حفظ شدند؛ چون در فایل اصلی fix 000069 وجود نداشت، مورد جدیدی ساخته نشد.
+
+فایل نهایی هیچ نویسه فارسی یا عربی ندارد.
+
+README.frontend.english.md
+
+
+
+Library
+/
+README.frontend.english.md
+
+
 # 🚀 IAM CRM Frontend MUI
 
 Frontend application for the **IAM CRM / Sales Process Management System**.
@@ -706,7 +781,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000070
+fix 000001 → fix 000071
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -1394,7 +1469,7 @@ The fix history below documents what changed in each numbered fix.
 * Audited Activities and Follow-ups services, hooks, and components for update, reschedule, and complete endpoints.
 * Added disabled edit action to activity items for permitted users.
 * Added disabled reschedule action next to the existing follow-up action.
-* Corrected complete action label to `انجام شد`.
+* Corrected the follow-up completion action label to the Persian equivalent of “Completed”.
 * Explicitly avoided local mutation or guessed endpoints.
 
 **Important files:**
@@ -2013,7 +2088,7 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 **Implemented items:**
 
-* Added protected `/admin/audit-logs` route and Persian «لاگ تغییرات» navigation item.
+* Added the protected `/admin/audit-logs` route and a Persian-language Audit Logs navigation item.
 * Added a dedicated audit-log type, service, React Query hook, and page.
 * Loaded audit events from real `GET /api/admin/audit-logs` with server-side pagination.
 * Added actor, entity type, entity ID, action, and date-range filters.
@@ -2053,13 +2128,13 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 **Implemented items:**
 
 * Added React Router navigation state when opening Company Detail from the Companies list.
-* Added `backTo: '/companies'` and Persian «بازگشت به شرکت‌ها» label for Companies navigation.
+* Added `backTo: '/companies'` and a Persian-language “Back to Companies” label for Companies navigation.
 * Added return state to both company and person actions in Follow-up cards.
-* Added `backTo: '/follow-ups'` and Persian «بازگشت به پیگیری‌ها» label for Follow-ups navigation.
+* Added `backTo: '/follow-ups'` and a Persian-language “Back to Follow-ups” label for Follow-ups navigation.
 * Added return state when opening Company Detail from Pipeline cards.
-* Added `backTo: '/pipeline'` and Persian «بازگشت به پایپ‌لاین» label for Pipeline navigation.
+* Added `backTo: '/pipeline'` and a Persian-language “Back to Pipeline” label for Pipeline navigation.
 * Updated Company Detail to read typed location state for its back destination and label.
-* Preserved `/companies` and «بازگشت به شرکت‌ها» as the fallback for direct URL access or missing state.
+* Preserved `/companies` and a Persian-language “Back to Companies” label as the fallback for direct URL access or missing state.
 * Applied the same fallback behavior to the Company Detail error-state back button.
 
 **Important files:**
@@ -2553,8 +2628,8 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Added placeholder tabs for line items, commercial documents, payments, tasks, attachments, and activities without fake data or CRUD.
 * Extended opportunity types for optional backend-expanded `lineItems`, `commercialDocuments`, `payments`, `tasks`, and `_count`.
 * Added `useOpportunity` detail query and improved opportunity mutation invalidation to include list, detail, company opportunity list, pipeline, company detail, and reports caches.
-* Added a sidebar entry for `فرصت‌ها`.
-* Added “مشاهده جزئیات” navigation from the company opportunities tab.
+* Added an Opportunities entry to the sidebar.
+* Added “View Details” navigation from the company opportunities tab.
 * Added opportunity detail navigation from pipeline opportunity cards while preserving company navigation and stage-change behavior.
 
 **Important files:**
@@ -2589,9 +2664,9 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 **Implemented items:**
 
 * Added a `productCatalog` feature module with typed API service, React Query hooks, server-side paginated product table, search/category/status filters, create/edit dialog, and activate/deactivate actions.
-* Added Product Catalog as the `محصولات` tab inside Admin Libraries and extended sidebar visibility so users with `product:view` can reach the catalog UI.
+* Added Product Catalog as the Products tab inside Admin Libraries and extended sidebar visibility so users with `product:view` can reach the catalog UI.
 * Added an `opportunityLineItems` feature module with typed API service, React Query hooks, decimal-safe money utilities, line-item table, create/edit dialog, delete confirmation, product selector, product default-price prefill, and calculated frontend preview.
-* Replaced the Opportunity Details `آیتم‌ها` placeholder with the real line-items tab while keeping later tabs for commercial documents, payments, tasks, attachments, and activities unchanged.
+* Replaced the Opportunity Details Line Items placeholder with the real line-items tab while keeping later tabs for commercial documents, payments, tasks, attachments, and activities unchanged.
 * Added permission gates for `product:view`, `product:manage`, `opportunity-line-item:view`, and `opportunity-line-item:manage`.
 * Invalidated line-item list, opportunity detail/list caches, pipeline, company opportunity/detail caches, and reports after line-item create/update/delete mutations.
 * Preserved decimal payload values as strings where entered and used backend-calculated `lineTotal` as the source of truth after saves.
@@ -2610,7 +2685,7 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 * Depends on backend fix `000033` for `/product-catalog` and `/opportunities/:opportunityId/line-items` APIs.
 * Depends on backend fix `000030` standardized response contract and the frontend API response helpers from fix `000042`.
-* Depends on frontend fix `000043` for the dedicated Opportunity Details page and `آیتم‌ها` tab location.
+* Depends on frontend fix `000043` for the dedicated Opportunity Details page and Line Items tab location.
 * The backend remains the source of truth for authorization, line total calculation, and `Opportunity.estimatedValue` recalculation.
 
 **Verification status:**
@@ -2628,7 +2703,7 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 * Added a `commercialDocuments` feature module with typed API service, React Query hooks, display helpers, server-side paginated table, search/type/status filters, create/edit dialog, status-change dialog, delete confirmation, and safe external `fileUrl` links.
 * Added a `payments` feature module with typed API service, React Query hooks, display helpers, server-side paginated table, status filter, create/edit dialog, mark-paid dialog, cancel dialog, and delete confirmation.
-* Replaced the Opportunity Details `اسناد تجاری` and `پرداخت‌ها` placeholders with real tabs while preserving the line-items tab from fix `000044` and the later task/attachment/activity placeholders.
+* Replaced the Opportunity Details Commercial Documents and Payments placeholders with real tabs while preserving the line-items tab from fix `000044` and the later task, attachment, and activity placeholders.
 * Added permission gates for `commercial-document:view`, `commercial-document:manage`, `payment:view`, and `payment:manage`.
 * Payment forms can select a real related commercial document from the same opportunity when the user has document view access; no fake document options were added.
 * Status-change flows use backend endpoints as the source of truth and surface standardized backend error messages when a transition/action is rejected.
@@ -2668,8 +2743,8 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Connected attachment listing, upload, protected download, and delete flows to `/attachments` APIs using the shared authenticated Axios client.
 * Upload uses `multipart/form-data` through `FormData` and explicitly avoids forcing a JSON content type so the browser can set the multipart boundary.
 * Download always uses the protected backend `/attachments/:id/download` endpoint with `responseType: 'blob'`; no MinIO/local storage paths or public URLs are exposed.
-* Replaced the Opportunity Details `پیوست‌ها` placeholder with real opportunity attachments for `entityType="OPPORTUNITY"`.
-* Added `پیوست‌ها` row actions for commercial documents and payments, opening dialog-scoped attachment lists for `COMMERCIAL_DOCUMENT` and `PAYMENT`.
+* Replaced the Opportunity Details Attachments placeholder with real opportunity attachments for `entityType="OPPORTUNITY"`.
+* Added attachment row actions for commercial documents and payments, opening dialog-scoped attachment lists for `COMMERCIAL_DOCUMENT` and `PAYMENT`.
 * Added permission gates for `attachment:view` and `attachment:manage`; users without manage access can view/download but cannot upload/delete.
 * Added file-size, MIME label, safe filename, and content-disposition filename helpers. Client-side size/MIME messaging is only a hint; backend validation remains authoritative.
 * No task management UI or notification center was added in this fix.
@@ -2893,8 +2968,8 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 **Implemented items:**
 
-* Reorganized the sidebar into `عملیات فروش`, `مدیریت`, and `حساب` groups while preserving mobile drawer behavior, RTL layout, route highlighting, and permission-based visibility.
-* Audited sidebar links against implemented routes through frontend fixes `000043` تا `000051`, including opportunities, tasks, notifications, organizations, SSO providers, reports, and existing admin pages.
+* Reorganized the sidebar into Sales Operations, Management, and Account groups while preserving mobile drawer behavior, RTL layout, route highlighting, and permission-based visibility.
+* Audited sidebar links against implemented routes through frontend fixes `000043` to `000051`, including opportunities, tasks, notifications, organizations, SSO providers, reports, and existing admin pages.
 * Expanded the dashboard with real backend-backed cards for companies, opportunities, pipeline reports, conversion rate, open/overdue tasks, unread notifications, recent activities, and current organization status.
 * Added permission-aware dashboard quick links for opportunities, tasks, notifications, reports, product catalog via Admin Libraries, admin organizations, and SSO providers.
 * Kept dashboard failures isolated: each metric card can show unavailable/loading state without breaking the rest of the dashboard.
@@ -2913,8 +2988,8 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 * Depends on backend fix `000030` standardized response contract.
 * Depends on backend fixes `000033`, `000034`, `000035`, `000036`, `000037`, and `000038` for product/line items, documents/payments, attachments, tasks, notifications, and organizations.
-* Includes navigation for SSO from backend fixes `000021` تا `000023`.
-* Depends on frontend fixes `000043` تا `000051` for the implemented opportunity, catalog, document/payment, attachment, task, notification, organization, and SSO pages.
+* Includes navigation for SSO from backend fixes `000021` to `000023`.
+* Depends on frontend fixes `000043` to `000051` for the implemented opportunity, catalog, document/payment, attachment, task, notification, organization, and SSO pages.
 * Payment and commercial-document global report cards remain a future backend reporting dependency because current frontend APIs are opportunity-scoped.
 
 **Verification status:**
@@ -2925,7 +3000,7 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Live authenticated dashboard/report API testing was not performed in this fix.
 
 ---
-## fix 000053 — حذف مرحله فروش از نمای شرکت
+## fix 000053 — Remove sales stage from company views
 
 **Implemented items:**
 
@@ -2962,16 +3037,16 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * The non-blocking Vite bundle-size warning remains.
 
 ---
-## fix 000054 — اصلاح فرم اشخاص برای تفکیک دپارتمان، سمت و نقش فروش
+## fix 000054 — Separate department, job title, and sales role in person forms
 
 **Implemented items:**
 
-* فرم ایجاد و ویرایش شخص را از فیلد متنی سمت و منبع قدیمی Persona Library جدا کرد و به گزینه‌های پایه متصل کرد.
-* دپارتمان از گروه `departments`، سمت سازمانی از گروه `job-titles`، نقش در فرآیند فروش از گروه `persona-roles` و سطح ارشدیت از گروه `seniority-levels` خوانده می‌شود.
-* ارسال فرم از aliasهای جدید backend یعنی `jobTitle` و `personaRole` استفاده می‌کند و برای داده‌های قدیمی همچنان `title` و `personaTag` را نمایش می‌دهد.
-* فهرست افراد شرکت، فهرست سراسری افراد، فیلترهای دایرکتوری، جزئیات شخص، فرم فعالیت و انتخاب مخاطب Call Card با برچسب‌های جدید هماهنگ شد.
-* گروه‌های گزینه‌های پایه در Admin Libraries با `job-titles` و `persona-roles` هماهنگ شد و برچسب‌های «سمت‌ها» و «نقش‌های فروش» جایگزین نام مبهم پرسونا شدند.
-* تایپ‌های frontend برای `jobTitle`، `personaRole` و `seniorityLevel` به مدل‌های شخص و مخاطب Call Card اضافه شد.
+* Decoupled the person create/edit form from the free-text job-title field and the legacy Persona Library source, and connected it to managed lookup options.
+* Department is loaded from `departments`, job title from `job-titles`, sales-process role from `persona-roles`, and seniority level from `seniority-levels`.
+* Form submissions use the new backend aliases `jobTitle` and `personaRole`, while legacy records using `title` and `personaTag` remain displayable.
+* Updated the company people list, global people directory, directory filters, person details, activity form, and Call Card contact selector to use the clarified labels.
+* Aligned Admin Libraries lookup groups with `job-titles` and `persona-roles`, replacing the ambiguous Persona terminology with Job Titles and Sales Roles labels.
+* Extended frontend person and Call Card contact models with `jobTitle`, `personaRole`, and `seniorityLevel`.
 
 **Important files:**
 
@@ -3000,18 +3075,18 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * The non-blocking Vite bundle-size warning remains.
 
 ---
-## fix 000055 — اصلاح فرم تعریف فرصت و شفاف‌سازی منبع ایجاد فرصت
+## fix 000055 — Clarify opportunity definition fields and opportunity source
 
 **Implemented items:**
 
-* برچسب‌های فرم فرصت را شفاف‌تر کرد تا `source` فرصت با «منبع جذب شرکت» اشتباه نشود.
-* فیلد «منبع» در فرم فرصت به «منبع ایجاد فرصت» تغییر کرد و به گروه گزینه‌های پایه `opportunity-sources` متصل شد.
-* گروه `opportunity-sources` با برچسب «منابع ایجاد فرصت» در Admin Libraries / گزینه‌های پایه قابل مدیریت شد.
-* فرم ایجاد فرصت برای «مسئول فرصت»، «مرحله فروش»، «ارزش تخمینی فرصت»، «تاریخ پیش‌بینی‌شده بستن فرصت»، «مخاطب اصلی»، «احتمال موفقیت»، «رقیب احتمالی» و «شرح نیازمندی / توضیحات فرصت» شفاف‌سازی شد.
-* مخاطب اصلی فقط از افراد همان شرکت فرصت خوانده می‌شود.
-* تایپ‌های فرصت برای `sourceOptionId`، `opportunitySource`، `sourceOption`، `primaryContactId`، `primaryContact`، `probability` و `competitor` تکمیل شد.
-* فهرست فرصت‌ها، تب فرصت‌های شرکت، جزئیات فرصت و دیالوگ تغییر مسئول فرصت با برچسب‌های جدید هماهنگ شد.
-* فیلتر «منبع ایجاد فرصت» به فهرست سراسری فرصت‌ها اضافه شد.
+* Clarified opportunity form labels so the opportunity `source` is not confused with the company acquisition source.
+* Renamed the Source field to Opportunity Source and connected it to the `opportunity-sources` lookup group.
+* Added the `opportunity-sources` group to Admin Libraries lookup management under the Opportunity Sources label.
+* Clarified fields for opportunity owner, sales stage, estimated value, expected close date, primary contact, win probability, potential competitor, and requirements/opportunity description.
+* Limited primary-contact options to people belonging to the opportunity company.
+* Extended opportunity types with `sourceOptionId`, `opportunitySource`, `sourceOption`, `primaryContactId`, `primaryContact`, `probability`, and `competitor`.
+* Updated the global opportunities list, company opportunities tab, opportunity details, and owner-change dialog to use the clarified labels.
+* Added an Opportunity Source filter to the global opportunities list.
 
 **Important files:**
 
@@ -3039,16 +3114,16 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * The non-blocking Vite bundle-size warning remains.
 
 ---
-## fix 000056 — شمسی‌سازی ورودی و نمایش تاریخ‌ها در رابط کاربری
+## fix 000056 — Add Jalali date input and display across the UI
 
 **Implemented items:**
 
-* وابستگی سبک `jalaali-js` برای تبدیل تاریخ شمسی/میلادی اضافه شد.
-* ابزار مشترک `jalaliDate` برای تبدیل مقدار backend ISO به نمایش شمسی، تبدیل ورودی شمسی به ISO، نرمال‌سازی ارقام فارسی/عربی و ساخت بازه انتهای روز اضافه شد.
-* کامپوننت مشترک `JalaliDateField` اضافه شد تا فرم‌ها تاریخ شمسی را با الگوهای `۱۴۰۳/۰۵/۲۰` و `۱۴۰۳/۰۵/۲۰ ۱۴:۳۰` دریافت کنند و مقدار ISO به API بدهند.
-* ورودی‌های تاریخ/زمان در فعالیت‌ها، کال‌کارت، فرصت، کارها، زمان‌بندی مجدد کار، زمان‌بندی مجدد پیگیری، اسناد تجاری، پرداخت‌ها، فیلتر کارها، فیلتر گزارش‌ها و فیلتر Audit Log از ورودی native میلادی به ورودی شمسی مشترک منتقل شد.
-* نمایش‌های عمومی تاریخ از جمله شرکت‌ها، کارها، فعالیت‌ها، اعلان‌ها، سازمان‌ها، SSO، فرصت‌ها، اسناد، پرداخت‌ها، پیوست‌ها و لاگ‌ها از مسیرهای formatter مشترک به نمایش شمسی `YYYY/MM/DD - HH:mm` منتقل شدند.
-* برای فیلترهای بازه‌ای، مقدار شروع روز و انتهای روز به صورت ISO به backend ارسال می‌شود تا قرارداد backend تغییر نکند.
+* Added the lightweight `jalaali-js` dependency for Jalali/Gregorian date conversion.
+* Added the shared `jalaliDate` utility for converting backend ISO values to Jalali display values, converting Jalali input to ISO, normalizing Persian/Arabic digits, and creating end-of-day ranges.
+* Added the shared `JalaliDateField` component so forms can accept Jalali values such as `1403/05/20` and `1403/05/20 14:30` while sending ISO values to the API.
+* Migrated date/time inputs in activities, Call Cards, opportunities, tasks, task rescheduling, follow-up rescheduling, commercial documents, payments, task filters, report filters, and Audit Log filters from native Gregorian inputs to the shared Jalali input.
+* Migrated general date displays for companies, tasks, activities, notifications, organizations, SSO, opportunities, documents, payments, attachments, and logs to the shared Jalali `YYYY/MM/DD - HH:mm` formatters.
+* Range filters send start-of-day and end-of-day ISO values to the backend so the backend contract remains unchanged.
 
 **Important files:**
 
@@ -3070,9 +3145,9 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 **Assumptions and backend dependencies:**
 
-* Backend همچنان تاریخ‌ها را به صورت Gregorian/ISO دریافت و ذخیره می‌کند؛ این fix فقط لایه UI را شمسی می‌کند.
-* ورودی مشترک فعلا متن شمسی کنترل‌شده است و Date Picker تقویمی تصویری اضافه نشده تا تغییر UI کم‌ریسک و متمرکز بماند.
-* فیلدهای date-only به ISO محلی تبدیل می‌شوند و برای `to` در فیلترهای بازه‌ای انتهای روز ارسال می‌شود.
+* The backend continues to receive and store dates in Gregorian/ISO format; this fix changes only the UI date layer to Jalali.
+* The shared input initially remained a controlled Jalali text field; no visual calendar picker was added in this fix to keep the change focused and low risk.
+* Date-only fields are converted to local ISO values, and range-filter `to` values are sent as end-of-day timestamps.
 * Live authenticated API testing was not performed in this fix.
 
 **Verification status:**
@@ -3082,16 +3157,16 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * The non-blocking Vite bundle-size warning remains.
 
 ---
-## fix 000057 — افزودن انتخابگر تقویم شمسی برای فیلدهای تاریخ و زمان
+## fix 000057 — Add Jalali calendar pickers for date and time fields
 
 **Implemented items:**
 
-* وابستگی `react-multi-date-picker` اضافه شد تا کاربران تاریخ‌ها را از تقویم شمسی انتخاب کنند و مجبور به تایپ دستی نباشند.
-* کامپوننت‌های مشترک `JalaliDatePicker`، `JalaliDateTimePicker` و `JalaliDateRangePicker` با تقویم Persian، locale فارسی، چیدمان RTL-friendly، دکمه پاک‌کردن و input مبتنی بر MUI اضافه شدند.
-* کامپوننت سازگار `JalaliDateField` حفظ شد و اکنون به جای ورودی متنی ساده، از انتخابگر تقویم شمسی استفاده می‌کند.
-* فیلترهای بازه‌ای کارها، گزارش‌ها و Audit Log به `JalaliDateRangePicker` منتقل شدند.
-* انتخابگرهای date-time برای فعالیت‌ها، پیگیری‌ها، کارها، یادآوری‌ها و کال‌کارت از plugin زمان استفاده می‌کنند و ساعت/دقیقه انتخاب‌شده را به ISO backend تبدیل می‌کنند.
-* قرارداد backend بدون تغییر باقی ماند و همه خروجی‌های انتخابگرها همچنان ISO/Gregorian-compatible هستند.
+* Added the `react-multi-date-picker` dependency so users can select Jalali dates from a calendar instead of entering them manually.
+* Added shared `JalaliDatePicker`, `JalaliDateTimePicker`, and `JalaliDateRangePicker` components with a Persian calendar, Persian locale, RTL-friendly layout, clear action, and MUI-based input.
+* Preserved the compatible `JalaliDateField` API while replacing its plain text input with the Jalali calendar picker.
+* Migrated task, report, and Audit Log range filters to `JalaliDateRangePicker`.
+* Date-time pickers for activities, follow-ups, tasks, reminders, and Call Cards use the time plugin and convert selected hours/minutes to backend ISO values.
+* The backend contract remains unchanged, and all picker outputs remain ISO/Gregorian-compatible.
 
 **Important files:**
 
@@ -3106,8 +3181,8 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 **Assumptions and backend dependencies:**
 
-* Backend همچنان تاریخ‌ها را به صورت ISO/Gregorian دریافت و ذخیره می‌کند.
-* این fix از همان تبدیل‌های مرکزی fix `000056` استفاده می‌کند و منطق تبدیل تاریخ در فرم‌ها پخش نشده است.
+* The backend continues to receive and store dates in ISO/Gregorian format.
+* This fix reuses the centralized conversion utilities from fix `000056` rather than duplicating date-conversion logic across forms.
 * Live authenticated API testing was not performed in this fix.
 
 **Verification status:**
@@ -3117,14 +3192,14 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * The non-blocking Vite bundle-size warning remains.
 
 ---
-## fix 000058 — رفع خطای اجرای انتخابگر تاریخ شمسی
+## fix 000058 — Fix Jalali date picker runtime error
 
 **Implemented items:**
 
-* importهای `react-multi-date-picker` و plugin زمان در `JalaliDateField` به‌صورت defensive unwrap شدند تا در زمان اجرا به‌جای module object، خود کامپوننت React رندر شود.
-* importهای `DateObject`، تقویم Persian و locale فارسی در همان قرارداد صحیح نگه داشته شدند و locale به نام `persian_fa` یکسان‌سازی شد.
-* برای محیط توسعه یک guard کوچک اضافه شد تا اگر dependencyها دوباره به کامپوننت معتبر resolve نشوند، خطای واضح‌تری نمایش داده شود.
-* قرارداد ارسال تاریخ‌ها به backend بدون تغییر باقی ماند.
+* Defensively unwrapped the `react-multi-date-picker` and time-plugin imports in `JalaliDateField` so the React component itself is rendered instead of a module object at runtime.
+* Preserved the correct `DateObject`, Persian calendar, and Persian locale imports, and standardized the locale name to `persian_fa`.
+* Added a small development guard that provides a clearer error if the dependencies fail to resolve to valid components again.
+* Kept the backend date payload contract unchanged.
 
 **Important files:**
 
@@ -3133,8 +3208,8 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 **Assumptions and backend dependencies:**
 
-* این fix فقط frontend است و هیچ API contract یا dependency سمت backend را تغییر نمی‌دهد.
-* فرم‌های استفاده‌کننده از `JalaliDatePicker`، `JalaliDateTimePicker` و `JalaliDateRangePicker` از همان کامپوننت مشترک استفاده می‌کنند.
+* This is a frontend-only fix and does not change any backend API contract or dependency.
+* Forms using `JalaliDatePicker`, `JalaliDateTimePicker`, and `JalaliDateRangePicker` continue to use the same shared component.
 
 **Verification status:**
 
@@ -3143,14 +3218,14 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * The non-blocking Vite bundle-size warning remains.
 
 ---
-## fix 000059 — رفع خطای اجرای فیلد انتخاب تاریخ شمسی
+## fix 000059 — Fix Jalali date field runtime error
 
 **Implemented items:**
 
-* guard توسعه‌ای `JalaliDateField` که با `typeof Component === 'function'` کامپوننت‌های معتبر React را رد می‌کرد حذف شد.
-* importهای `DatePicker` و `TimePicker` به import پیش‌فرض مستندشده از `react-multi-date-picker` و plugin زمان برگشتند.
-* importهای `DateObject`، تقویم Persian و locale `persian_fa` در شکل صحیح حفظ شدند.
-* `JalaliDatePicker`، `JalaliDateTimePicker` و `JalaliDateRangePicker` همچنان بدون تغییر قرارداد backend مقدار ISO/Gregorian-compatible تولید می‌کنند.
+* Removed the `JalaliDateField` development guard that incorrectly rejected valid React components using `typeof Component === 'function'`.
+* Restored the documented default imports for `DatePicker` and `TimePicker` from `react-multi-date-picker` and its time plugin.
+* Preserved the correct `DateObject`, Persian calendar, and `persian_fa` locale imports.
+* `JalaliDatePicker`, `JalaliDateTimePicker`, and `JalaliDateRangePicker` continue to produce ISO/Gregorian-compatible values without changing the backend contract.
 
 **Important files:**
 
@@ -3159,35 +3234,8 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 **Assumptions and backend dependencies:**
 
-* این fix فقط frontend است و هیچ API contract یا dependency سمت backend را تغییر نمی‌دهد.
-* خطای runtime ناشی از guard محلی بود، نه نیاز به تغییر فرم‌ها یا endpointها.
-
-**Verification status:**
-
-* Vite cache cleared.
-* Lint passed without errors.
-* Production build passed.
-* The non-blocking Vite bundle-size warning remains.
-
----
-## fix 000060 — رفع خطای رندر انتخابگر تاریخ شمسی
-
-**Implemented items:**
-
-* JSX خط گزارش‌شده در `JalaliDatePicker` بررسی شد و tag مشکل‌دار، `DatePicker`، به خروجی default واقعی dependency resolve شد.
-* برای `DatePicker` و `TimePicker` یک interop resolver بدون guard و بدون log اضافه شد تا module namespace object مستقیم به React داده نشود.
-* resolver کامپوننت‌های object-shaped معتبر React مثل `forwardRef` را به‌عنوان کامپوننت معتبر حفظ می‌کند.
-* importهای `react-multi-date-picker`، `react-date-object`، تقویم Persian، locale `persian_fa` و آیکن‌های MUI در شکل صحیح باقی ماندند.
-
-**Important files:**
-
-* `src/shared/components/JalaliDateField.tsx`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
-* این fix فقط frontend است و هیچ API contract یا dependency سمت backend را تغییر نمی‌دهد.
-* فرم فرصت‌ها و سایر فرم‌ها از همان کامپوننت مشترک `JalaliDateField` استفاده می‌کنند.
+* This is a frontend-only fix and does not change any backend API contract or dependency.
+* The runtime error was caused by the local guard, not by the forms or endpoints.
 
 **Verification status:**
 
@@ -3197,18 +3245,45 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * The non-blocking Vite bundle-size warning remains.
 
 ---
-## fix 000061 — اصلاح فرم ایجاد کار بر اساس زمینه شرکت و فرصت
+## fix 000060 — Fix Jalali date picker rendering error
 
 **Implemented items:**
 
-* فیلدهای متنی raw برای `companyId` و `opportunityId` از فرم ایجاد/ویرایش کار حذف شدند.
-* فرم مشترک `TaskFormDialog` بر اساس زمینه شرکت و فرصت، context خواندنی نمایش می‌دهد و شناسه‌ها را از همان context ارسال می‌کند.
-* در ایجاد کار از داخل فرصت، شرکت و فرصت قفل و فقط به‌صورت خواندنی نمایش داده می‌شوند.
-* در ایجاد کار از داخل شرکت، شرکت قفل و به‌صورت خواندنی نمایش داده می‌شود.
-* در صفحه عمومی کارها، شرکت، فرصت و مخاطب با Autocomplete/selector مبتنی بر APIهای موجود انتخاب می‌شوند.
-* فرصت‌ها با شرکت انتخاب‌شده فیلتر می‌شوند و انتخاب فرصت، شرکت مرتبط را به‌صورت سازگار تنظیم می‌کند.
-* مخاطب‌ها فقط بر اساس شرکت انتخاب‌شده/current بارگذاری می‌شوند.
-* تب کارها به صفحه جزئیات شرکت اضافه شد تا ایجاد کار در زمینه شرکت امکان‌پذیر باشد.
+* Investigated the reported JSX failure in `JalaliDatePicker` and resolved the problematic `DatePicker` tag to the dependency’s actual default export.
+* Added an interop resolver for `DatePicker` and `TimePicker`, without guards or logging, so a module namespace object is never passed directly to React.
+* The resolver preserves valid object-shaped React components such as `forwardRef` components.
+* Preserved the correct imports for `react-multi-date-picker`, `react-date-object`, the Persian calendar, the `persian_fa` locale, and MUI icons.
+
+**Important files:**
+
+* `src/shared/components/JalaliDateField.tsx`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* This is a frontend-only fix and does not change any backend API contract or dependency.
+* Opportunity forms and other forms continue to use the shared `JalaliDateField` component.
+
+**Verification status:**
+
+* Vite cache cleared.
+* Lint passed without errors.
+* Production build passed.
+* The non-blocking Vite bundle-size warning remains.
+
+---
+## fix 000061 — Make task creation context-aware for company and opportunity
+
+**Implemented items:**
+
+* Removed raw `companyId` and `opportunityId` text fields from the task create/edit form.
+* Updated the shared `TaskFormDialog` to display readable company/opportunity context and submit identifiers from that context.
+* When creating a task from an opportunity, the company and opportunity are locked and displayed as read-only context.
+* When creating a task from a company, the company is locked and displayed as read-only context.
+* On the global Tasks page, company, opportunity, and person are selected through API-backed autocomplete/selectors.
+* Opportunity options are filtered by the selected company, and choosing an opportunity consistently sets its related company.
+* Person options are loaded only for the selected or current company.
+* Added a Tasks tab to Company Details so tasks can be created in company context.
 
 **Important files:**
 
@@ -3222,10 +3297,10 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 **Assumptions and backend dependencies:**
 
-* این fix فقط frontend است و هیچ API contract سمت backend را تغییر نمی‌دهد.
-* payload کار همچنان با DTO موجود `CreateTaskPayload` / `UpdateTaskPayload` ارسال می‌شود.
-* برای سازگاری، وقتی context شرکت موجود است `companyId` همان context ارسال می‌شود؛ کاربر امکان ویرایش raw id ندارد.
-* Live authenticated API testing انجام نشد.
+* This is a frontend-only fix and does not change any backend API contract.
+* Task payloads continue to use the existing `CreateTaskPayload` and `UpdateTaskPayload` DTO contracts.
+* For compatibility, when company context is available, the form submits that context as `companyId`; users cannot edit a raw identifier.
+* Live authenticated API testing was not performed.
 
 **Verification status:**
 
@@ -3234,20 +3309,20 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * The non-blocking Vite bundle-size warning remains.
 
 ---
-## fix 000062 — پایه‌گذاری سیستم طراحی یکپارچه و RTL
+## fix 000062 — Establish a unified design system and RTL foundation
 
 **Implemented items:**
 
-* theme مرکزی MUI با حفظ کامل palette تاییدشده توسعه داده شد و رنگ‌های پروژه تغییر نکردند.
-* tokenهای مشترک layout، اندازه‌ها، radius و shadow در `src/theme/tokens.ts` اضافه شدند.
-* customizationهای موجود MUI X برای DataGrid، Charts، Date Pickers و Tree View به theme اصلی متصل شدند.
-* default/style overrideهای مشترک برای Button، IconButton، TextField، FormControl، Autocomplete، Paper، Card، Dialog، Table، Tabs، Chip، Alert، Menu و Tooltip اضافه شد.
-* CSS پایه اپلیکیشن از کدهای قالب Vite پاک‌سازی شد و helperهای RTL/LTR و جلوگیری از overflow افقی اضافه شدند.
-* کامپوننت‌های مشترک `PageContainer`، `PageHeader`، `PageSection`، `FilterPanel`، `ResponsiveActionGroup` و `StateBlock` اضافه شدند.
-* layout اصلی داشبورد به container مرکزی با max-width و padding واکنش‌گرا منتقل شد.
-* Header داشبورد از inline style به MUI sx و typography استاندارد منتقل شد.
-* فاصله‌گذاری منطقی RTL در AppNavbar و SideMenu بهبود یافت.
-* صفحه مدیریت کارها به الگوی جدید PageContainer/PageHeader منتقل شد.
+* Extended the central MUI theme while fully preserving the approved palette; project colors were not changed.
+* Added shared layout, sizing, radius, and shadow tokens in `src/theme/tokens.ts`.
+* Connected the existing MUI X customizations for Data Grid, Charts, Date Pickers, and Tree View to the primary theme.
+* Added shared defaults and style overrides for Button, IconButton, TextField, FormControl, Autocomplete, Paper, Card, Dialog, Table, Tabs, Chip, Alert, Menu, and Tooltip.
+* Removed leftover Vite-template CSS and added RTL/LTR helpers plus horizontal-overflow protection.
+* Added shared `PageContainer`, `PageHeader`, `PageSection`, `FilterPanel`, `ResponsiveActionGroup`, and `StateBlock` components.
+* Moved the main dashboard layout to a centered container with a maximum width and responsive padding.
+* Migrated the dashboard Header from inline styles to standardized MUI `sx` and typography.
+* Improved logical RTL spacing in AppNavbar and SideMenu.
+* Migrated the Tasks management page to the new PageContainer/PageHeader pattern.
 
 **Important files:**
 
@@ -3264,10 +3339,10 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 **Assumptions and backend dependencies:**
 
-* این fix فقط frontend و UI foundation است و هیچ API contract، route behavior، permission، validation یا business workflow را تغییر نمی‌دهد.
-* رنگ‌های موجود پروژه به‌عنوان source of truth حفظ شدند؛ تمرکز این fix روی spacing، density، RTL، responsive shell و component defaults است.
-* migration کامل همه صفحات به shared components در این fix انجام نشد؛ صفحات باقیمانده از طریق theme مرکزی یکدست‌تر شده‌اند اما هنوز می‌توانند در fixهای بعدی به `PageHeader`، `FilterPanel` و `PageSection` مهاجرت کنند.
-* visual browser inspection و live API testing انجام نشد.
+* This fix establishes frontend/UI foundations only and does not change API contracts, route behavior, permissions, validation, or business workflows.
+* Existing project colors remain the source of truth; this fix focuses on spacing, density, RTL behavior, responsive shell structure, and component defaults.
+* This fix did not migrate every page to the shared components. Remaining pages are more consistent through the central theme and can move to `PageHeader`, `FilterPanel`, and `PageSection` in later fixes.
+* Visual browser inspection and live API testing were not performed.
 
 **Verification status:**
 
@@ -3276,26 +3351,26 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * The non-blocking Vite bundle-size warning remains.
 
 ---
-## fix 000063 — تکمیل راست‌چین‌سازی کامپوننت‌ها و استانداردسازی عملیات گرید
+## fix 000063 — Complete component RTL support and standardize grid row actions
 
 **Implemented items:**
 
-* زیرساخت کامل RTL برای MUI/Emotion اضافه شد؛ علاوه بر `dir="rtl"` در ریشه و `theme.direction = 'rtl'`، یک Emotion cache با `stylis-plugin-rtl` و `prefixer` به ریشه اپلیکیشن متصل شد.
-* رفتار داخلی `TextField`، `InputBase`، `OutlinedInput`، `InputLabel`، `Select`، `Autocomplete`، `InputAdornment`، `Menu`، `TablePagination` و `Pagination` در theme مرکزی برای متن فارسی، placeholder، label، notch، menu item و pagination راست‌چین شد.
-* helperهای LTR برای داده‌های فنی مثل تاریخ، ایمیل، شناسه، URL و کد حفظ و کامل‌تر شدند تا اصلاح global RTL فیلدهای فنی را خراب نکند.
-* مشکل هم‌پوشانی آیکن‌های فیلد تاریخ شمسی با متن در `JalaliDateField` از مسیر مشترک picker اصلاح شد؛ ورودی تاریخ همچنان LTR و قرارداد خروجی ISO/Gregorian-compatible باقی ماند.
-* کامپوننت مشترک `RowActions` و `RowActionButton` اضافه شد تا عملیات ردیفی با `IconButton`، tooltip فارسی، `aria-label` فارسی و منوی overflow قابل دسترس نمایش داده شوند.
-* ستون‌های عملیات متنی و عریض در گریدهای شرکت‌ها، فرصت‌ها، کارها، افراد، پیوست‌ها، اسناد تجاری، پرداخت‌ها، محصولات، سازمان‌ها، اعلان‌ها، SSO، کتابخانه‌ها، شعب، کانال‌های اجتماعی، آیتم‌های فرصت و تنظیمات پایپ‌لاین به عملیات آیکنی فشرده تبدیل شدند.
-* اکشن‌های پرتکرار مستقیم نگه داشته شدند و اکشن‌های ثانویه مانند تغییر وضعیت، ارجاع، بایگانی، حذف و تعلیق در منوی `MoreVert` قرار گرفتند.
-* عرض ستون‌های عملیات کنترل شد و برای اغلب گریدها به حدود 104 تا 136 پیکسل کاهش یافت.
-* labelهای pagination دستی در فعالیت‌ها و پیگیری‌ها با متن فارسی یکسان `تعداد ردیف در صفحه` و الگوی `از {from} تا {to} از {count}` هماهنگ شد.
-* wrap/flex-shrink دکمه‌ها و action containerها در theme بهبود یافت تا متن‌هایی مانند «به‌روزرسانی» از محدوده دکمه بیرون نزند.
+* Added complete MUI/Emotion RTL infrastructure: in addition to root `dir="rtl"` and `theme.direction = 'rtl'`, an Emotion cache using `stylis-plugin-rtl` and `prefixer` is mounted at the application root.
+* Updated central theme behavior for `TextField`, `InputBase`, `OutlinedInput`, `InputLabel`, `Select`, `Autocomplete`, `InputAdornment`, `Menu`, `TablePagination`, and `Pagination` so Persian text, placeholders, labels, notches, menu items, and pagination render correctly in RTL.
+* Preserved and expanded LTR helpers for technical values such as dates, email addresses, identifiers, URLs, and codes so global RTL changes do not break technical fields.
+* Fixed Jalali date-field icon/text overlap through the shared picker path; the input remains LTR and the output contract remains ISO/Gregorian-compatible.
+* Added shared `RowActions` and `RowActionButton` components for accessible row actions using `IconButton`, Persian tooltips, Persian `aria-label` values, and an overflow menu.
+* Replaced wide text-action columns with compact icon actions across company, opportunity, task, people, attachment, commercial-document, payment, product, organization, notification, SSO, library, branch, social-channel, opportunity-line-item, and pipeline-settings grids.
+* Kept high-frequency actions directly visible and moved secondary actions such as status changes, assignment, archive, delete, and suspension into the `MoreVert` menu.
+* Controlled action-column widths and reduced most grids to approximately 104–136 pixels.
+* Standardized manual pagination labels in Activities and Follow-ups with a consistent Persian “Rows per page” label and “{from}–{to} of {count}” pattern.
+* Improved button and action-container wrapping/flex-shrink behavior in the theme so labels such as Refresh do not overflow their buttons.
 
 **Root cause found:**
 
-* اپلیکیشن فقط در لایه document/theme راست‌چین شده بود و Emotion cache برای تبدیل CSSهای MUI به RTL وجود نداشت.
-* بسیاری از input/select/autocompleteها رفتار داخلی پیش‌فرض LTR یا padding/adornment نامتناسب داشتند.
-* ستون‌های عملیات با دکمه‌های متنی طولانی ساخته شده بودند و باعث مصرف عرض زیاد، overflow و تجربه ضعیف در viewportهای کوچک می‌شدند.
+* The application was RTL only at the document/theme level and lacked an Emotion cache to transform MUI-generated CSS for RTL.
+* Many input, select, and autocomplete components retained default internal LTR behavior or mismatched padding/adornment positioning.
+* Action columns used long text buttons, consuming excessive width and causing overflow and poor behavior in smaller viewports.
 
 **Important files:**
 
@@ -3315,11 +3390,11 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 **Assumptions and backend dependencies:**
 
-* این fix فقط frontend است و هیچ API contract، route، permission، payload، validation یا workflow سمت backend را تغییر نمی‌دهد.
-* رنگ‌های تاییدشده پروژه تغییر نکردند؛ تغییرات روی RTL، alignment، responsive behavior، accessibility و عرض ستون‌های عملیات متمرکز است.
-* برای اجرای RTL cache، وابستگی‌های سبک `@emotion/cache`، `stylis`، `stylis-plugin-rtl` و تایپ `@types/stylis` به صورت صریح به frontend اضافه شدند.
-* visual browser inspection با مرورگر در این fix انجام نشد.
-* Live API testing انجام نشد چون backend در این فرایند اجرا/تست نشد.
+* This is a frontend-only fix and does not change backend API contracts, routes, permissions, payloads, validation, or workflows.
+* Approved project colors were not changed; the work focused on RTL behavior, alignment, responsiveness, accessibility, and action-column width.
+* Added explicit lightweight frontend dependencies for the RTL cache: `@emotion/cache`, `stylis`, `stylis-plugin-rtl`, and `@types/stylis`.
+* Visual browser inspection was not performed in this fix.
+* Live API testing was not performed because the backend was not run or tested during this work.
 
 **Verification status:**
 
@@ -3330,29 +3405,29 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 **Remaining known limitations:**
 
-* دکمه‌های متنی داخل cardها و timelineها که عملیات ردیفی DataGrid/Table نیستند، برای حفظ خوانایی و workflow فعلی متنی باقی ماندند.
-* بازبینی تصویری چند viewport و تست زنده نقش‌ها/API هنوز باید در محیط دارای backend و مرورگر انجام شود.
+* Text buttons inside cards and timelines that are not Data Grid/Table row actions remain textual to preserve readability and the existing workflow.
+* Multi-viewport visual review and live role/API testing still need to be performed in an environment with a browser and running backend.
 
 ---
-## fix 000064 — رفع خطای Runtime زیرساخت RTL و هماهنگ‌سازی Stylis با Emotion
+## fix 000064 — Fix RTL runtime failure and align Stylis with Emotion
 
 **Implemented items:**
 
-* خطای runtime مربوط به Emotion/Stylis در زمان رندر MUI TextField برطرف شد.
-* dependency عمومی `stylis-plugin-rtl` حذف و با پلاگین رسمی `@mui/stylis-plugin-rtl` جایگزین شد.
-* نسخه app-level `stylis` از `^4.4.0` به نسخه exact `4.2.0` pin شد تا با نسخه مورد استفاده `@emotion/cache@11.14.0` هماهنگ باشد.
-* import پلاگین RTL در `src/lib/rtlCache.ts` به `@mui/stylis-plugin-rtl` تغییر کرد و ترتیب `prefixer` قبل از `rtlPlugin` حفظ شد.
-* `CacheProvider`، `ThemeProvider`، `CssBaseline`، `RouterProvider` و `QueryProvider` با همان ترتیب قبلی حفظ شدند.
-* تنظیمات RTL ریشه (`dir="rtl"` و `lang="fa"`) و `theme.direction = 'rtl'` حفظ شد.
-* cache بهینه‌سازی Vite در `node_modules/.vite` پاک شد تا dependencyهای RTL دوباره bundle شوند.
-* `@types/stylis` بعد از تست حذف، به دلیل نیاز TypeScript به declaration برای import مستقیم `prefixer` حفظ شد.
-* رنگ‌ها، routeها، API contractها، authentication flow، permissionها و validationها تغییر نکردند.
+* Fixed the Emotion/Stylis runtime error that occurred while rendering MUI TextField components.
+* Removed the generic `stylis-plugin-rtl` dependency and replaced it with the official `@mui/stylis-plugin-rtl` plugin.
+* Pinned the app-level `stylis` version from `^4.4.0` to exact version `4.2.0` to match the version used by `@emotion/cache@11.14.0`.
+* Updated the RTL plugin import in `src/lib/rtlCache.ts` to `@mui/stylis-plugin-rtl` while preserving the `prefixer`-before-`rtlPlugin` order.
+* Preserved the existing provider order for `CacheProvider`, `ThemeProvider`, `CssBaseline`, `RouterProvider`, and `QueryProvider`.
+* Preserved root RTL settings (`dir="rtl"` and `lang="fa"`) and `theme.direction = 'rtl'`.
+* Cleared the Vite optimization cache under `node_modules/.vite` so RTL dependencies were rebundled.
+* Retained `@types/stylis` after a removal test because TypeScript requires its declarations for the direct `prefixer` import.
+* Did not change colors, routes, API contracts, authentication flow, permissions, or validation.
 
 **Root cause:**
 
-* بازرسی dependency tree نشان داد `@emotion/cache@11.14.0` از `stylis@4.2.0` استفاده می‌کرد، اما import مستقیم `prefixer` و package عمومی `stylis-plugin-rtl@2.1.1` از `stylis@4.4.0` resolve می‌شدند.
-* این ترکیب باعث اجرای pluginهای Stylis با internalهای ناسازگار در مسیر Emotion serialization می‌شد و در زمان insertion استایل‌های MUI به خطای `Cannot read properties of undefined (reading 'push')` در `append/lift/prefixer` می‌رسید.
-* بعد از fix، `npm ls stylis` فقط `stylis@4.2.0` را برای Emotion، `prefixer` و `@mui/stylis-plugin-rtl` نشان می‌دهد.
+* Dependency-tree inspection showed that `@emotion/cache@11.14.0` used `stylis@4.2.0`, while the direct `prefixer` import and generic `stylis-plugin-rtl@2.1.1` resolved through `stylis@4.4.0`.
+* This combination executed Stylis plugins against incompatible internals during Emotion serialization and caused `Cannot read properties of undefined (reading 'push')` failures in `append/lift/prefixer` while inserting MUI styles.
+* After the fix, `npm ls stylis` reports only `stylis@4.2.0` for Emotion, `prefixer`, and `@mui/stylis-plugin-rtl`.
 
 **Important files:**
 
@@ -3363,49 +3438,49 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 **Assumptions and backend dependencies:**
 
-* این fix فقط frontend است.
-* هیچ API contract، route، authentication behavior، permission، payload یا validation سمت backend تغییر نکرد.
-* `npm dedupe` طبق دستور اجرا شد و lockfile را برای tree جدید هماهنگ کرد؛ یک patch transitive غیرعملکردی برای dependency داخلی `ignore` در مسیر TypeScript ESLint نیز در lockfile normalize شد.
-* Live API testing انجام نشد؛ backend عملیاتی در این fix هدف تست نبود.
+* This is a frontend-only fix.
+* No backend API contract, route, authentication behavior, permission, payload, or validation changed.
+* Ran `npm dedupe` as requested and aligned the lockfile with the new dependency tree; the lockfile also normalized a non-functional transitive patch for the internal `ignore` dependency used by TypeScript ESLint.
+* Live API testing was not performed; a running backend was not part of this fix’s verification scope.
 
 **Verification status:**
 
-* `npm ls stylis`: همه مسیرها به `stylis@4.2.0` dedupe شدند.
-* `npm ls @emotion/cache`: `@emotion/cache@11.14.0` معتبر و dedupe شده است.
-* `npm ls @mui/stylis-plugin-rtl`: `@mui/stylis-plugin-rtl@9.1.1` نصب است.
-* `npm ls stylis-plugin-rtl`: empty؛ package عمومی حذف شده است.
-* Dev server: `npm run dev -- --host 127.0.0.1 --port 5173` اجرا شد، Vite dependency optimization شروع شد و `/login` با HTTP 200 پاسخ داد.
-* Browser verification: با Chrome محلی از طریق Playwright، `/login` رندر شد؛ ۲ input قابل مشاهده بود، `dir="rtl"` و `lang="fa"` برقرار بود، page error وجود نداشت، React Router default ErrorBoundary نمایش داده نشد و خطاهای `Emotion Insertion`، `append`، `lift`، `prefixer` یا `Cannot read properties of undefined (reading 'push')` دیده نشد.
-* Browser console فقط خطای CORS برای درخواست `http://localhost:3000/api/auth/sso/providers` نشان داد، چون backend/live API در این تست در دسترس نبود؛ این خطا به fix RTL مربوط نیست.
+* `npm ls stylis`: all paths were deduplicated to `stylis@4.2.0`.
+* `npm ls @emotion/cache`: `@emotion/cache@11.14.0` is valid and deduplicated.
+* `npm ls @mui/stylis-plugin-rtl`: `@mui/stylis-plugin-rtl@9.1.1` is installed.
+* `npm ls stylis-plugin-rtl`: empty; the generic package was removed.
+* Development server: `npm run dev -- --host 127.0.0.1 --port 5173` started successfully, Vite dependency optimization ran, and `/login` returned HTTP 200.
+* Browser verification: rendered `/login` in local Chrome through Playwright; two inputs were visible, `dir="rtl"` and `lang="fa"` were active, no page error occurred, the default React Router ErrorBoundary was not shown, and no `Emotion Insertion`, `append`, `lift`, `prefixer`, or `Cannot read properties of undefined (reading 'push')` errors appeared.
+* The browser console showed only a CORS failure for `http://localhost:3000/api/auth/sso/providers` because the backend/live API was unavailable during the test; this was unrelated to the RTL fix.
 * `npm run lint`: passed without errors.
 * TypeScript check: passed as part of `npm run build`.
 * `npm run build`: passed.
-* Non-blocking warning: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان باقی است.
+* Non-blocking warning: the Vite warning for chunks larger than 500 kB remains.
 
 **Remaining known limitations:**
 
-* تست authenticated navigation و live API انجام نشد، چون backend عملیاتی و session معتبر در این fix تست نشد.
-* نصب managed Chromium خود Playwright به دلیل خطای 403 CDN در موقعیت فعلی ممکن نبود؛ برای browser verification از Chrome نصب‌شده محلی استفاده شد.
+* Authenticated navigation and live API testing were not performed because a running backend and valid session were not tested in this fix.
+* Playwright-managed Chromium could not be installed because the CDN returned 403 in the current environment; browser verification used the locally installed Chrome instead.
 
 ---
-## fix 000065 — رفع بازگشت ظاهری چیدمان به LTR بعد از فعال‌سازی RTL cache
+## fix 000065 — Fix apparent LTR regression after enabling the RTL cache
 
 **Implemented items:**
 
-* علت ظاهری LTR شدن صفحات بعد از `fix 000064` بررسی و به double mirroring در استایل‌های تولیدشده توسط Emotion RTL cache محدود شد.
-* تنظیمات اصلی RTL یعنی `dir="rtl"` در document، `theme.direction = 'rtl'` و Emotion cache مبتنی بر `@mui/stylis-plugin-rtl` بدون تغییر حفظ شد.
-* `direction: 'rtl'` و `textAlign: 'right'`های دستی که داخل `sx`/theme overrides دوباره توسط Stylis معکوس می‌شدند حذف یا با `textAlign: 'start'` جایگزین شدند.
-* جهت محتوای فنی مثل ایمیل، رمز و فیلد تاریخ شمسی با `dir="ltr"` و کلاس `.ltr` در سطح خود input حفظ شد تا وابسته به ruleهای Emotion نباشد.
-* جایگاه drawer اصلی بعد از بررسی computed style اصلاح شد؛ با توجه به mirror شدن CSS فیزیکی `Drawer` توسط RTL cache، مقدار physical anchor در `SideMenu` طوری تنظیم شد که drawer در سمت راست viewport رندر شود.
-* overrideهای DataGrid برای alignment و direction پاک‌سازی شدند تا grid جهت را از document/theme بگیرد و ستون‌ها در RTL دوباره به LTR برنگردند.
-* مسیرهای ورود، SSO callback، layout داشبورد، فیلد تاریخ شمسی و صفحات گریدی بدون تغییر در API contract، route، permission، validation یا workflow اصلاح شدند.
-* cache بهینه‌سازی Vite در `node_modules/.vite` بعد از تغییرات RTL پاک شد.
+* Investigated the apparent LTR regression after `fix 000064` and isolated it to double mirroring in styles generated through the Emotion RTL cache.
+* Preserved the core RTL configuration unchanged: document `dir="rtl"`, `theme.direction = 'rtl'`, and the Emotion cache based on `@mui/stylis-plugin-rtl`.
+* Removed manual `direction: 'rtl'` and `textAlign: 'right'` declarations that Stylis mirrored again inside `sx`/theme overrides, or replaced them with `textAlign: 'start'`.
+* Preserved LTR direction for technical content such as email addresses, passwords, and Jalali date fields through input-level `dir="ltr"` and the `.ltr` class rather than Emotion-generated rules.
+* Corrected the main drawer position after inspecting computed styles; because the RTL cache mirrors the Drawer’s physical CSS, the physical anchor in `SideMenu` was set so the drawer renders on the right side of the viewport.
+* Cleaned Data Grid alignment and direction overrides so the grid inherits direction from the document/theme and columns do not revert to LTR under RTL.
+* Corrected login, SSO callback, dashboard layout, Jalali date field, and grid pages without changing API contracts, routes, permissions, validation, or workflows.
+* Cleared the Vite optimization cache in `node_modules/.vite` after the RTL changes.
 
 **Root cause:**
 
-* بعد از `fix 000064` زیرساخت RTL درست و بدون crash فعال بود، اما بخشی از theme و layout هنوز `direction: 'rtl'`، `textAlign: 'right'` یا `direction: 'ltr'` را از مسیر Emotion تولید می‌کرد.
-* `@mui/stylis-plugin-rtl` این CSSهای فیزیکی را mirror می‌کند؛ بنابراین ruleهای دستی مثل `direction: rtl` و `text-align: right` در خروجی مرورگر به `direction: ltr` و `text-align: left` تبدیل می‌شدند.
-* بررسی Chrome قبل از اصلاح نشان داد `html[dir="rtl"]` برقرار است اما computed style بعضی containerها و فرم ورود `direction: ltr` و `text-align: left` شده بود.
+* After `fix 000064`, the RTL infrastructure was active and stable, but parts of the theme and layout still emitted `direction: 'rtl'`, `textAlign: 'right'`, or `direction: 'ltr'` through Emotion.
+* `@mui/stylis-plugin-rtl` mirrors these physical CSS declarations, so manual rules such as `direction: rtl` and `text-align: right` became `direction: ltr` and `text-align: left` in browser output.
+* Chrome inspection before the correction showed that `html[dir="rtl"]` was active while some containers and the login form had computed `direction: ltr` and `text-align: left`.
 
 **Important files:**
 
@@ -3420,52 +3495,52 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 **Assumptions and backend dependencies:**
 
-* این fix فقط frontend است.
-* هیچ API contract، route behavior، authentication flow، permission، payload، validation یا business workflow سمت backend تغییر نکرد.
-* رنگ‌های تاییدشده پروژه تغییر نکردند.
-* برای تست صفحات authenticated از localStorage تستی با نقش `ADMIN` استفاده شد؛ backend live/API معتبر در این fix تست نشد.
+* This is a frontend-only fix.
+* No backend API contract, route behavior, authentication flow, permission, payload, validation, or business workflow changed.
+* Approved project colors were not changed.
+* Authenticated pages were tested with a localStorage test user using the `ADMIN` role; no valid live backend/API session was tested in this fix.
 
 **Verification status:**
 
-* `Remove-Item -Recurse -Force .\node_modules\.vite`: اجرا شد تا Vite dependency cache بعد از تغییرات RTL تازه‌سازی شود.
-* `npm ls stylis @mui/stylis-plugin-rtl stylis-plugin-rtl`: همه مسیرهای Emotion/MUI به `stylis@4.2.0` dedupe شدند، `@mui/stylis-plugin-rtl@9.1.1` نصب است و package عمومی `stylis-plugin-rtl` در tree وجود ندارد.
-* `rg` برای `direction: 'rtl'`، `direction: 'ltr'`، `textAlign: 'right'` و `textAlign: 'left'` در `src`: فقط `theme.direction = 'rtl'` باقی ماند.
-* Dev server: `npm run dev -- --host 127.0.0.1 --port 5173` اجرا شد و `/login` با HTTP 200 پاسخ داد.
-* Browser verification با Chrome محلی از طریق Playwright/Node REPL انجام شد:
-  * `/login` در viewportهای 375 و 1280: `html` و فرم `rtl`، متن‌ها `text-align: start`، فیلدهای ایمیل/رمز `dir="ltr"`، بدون router error و بدون overflow افقی.
-  * `/dashboard` در viewportهای 375، 1280 و 1920: `html`، main، appbar و عنوان `rtl`، بدون overflow افقی، drawer دسکتاپ در سمت راست viewport و drawer موبایل از سمت راست باز شد.
-  * `/tasks` در viewport 1280: DataGrid و محتوای صفحه `rtl`، فیلد تاریخ `ltr`، بدون router error و بدون overflow افقی.
-* Browser console در این بررسی خطای مرتبط با Emotion/Stylis/RTL، `Element type is invalid` یا React Router ErrorBoundary نشان نداد.
+* `Remove-Item -Recurse -Force .\node_modules\.vite`: executed to refresh the Vite dependency cache after the RTL changes.
+* `npm ls stylis @mui/stylis-plugin-rtl stylis-plugin-rtl`: all Emotion/MUI paths were deduplicated to `stylis@4.2.0`, `@mui/stylis-plugin-rtl@9.1.1` is installed, and the generic `stylis-plugin-rtl` package is absent from the tree.
+* `rg` for `direction: 'rtl'`, `direction: 'ltr'`, `textAlign: 'right'`, and `textAlign: 'left'` under `src`: only `theme.direction = 'rtl'` remains.
+* Development server: `npm run dev -- --host 127.0.0.1 --port 5173` started successfully and `/login` returned HTTP 200.
+* Browser verification was performed in local Chrome through Playwright/Node REPL:
+  * `/login` at 375px and 1280px: `html` and the form were RTL, text used `text-align: start`, email/password fields used `dir="ltr"`, and there were no router errors or horizontal overflow.
+  * `/dashboard` at 375px, 1280px, and 1920px: `html`, main content, AppBar, and title were RTL; there was no horizontal overflow; the desktop drawer rendered on the right and the mobile drawer opened from the right.
+  * `/tasks` at 1280px: Data Grid and page content were RTL, the date field was LTR, and there were no router errors or horizontal overflow.
+* The browser console showed no Emotion/Stylis/RTL-related errors, `Element type is invalid` errors, or React Router ErrorBoundary output.
 * `npm run lint`: passed without errors.
 * TypeScript check: passed as part of `npm run build`.
 * `npm run build`: passed.
-* Non-blocking warning: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان باقی است.
+* Non-blocking warning: the Vite warning for chunks larger than 500 kB remains.
 
 **Remaining known limitations:**
 
-* live API testing با backend عملیاتی انجام نشد.
-* تست مرورگر روی نمونه‌های نماینده انجام شد، نه روی تک‌تک routeهای authenticated.
+* Live API testing against a running backend was not performed.
+* Browser testing covered representative pages rather than every authenticated route.
 
 ---
-## fix 000066 — افزودن مدیریت تیم‌ها و تبدیل تیم کاربران به انتخاب از تیم‌های تعریف‌شده
+## fix 000066 — Add team management and replace free-text team fields with managed team selection
 
 **Implemented items:**
 
-* صفحه مدیریت تیم‌ها در مسیر `/admin/teams` اضافه شد.
-* آیتم «تیم‌ها» با permission `team:manage` به منوی بخش مدیریت اضافه شد.
-* feature مستقل `teams` برای types، service، hooks، صفحه لیست، فرم ایجاد/ویرایش و مدیریت اعضا اضافه شد.
-* لیست تیم‌ها نام، کد، مدیر، تعداد اعضا، وضعیت، تاریخ ایجاد/بروزرسانی و عملیات را نمایش می‌دهد.
-* عملیات ایجاد، ویرایش، فعال/غیرفعال‌سازی و مدیریت اعضای تیم از طریق Teams API پیاده‌سازی شد.
-* فرم تیم شامل نام تیم، کد تیم، مدیر تیم، توضیحات و وضعیت است.
-* مدیر تیم از بین کاربران فعال با نقش `ADMIN` یا `MANAGER` و از مسیر existing users/owner options انتخاب می‌شود و raw user id در UI نمایش داده نمی‌شود.
-* دیالوگ اعضای تیم اعضای فعلی را نمایش می‌دهد، افزودن عضو را با selector کاربر انجام می‌دهد، از انتخاب عضو تکراری جلوگیری می‌کند و حذف عضو را از مسیر member API انجام می‌دهد.
-* فیلد متنی آزاد «تیم» در `AdminUserFormDialog` حذف و با selector تیم‌های فعال جایگزین شد.
-* فیلد متنی آزاد «تیم» در `EditUserRoleDialog` حذف و با selector تیم‌های فعال جایگزین شد.
-* اعتبارسنجی موجود حفظ شد: برای نقش‌های `MANAGER` و `REP` انتخاب تیم الزامی است و برای `ADMIN` و `BOARDS` می‌تواند خالی بماند.
-* `AdminUsersPage` دیگر گزینه‌های فیلتر تیم را از مقدارهای `user.team` استخراج نمی‌کند و تیم‌ها را از Teams API می‌گیرد.
-* جدول کاربران نام تیم را نمایش می‌دهد و از نمایش raw `teamId` در UI عادی جلوگیری می‌کند.
-* type کاربر ادمین برای پشتیبانی از `teamId`، `teamName` و `teamCode` توسعه داده شد و compatibility با فیلد legacy `team` حفظ شد.
-* lookup group موجود `teams` حذف نشد؛ منبع assignment کاربران در این fix Teams API است.
+* Added the team management page at `/admin/teams`.
+* Added a Teams navigation item under Management, gated by `team:manage`.
+* Added a dedicated `teams` feature containing types, service, hooks, list page, create/edit form, and member management.
+* The team list displays name, code, manager, member count, status, creation/update dates, and actions.
+* Implemented create, edit, activate/deactivate, and member-management operations through the Teams API.
+* The team form includes team name, code, manager, description, and status.
+* Team managers are selected from active `ADMIN` or `MANAGER` users through the existing users/owner-options flow; raw user IDs are not shown in the UI.
+* The team-members dialog displays current members, adds users through a selector, prevents duplicate selection, and removes members through the member API.
+* Removed the free-text Team field from `AdminUserFormDialog` and replaced it with an active-team selector.
+* Removed the free-text Team field from `EditUserRoleDialog` and replaced it with an active-team selector.
+* Preserved existing validation: team selection is required for `MANAGER` and `REP`, and may remain empty for `ADMIN` and `BOARDS`.
+* `AdminUsersPage` no longer derives team filter options from `user.team`; it loads teams from the Teams API.
+* The users table displays the team name and avoids showing raw `teamId` values in normal UI.
+* Extended the admin-user type with `teamId`, `teamName`, and `teamCode` while preserving compatibility with the legacy `team` field.
+* Preserved the existing `teams` lookup group; user assignment in this fix uses the Teams API as its source of truth.
 
 **Important files:**
 
@@ -3485,8 +3560,8 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 **Assumptions and backend dependencies:**
 
-* این fix فقط frontend است و API contractهای موجود کاربران، routeها، permissionها و workflowهای غیرمرتبط را تغییر نمی‌دهد.
-* پیاده‌سازی Teams به backend واقعی برای endpointهای زیر وابسته است:
+* This is a frontend-only fix and does not change existing user API contracts, routes, permissions, or unrelated workflows.
+* The Teams implementation depends on the following real backend endpoints:
   * `GET /teams`
   * `POST /teams`
   * `PATCH /teams/:id`
@@ -3495,36 +3570,36 @@ All paths below are called relative to the shared Axios `baseURL`, which include
   * `GET /teams/:id/members`
   * `POST /teams/:id/members`
   * `DELETE /teams/:id/members/:userId`
-* فرم‌های کاربر برای contract جدید `teamId` ارسال می‌کنند و دیگر مقدار typed/free-text تیم را ارسال نمی‌کنند.
-* compatibility نمایش و فیلتر با `team` legacy حفظ شد تا در دوره migration، کاربران قدیمی بدون `teamId` همچنان نام تیم را نمایش دهند.
-* اگر backend فقط assign کردن تیم روی User را پشتیبانی کند و endpoint مدیریت اعضای تیم را نداشته باشد، دیالوگ اعضا خطای backend را نمایش می‌دهد و member management ساختگی انجام نمی‌دهد.
-* live API testing انجام نشد، چون backend عملیاتی در این فرایند تست نشد.
+* User forms submit the new `teamId` contract and no longer send typed/free-text team values.
+* Preserved legacy `team` display and filter compatibility so users without `teamId` continue to show a team name during migration.
+* If the backend supports assigning a team on User but does not provide member-management endpoints, the members dialog shows the backend error and does not simulate member management.
+* Live API testing was not performed because a running backend was not tested during this work.
 
 **Verification status:**
 
-* `rg`: فیلد متنی آزاد `TextField label="تیم"` در admin user/team code باقی نماند.
+* `rg`: no free-text `TextField label="Team"` remains in the admin user/team code.
 * `npm run lint`: passed without errors.
 * TypeScript check: passed as part of `npm run build`.
 * `npm run build`: passed.
-* Non-blocking warning: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان باقی است.
+* Non-blocking warning: the Vite warning for chunks larger than 500 kB remains.
 
 **Remaining known limitations:**
 
-* صحت runtime endpointهای Teams باید در محیط متصل به backend جدید بررسی شود.
-* صفحه مدیریت اعضا به پشتیبانی backend از endpointهای member management وابسته است.
+* Runtime behavior of the Teams endpoints must be verified in an environment connected to the new backend.
+* The member-management page depends on backend support for the member-management endpoints.
 
 ---
-## fix 000067 — بهبود کنترل دسترسی و خطای ۴۰۳ در مدیریت تیم‌ها
+## fix 000067 — Improve team-management access control and 403 handling
 
 **Implemented items:**
 
-* مسیر `/admin/teams` و آیتم منوی «تیم‌ها» بازبینی شد و مسیر API در `teams.service.ts` روی `/teams` باقی ماند، چون `axiosInstance` خودش `VITE_API_URL` یا پیش‌فرض `http://localhost:3000/api` را به عنوان baseURL دارد.
-* آیتم منوی «تیم‌ها» با permissionهای backend-aligned `team:view` یا `team:manage` نمایش داده می‌شود.
-* صفحه مدیریت تیم‌ها برای دسترسی صفحه از `team:view` یا `team:manage` استفاده می‌کند و عملیات ایجاد/ویرایش/مدیریت اعضا/تغییر وضعیت را فقط برای `team:manage` نمایش می‌دهد.
-* اگر `GET /teams?includeInactive=true` با ۴۰۳ برگردد، صفحه پیام هشدار «شما دسترسی مدیریت تیم‌ها را ندارید.» را نمایش می‌دهد و grid/form شکسته را رندر نمی‌کند.
-* queryهای Teams روی خطای ۴۰۳ retry نمی‌شوند تا خطای permission به صورت noisy تکرار نشود.
-* برای خطای ۴۰۳ در ایجاد یا ویرایش تیم، فرم پیام روشن «شما مجوز ایجاد یا ویرایش تیم را ندارید.» را در toast و alert داخلی نمایش می‌دهد.
-* helper مشترک `isForbiddenError` به `src/lib/apiResponse.ts` اضافه شد تا تشخیص خطای ۴۰۳ فقط در feature محلی تکرار نشود.
+* Reviewed the `/admin/teams` route and Teams navigation item. The API path in `teams.service.ts` remains `/teams` because `axiosInstance` already uses `VITE_API_URL`, or the default `http://localhost:3000/api`, as its base URL.
+* The Teams navigation item is shown when the user has backend-aligned `team:view` or `team:manage` permission.
+* The team management page accepts `team:view` or `team:manage` for page access and shows create, edit, member-management, and status-change operations only with `team:manage`.
+* When `GET /teams?includeInactive=true` returns 403, the page shows a clear access warning instead of rendering a broken grid or form.
+* Teams queries do not retry on 403 errors, preventing repeated noisy permission failures.
+* For 403 errors during team creation or editing, the form shows a clear permission message in both the toast and inline alert.
+* Added the shared `isForbiddenError` helper to `src/lib/apiResponse.ts` so 403 detection is not duplicated inside the feature.
 
 **Important files:**
 
@@ -3537,39 +3612,39 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 **Assumptions and backend dependencies:**
 
-* این fix امنیت backend را دور نمی‌زند و فقط UX خطای permission را در frontend بهتر می‌کند.
-* backend همچنان منبع نهایی authorization برای `team:view` و `team:manage` است.
-* خطای runtime گزارش‌شده برای `GET /api/teams?includeInactive=true` و `POST /api/teams` با ۴۰۳ به permission backend وابسته است.
-* live API testing انجام نشد؛ نتیجه ۴۰۳ بر اساس گزارش runtime و handling frontend پیاده‌سازی شد.
+* This fix does not bypass backend security; it only improves the frontend UX for permission failures.
+* The backend remains the source of truth for `team:view` and `team:manage` authorization.
+* The reported 403 responses from `GET /api/teams?includeInactive=true` and `POST /api/teams` depend on backend permissions.
+* Live API testing was not performed; the 403 handling was implemented from the reported runtime behavior.
 
 **Verification status:**
 
 * `npm run lint`: passed without errors.
 * TypeScript check: passed as part of `npm run build`.
 * `npm run build`: passed.
-* Non-blocking warning: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان باقی است.
+* Non-blocking warning: the Vite warning for chunks larger than 500 kB remains.
 
 **Remaining known limitations:**
 
-* برای رفع اصل ۴۰۳ باید permissionهای backend/user token با `team:view` و `team:manage` هماهنگ شوند.
+* Resolving the underlying 403 requires aligning backend permissions and the user token with `team:view` and `team:manage`.
 
 ---
-## fix 000068 — افزودن بارگذاری فایل در فرم سند
+## fix 000068 — Add file upload to the commercial document form
 
 **Implemented items:**
 
-* فرم افزودن/ویرایش سند تجاری بازبینی شد و UX اصلی «لینک فایل» با کنترل بارگذاری فایل جایگزین شد.
-* دکمه «انتخاب فایل»، نمایش نام فایل انتخاب‌شده، نمایش حجم فایل و اکشن «حذف فایل انتخاب‌شده» به فرم سند اضافه شد.
-* فیلد لینک خارجی فایل حفظ شد اما به عنوان گزینه ثانویه و اختیاری با label «لینک خارجی فایل، اختیاری» نمایش داده می‌شود.
-* برای سند جدید، کاربر باید فایل سند را انتخاب کند یا لینک خارجی معتبر وارد کند؛ انتخاب فایل باعث الزامی نبودن لینک خام می‌شود.
-* validation سبک frontend برای پسوندهای مجاز `.pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx` و سقف ۲۵MB مطابق backend اضافه شد.
-* ایجاد سند جدید با فایل از endpoint backend `POST /opportunities/:opportunityId/commercial-documents/upload` و `multipart/form-data` انجام می‌شود.
-* ویرایش سند موجود با فایل جدید metadata سند را بروزرسانی می‌کند و سپس فایل را از مسیر موجود `/attachments` به همان سند تجاری attach می‌کند.
-* frontend هیچ اتصال مستقیمی به MinIO ندارد و فقط فایل را به backend ارسال می‌کند.
-* نمایش ستون فایل در لیست اسناد تجاری بهبود یافت؛ اگر backend `fileAttachment` برگرداند نام فایل نمایش داده می‌شود و دانلود از endpoint امن backend `/attachments/:id/download` انجام می‌شود.
-* لینک خارجی legacy همچنان فقط در صورت وجود URL امن `http/https` نمایش داده می‌شود.
-* پیام‌های خطای فارسی برای فایل نامعتبر، حجم بیش از حد مجاز، خطای بارگذاری فایل سند و خطای دریافت فایل سند اضافه شد.
-* invalidation مربوط به attachments سند تجاری بعد از upload/update به invalidationهای موجود اسناد تجاری اضافه شد.
+* Reviewed the commercial-document create/edit form and replaced the primary File Link UX with a file-upload control.
+* Added a Select File button, selected-file name and size display, and a Remove Selected File action.
+* Preserved the external file-link field as a secondary optional option labeled External File Link (Optional).
+* For a new document, the user must select a document file or enter a valid external link; selecting a file removes the requirement for a raw URL.
+* Added lightweight frontend validation for `.pdf`, `.png`, `.jpg`, `.jpeg`, `.doc`, `.docx`, `.xls`, and `.xlsx` extensions and the backend-aligned 25 MB size limit.
+* New documents with files are created through `POST /opportunities/:opportunityId/commercial-documents/upload` using `multipart/form-data`.
+* Updating an existing document with a new file first updates the document metadata and then attaches the file to that commercial document through the existing `/attachments` endpoint.
+* The frontend has no direct MinIO integration and only sends files to the backend.
+* Improved the file column in the commercial-documents list: when the backend returns `fileAttachment`, the file name is shown and downloads use the secure backend endpoint `/attachments/:id/download`.
+* Legacy external links are displayed only when they use a safe `http` or `https` URL.
+* Added Persian-language error messages for invalid files, oversized files, document upload failures, and document download failures.
+* Added commercial-document attachment cache invalidation after upload/update to the existing document invalidation flow.
 
 **Important files:**
 
@@ -3582,43 +3657,43 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 **Assumptions and backend dependencies:**
 
-* این fix فقط frontend است و backend یا MinIO را تغییر نمی‌دهد.
-* قرارداد backend از repository محلی backend بررسی شد: endpoint آپلود سند `POST /api/opportunities/:opportunityId/commercial-documents/upload` با فیلد multipart `file` و metadata متناظر با `CreateCommercialDocumentDto` است.
-* ذخیره واقعی فایل در MinIO/Local از طریق backend و زیرساخت موجود attachments انجام می‌شود؛ frontend هیچ bucket، objectKey، credential یا URL داخلی MinIO نمی‌سازد و نمایش نمی‌دهد.
-* برای ویرایش سند موجود، چون backend endpoint multipart update برای سند ندارد، فایل جدید از مسیر امن `/attachments` به entity type `COMMERCIAL_DOCUMENT` و `entityId` سند موجود attach می‌شود.
-* دانلود فایل‌های upload شده فقط از مسیر backend `/attachments/:id/download` انجام می‌شود.
-* live upload/download testing انجام نشد، چون backend عملیاتی و فایل واقعی در این مرحله تست نشد.
+* This is a frontend-only fix and does not change the backend or MinIO.
+* The backend contract was verified from the local backend repository: document upload uses `POST /api/opportunities/:opportunityId/commercial-documents/upload` with multipart field `file` and metadata matching `CreateCommercialDocumentDto`.
+* Actual file storage in MinIO/Local is handled by the backend and existing attachment infrastructure; the frontend does not create or expose buckets, object keys, credentials, or internal MinIO URLs.
+* Because the backend has no multipart update endpoint for an existing document, a replacement file is attached through the secure `/attachments` route using entity type `COMMERCIAL_DOCUMENT` and the document `entityId`.
+* Uploaded files are downloaded only through the backend `/attachments/:id/download` endpoint.
+* Live upload/download testing was not performed because no running backend or real file was tested in this phase.
 
 **Verification status:**
 
 * `npm run lint`: passed without errors.
 * TypeScript check: passed as part of `npm run build`.
 * `npm run build`: passed.
-* Non-blocking warning: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان باقی است.
+* Non-blocking warning: the Vite warning for chunks larger than 500 kB remains.
 
 **Remaining known limitations:**
 
-* نمایش نام فایل upload شده در لیست اسناد به این وابسته است که backend در پاسخ سند، summary فیلد `fileAttachment` را برگرداند؛ در غیر این صورت فایل‌ها همچنان از دیالوگ «پیوست‌ها» قابل مشاهده و دانلود هستند.
+* Displaying an uploaded file name in the documents list depends on the backend returning the `fileAttachment` summary in the document response; otherwise, files remain visible and downloadable from the Attachments dialog.
 
 ---
-## fix 000070 — بهبود دانلود و مدیریت خطای پیوست‌ها
+## fix 000070 — Improve attachment download and error handling
 
 **Implemented items:**
 
-* مسیر دانلود پیوست بازبینی شد؛ frontend همچنان endpoint درست `GET /attachments/:id/download` را از طریق `axiosInstance` صدا می‌زند و در مرورگر به `/api/attachments/:id/download` تبدیل می‌شود.
-* درخواست دانلود با `responseType: 'blob'` حفظ شد.
-* دانلود امن مرورگر با `Blob`، `URL.createObjectURL`، لینک موقت دارای `download` و `revokeObjectURL` حفظ و ایمن‌تر شد.
-* اولویت نام فایل اصلاح شد: ابتدا `Content-Disposition`، سپس نام قابل‌خواندن فایل از ردیف، و در نهایت fallback `attachment-{id}`.
-* خطاهای دانلود پیوست بر اساس status code به پیام فارسی روشن تبدیل شدند:
-  * `403`: شما دسترسی دریافت این فایل را ندارید.
-  * `404`: فایل پیوست یافت نشد.
-  * `400`: این پیوست فایل بارگذاری‌شده ندارد.
-  * `500`: خطا در دریافت فایل از مخزن ذخیره‌سازی.
-* اکشن دانلود در `AttachmentsTab` خطا را catch می‌کند و دیگر promise خطادار را بدون handling رها نمی‌کند.
-* اکشن دانلود فقط برای ردیف‌هایی که فایل ذخیره‌شده دارند نمایش داده می‌شود؛ ردیف‌های external-only اکشن «باز کردن لینک» می‌گیرند.
-* در جدول پیوست‌ها، نام فایل از `originalFileName`، `originalName` یا `fileName` انتخاب می‌شود و fallback فقط در نبود نام انسانی استفاده می‌شود.
-* نمایش بارگذار همچنان ابتدا `uploadedBy.fullName` و سپس ایمیل و فقط در نهایت `uploadedById` را نشان می‌دهد.
-* فیلدهای optional `originalName`، `fileName`، `externalUrl` و `fileUrl` به type پیوست اضافه شدند تا با پاسخ‌های legacy/ترکیبی backend سازگار باشد.
+* Reviewed the attachment download path. The frontend continues to call the correct `GET /attachments/:id/download` endpoint through `axiosInstance`, which resolves to `/api/attachments/:id/download` in the browser.
+* Preserved `responseType: 'blob'` for download requests.
+* Preserved and hardened secure browser downloads using `Blob`, `URL.createObjectURL`, a temporary link with `download`, and `revokeObjectURL`.
+* Corrected file-name priority: `Content-Disposition` first, then the human-readable row file name, and finally `attachment-{id}` as the fallback.
+* Mapped attachment download failures by HTTP status to clear Persian-language messages:
+  * `403`: the user does not have permission to download the file.
+  * `404`: the attachment was not found.
+  * `400`: the attachment does not contain an uploaded file.
+  * `500`: the storage repository could not return the file.
+* The download action in `AttachmentsTab` now catches failures instead of leaving a rejected promise unhandled.
+* The download action is shown only for rows backed by a stored file; external-only rows receive an Open Link action.
+* Attachment table file names are resolved from `originalFileName`, `originalName`, or `fileName`, with a fallback only when no human-readable name is available.
+* The uploader display still prioritizes `uploadedBy.fullName`, then email, and finally `uploadedById`.
+* Added optional `originalName`, `fileName`, `externalUrl`, and `fileUrl` fields to the attachment type for compatibility with legacy or mixed backend responses.
 
 **Important files:**
 
@@ -3630,22 +3705,60 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 **Assumptions and backend dependencies:**
 
-* این fix فقط frontend است و backend را تغییر نمی‌دهد.
-* خطای ۵۰۰ فعلی دانلود از backend/storage می‌آید؛ frontend آن را با پیام مناسب نمایش می‌دهد اما علت backend را دور نمی‌زند.
-* frontend هیچ URL، bucket، objectKey یا credential مربوط به MinIO را نمی‌سازد و نمایش نمی‌دهد.
-* اگر backend برای یک رکورد فقط `externalUrl` یا `fileUrl` بدهد، frontend به جای endpoint دانلود backend، لینک خارجی را باز می‌کند.
-* live download testing با backend عملیاتی انجام نشد.
+* This is a frontend-only fix and does not change the backend.
+* The current 500 download failure originates from the backend/storage layer; the frontend presents an appropriate message but does not bypass the backend cause.
+* The frontend does not create or expose MinIO URLs, buckets, object keys, or credentials.
+* When the backend provides only `externalUrl` or `fileUrl` for a record, the frontend opens the external link instead of calling the backend download endpoint.
+* Live download testing against a running backend was not performed.
 
 **Verification status:**
 
 * `npm run lint`: passed without errors.
 * TypeScript check: passed as part of `npm run build`.
 * `npm run build`: passed.
-* Non-blocking warning: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان باقی است.
+* Non-blocking warning: the Vite warning for chunks larger than 500 kB remains.
 
 **Remaining known limitations:**
 
-* رفع علت اصلی ۵۰۰ دانلود نیازمند بررسی backend/storage و موجود بودن فایل در مخزن ذخیره‌سازی است.
+* Resolving the underlying 500 download failure requires backend/storage investigation and confirmation that the file exists in the storage repository.
+
+---
+
+## fix 000071 — اصلاح قرارداد آپلود فایل سند تجاری در فرانت
+
+**موارد پیاده‌سازی‌شده:**
+
+* قرارداد `POST /opportunities/:opportunityId/commercial-documents/upload` در فرانت با قرارداد بک‌اند هماهنگ شد.
+* فایل سند تجاری با نام فیلد `file` داخل `FormData` ارسال می‌شود.
+* تنظیم دستی `Content-Type` برای درخواست multipart حذف شد تا مرورگر و axios مقدار boundary را درست تنظیم کنند.
+* متادیتای ارسالی به بک‌اند به فیلدهای مجاز سند تجاری محدود شد و فیلدهای داخلی فرانت مثل `file`، `attachmentId` و `fileAttachmentId` در payload متنی ارسال نمی‌شوند.
+* لینک خارجی اختیاری فرم همچنان حفظ شد، اما در قرارداد ذخیره‌سازی سند تجاری از مسیر `fileUrl` ارسال می‌شود.
+* پیام خطای ۴۰۰ در فرم سند تجاری اصلاح شد تا پیام اعتبارسنجی بک‌اند در صورت وجود نمایش داده شود و در غیر این صورت پیام فارسی «اطلاعات سند یا فایل انتخاب‌شده معتبر نیست.» نمایش داده شود.
+
+**فایل‌های مهم تغییرکرده:**
+
+* `src/features/commercialDocuments/services/commercialDocuments.service.ts`
+* `src/features/commercialDocuments/components/CommercialDocumentFormDialog.tsx`
+* `README.md`
+
+**فرض‌ها و وابستگی‌های بک‌اند:**
+
+* این اصلاح فقط فرانت‌اند است و بک‌اند تغییر نکرده است.
+* قرارداد بک‌اند برای آپلود سند تجاری از `FileInterceptor('file')` استفاده می‌کند.
+* فرانت مستقیم به MinIO وصل نمی‌شود و فایل فقط از طریق API بک‌اند ارسال می‌شود.
+* enumهای سند تجاری همچنان با کدهای بک‌اند مثل `PROPOSAL`، `PROFORMA` و `CONTRACT` ارسال می‌شوند.
+* تست زنده آپلود روی بک‌اند در حال اجرا انجام نشد.
+
+**وضعیت بررسی‌ها:**
+
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
+* `npm run build`: بدون خطا اجرا شد.
+* هشدار غیرمسدودکننده: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
+
+**محدودیت‌های باقی‌مانده:**
+
+* تأیید نهایی ذخیره فایل در MinIO نیازمند اجرای دستی سناریوی آپلود با بک‌اند و زیرساخت ذخیره‌سازی فعال است.
 
 ---
 **Built with ❤️ for sales team**

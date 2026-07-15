@@ -14,20 +14,52 @@ const base = (opportunityId: string) => `/opportunities/${opportunityId}/commerc
 const cleanParams = (value: CommercialDocumentListParams) =>
   Object.fromEntries(Object.entries(value).filter(([, item]) => item !== undefined && item !== ''));
 
-function cleanPayload<T extends CreateCommercialDocumentPayload | UpdateCommercialDocumentPayload | ChangeCommercialDocumentStatusPayload>(payload: T): T {
-  return Object.fromEntries(
-    Object.entries(payload).filter(([key, value]) => key !== 'file' && value !== undefined && value !== ''),
-  ) as T;
+const backendPayloadKeys = [
+  'type',
+  'status',
+  'number',
+  'version',
+  'title',
+  'description',
+  'amount',
+  'currency',
+  'validUntil',
+  'issuedAt',
+  'sentAt',
+  'acceptedAt',
+  'rejectedAt',
+  'signedAt',
+  'fileUrl',
+  'externalRef',
+  'notes',
+] as const;
+
+type CommercialDocumentMutationPayload =
+  | CreateCommercialDocumentPayload
+  | UpdateCommercialDocumentPayload
+  | ChangeCommercialDocumentStatusPayload;
+
+function cleanPayload(payload: CommercialDocumentMutationPayload): Record<string, unknown> {
+  const cleaned: Record<string, unknown> = {};
+  const values = payload as Record<string, unknown>;
+
+  backendPayloadKeys.forEach((key) => {
+    const value = values[key];
+    if (value !== undefined && value !== '') cleaned[key] = value;
+  });
+
+  return cleaned;
 }
 
 function appendFormValue(formData: FormData, key: string, value: unknown) {
-  if (value === undefined || value === '' || key === 'file') return;
+  if (value === undefined || value === '') return;
   formData.append(key, String(value));
 }
 
 function toCreateFormData(payload: CreateCommercialDocumentPayload) {
   const formData = new FormData();
-  if (payload.file) formData.append('file', payload.file);
+  if (!payload.file) throw new Error('Commercial document upload requires a file.');
+  formData.append('file', payload.file);
   Object.entries(cleanPayload(payload)).forEach(([key, value]) => appendFormValue(formData, key, value));
   return formData;
 }
@@ -42,9 +74,7 @@ export const commercialDocumentsService = {
   create: async (opportunityId: string, payload: CreateCommercialDocumentPayload): Promise<CommercialDocument> =>
     unwrapApiResponse<CommercialDocument>(
       payload.file
-        ? (await axiosInstance.post<unknown>(`${base(opportunityId)}/upload`, toCreateFormData(payload), {
-          headers: { 'Content-Type': undefined },
-        })).data
+        ? (await axiosInstance.post<unknown>(`${base(opportunityId)}/upload`, toCreateFormData(payload))).data
         : (await axiosInstance.post<unknown>(base(opportunityId), cleanPayload(payload))).data,
     ),
   update: async (opportunityId: string, documentId: string, payload: UpdateCommercialDocumentPayload): Promise<CommercialDocument> =>

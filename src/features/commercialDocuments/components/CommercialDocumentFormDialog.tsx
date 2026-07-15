@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import axios from 'axios';
 import { toast } from 'sonner';
 import {
   Alert,
@@ -31,6 +32,7 @@ import type {
 
 const ACCEPTED_DOCUMENT_TYPES = '.pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx';
 const acceptedExtensions = new Set(ACCEPTED_DOCUMENT_TYPES.split(','));
+const invalidCommercialDocumentFallback = 'اطلاعات سند یا فایل انتخاب‌شده معتبر نیست.';
 
 function isFileSizeAllowed(file: File | null): boolean {
   return !file || file.size <= MAX_ATTACHMENT_SIZE_BYTES;
@@ -39,6 +41,12 @@ function isFileSizeAllowed(file: File | null): boolean {
 function isAcceptedFile(file: File): boolean {
   const extension = file.name.includes('.') ? `.${file.name.split('.').pop()?.toLowerCase()}` : '';
   return acceptedExtensions.has(extension);
+}
+
+function getSubmitErrorMessage(error: unknown, fallback: string): string {
+  const message = getApiErrorMessage(error, '');
+  const isGenericAxiosMessage = axios.isAxiosError(error) && message === error.message;
+  return message && !isGenericAxiosMessage ? message : fallback;
 }
 
 export default function CommercialDocumentFormDialog({
@@ -111,7 +119,6 @@ export default function CommercialDocumentFormDialog({
     validUntil: validUntil || undefined,
     issuedAt: issuedAt || undefined,
     fileUrl: externalUrl.trim() || undefined,
-    externalUrl: externalUrl.trim() || undefined,
     file: file ?? undefined,
     externalRef: externalRef.trim() || undefined,
     notes: notes.trim() || undefined,
@@ -138,8 +145,13 @@ export default function CommercialDocumentFormDialog({
       toast.success(document ? 'سند تجاری بروزرسانی شد.' : 'سند تجاری ایجاد شد.');
       onClose();
     } catch (error) {
-      const fallback = file ? 'خطا در بارگذاری فایل سند' : 'ذخیره سند تجاری انجام نشد.';
-      toast.error(getApiErrorMessage(error, fallback));
+      const isBadRequest = axios.isAxiosError(error) && error.response?.status === 400;
+      const fallback = isBadRequest
+        ? invalidCommercialDocumentFallback
+        : file
+          ? 'خطا در بارگذاری فایل سند'
+          : 'ذخیره سند تجاری انجام نشد.';
+      toast.error(getSubmitErrorMessage(error, fallback));
     }
   };
 
