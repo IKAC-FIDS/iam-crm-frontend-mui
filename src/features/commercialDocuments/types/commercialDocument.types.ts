@@ -1,4 +1,5 @@
 import type { PaginatedMeta } from '@/lib/apiResponse';
+import type { FileAttachment } from '@/features/attachments/types/attachment.types';
 
 export type CommercialDocumentType = 'PROPOSAL' | 'PROFORMA' | 'CONTRACT';
 export type CommercialDocumentStatus = 'DRAFT' | 'SENT' | 'ACCEPTED' | 'REJECTED' | 'SIGNED' | 'CANCELLED' | 'EXPIRED';
@@ -32,6 +33,10 @@ export interface CommercialDocument {
   rejectedAt?: string | null;
   signedAt?: string | null;
   fileUrl?: string | null;
+  externalUrl?: string | null;
+  fileAttachment?: FileAttachment | null;
+  fileAttachmentId?: string | null;
+  attachmentId?: string | null;
   externalRef?: string | null;
   notes?: string | null;
   payments?: CommercialDocumentPaymentSummary[];
@@ -59,6 +64,10 @@ export interface CreateCommercialDocumentPayload {
   validUntil?: string;
   issuedAt?: string;
   fileUrl?: string;
+  externalUrl?: string;
+  file?: File;
+  attachmentId?: string;
+  fileAttachmentId?: string;
   externalRef?: string;
   notes?: string;
 }

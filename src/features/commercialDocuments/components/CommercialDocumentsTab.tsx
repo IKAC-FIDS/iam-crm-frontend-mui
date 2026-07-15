@@ -7,6 +7,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import SyncAltOutlinedIcon from '@mui/icons-material/SyncAltOutlined';
 import AttachmentsTab from '@/features/attachments/components/AttachmentsTab';
+import { useDownloadAttachment } from '@/features/attachments/hooks/useAttachments';
 import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
 import { formatDateTime } from '@/features/companies/utils/companyDisplay';
@@ -32,6 +33,7 @@ export default function CommercialDocumentsTab({ opportunityId, companyId }: { o
   const params: CommercialDocumentListParams = { page: pagination.page + 1, limit: pagination.pageSize, search: debouncedSearch || undefined, type, status };
   const query = useCommercialDocuments(opportunityId, params, canView);
   const remove = useDeleteCommercialDocument(opportunityId, companyId);
+  const download = useDownloadAttachment();
   const [editing, setEditing] = useState<CommercialDocument | null | undefined>(undefined);
   const [changing, setChanging] = useState<CommercialDocument | null>(null);
   const [deleting, setDeleting] = useState<CommercialDocument | null>(null);
@@ -59,7 +61,32 @@ export default function CommercialDocumentsTab({ opportunityId, companyId }: { o
     { field: 'issuedAt', headerName: 'صدور', minWidth: 140, valueFormatter: formatDateTime },
     { field: 'sentAt', headerName: 'ارسال/امضا', minWidth: 160, valueGetter: (_value, row) => formatDateTime(row.signedAt ?? row.sentAt) },
     { field: 'createdAt', headerName: 'ایجاد', minWidth: 150, valueFormatter: formatDateTime },
-    { field: 'fileUrl', headerName: 'فایل', minWidth: 90, renderCell: ({ row }) => safeExternalUrl(row.fileUrl) ? <Link href={safeExternalUrl(row.fileUrl) ?? undefined} target="_blank" rel="noopener noreferrer">باز کردن</Link> : '—' },
+    {
+      field: 'fileUrl',
+      headerName: 'فایل',
+      minWidth: 180,
+      renderCell: ({ row }) => {
+        const attachment = row.fileAttachment;
+        if (attachment) {
+          return (
+            <Link
+              component="button"
+              type="button"
+              onClick={() => download.mutate(
+                { id: attachment.id, originalFileName: attachment.originalFileName },
+                { onError: (error) => toast.error(getApiErrorMessage(error, 'امکان دریافت فایل سند وجود ندارد')) },
+              )}
+              sx={{ textAlign: 'start' }}
+            >
+              {attachment.originalFileName}
+            </Link>
+          );
+        }
+
+        const externalUrl = safeExternalUrl(row.externalUrl ?? row.fileUrl);
+        return externalUrl ? <Link href={externalUrl} target="_blank" rel="noopener noreferrer">باز کردن لینک خارجی</Link> : '—';
+      },
+    },
     {
       field: 'actions',
       headerName: 'عملیات',
@@ -107,7 +134,7 @@ export default function CommercialDocumentsTab({ opportunityId, companyId }: { o
         />
       ),
     },
-  ], [canManage, remove.isPending]);
+  ], [canManage, download, remove.isPending]);
 
   if (!canView) return <Alert severity="warning">دسترسی مشاهده اسناد تجاری فعال نیست.</Alert>;
 

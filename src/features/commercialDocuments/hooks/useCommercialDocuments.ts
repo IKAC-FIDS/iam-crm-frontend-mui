@@ -1,5 +1,6 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { opportunityKeys } from '@/features/opportunities/hooks/useOpportunities';
+import { attachmentsService } from '@/features/attachments/services/attachments.service';
 import { commercialDocumentsService } from '../services/commercialDocuments.service';
 import type {
   ChangeCommercialDocumentStatusPayload,
@@ -25,6 +26,7 @@ function useInvalidateCommercialDocuments(opportunityId: string, companyId?: str
     client.invalidateQueries({ queryKey: ['pipeline'] }),
     client.invalidateQueries({ queryKey: ['company-opportunities', companyId] }),
     client.invalidateQueries({ queryKey: ['companies', 'detail', companyId] }),
+    documentId ? client.invalidateQueries({ queryKey: ['attachments', 'COMMERCIAL_DOCUMENT', documentId] }) : Promise.resolve(),
   ]);
 }
 
@@ -48,8 +50,18 @@ export function useCreateCommercialDocument(opportunityId: string, companyId?: s
 export function useUpdateCommercialDocument(opportunityId: string, companyId?: string) {
   const invalidate = useInvalidateCommercialDocuments(opportunityId, companyId);
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: UpdateCommercialDocumentPayload }) =>
-      commercialDocumentsService.update(opportunityId, id, payload),
+    mutationFn: async ({ id, payload }: { id: string; payload: UpdateCommercialDocumentPayload }) => {
+      const updated = await commercialDocumentsService.update(opportunityId, id, payload);
+      if (payload.file) {
+        await attachmentsService.upload({
+          entityType: 'COMMERCIAL_DOCUMENT',
+          entityId: id,
+          file: payload.file,
+          description: payload.description,
+        });
+      }
+      return updated;
+    },
     onSuccess: (_data, vars) => invalidate(vars.id),
   });
 }

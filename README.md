@@ -706,7 +706,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000067
+fix 000001 → fix 000068
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -3552,6 +3552,53 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 **Remaining known limitations:**
 
 * برای رفع اصل ۴۰۳ باید permissionهای backend/user token با `team:view` و `team:manage` هماهنگ شوند.
+
+---
+## fix 000068 — افزودن بارگذاری فایل در فرم سند
+
+**Implemented items:**
+
+* فرم افزودن/ویرایش سند تجاری بازبینی شد و UX اصلی «لینک فایل» با کنترل بارگذاری فایل جایگزین شد.
+* دکمه «انتخاب فایل»، نمایش نام فایل انتخاب‌شده، نمایش حجم فایل و اکشن «حذف فایل انتخاب‌شده» به فرم سند اضافه شد.
+* فیلد لینک خارجی فایل حفظ شد اما به عنوان گزینه ثانویه و اختیاری با label «لینک خارجی فایل، اختیاری» نمایش داده می‌شود.
+* برای سند جدید، کاربر باید فایل سند را انتخاب کند یا لینک خارجی معتبر وارد کند؛ انتخاب فایل باعث الزامی نبودن لینک خام می‌شود.
+* validation سبک frontend برای پسوندهای مجاز `.pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx` و سقف ۲۵MB مطابق backend اضافه شد.
+* ایجاد سند جدید با فایل از endpoint backend `POST /opportunities/:opportunityId/commercial-documents/upload` و `multipart/form-data` انجام می‌شود.
+* ویرایش سند موجود با فایل جدید metadata سند را بروزرسانی می‌کند و سپس فایل را از مسیر موجود `/attachments` به همان سند تجاری attach می‌کند.
+* frontend هیچ اتصال مستقیمی به MinIO ندارد و فقط فایل را به backend ارسال می‌کند.
+* نمایش ستون فایل در لیست اسناد تجاری بهبود یافت؛ اگر backend `fileAttachment` برگرداند نام فایل نمایش داده می‌شود و دانلود از endpoint امن backend `/attachments/:id/download` انجام می‌شود.
+* لینک خارجی legacy همچنان فقط در صورت وجود URL امن `http/https` نمایش داده می‌شود.
+* پیام‌های خطای فارسی برای فایل نامعتبر، حجم بیش از حد مجاز، خطای بارگذاری فایل سند و خطای دریافت فایل سند اضافه شد.
+* invalidation مربوط به attachments سند تجاری بعد از upload/update به invalidationهای موجود اسناد تجاری اضافه شد.
+
+**Important files:**
+
+* `src/features/commercialDocuments/components/CommercialDocumentFormDialog.tsx`
+* `src/features/commercialDocuments/components/CommercialDocumentsTab.tsx`
+* `src/features/commercialDocuments/services/commercialDocuments.service.ts`
+* `src/features/commercialDocuments/hooks/useCommercialDocuments.ts`
+* `src/features/commercialDocuments/types/commercialDocument.types.ts`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* این fix فقط frontend است و backend یا MinIO را تغییر نمی‌دهد.
+* قرارداد backend از repository محلی backend بررسی شد: endpoint آپلود سند `POST /api/opportunities/:opportunityId/commercial-documents/upload` با فیلد multipart `file` و metadata متناظر با `CreateCommercialDocumentDto` است.
+* ذخیره واقعی فایل در MinIO/Local از طریق backend و زیرساخت موجود attachments انجام می‌شود؛ frontend هیچ bucket، objectKey، credential یا URL داخلی MinIO نمی‌سازد و نمایش نمی‌دهد.
+* برای ویرایش سند موجود، چون backend endpoint multipart update برای سند ندارد، فایل جدید از مسیر امن `/attachments` به entity type `COMMERCIAL_DOCUMENT` و `entityId` سند موجود attach می‌شود.
+* دانلود فایل‌های upload شده فقط از مسیر backend `/attachments/:id/download` انجام می‌شود.
+* live upload/download testing انجام نشد، چون backend عملیاتی و فایل واقعی در این مرحله تست نشد.
+
+**Verification status:**
+
+* `npm run lint`: passed without errors.
+* TypeScript check: passed as part of `npm run build`.
+* `npm run build`: passed.
+* Non-blocking warning: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان باقی است.
+
+**Remaining known limitations:**
+
+* نمایش نام فایل upload شده در لیست اسناد به این وابسته است که backend در پاسخ سند، summary فیلد `fileAttachment` را برگرداند؛ در غیر این صورت فایل‌ها همچنان از دیالوگ «پیوست‌ها» قابل مشاهده و دانلود هستند.
 
 ---
 **Built with ❤️ for sales team**
