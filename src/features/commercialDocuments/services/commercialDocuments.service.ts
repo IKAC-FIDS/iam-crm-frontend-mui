@@ -74,7 +74,9 @@ export const commercialDocumentsService = {
   create: async (opportunityId: string, payload: CreateCommercialDocumentPayload): Promise<CommercialDocument> =>
     unwrapApiResponse<CommercialDocument>(
       payload.file
-        ? (await axiosInstance.post<unknown>(`${base(opportunityId)}/upload`, toCreateFormData(payload))).data
+        ? (await axiosInstance.post<unknown>(`${base(opportunityId)}/upload`, toCreateFormData(payload), {
+          headers: { 'Content-Type': undefined },
+        })).data
         : (await axiosInstance.post<unknown>(base(opportunityId), cleanPayload(payload))).data,
     ),
   update: async (opportunityId: string, documentId: string, payload: UpdateCommercialDocumentPayload): Promise<CommercialDocument> =>

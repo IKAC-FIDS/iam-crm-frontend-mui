@@ -781,7 +781,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000071
+fix 000001 → fix 000072
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -3759,6 +3759,41 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 **محدودیت‌های باقی‌مانده:**
 
 * تأیید نهایی ذخیره فایل در MinIO نیازمند اجرای دستی سناریوی آپلود با بک‌اند و زیرساخت ذخیره‌سازی فعال است.
+
+---
+
+## fix 000072 — اصلاح ارسال multipart در آپلود سند تجاری
+
+**موارد پیاده‌سازی‌شده:**
+
+* درخواست آپلود سند تجاری در `commercialDocuments.service.ts` با الگوی موجود سرویس پیوست‌ها هماهنگ شد.
+* هنگام ارسال `FormData` به `POST /opportunities/:opportunityId/commercial-documents/upload`، مقدار `Content-Type` در تنظیمات همان درخواست `undefined` شد تا مرورگر boundary صحیح multipart را بسازد.
+* در interceptor مشترک Axios، اگر `config.data` از نوع `FormData` باشد، هدر `Content-Type` حذف می‌شود تا مقدار پیش‌فرض `application/json` وارد درخواست multipart نشود.
+* نام فیلد فایل همچنان `file` باقی ماند و مسیر endpoint بک‌اند تغییر نکرد.
+
+**فایل‌های مهم تغییرکرده:**
+
+* `src/lib/axios.ts`
+* `src/features/commercialDocuments/services/commercialDocuments.service.ts`
+* `README.md`
+
+**فرض‌ها و وابستگی‌های بک‌اند:**
+
+* این اصلاح فقط فرانت‌اند است و بک‌اند تغییر نکرده است.
+* بک‌اند برای آپلود سند تجاری همچنان `FileInterceptor('file')` را انتظار دارد.
+* اگر پس از اصلاح header همچنان خطای ۴۰۰ دیده شود، بررسی بعدی باید روی جزئیات validation بک‌اند، مقدار `amount`، فرمت تاریخ‌ها و enumهای `type` و `status` انجام شود.
+* تست زنده آپلود با بک‌اند در حال اجرا انجام نشد.
+
+**وضعیت بررسی‌ها:**
+
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
+* `npm run build`: بدون خطا اجرا شد.
+* هشدار غیرمسدودکننده: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
+
+**محدودیت‌های باقی‌مانده:**
+
+* تأیید نهایی رفع خطای ۴۰۰ نیازمند اجرای دستی آپلود روی backend و storage فعال است.
 
 ---
 **Built with ❤️ for sales team**
