@@ -706,7 +706,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000068
+fix 000001 → fix 000070
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -3599,6 +3599,53 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 **Remaining known limitations:**
 
 * نمایش نام فایل upload شده در لیست اسناد به این وابسته است که backend در پاسخ سند، summary فیلد `fileAttachment` را برگرداند؛ در غیر این صورت فایل‌ها همچنان از دیالوگ «پیوست‌ها» قابل مشاهده و دانلود هستند.
+
+---
+## fix 000070 — بهبود دانلود و مدیریت خطای پیوست‌ها
+
+**Implemented items:**
+
+* مسیر دانلود پیوست بازبینی شد؛ frontend همچنان endpoint درست `GET /attachments/:id/download` را از طریق `axiosInstance` صدا می‌زند و در مرورگر به `/api/attachments/:id/download` تبدیل می‌شود.
+* درخواست دانلود با `responseType: 'blob'` حفظ شد.
+* دانلود امن مرورگر با `Blob`، `URL.createObjectURL`، لینک موقت دارای `download` و `revokeObjectURL` حفظ و ایمن‌تر شد.
+* اولویت نام فایل اصلاح شد: ابتدا `Content-Disposition`، سپس نام قابل‌خواندن فایل از ردیف، و در نهایت fallback `attachment-{id}`.
+* خطاهای دانلود پیوست بر اساس status code به پیام فارسی روشن تبدیل شدند:
+  * `403`: شما دسترسی دریافت این فایل را ندارید.
+  * `404`: فایل پیوست یافت نشد.
+  * `400`: این پیوست فایل بارگذاری‌شده ندارد.
+  * `500`: خطا در دریافت فایل از مخزن ذخیره‌سازی.
+* اکشن دانلود در `AttachmentsTab` خطا را catch می‌کند و دیگر promise خطادار را بدون handling رها نمی‌کند.
+* اکشن دانلود فقط برای ردیف‌هایی که فایل ذخیره‌شده دارند نمایش داده می‌شود؛ ردیف‌های external-only اکشن «باز کردن لینک» می‌گیرند.
+* در جدول پیوست‌ها، نام فایل از `originalFileName`، `originalName` یا `fileName` انتخاب می‌شود و fallback فقط در نبود نام انسانی استفاده می‌شود.
+* نمایش بارگذار همچنان ابتدا `uploadedBy.fullName` و سپس ایمیل و فقط در نهایت `uploadedById` را نشان می‌دهد.
+* فیلدهای optional `originalName`، `fileName`، `externalUrl` و `fileUrl` به type پیوست اضافه شدند تا با پاسخ‌های legacy/ترکیبی backend سازگار باشد.
+
+**Important files:**
+
+* `src/features/attachments/services/attachments.service.ts`
+* `src/features/attachments/components/AttachmentsTab.tsx`
+* `src/features/attachments/types/attachment.types.ts`
+* `src/features/attachments/utils/attachmentDisplay.ts`
+* `README.md`
+
+**Assumptions and backend dependencies:**
+
+* این fix فقط frontend است و backend را تغییر نمی‌دهد.
+* خطای ۵۰۰ فعلی دانلود از backend/storage می‌آید؛ frontend آن را با پیام مناسب نمایش می‌دهد اما علت backend را دور نمی‌زند.
+* frontend هیچ URL، bucket، objectKey یا credential مربوط به MinIO را نمی‌سازد و نمایش نمی‌دهد.
+* اگر backend برای یک رکورد فقط `externalUrl` یا `fileUrl` بدهد، frontend به جای endpoint دانلود backend، لینک خارجی را باز می‌کند.
+* live download testing با backend عملیاتی انجام نشد.
+
+**Verification status:**
+
+* `npm run lint`: passed without errors.
+* TypeScript check: passed as part of `npm run build`.
+* `npm run build`: passed.
+* Non-blocking warning: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان باقی است.
+
+**Remaining known limitations:**
+
+* رفع علت اصلی ۵۰۰ دانلود نیازمند بررسی backend/storage و موجود بودن فایل در مخزن ذخیره‌سازی است.
 
 ---
 **Built with ❤️ for sales team**

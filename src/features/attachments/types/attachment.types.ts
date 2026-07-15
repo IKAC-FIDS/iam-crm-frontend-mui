@@ -12,6 +12,10 @@ export interface FileAttachment {
   objectKey?: string;
   storagePath?: string | null;
   originalFileName: string;
+  originalName?: string | null;
+  fileName?: string | null;
+  fileUrl?: string | null;
+  externalUrl?: string | null;
   storedFileName?: string;
   mimeType: string;
   sizeBytes: number;

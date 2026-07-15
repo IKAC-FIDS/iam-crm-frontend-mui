@@ -1,4 +1,6 @@
 import type { AttachmentEntityType } from '../types/attachment.types';
+import type { FileAttachment } from '../types/attachment.types';
+import axios from 'axios';
 
 export const MAX_ATTACHMENT_SIZE_BYTES = 25 * 1024 * 1024;
 export const ALLOWED_ATTACHMENT_MIME_HINT = 'PDF، JPG، PNG، WebP، TXT، CSV';
@@ -46,6 +48,31 @@ export function getSafeFileName(name?: string | null): string {
     .join('')
     .trim();
   return cleaned || 'attachment';
+}
+
+export function getAttachmentDisplayFileName(attachment: Pick<FileAttachment, 'id' | 'originalFileName' | 'originalName' | 'fileName'>): string {
+  return attachment.originalFileName || attachment.originalName || attachment.fileName || `attachment-${attachment.id}`;
+}
+
+export function getSafeAttachmentExternalUrl(attachment: Pick<FileAttachment, 'externalUrl' | 'fileUrl'>): string | null {
+  const value = attachment.externalUrl || attachment.fileUrl;
+  if (!value) return null;
+  try {
+    const url = new URL(value);
+    return url.protocol === 'http:' || url.protocol === 'https:' ? url.toString() : null;
+  } catch {
+    return null;
+  }
+}
+
+export function getAttachmentDownloadErrorMessage(error: unknown): string {
+  if (axios.isAxiosError(error)) {
+    if (error.response?.status === 403) return 'شما دسترسی دریافت این فایل را ندارید.';
+    if (error.response?.status === 404) return 'فایل پیوست یافت نشد.';
+    if (error.response?.status === 400) return 'این پیوست فایل بارگذاری‌شده ندارد.';
+    if (error.response?.status === 500) return 'خطا در دریافت فایل از مخزن ذخیره‌سازی.';
+  }
+  return 'خطا در دریافت فایل پیوست';
 }
 
 export function filenameFromContentDisposition(value?: string): string | null {

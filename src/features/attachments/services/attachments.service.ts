@@ -26,13 +26,13 @@ export const attachmentsService = {
       })).data,
     );
   },
-  download: async (id: string, originalFileName?: string): Promise<void> => {
+  download: async (id: string, fallbackFileName?: string): Promise<void> => {
     const response = await axiosInstance.get<Blob>(`/attachments/${id}/download`, { responseType: 'blob' });
     const contentDisposition = response.headers['content-disposition'];
     const headerFileName = typeof contentDisposition === 'string'
       ? filenameFromContentDisposition(contentDisposition)
       : null;
-    const fileName = getSafeFileName(originalFileName || headerFileName || 'attachment');
+    const fileName = getSafeFileName(headerFileName || fallbackFileName || `attachment-${id}`);
     const url = window.URL.createObjectURL(response.data);
     const link = document.createElement('a');
     link.href = url;
@@ -40,7 +40,7 @@ export const attachmentsService = {
     document.body.appendChild(link);
     link.click();
     link.remove();
-    window.URL.revokeObjectURL(url);
+    window.setTimeout(() => window.URL.revokeObjectURL(url), 0);
   },
   remove: async (id: string): Promise<void> => {
     await axiosInstance.delete(`/attachments/${id}`);
