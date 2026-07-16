@@ -72,7 +72,7 @@ export default function AdminUsersPage() {
   const filteredUsers = useMemo(() => {
     const term = search.trim().toLocaleLowerCase('fa');
     return (query.data ?? []).filter((user) => {
-      const matchesSearch = !term || [user.fullName, user.email, getUserTeamLabel(user)]
+      const matchesSearch = !term || [user.fullName, user.email, getUserTeamLabel(user), user.roleName, user.roleCode, user.assignedRole?.name]
         .some((value) => value?.toLocaleLowerCase('fa').includes(term));
       const matchesRole = role === 'ALL' || user.role === role;
       const matchesTeam = userMatchesTeam(user);
@@ -85,7 +85,7 @@ export default function AdminUsersPage() {
   const columns = useMemo<GridColDef<AdminUser>[]>(() => [
     { field: 'fullName', headerName: 'نام', minWidth: 150, flex: 1 },
     { field: 'email', headerName: 'ایمیل', minWidth: 200, flex: 1 },
-    { field: 'role', headerName: 'نقش', minWidth: 130, valueFormatter: (value) => USER_ROLE_LABELS[value as UserRole] ?? value },
+    { field: 'role', headerName: 'نقش', minWidth: 160, valueGetter: (_value, row) => row.roleName || row.assignedRole?.name || row.roleCode || USER_ROLE_LABELS[row.role] || row.role },
     { field: 'team', headerName: 'تیم', minWidth: 150, valueGetter: (_, row) => getUserTeamLabel(row) },
     {
       field: 'status',

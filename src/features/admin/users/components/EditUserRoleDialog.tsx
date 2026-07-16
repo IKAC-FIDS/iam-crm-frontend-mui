@@ -16,10 +16,11 @@ import {
 } from '@mui/material';
 import { useActiveTeams } from '@/features/teams/hooks/useTeams';
 import { getTeamDisplayName } from '@/features/teams/types/team.types';
+import { useRoles } from '@/features/admin/permissions/hooks/useAdminPermissions';
+import { getApiErrorMessage } from '@/lib/apiResponse';
 import type { Team } from '@/features/teams/types/team.types';
 import { useUpdateUserRole } from '../hooks/useAdminUsers';
-import { USER_ROLES, USER_ROLE_LABELS } from '../types/adminUser.types';
-import type { AdminUser, UserRole } from '../types/adminUser.types';
+import type { AdminUser } from '../types/adminUser.types';
 
 const noTeamsMessage = 'ابتدا تیم‌ها را از بخش مدیریت تیم‌ها تعریف کنید.';
 
@@ -42,22 +43,24 @@ export default function EditUserRoleDialog({
 }) {
   const mutation = useUpdateUserRole(user?.id ?? '');
   const teamsQuery = useActiveTeams(open);
-  const [role, setRole] = useState<UserRole>(user?.role ?? 'REP');
+  const rolesQuery = useRoles(open);
+  const [roleId, setRoleId] = useState(user?.roleId ?? user?.assignedRole?.id ?? '');
   const [teamOverrideId, setTeamOverrideId] = useState<string | null>(null);
   const hasTeams = Boolean(teamsQuery.data?.length);
   const selectedTeamId = teamOverrideId ?? resolveUserTeamId(user, teamsQuery.data ?? []);
 
   const submit = async () => {
-    if (['MANAGER', 'REP'].includes(role) && !selectedTeamId) {
+    const selectedRole = rolesQuery.data?.find((role) => role.id === roleId);
+    if (selectedRole && ['MANAGER', 'REP'].includes(selectedRole.baseRole) && !selectedTeamId) {
       toast.error('تیم برای این نقش الزامی است.');
       return;
     }
     try {
-      await mutation.mutateAsync({ role, teamId: selectedTeamId || undefined });
+      await mutation.mutateAsync({ roleId, teamId: selectedTeamId || undefined });
       toast.success('نقش کاربر با موفقیت بروزرسانی شد.');
       onClose();
-    } catch {
-      toast.error('خطا در بروزرسانی نقش کاربر.');
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, 'خطا در بروزرسانی نقش کاربر.'));
     }
   };
 
@@ -67,10 +70,11 @@ export default function EditUserRoleDialog({
       <DialogContent>
         <Stack spacing={2} sx={{ pt: 1 }}>
           {teamsQuery.isError && <Alert severity="error">خطا در دریافت تیم‌ها.</Alert>}
+          {rolesQuery.isError && <Alert severity="error">خطا در دریافت نقش‌ها.</Alert>}
           <FormControl>
             <InputLabel id="edit-role">نقش</InputLabel>
-            <Select labelId="edit-role" label="نقش" value={role} onChange={(event) => setRole(event.target.value as UserRole)}>
-              {USER_ROLES.map((item) => <MenuItem key={item} value={item}>{USER_ROLE_LABELS[item]}</MenuItem>)}
+            <Select labelId="edit-role" label="نقش" value={roleId} disabled={rolesQuery.isLoading || rolesQuery.isError} onChange={(event) => setRoleId(event.target.value)}>
+              {(rolesQuery.data ?? []).filter((role) => role.isActive).map((role) => <MenuItem key={role.id} value={role.id}>{role.name} — {role.code}</MenuItem>)}
             </Select>
           </FormControl>
           <FormControl fullWidth disabled={teamsQuery.isLoading || teamsQuery.isError || !hasTeams}>
@@ -87,7 +91,7 @@ export default function EditUserRoleDialog({
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} disabled={mutation.isPending}>انصراف</Button>
-        <Button variant="contained" onClick={submit} disabled={mutation.isPending}>ذخیره تغییرات</Button>
+        <Button variant="contained" onClick={submit} disabled={!roleId || mutation.isPending || rolesQuery.isLoading || rolesQuery.isError}>ذخیره تغییرات</Button>
       </DialogActions>
     </Dialog>
   );

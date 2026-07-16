@@ -820,7 +820,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000079
+fix 000001 → fix 000080
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -4144,6 +4144,58 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * بازکردن فرم سابقه تحصیلی و بررسی dropdown مدرک، دانشگاه‌های فعال و date picker جلالی.
 * ذخیره و نمایش برچسب مدرک، نام دانشگاه و تاریخ تحصیل در جزئیات شخص.
 * بررسی پیام validation واقعی backend و رفتار ویرایش/حذف در محیط یکپارچه.
+
+---
+
+## fix 000080 — بازطراحی صفحه مدیریت نقش‌ها و مجوزها
+
+**موارد پیاده‌سازی‌شده:**
+
+* صفحه مدیریت قبلی ماتریس چهار نقش ثابت با صفحه «مدیریت نقش‌ها و مجوزها» و تب‌های مستقل «مجوزها» و «نقش‌ها» جایگزین شد.
+* تب مجوزها فهرست، جستجو، ایجاد، ویرایش و حذف permission را با فیلدهای کد مجوز، نام نمایشی، گروه، توضیحات و وضعیت پشتیبانی می‌کند.
+* مجوزهای سیستمی با نشانگر مشخص نمایش داده می‌شوند، کد آن‌ها قابل تغییر نیست و حذف آن‌ها در UI غیرفعال است؛ خطاهای محدودیت backend نیز نمایش داده می‌شوند.
+* تب نقش‌ها فهرست، جستجو، ایجاد، ویرایش و حذف role را با کد، نام، نقش پایه، توضیحات، وضعیت، سیستمی بودن و تعداد مجوزها ارائه می‌کند.
+* حذف نقش‌های سیستمی و ADMIN در UI غیرفعال است و محدودیت نقش‌های دارای کاربر به backend واگذار و پیام آن نمایش داده می‌شود.
+* دکمه «اختصاص مجوز» برای هر نقش اضافه شد و dialog مدیریت مجوزهای نقش، همه مجوزهای فعال، وضعیت assigned، جستجو، گروه‌بندی، انتخاب همه و حذف انتخاب همه را نمایش می‌دهد.
+* ذخیره تخصیص‌ها به‌صورت replacement کامل آرایه `permissionIds` انجام می‌شود و پس از موفقیت، فهرست نقش‌ها و تعداد مجوزها refresh می‌شوند.
+* فرم ویرایش نقش کاربر اکنون نقش‌های فعال دیتابیسی را از API می‌گیرد و `roleId` ارسال می‌کند؛ نمایش نقش کاربر نیز `roleName`/`assignedRole` را ترجیح می‌دهد.
+* منوی مدیریت با permissionهای واقعی `permission:view`، `permission:manage`، `role:view` و `role:manage` هم‌تراز شد.
+
+**فایل‌های تغییرکرده:**
+
+* `src/features/admin/permissions/types/adminPermission.types.ts`
+* `src/features/admin/permissions/services/adminPermissions.service.ts`
+* `src/features/admin/permissions/hooks/useAdminPermissions.ts`
+* `src/features/admin/permissions/components/AdminPermissionsPage.tsx`
+* `src/features/admin/users/types/adminUser.types.ts`
+* `src/features/admin/users/components/EditUserRoleDialog.tsx`
+* `src/features/admin/users/components/AdminUsersPage.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+* `README.md`
+
+**وابستگی‌ها و محدودیت‌های backend:**
+
+* permission CRUD از `/permissions` و role CRUD از `/roles` استفاده می‌کند.
+* تخصیص نقش از `GET /roles/:id/permissions` و replacement اتمیک از `PUT /roles/:id/permissions` با `{ permissionIds }` استفاده می‌کند.
+* permissionهای مورد استفاده UI دقیقاً `permission:view`، `permission:manage`، `role:view` و `role:manage` هستند.
+* endpoint ویرایش نقش کاربر `PATCH /users/:id/role` از `roleId` پشتیبانی می‌کند و در frontend پویا شد.
+* DTO ایجاد کاربر backend هنوز `roleId` را نمی‌پذیرد و `role` enum پایه را الزامی می‌داند؛ بنابراین فرم ایجاد کاربر عمداً چهار نقش پایه را حفظ کرده و نقش پویا را جعل نمی‌کند.
+* migration و seed مربوط به RBAC پویا باید اعمال شده و کاربران برای دریافت permissionهای جدید دوباره login کرده باشند.
+
+**وضعیت بررسی‌ها:**
+
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
+* `npm run build`: بدون خطا اجرا شد.
+* هشدار غیرمسدودکننده: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
+
+**چک‌لیست دستی باقی‌مانده:**
+
+* ایجاد، ویرایش و حذف permission عادی و بررسی حفاظت permission سیستمی.
+* ایجاد، ویرایش و حذف role عادی و بررسی حفاظت role سیستمی/ADMIN و role دارای کاربر.
+* بازکردن dialog اختصاص مجوز، تغییر انتخاب‌ها و ذخیره replacement کامل.
+* بررسی refresh تعداد مجوزهای نقش و خطاهای validation/محدودیت backend.
+* ویرایش نقش کاربر با role دیتابیسی فعال و login مجدد برای مشاهده permissions جدید.
 
 ---
 **Built with ❤️ for sales team**

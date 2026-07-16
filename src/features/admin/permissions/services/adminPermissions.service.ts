@@ -1,58 +1,64 @@
 import axiosInstance from '@/lib/axios';
 import { unwrapApiResponse } from '@/lib/apiResponse';
-import { USER_ROLES } from '../../users/types/adminUser.types';
-import type { UserRole } from '../../users/types/adminUser.types';
-import type { BulkRolePermissionPayload, CreatePermissionPayload, PermissionMatrixRow, RolePermissionPayload } from '../types/adminPermission.types';
+import type {
+  ManagedPermission,
+  ManagedRole,
+  PermissionPayload,
+  RolePayload,
+  RolePermissionDetails,
+  UpdatePermissionPayload,
+  UpdateRolePayload,
+} from '../types/adminPermission.types';
 
-const emptyAssignments = (): Record<UserRole, boolean> => ({ ADMIN: false, MANAGER: false, REP: false, BOARDS: false });
-const actionFrom = (value: unknown): string | null => {
-  if (typeof value === 'string') return value;
-  if (!value || typeof value !== 'object') return null;
-  const item = value as Record<string, unknown>;
-  const action = item.action ?? item.name ?? item.key;
-  return typeof action === 'string' ? action : null;
-};
-
-function normalizeMatrix(response: unknown): PermissionMatrixRow[] {
-  const root = unwrapApiResponse<unknown>(response);
-  const source = root && typeof root === 'object' && 'matrix' in root ? (root as { matrix: unknown }).matrix : root;
-  const rows = new Map<string, PermissionMatrixRow>();
-  const ensure = (action: string, description?: string | null) => {
-    if (!rows.has(action)) rows.set(action, { action, description, assignments: emptyAssignments() });
-    return rows.get(action)!;
-  };
-  const addRow = (raw: unknown) => {
-    const action = actionFrom(raw); if (!action) return;
-    const item = typeof raw === 'object' && raw ? raw as Record<string, unknown> : {};
-    const row = ensure(action, typeof item.description === 'string' ? item.description : null);
-    const roles = item.roles ?? item.assignedRoles ?? item.assignments;
-    USER_ROLES.forEach((role) => {
-      if (Array.isArray(roles)) row.assignments[role] = roles.includes(role);
-      else if (roles && typeof roles === 'object') row.assignments[role] = Boolean((roles as Record<string, unknown>)[role]);
-      else if (role in item) row.assignments[role] = Boolean(item[role]);
-    });
-  };
-
-  if (Array.isArray(source)) {
-    source.forEach(addRow);
-  } else if (source && typeof source === 'object') {
-    const object = source as Record<string, unknown>;
-    const roleSource = object.roles && typeof object.roles === 'object' ? object.roles as Record<string, unknown> : object;
-    USER_ROLES.forEach((role) => {
-      const permissions = roleSource[role];
-      if (!Array.isArray(permissions)) return;
-      permissions.forEach((permission) => { const action = actionFrom(permission); if (action) ensure(action).assignments[role] = true; });
-    });
-    if (Array.isArray(object.permissions)) object.permissions.forEach(addRow);
-  }
-  return [...rows.values()].sort((a, b) => a.action.localeCompare(b.action));
+function unwrapList<T>(payload: unknown): T[] {
+  const value = unwrapApiResponse<unknown>(payload);
+  if (Array.isArray(value)) return value as T[];
+  return value && typeof value === 'object' && 'items' in value && Array.isArray((value as { items?: unknown }).items)
+    ? (value as { items: T[] }).items
+    : [];
 }
 
 export const adminPermissionsService = {
-  getPermissionMatrix: async (): Promise<PermissionMatrixRow[]> => { const response = await axiosInstance.get('/admin/permissions/matrix'); return normalizeMatrix(response.data); },
-  assignPermission: async (payload: RolePermissionPayload) => { await axiosInstance.post('/admin/permissions/assign', payload); },
-  revokePermission: async (payload: RolePermissionPayload) => { await axiosInstance.delete('/admin/permissions/revoke', { data: payload }); },
-  bulkAssignPermissions: async (payload: BulkRolePermissionPayload) => { await axiosInstance.post('/admin/permissions/bulk-assign', payload); },
-  bulkRevokePermissions: async (payload: BulkRolePermissionPayload) => { await axiosInstance.post('/admin/permissions/bulk-revoke', payload); },
-  createPermission: async (payload: CreatePermissionPayload) => { await axiosInstance.post('/admin/permissions/create', payload); },
+  listPermissions: async (): Promise<ManagedPermission[]> => {
+    const response = await axiosInstance.get('/permissions');
+    return unwrapList<ManagedPermission>(response.data);
+  },
+  getPermission: async (id: string): Promise<ManagedPermission> => {
+    const response = await axiosInstance.get(`/permissions/${id}`);
+    return unwrapApiResponse<ManagedPermission>(response.data);
+  },
+  createPermission: async (payload: PermissionPayload): Promise<ManagedPermission> => {
+    const response = await axiosInstance.post('/permissions', payload);
+    return unwrapApiResponse<ManagedPermission>(response.data);
+  },
+  updatePermission: async (id: string, payload: UpdatePermissionPayload): Promise<ManagedPermission> => {
+    const response = await axiosInstance.patch(`/permissions/${id}`, payload);
+    return unwrapApiResponse<ManagedPermission>(response.data);
+  },
+  deletePermission: async (id: string): Promise<void> => { await axiosInstance.delete(`/permissions/${id}`); },
+  listRoles: async (): Promise<ManagedRole[]> => {
+    const response = await axiosInstance.get('/roles');
+    return unwrapList<ManagedRole>(response.data);
+  },
+  getRole: async (id: string): Promise<ManagedRole> => {
+    const response = await axiosInstance.get(`/roles/${id}`);
+    return unwrapApiResponse<ManagedRole>(response.data);
+  },
+  createRole: async (payload: RolePayload): Promise<ManagedRole> => {
+    const response = await axiosInstance.post('/roles', payload);
+    return unwrapApiResponse<ManagedRole>(response.data);
+  },
+  updateRole: async (id: string, payload: UpdateRolePayload): Promise<ManagedRole> => {
+    const response = await axiosInstance.patch(`/roles/${id}`, payload);
+    return unwrapApiResponse<ManagedRole>(response.data);
+  },
+  deleteRole: async (id: string): Promise<void> => { await axiosInstance.delete(`/roles/${id}`); },
+  getRolePermissions: async (roleId: string): Promise<RolePermissionDetails> => {
+    const response = await axiosInstance.get(`/roles/${roleId}/permissions`);
+    return unwrapApiResponse<RolePermissionDetails>(response.data);
+  },
+  updateRolePermissions: async (roleId: string, permissionIds: string[]): Promise<RolePermissionDetails> => {
+    const response = await axiosInstance.put(`/roles/${roleId}/permissions`, { permissionIds });
+    return unwrapApiResponse<RolePermissionDetails>(response.data);
+  },
 };

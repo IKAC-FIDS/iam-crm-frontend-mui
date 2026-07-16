@@ -12,6 +12,10 @@ export interface AdminUser {
   fullName: string;
   email: string;
   role: UserRole;
+  roleId?: string | null;
+  roleCode?: string | null;
+  roleName?: string | null;
+  assignedRole?: { id: string; code: string; name: string; baseRole: UserRole; isSystem?: boolean; isActive?: boolean } | null;
   teamId?: string | null;
   team?: string | null;
   teamName?: string | null;
@@ -31,7 +35,8 @@ export interface CreateUserPayload {
   team?: string;
 }
 export interface UpdateUserRolePayload {
-  role: UserRole;
+  role?: UserRole;
+  roleId?: string;
   teamId?: string;
   team?: string;
 }

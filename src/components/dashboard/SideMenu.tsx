@@ -58,7 +58,7 @@ const menuItems = [
   { group: 'مدیریت', text: 'تیم‌ها', icon: <GroupsIcon />, path: '/admin/teams', permissions: ['team:view', 'team:manage'] },
   { group: 'مدیریت', text: 'سازمان‌ها', icon: <CorporateFareIcon />, path: '/admin/organizations', permission: 'organization:manage' },
   { group: 'مدیریت', text: 'ورود سازمانی', icon: <LoginIcon />, path: '/admin/sso-providers', permissions: ['sso-provider:view', 'sso-provider:manage'] },
-  { group: 'مدیریت', text: 'مجوزها', icon: <SecurityIcon />, path: '/admin/permissions', permission: 'permission:manage' },
+  { group: 'مدیریت', text: 'نقش‌ها و مجوزها', icon: <SecurityIcon />, path: '/admin/permissions', permissions: ['permission:view', 'permission:manage', 'role:view', 'role:manage'] },
   {
     group: 'مدیریت',
     text: 'کتابخانه‌ها',
@@ -71,6 +71,7 @@ const menuItems = [
       'library:persona:manage',
       'library:lead-source:manage',
       'lookup:manage',
+      'library:university:manage',
       'product:view',
       'product:manage',
     ],
