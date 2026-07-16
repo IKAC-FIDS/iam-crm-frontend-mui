@@ -820,7 +820,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000077
+fix 000001 → fix 000078
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -4060,6 +4060,42 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * افزودن، ویرایش و حذف مستقل سمت و حذف کل سابقه شغلی.
 * ایجاد، ویرایش و حذف سابقه تحصیلی با مدرک، دانشگاه و سال.
 * بررسی نهایی متن‌های فارسی در محیط دارای نشست معتبر و backend آماده.
+
+---
+
+## fix 000078 — اصلاح خطای crypto.randomUUID در فرم سوابق شغلی
+
+**موارد پیاده‌سازی‌شده:**
+
+* علت crash فرم «افزودن سابقه شغلی»، فراخوانی مستقیم `crypto.randomUUID()` در مرورگرها یا originهای HTTP فاقد این API بود.
+* helper مشترک `createClientId` اضافه شد که به‌ترتیب از `randomUUID`، سپس `getRandomValues` و در نهایت fallback مبتنی بر زمان و مقدار تصادفی استفاده می‌کند.
+* فراخوانی‌های مستقیم از کامپوننت سوابق شغلی حذف و شناسه‌های موقت سمت‌ها با پیشوند `employment-position` تولید شدند.
+* شناسه موقت فقط با نام `clientTempId` برای React key و مدیریت ردیف‌های فرم استفاده می‌شود و در payload سمت یا سابقه شغلی به backend ارسال نمی‌شود.
+* مسیر افزودن سابقه شغلی و افزودن چند سمت دیگر هنگام ایجاد ردیف موقت به `crypto.randomUUID` وابستگی مستقیم ندارد.
+* یک `errorElement` سبک با پیام فارسی، دکمه تلاش مجدد و بازگشت به routeهای اصلی اضافه شد.
+
+**فایل‌های تغییرکرده یا جدید:**
+
+* `src/shared/utils/createClientId.ts`
+* `src/features/people/components/PersonEmploymentHistorySection.tsx`
+* `src/routes/RouteErrorPage.tsx`
+* `src/routes/index.tsx`
+* `README.md`
+
+**وضعیت بررسی‌ها:**
+
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
+* `npm run build`: بدون خطا اجرا شد.
+* هشدار غیرمسدودکننده: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
+
+**چک‌لیست دستی:**
+
+* بازکردن جزئیات شخص و فرم افزودن سابقه شغلی روی HTTP بدون خطای `crypto.randomUUID`.
+* انتخاب شرکت، افزودن یک یا چند سمت و ذخیره سابقه.
+* بررسی افزودن، ویرایش و حذف سمت‌ها و سابقه شغلی با backend آماده و نشست معتبر.
+* بررسی console مرورگر و اطمینان از نبود خطای `crypto.randomUUID`.
+* آدرس HTTP اعلام‌شده در مرورگر باز شد و بدون خطای console به صفحه ورود هدایت شد؛ به‌دلیل نبود نشست احرازشده، تست تعاملی فرم جزئیات شخص در آن محیط انجام نشد.
 
 ---
 **Built with ❤️ for sales team**

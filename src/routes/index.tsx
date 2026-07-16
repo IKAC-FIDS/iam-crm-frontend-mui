@@ -24,11 +24,13 @@ import AdminOrganizationsPage from '@/features/organizations/pages/AdminOrganiza
 import SsoCallbackPage from '@/features/sso/pages/SsoCallbackPage';
 import AdminSsoProvidersPage from '@/features/sso/pages/AdminSsoProvidersPage';
 import AdminTeamsPage from '@/features/teams/pages/AdminTeamsPage';
+import RouteErrorPage from './RouteErrorPage';
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <ProtectedRoute />,
+    errorElement: <RouteErrorPage />,
     children: [
       {
         element: <DashboardLayout />,
@@ -61,10 +63,12 @@ export const router = createBrowserRouter([
   {
     path: '/login',
     element: <AuthLayout />,
+    errorElement: <RouteErrorPage />,
     children: [{ index: true, element: <LoginPage /> }],
   },
   {
     path: '/auth/sso/callback',
     element: <SsoCallbackPage />,
+    errorElement: <RouteErrorPage />,
   },
 ]);

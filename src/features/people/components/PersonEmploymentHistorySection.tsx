@@ -14,6 +14,7 @@ import type { CompanyListItem } from '@/features/companies/types/company.types';
 import { getApiErrorMessage } from '@/lib/apiResponse';
 import JalaliDateField from '@/shared/components/JalaliDateField';
 import { formatJalaliDate } from '@/shared/utils/jalaliDate';
+import { createClientId } from '@/shared/utils/createClientId';
 import {
   useCreatePersonEmploymentHistory,
   useCreatePersonEmploymentPosition,
@@ -33,8 +34,12 @@ import type {
 const companyLabel = (company?: { legalName: string; brandName?: string | null } | null) =>
   company ? company.brandName?.trim() || company.legalName : '';
 
-type PositionDraft = CreatePersonEmploymentPositionPayload & { key: string };
-const emptyPosition = (): PositionDraft => ({ key: crypto.randomUUID(), title: '', isCurrent: false });
+type PositionDraft = CreatePersonEmploymentPositionPayload & { clientTempId: string };
+const emptyPosition = (): PositionDraft => ({
+  clientTempId: createClientId('employment-position'),
+  title: '',
+  isCurrent: false,
+});
 
 function PositionFields({
   value,
@@ -142,10 +147,10 @@ function EmploymentDialog({ personId, item, onClose }: {
             <Typography variant="h6">سمت‌ها</Typography>
             <Button startIcon={<AddIcon />} onClick={() => setPositions((current) => [...current, emptyPosition()])}>افزودن سمت</Button>
           </Stack>
-          {positions.map((position) => <PositionFields key={position.key} value={position}
+          {positions.map((position) => <PositionFields key={position.clientTempId} value={position}
             error={attempted && !position.title.trim() ? 'عنوان سمت الزامی است.' : undefined}
-            showRemove={positions.length > 1} onRemove={() => setPositions((current) => current.filter(({ key }) => key !== position.key))}
-            onChange={(next) => setPositions((current) => current.map((entry) => entry.key === next.key ? next : entry))} />)}
+            showRemove={positions.length > 1} onRemove={() => setPositions((current) => current.filter(({ clientTempId }) => clientTempId !== position.clientTempId))}
+            onChange={(next) => setPositions((current) => current.map((entry) => entry.clientTempId === next.clientTempId ? next : entry))} />)}
         </>}
       </Stack></DialogContent>
       <DialogActions><Button onClick={onClose} disabled={pending}>انصراف</Button><Button variant="contained" onClick={submit} disabled={pending}>ذخیره</Button></DialogActions>
@@ -156,7 +161,7 @@ function EmploymentDialog({ personId, item, onClose }: {
 function PositionDialog({ personId, employmentId, item, onClose }: {
   personId: string; employmentId: string; item?: PersonEmploymentPosition; onClose: () => void;
 }) {
-  const [value, setValue] = useState<PositionDraft>({ key: item?.id ?? crypto.randomUUID(), title: item?.title ?? '',
+  const [value, setValue] = useState<PositionDraft>({ clientTempId: item?.id ?? createClientId('employment-position'), title: item?.title ?? '',
     startDate: item?.startDate ?? undefined, endDate: item?.endDate ?? undefined, isCurrent: item?.isCurrent,
     description: item?.description ?? undefined });
   const [attempted, setAttempted] = useState(false);
