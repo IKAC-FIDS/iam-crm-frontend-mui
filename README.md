@@ -126,7 +126,7 @@ FRONTEND_PORT=8081 docker compose up -d --build
 نکات مهم:
 
 * `VITE_API_URL=/api` در زمان build تنظیم می‌شود.
-* Nginx مسیر `/api/` را به `http://api:3000/api/` proxy می‌کند.
+* Nginx مسیر `/api/` را با resolver داخلی Docker یعنی `127.0.0.11` به سرویس `api:3000` proxy می‌کند تا پس از recreate شدن backend، IP قدیمی upstream در Nginx باقی نماند.
 * نام سرویس بک‌اند در Docker Compose باید `api` باشد.
 * این compose به شبکه خارجی `iam-crm-backend_default` وصل می‌شود. اگر نام project بک‌اند روی سرور متفاوت است، نام network در `docker-compose.yml` باید با network واقعی بک‌اند هماهنگ شود.
 * برای build داخل Docker مقدار `NODE_OPTIONS=--max-old-space-size=4096` تنظیم شده است تا خطای JavaScript heap out of memory در buildهای Vite/TypeScript کاهش پیدا کند. اگر سرور RAM کمی دارد، افزودن swap یک نیاز عملیاتی است.
@@ -820,7 +820,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000073
+fix 000001 → fix 000074
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -3882,6 +3882,41 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 * اگر در محیط هدف خطای `host not found in upstream "api"` دیده شود، باید network و نام سرویس backend با Docker Compose سرور هماهنگ شود.
 * تست کامل API و احراز هویت نیازمند اجرای همزمان backend روی network مورد انتظار است.
+
+---
+
+## fix 000074 — رفع stale DNS در proxy فرانت به API
+
+**موارد پیاده‌سازی‌شده:**
+
+* مشکل 502 گهگاهی Nginx پس از rebuild یا recreate شدن container بک‌اند بررسی شد.
+* `nginx.conf` از حالت static upstream با `proxy_pass http://api:3000/api/` خارج شد تا Nginx IP قدیمی سرویس Docker را نگه ندارد.
+* در location مربوط به `/api/`، resolver داخلی Docker با `resolver 127.0.0.11 valid=10s ipv6=off;` اضافه شد.
+* upstream بک‌اند با متغیر `set $api_upstream api:3000;` تعریف شد تا Nginx نام سرویس Docker را دوباره resolve کند.
+* `proxy_pass` به `http://$api_upstream` تغییر کرد و suffix `/api/` از آن حذف شد تا URI اصلی درخواست حفظ شود.
+* مسیرهایی مثل `/api/auth/login` اکنون به `http://api:3000/api/auth/login` ارسال می‌شوند.
+* headerهای proxy و timeoutهای ۳۰۰ ثانیه‌ای بدون تغییر حفظ شدند.
+
+**فایل‌های مهم تغییرکرده:**
+
+* `nginx.conf`
+* `README.md`
+
+**فرض‌ها و وابستگی‌های بک‌اند:**
+
+* این اصلاح فقط فرانت‌اند/Nginx است و بک‌اند تغییر نکرده است.
+* سرویس backend باید روی همان Docker network با نام service برابر `api` و پورت `3000` در دسترس باشد.
+* اگر در محیط هدف همچنان خطای upstream دیده شود، باید نام network و نام service واقعی backend بررسی و با `docker-compose.yml` و `nginx.conf` هماهنگ شود.
+
+**وضعیت بررسی‌ها:**
+
+* `docker compose up -d --build`: اجرا شد.
+* `docker logs --tail=100 iam-crm-frontend`: اجرا شد و Nginx بدون خطای startup بالا آمد.
+* تست مستقیم API live انجام نشد.
+
+**محدودیت‌های باقی‌مانده:**
+
+* برای تأیید کامل رفع 502 باید backend در محیط هدف recreate شود و سپس login از مسیر `/api/auth/login` تست شود.
 
 ---
 **Built with ❤️ for sales team**
