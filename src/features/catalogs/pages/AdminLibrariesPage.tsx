@@ -8,7 +8,7 @@ import { CATALOG_DEFINITIONS } from '../types/catalog.types';
 import type { CatalogKind } from '../types/catalog.types';
 
 const kinds = Object.keys(CATALOG_DEFINITIONS) as CatalogKind[];
-const kindPermissions: Record<CatalogKind, string> = { industries: 'library:industry:manage', leadSources: 'library:lead-source:manage', painPoints: 'library:pain-point:manage', useCases: 'library:use-case:manage', personas: 'library:persona:manage', lookupOptions: 'lookup:manage' };
+const kindPermissions: Record<CatalogKind, string> = { industries: 'library:industry:manage', leadSources: 'library:lead-source:manage', painPoints: 'library:pain-point:manage', useCases: 'library:use-case:manage', personas: 'library:persona:manage', lookupOptions: 'lookup:manage', universities: 'library:university:manage' };
 type AdminLibrarySection = CatalogKind | 'products';
 
 export default function AdminLibrariesPage() {

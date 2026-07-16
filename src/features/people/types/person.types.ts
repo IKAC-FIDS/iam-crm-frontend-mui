@@ -101,25 +101,46 @@ export interface CreatePersonEmploymentPositionPayload {
 
 export type UpdatePersonEmploymentPositionPayload = Partial<CreatePersonEmploymentPositionPayload>;
 
+export const PERSON_EDUCATION_DEGREE_OPTIONS = [
+  { value: 'DIPLOMA', label: 'دیپلم' },
+  { value: 'ASSOCIATE', label: 'کاردانی' },
+  { value: 'BACHELOR', label: 'کارشناسی' },
+  { value: 'PHD', label: 'دکتری' },
+  { value: 'POSTDOC', label: 'پسا دکتری' },
+] as const;
+export type PersonEducationDegree = (typeof PERSON_EDUCATION_DEGREE_OPTIONS)[number]['value'];
+
+export interface PersonEducationUniversity {
+  id: string;
+  name: string;
+}
+
 export interface PersonEducationHistory {
   id: string;
   personId: string;
-  degree?: string | null;
-  university?: string | null;
-  year?: number | null;
+  degree?: PersonEducationDegree | null;
+  degreeLabel?: string | null;
+  universityId?: string | null;
+  university?: PersonEducationUniversity | null;
+  universityNameSnapshot?: string | null;
+  educationDate?: string | null;
   description?: string | null;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface CreatePersonEducationHistoryPayload {
-  degree?: string;
-  university?: string;
-  year?: number;
+  degree?: PersonEducationDegree;
+  universityId?: string;
+  educationDate?: string;
   description?: string;
 }
 
 export type UpdatePersonEducationHistoryPayload = Partial<CreatePersonEducationHistoryPayload>;
+
+export function getPersonEducationDegreeLabel(value?: PersonEducationDegree | null): string {
+  return PERSON_EDUCATION_DEGREE_OPTIONS.find((option) => option.value === value)?.label ?? '—';
+}
 
 export interface Person {
   id: string;

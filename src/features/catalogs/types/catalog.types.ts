@@ -9,6 +9,7 @@ export const CATALOG_DEFINITIONS = {
   useCases: { label: 'کاربردها', endpoint: '/use-cases' },
   personas: { label: 'پرسوناها', endpoint: '/persona-library' },
   lookupOptions: { label: 'گزینه‌های پایه', endpoint: '/lookups' },
+  universities: { label: 'دانشگاه‌ها', endpoint: '/universities' },
 } as const;
 export type CatalogKind = keyof typeof CATALOG_DEFINITIONS;
 

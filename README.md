@@ -820,7 +820,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000078
+fix 000001 → fix 000079
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -4096,6 +4096,54 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * بررسی افزودن، ویرایش و حذف سمت‌ها و سابقه شغلی با backend آماده و نشست معتبر.
 * بررسی console مرورگر و اطمینان از نبود خطای `crypto.randomUUID`.
 * آدرس HTTP اعلام‌شده در مرورگر باز شد و بدون خطای console به صفحه ورود هدایت شد؛ به‌دلیل نبود نشست احرازشده، تست تعاملی فرم جزئیات شخص در آن محیط انجام نشد.
+
+---
+
+## fix 000079 — اصلاح فرم سوابق تحصیلی و افزودن کتابخانه دانشگاه‌ها
+
+**موارد پیاده‌سازی‌شده:**
+
+* فیلد مدرک در فرم افزودن/ویرایش سابقه تحصیلی از متن آزاد به dropdown تبدیل شد.
+* گزینه‌های مدرک دقیقاً شامل `DIPLOMA` (دیپلم)، `ASSOCIATE` (کاردانی)، `BACHELOR` (کارشناسی)، `PHD` (دکتری) و `POSTDOC` (پسا دکتری) هستند و کارشناسی ارشد اضافه نشد.
+* فیلد دانشگاه از متن آزاد به Autocomplete دانشگاه‌های فعال کتابخانه تبدیل شد و فقط `universityId` به backend ارسال می‌شود.
+* ورودی عددی سال حذف و با date picker جلالی «تاریخ تحصیل» جایگزین شد؛ مقدار ISO/Gregorian در فیلد `educationDate` ارسال می‌شود.
+* نمایش سابقه تحصیلی اکنون برچسب فارسی مدرک، نام relation دانشگاه یا snapshot تاریخی، تاریخ جلالی و توضیحات را نشان می‌دهد.
+* تب «دانشگاه‌ها» به صفحه کتابخانه‌های مدیریتی اضافه شد و فهرست، ایجاد، ویرایش، فعال/غیرفعال‌سازی و نمایش وضعیت را مطابق endpoint دانشگاه‌ها پشتیبانی می‌کند.
+* فرم دانشگاه شامل نام دانشگاه، کد/شناسه اختیاری، توضیحات و وضعیت فعال است و پیام validation backend را نمایش می‌دهد.
+* permissionهای موجود backend یعنی `library:university:view` و `library:university:manage` به فهرست شناخته‌شده frontend اضافه شدند.
+
+**فایل‌های تغییرکرده:**
+
+* `src/features/people/types/person.types.ts`
+* `src/features/people/components/PersonEducationHistorySection.tsx`
+* `src/features/catalogs/types/catalog.types.ts`
+* `src/features/catalogs/services/catalogs.service.ts`
+* `src/features/catalogs/components/CatalogItemDialog.tsx`
+* `src/features/catalogs/components/CatalogTab.tsx`
+* `src/features/catalogs/pages/AdminLibrariesPage.tsx`
+* `src/features/admin/permissions/types/adminPermission.types.ts`
+* `README.md`
+
+**وابستگی‌های backend:**
+
+* endpointهای `GET/POST /universities` و `PATCH/DELETE /universities/:id` باید فعال باشند؛ DELETE طبق قرارداد backend دانشگاه را غیرفعال می‌کند.
+* فهرست مدیریتی از `includeInactive=true` و انتخاب فرم سابقه تحصیلی از فهرست پیش‌فرض دانشگاه‌های فعال استفاده می‌کند.
+* payload سابقه تحصیلی فقط شامل `degree`، `universityId`، `educationDate` و `description` است و دیگر `year` یا university/degree متن آزاد ارسال نمی‌شود.
+* migration پالایش سوابق تحصیلی و کتابخانه دانشگاه‌ها باید در محیط backend اعمال شده باشد.
+
+**وضعیت بررسی‌ها:**
+
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
+* `npm run build`: بدون خطا اجرا شد.
+* هشدار غیرمسدودکننده: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
+
+**چک‌لیست دستی باقی‌مانده:**
+
+* ایجاد، ویرایش و غیرفعال‌سازی دانشگاه در تب «دانشگاه‌ها» با backend مهاجرت‌داده‌شده و نشست معتبر.
+* بازکردن فرم سابقه تحصیلی و بررسی dropdown مدرک، دانشگاه‌های فعال و date picker جلالی.
+* ذخیره و نمایش برچسب مدرک، نام دانشگاه و تاریخ تحصیل در جزئیات شخص.
+* بررسی پیام validation واقعی backend و رفتار ویرایش/حذف در محیط یکپارچه.
 
 ---
 **Built with ❤️ for sales team**

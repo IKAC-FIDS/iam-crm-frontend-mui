@@ -23,7 +23,7 @@ export default function CatalogTab({ kind }: { kind: CatalogKind }) {
   const [deleting, setDeleting] = useState<CatalogItem | null>(null);
   const columns = useMemo<GridColDef<CatalogItem>[]>(() => [
     { field: 'displayName', headerName: 'عنوان', minWidth: 180, flex: 1, valueGetter: (_value, row) => getCatalogItemLabel(row) },
-    ...(kind === 'lookupOptions' || kind === 'leadSources' ? [{ field: 'code', headerName: 'کد', minWidth: 150 }] as GridColDef<CatalogItem>[] : []),
+    ...(kind === 'lookupOptions' || kind === 'leadSources' || kind === 'universities' ? [{ field: 'code', headerName: 'کد', minWidth: 150, valueFormatter: (value) => value || '—' }] as GridColDef<CatalogItem>[] : []),
     ...(kind === 'painPoints' || kind === 'useCases' ? [{ field: 'category', headerName: 'دسته‌بندی', minWidth: 150, valueFormatter: (value) => value || '—' }] as GridColDef<CatalogItem>[] : []),
     { field: 'description', headerName: 'توضیحات', minWidth: 220, flex: 1, valueFormatter: (value) => value || '—' },
     { field: 'status', headerName: 'وضعیت', minWidth: 100, renderCell: ({ row }: GridRenderCellParams<CatalogItem>) => <Chip size="small" color={isCatalogItemActive(row) ? 'success' : 'default'} label={isCatalogItemActive(row) ? 'فعال' : 'غیرفعال'} /> },
