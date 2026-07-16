@@ -820,7 +820,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000076
+fix 000001 → fix 000077
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -4010,6 +4010,56 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 * خروجی production در مرورگر محلی باز شد و متن فارسی صفحه ورود صحیح نمایش داده شد؛ اما صفحه جزئیات شرکت به‌دلیل نیاز به نشست احرازشده و backend قابل دسترس نبود.
 * بررسی نهایی تب‌ها، دکمه‌ها، کارت اطلاعات اصلی، اطلاعات ثبتی و حقوقی، وضعیت و اندازه شرکت، ساختار مالکیتی و اسناد حقوقی باید در محیط دارای نشست معتبر انجام شود.
+
+---
+
+## fix 000077 — افزودن سوابق شغلی و تحصیلی به پروفایل افراد
+
+**موارد پیاده‌سازی‌شده:**
+
+* دو بخش «سوابق شغلی» و «سوابق تحصیلی» به پنل جزئیات شخص اضافه شد.
+* انتخاب شرکت سابقه شغلی با Autocomplete و جستجوی server-side شرکت‌های موجود انجام می‌شود.
+* هنگام ایجاد سابقه شغلی می‌توان چند سمت برای یک شرکت افزود؛ افزودن، ویرایش و حذف مستقل سمت‌ها نیز پشتیبانی می‌شود.
+* هر سمت شامل عنوان، تاریخ شروع و پایان، وضعیت «سمت فعلی» و توضیحات است؛ تاریخ‌ها در رابط کاربری جلالی و در payload به‌صورت ISO ارسال می‌شوند.
+* برای سمت فعلی، تاریخ پایان غیرفعال و پاک می‌شود و ترتیب تاریخ شروع/پایان در frontend اعتبارسنجی می‌شود.
+* افزودن، ویرایش و حذف سابقه تحصیلی با فیلدهای مدرک، دانشگاه، سال و توضیحات پیاده‌سازی شد.
+* ارقام فارسی و عربی سال قبل از ارسال نرمال می‌شوند و بازه عدد صحیح ۱۰۰۰ تا ۳۰۰۰ اعتبارسنجی می‌شود.
+* وضعیت‌های loading، empty و error و پیام‌های موفقیت/خطا برای هر دو بخش اضافه شد.
+* مشاهده با `person:view` و عملیات مدیریتی با مجوز موجود `person:update` انجام می‌شود و مجوز جدیدی ساخته نشد.
+
+**فایل‌های تغییرکرده یا جدید:**
+
+* `src/features/people/types/person.types.ts`
+* `src/features/people/services/people.service.ts`
+* `src/features/people/hooks/usePeople.ts`
+* `src/features/people/components/PersonEmploymentHistorySection.tsx`
+* `src/features/people/components/PersonEducationHistorySection.tsx`
+* `src/features/people/components/PersonDetailDrawer.tsx`
+* `src/features/people/components/PeopleTab.tsx`
+* `src/features/people/pages/PeopleDirectoryPage.tsx`
+* `README.md`
+
+**وابستگی‌های backend:**
+
+* endpointهای `/people/:personId/employment-history` و `/people/:personId/education-history` باید فعال باشند.
+* مدیریت سمت‌ها از endpointهای nested مسیر `/people/:personId/employment-history/:employmentId/positions` استفاده می‌کند.
+* پاسخ سوابق شغلی باید summary شرکت و آرایه `positions` را مطابق قرارداد backend برگرداند.
+* تست زنده create/edit/delete به نشست احرازشده، backend در حال اجرا و migration اعمال‌شده نیاز دارد.
+
+**وضعیت بررسی‌ها:**
+
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
+* `npm run build`: بدون خطا اجرا شد.
+* هشدار غیرمسدودکننده: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
+
+**چک‌لیست دستی باقی‌مانده:**
+
+* نمایش دو بخش سوابق در جزئیات شخص و بررسی حالت‌های خالی، loading و error.
+* ایجاد و ویرایش سابقه شغلی با شرکت موجود و چند سمت.
+* افزودن، ویرایش و حذف مستقل سمت و حذف کل سابقه شغلی.
+* ایجاد، ویرایش و حذف سابقه تحصیلی با مدرک، دانشگاه و سال.
+* بررسی نهایی متن‌های فارسی در محیط دارای نشست معتبر و backend آماده.
 
 ---
 **Built with ❤️ for sales team**

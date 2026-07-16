@@ -203,6 +203,7 @@ export default function PeopleTab({ companyId }: PeopleTabProps) {
         onClose={() => setDetailPersonId('')}
         canManageContacts={canManageContacts}
         canManageSocials={canManageSocials}
+        canManageHistories={canEdit}
       />
 
       <Dialog open={Boolean(deletingPerson)} onClose={() => setDeletingPerson(null)} fullWidth maxWidth="xs">

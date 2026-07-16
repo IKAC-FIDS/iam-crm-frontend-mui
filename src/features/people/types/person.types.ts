@@ -63,6 +63,64 @@ export interface CreatePersonSocialPayload {
 
 export type UpdatePersonSocialPayload = Partial<CreatePersonSocialPayload>;
 
+export interface PersonEmploymentPosition {
+  id: string;
+  employmentHistoryId: string;
+  title: string;
+  startDate?: string | null;
+  endDate?: string | null;
+  isCurrent?: boolean;
+  description?: string | null;
+}
+
+export interface PersonEmploymentHistory {
+  id: string;
+  personId: string;
+  companyId: string;
+  company?: import('@/features/companies/types/company.types').CompanySummary;
+  positions?: PersonEmploymentPosition[];
+  description?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreatePersonEmploymentHistoryPayload {
+  companyId: string;
+  description?: string;
+}
+
+export type UpdatePersonEmploymentHistoryPayload = Partial<CreatePersonEmploymentHistoryPayload>;
+
+export interface CreatePersonEmploymentPositionPayload {
+  title: string;
+  startDate?: string;
+  endDate?: string;
+  isCurrent?: boolean;
+  description?: string;
+}
+
+export type UpdatePersonEmploymentPositionPayload = Partial<CreatePersonEmploymentPositionPayload>;
+
+export interface PersonEducationHistory {
+  id: string;
+  personId: string;
+  degree?: string | null;
+  university?: string | null;
+  year?: number | null;
+  description?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreatePersonEducationHistoryPayload {
+  degree?: string;
+  university?: string;
+  year?: number;
+  description?: string;
+}
+
+export type UpdatePersonEducationHistoryPayload = Partial<CreatePersonEducationHistoryPayload>;
+
 export interface Person {
   id: string;
   companyId: string;
@@ -84,6 +142,8 @@ export interface Person {
   updatedAt?: string;
   contacts?: PersonContact[];
   socials?: PersonSocial[];
+  employmentHistory?: PersonEmploymentHistory[];
+  educationHistory?: PersonEducationHistory[];
 }
 
 export interface PersonDirectoryCompany {

@@ -3,11 +3,17 @@ import { companyQueryKeys } from '@/features/companies/hooks/useCompanies';
 import { peopleService } from '../services/people.service';
 import type {
   CreatePersonContactPayload,
+  CreatePersonEducationHistoryPayload,
+  CreatePersonEmploymentHistoryPayload,
+  CreatePersonEmploymentPositionPayload,
   CreatePersonPayload,
   CreatePersonSocialPayload,
   GetPeopleParams,
   PeopleDirectoryParams,
   UpdatePersonContactPayload,
+  UpdatePersonEducationHistoryPayload,
+  UpdatePersonEmploymentHistoryPayload,
+  UpdatePersonEmploymentPositionPayload,
   UpdatePersonPayload,
   UpdatePersonSocialPayload,
 } from '../types/person.types';
@@ -20,6 +26,8 @@ export const peopleQueryKeys = {
   detail: (personId: string) => [...peopleQueryKeys.all, 'detail', personId] as const,
   contacts: (personId: string) => ['person-contacts', personId] as const,
   socials: (personId: string) => ['person-socials', personId] as const,
+  employmentHistory: (personId: string) => [...peopleQueryKeys.detail(personId), 'employment-history'] as const,
+  educationHistory: (personId: string) => [...peopleQueryKeys.detail(personId), 'education-history'] as const,
 };
 
 export function usePeopleDirectory(params: PeopleDirectoryParams, enabled = true) {
@@ -65,6 +73,22 @@ function usePeopleInvalidation(companyId: string) {
     queryClient.invalidateQueries({ queryKey: peopleQueryKeys.all }),
     queryClient.invalidateQueries({ queryKey: companyQueryKeys.detail(companyId) }),
   ]);
+}
+
+export function usePersonEmploymentHistory(personId: string) {
+  return useQuery({
+    queryKey: peopleQueryKeys.employmentHistory(personId),
+    queryFn: () => peopleService.listPersonEmploymentHistory(personId),
+    enabled: Boolean(personId),
+  });
+}
+
+export function usePersonEducationHistory(personId: string) {
+  return useQuery({
+    queryKey: peopleQueryKeys.educationHistory(personId),
+    queryFn: () => peopleService.listPersonEducationHistory(personId),
+    enabled: Boolean(personId),
+  });
 }
 
 export function useCreatePerson(companyId: string) {
@@ -154,6 +178,96 @@ export function useDeletePersonSocial(personId: string) {
   const invalidate = usePersonRelationInvalidation(personId, 'socials');
   return useMutation({
     mutationFn: (socialId: string) => peopleService.deletePersonSocial(personId, socialId),
+    onSuccess: invalidate,
+  });
+}
+
+function usePersonHistoryInvalidation(personId: string, kind: 'employment' | 'education') {
+  const queryClient = useQueryClient();
+  const historyKey = kind === 'employment'
+    ? peopleQueryKeys.employmentHistory(personId)
+    : peopleQueryKeys.educationHistory(personId);
+  return () => Promise.all([
+    queryClient.invalidateQueries({ queryKey: peopleQueryKeys.detail(personId) }),
+    queryClient.invalidateQueries({ queryKey: historyKey }),
+  ]);
+}
+
+export function useCreatePersonEmploymentHistory(personId: string) {
+  const invalidate = usePersonHistoryInvalidation(personId, 'employment');
+  return useMutation({
+    mutationFn: (payload: CreatePersonEmploymentHistoryPayload) =>
+      peopleService.createPersonEmploymentHistory(personId, payload),
+    onSuccess: invalidate,
+  });
+}
+
+export function useUpdatePersonEmploymentHistory(personId: string, employmentId: string) {
+  const invalidate = usePersonHistoryInvalidation(personId, 'employment');
+  return useMutation({
+    mutationFn: (payload: UpdatePersonEmploymentHistoryPayload) =>
+      peopleService.updatePersonEmploymentHistory(personId, employmentId, payload),
+    onSuccess: invalidate,
+  });
+}
+
+export function useDeletePersonEmploymentHistory(personId: string) {
+  const invalidate = usePersonHistoryInvalidation(personId, 'employment');
+  return useMutation({
+    mutationFn: (employmentId: string) => peopleService.deletePersonEmploymentHistory(personId, employmentId),
+    onSuccess: invalidate,
+  });
+}
+
+export function useCreatePersonEmploymentPosition(personId: string, employmentId: string) {
+  const invalidate = usePersonHistoryInvalidation(personId, 'employment');
+  return useMutation({
+    mutationFn: (payload: CreatePersonEmploymentPositionPayload) =>
+      peopleService.createPersonEmploymentPosition(personId, employmentId, payload),
+    onSuccess: invalidate,
+  });
+}
+
+export function useUpdatePersonEmploymentPosition(personId: string, employmentId: string, positionId: string) {
+  const invalidate = usePersonHistoryInvalidation(personId, 'employment');
+  return useMutation({
+    mutationFn: (payload: UpdatePersonEmploymentPositionPayload) =>
+      peopleService.updatePersonEmploymentPosition(personId, employmentId, positionId, payload),
+    onSuccess: invalidate,
+  });
+}
+
+export function useDeletePersonEmploymentPosition(personId: string, employmentId: string) {
+  const invalidate = usePersonHistoryInvalidation(personId, 'employment');
+  return useMutation({
+    mutationFn: (positionId: string) =>
+      peopleService.deletePersonEmploymentPosition(personId, employmentId, positionId),
+    onSuccess: invalidate,
+  });
+}
+
+export function useCreatePersonEducationHistory(personId: string) {
+  const invalidate = usePersonHistoryInvalidation(personId, 'education');
+  return useMutation({
+    mutationFn: (payload: CreatePersonEducationHistoryPayload) =>
+      peopleService.createPersonEducationHistory(personId, payload),
+    onSuccess: invalidate,
+  });
+}
+
+export function useUpdatePersonEducationHistory(personId: string, educationId: string) {
+  const invalidate = usePersonHistoryInvalidation(personId, 'education');
+  return useMutation({
+    mutationFn: (payload: UpdatePersonEducationHistoryPayload) =>
+      peopleService.updatePersonEducationHistory(personId, educationId, payload),
+    onSuccess: invalidate,
+  });
+}
+
+export function useDeletePersonEducationHistory(personId: string) {
+  const invalidate = usePersonHistoryInvalidation(personId, 'education');
+  return useMutation({
+    mutationFn: (educationId: string) => peopleService.deletePersonEducationHistory(personId, educationId),
     onSuccess: invalidate,
   });
 }

@@ -3,15 +3,24 @@ import { unwrapApiResponse, unwrapPaginatedApiResponse } from '@/lib/apiResponse
 import type { PaginatedResult } from '@/features/companies/types/company.types';
 import type {
   CreatePersonContactPayload,
+  CreatePersonEducationHistoryPayload,
+  CreatePersonEmploymentHistoryPayload,
+  CreatePersonEmploymentPositionPayload,
   CreatePersonPayload,
   CreatePersonSocialPayload,
   DirectoryPerson,
   GetPeopleParams,
   Person,
   PersonContact,
+  PersonEducationHistory,
+  PersonEmploymentHistory,
+  PersonEmploymentPosition,
   PersonSocial,
   PeopleDirectoryParams,
   UpdatePersonContactPayload,
+  UpdatePersonEducationHistoryPayload,
+  UpdatePersonEmploymentHistoryPayload,
+  UpdatePersonEmploymentPositionPayload,
   UpdatePersonPayload,
   UpdatePersonSocialPayload,
 } from '../types/person.types';
@@ -185,5 +194,98 @@ export const peopleService = {
 
   deletePersonSocial: async (personId: string, socialId: string): Promise<void> => {
     await axiosInstance.delete(`/people/${personId}/socials/${socialId}`);
+  },
+
+  listPersonEmploymentHistory: async (personId: string): Promise<PersonEmploymentHistory[]> => {
+    const response = await axiosInstance.get(`/people/${personId}/employment-history`);
+    return unwrapList<PersonEmploymentHistory>(response.data);
+  },
+
+  createPersonEmploymentHistory: async (
+    personId: string,
+    payload: CreatePersonEmploymentHistoryPayload,
+  ): Promise<PersonEmploymentHistory> => {
+    const response = await axiosInstance.post(`/people/${personId}/employment-history`, payload);
+    return unwrapApiResponse<PersonEmploymentHistory>(response.data);
+  },
+
+  updatePersonEmploymentHistory: async (
+    personId: string,
+    employmentId: string,
+    payload: UpdatePersonEmploymentHistoryPayload,
+  ): Promise<PersonEmploymentHistory> => {
+    const response = await axiosInstance.patch(
+      `/people/${personId}/employment-history/${employmentId}`,
+      payload,
+    );
+    return unwrapApiResponse<PersonEmploymentHistory>(response.data);
+  },
+
+  deletePersonEmploymentHistory: async (personId: string, employmentId: string): Promise<void> => {
+    await axiosInstance.delete(`/people/${personId}/employment-history/${employmentId}`);
+  },
+
+  createPersonEmploymentPosition: async (
+    personId: string,
+    employmentId: string,
+    payload: CreatePersonEmploymentPositionPayload,
+  ): Promise<PersonEmploymentPosition> => {
+    const response = await axiosInstance.post(
+      `/people/${personId}/employment-history/${employmentId}/positions`,
+      payload,
+    );
+    return unwrapApiResponse<PersonEmploymentPosition>(response.data);
+  },
+
+  updatePersonEmploymentPosition: async (
+    personId: string,
+    employmentId: string,
+    positionId: string,
+    payload: UpdatePersonEmploymentPositionPayload,
+  ): Promise<PersonEmploymentPosition> => {
+    const response = await axiosInstance.patch(
+      `/people/${personId}/employment-history/${employmentId}/positions/${positionId}`,
+      payload,
+    );
+    return unwrapApiResponse<PersonEmploymentPosition>(response.data);
+  },
+
+  deletePersonEmploymentPosition: async (
+    personId: string,
+    employmentId: string,
+    positionId: string,
+  ): Promise<void> => {
+    await axiosInstance.delete(
+      `/people/${personId}/employment-history/${employmentId}/positions/${positionId}`,
+    );
+  },
+
+  listPersonEducationHistory: async (personId: string): Promise<PersonEducationHistory[]> => {
+    const response = await axiosInstance.get(`/people/${personId}/education-history`);
+    return unwrapList<PersonEducationHistory>(response.data);
+  },
+
+  createPersonEducationHistory: async (
+    personId: string,
+    payload: CreatePersonEducationHistoryPayload,
+  ): Promise<PersonEducationHistory> => {
+    const response = await axiosInstance.post(`/people/${personId}/education-history`, payload);
+    return unwrapApiResponse<PersonEducationHistory>(response.data);
+  },
+
+  updatePersonEducationHistory: async (
+    personId: string,
+    educationId: string,
+    payload: UpdatePersonEducationHistoryPayload,
+  ): Promise<PersonEducationHistory> => {
+    const response = await axiosInstance.patch(
+      `/people/${personId}/education-history/${educationId}`,
+      payload,
+    );
+    return unwrapApiResponse<PersonEducationHistory>(response.data);
+  },
+
+  deletePersonEducationHistory: async (personId: string, educationId: string): Promise<void> => {
+    await axiosInstance.delete(`/people/${personId}/education-history/${educationId}`);
   },
 };

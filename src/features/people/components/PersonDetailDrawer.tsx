@@ -21,6 +21,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import PersonContactForm from './PersonContactForm';
 import PersonSocialForm from './PersonSocialForm';
+import PersonEducationHistorySection from './PersonEducationHistorySection';
+import PersonEmploymentHistorySection from './PersonEmploymentHistorySection';
 import {
   useCreatePersonContact,
   useCreatePersonSocial,
@@ -51,6 +53,7 @@ interface PersonDetailDrawerProps {
   onClose: () => void;
   canManageContacts: boolean;
   canManageSocials: boolean;
+  canManageHistories: boolean;
 }
 
 function Info({ label, value }: { label: string; value?: string | null }) {
@@ -68,6 +71,7 @@ export default function PersonDetailDrawer({
   onClose,
   canManageContacts,
   canManageSocials,
+  canManageHistories,
 }: PersonDetailDrawerProps) {
   const personQuery = usePerson(personId);
   const contactsQuery = usePersonContacts(personId);
@@ -248,6 +252,9 @@ export default function PersonDetailDrawer({
                       </Paper>
                     ))}</Stack>}
             </Paper>
+
+            <PersonEmploymentHistorySection personId={personId} canManage={canManageHistories} />
+            <PersonEducationHistorySection personId={personId} canManage={canManageHistories} />
           </Stack>
         )}
       </Box>

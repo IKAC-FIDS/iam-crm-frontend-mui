@@ -143,6 +143,6 @@ export default function PeopleDirectoryPage() {
     </Box>{(reportOptions.isError || departmentsQuery.isError || jobTitlesQuery.isError || personaRolesQuery.isError || seniorityLevelsQuery.isError || companyOptions.isError) && <Alert severity="warning" sx={{ mt: 2 }}>دریافت بخشی از گزینه‌های فیلتر با خطا مواجه شد.</Alert>}</Paper>
     {query.isError && <Alert severity="error" sx={{ mb: 2 }}>خطا در دریافت فهرست افراد.</Alert>}
     <Paper sx={{ overflow: 'hidden' }}><DataGrid autoHeight rows={query.data?.data ?? []} columns={columns} loading={query.isFetching} rowCount={query.data?.meta.total ?? 0} paginationMode="server" paginationModel={pagination} onPaginationModelChange={setPagination} pageSizeOptions={[5, 10, 20, 50]} disableRowSelectionOnClick localeText={{ noRowsLabel: 'فردی مطابق فیلترها یافت نشد.' }} sx={{ border: 0, minHeight: 440 }} /></Paper>
-    <PersonDetailDrawer personId={openPersonId} open={Boolean(openPersonId)} onClose={() => setOpenPersonId('')} canManageContacts={can(user, 'person:update', ['ADMIN', 'MANAGER', 'REP'])} canManageSocials={can(user, 'person:update', ['ADMIN', 'MANAGER', 'REP'])} />
+    <PersonDetailDrawer personId={openPersonId} open={Boolean(openPersonId)} onClose={() => setOpenPersonId('')} canManageContacts={can(user, 'person:update', ['ADMIN', 'MANAGER', 'REP'])} canManageSocials={can(user, 'person:update', ['ADMIN', 'MANAGER', 'REP'])} canManageHistories={can(user, 'person:update', ['ADMIN', 'MANAGER', 'REP'])} />
   </Box>;
 }
