@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import { useOwnerOptions } from '@/features/admin/users/hooks/useAdminUsers';
 import JalaliDateField from '@/shared/components/JalaliDateField';
+import { isUuid, optionalUuid } from '@/shared/utils/optionalUuid';
 import { COMPANY_PRIORITY_OPTIONS, type Priority } from '@/features/companies/types/company.types';
 import { useCatalog } from '@/features/catalogs/hooks/useCatalogs';
 import {
@@ -42,14 +43,14 @@ function getInitialValue(opportunity?: Opportunity | null): CompanyOpportunityPa
   return {
     title: opportunity?.title ?? '',
     description: opportunity?.description ?? undefined,
-    stageId: opportunity?.stageId,
+    stageId: optionalUuid(opportunity?.stageId),
     priority: (opportunity?.priority as Priority | undefined) ?? 'MEDIUM',
     estimatedValue: opportunity?.estimatedValue == null ? undefined : Number(opportunity.estimatedValue),
     expectedCloseDate: opportunity?.expectedCloseDate ?? undefined,
-    sourceOptionId: opportunity?.sourceOptionId ?? opportunity?.sourceOption?.id ?? undefined,
+    sourceOptionId: optionalUuid(opportunity?.sourceOptionId ?? opportunity?.sourceOption?.id),
     opportunitySource: opportunity?.opportunitySource ?? undefined,
     source: opportunity?.source ?? undefined,
-    primaryContactId: opportunity?.primaryContactId ?? opportunity?.primaryContact?.id ?? undefined,
+    primaryContactId: optionalUuid(opportunity?.primaryContactId ?? opportunity?.primaryContact?.id),
     probability: opportunity?.probability ?? undefined,
     competitor: opportunity?.competitor ?? undefined,
   };
@@ -67,8 +68,8 @@ export default function OpportunityForm({
   const peopleQuery = usePeople({ companyId, page: 1, limit: 100 });
 
   const sourceOptions = (() => {
-    const options = (sourceQuery.data ?? []).filter(isCatalogItemActive);
-    if (!opportunity?.sourceOption || options.some((item) => item.id === opportunity.sourceOption?.id)) {
+    const options = (sourceQuery.data ?? []).filter((item) => isCatalogItemActive(item) && isUuid(item.id));
+    if (!opportunity?.sourceOption || !isUuid(opportunity.sourceOption.id) || options.some((item) => item.id === opportunity.sourceOption?.id)) {
       return options;
     }
     return [
@@ -176,7 +177,7 @@ export default function OpportunityForm({
           label="منبع ایجاد فرصت"
           value={value.sourceOptionId ?? ''}
           onChange={(event) => update({
-            sourceOptionId: event.target.value || undefined,
+            sourceOptionId: optionalUuid(event.target.value),
             opportunitySource: undefined,
             source: undefined,
           })}

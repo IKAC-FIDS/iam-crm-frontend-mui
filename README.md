@@ -4237,6 +4237,36 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * آدرس اعلام‌شده `/pipeline` در مرورگر باز شد اما به صفحه ورود هدایت شد؛ به‌دلیل نبود نشست احرازشده، بررسی بصری grid جدید با داده واقعی در آن deployment انجام نشد.
 
 ---
+
+## fix 000082 — اصلاح ارسال sourceOptionId در ایجاد فرصت
+
+**موارد پیاده‌سازی‌شده:**
+
+* علت خطا ارسال مقدار نامعتبر (از جمله رشته خالی یا مقدار غیر UUID) در `sourceOptionId` از frontend بود.
+* شناسه‌های UUID اختیاری فرصت در مرز سرویس create/update نرمال می‌شوند؛ `sourceOptionId`، `ownerId` و `primaryContactId` فقط در صورت UUID معتبر ارسال و در غیر این صورت از payload حذف می‌شوند.
+* dropdown منبع ایجاد فرصت فقط گزینه‌های دارای شناسه UUID معتبر را نمایش می‌دهد و مقدار `id` گزینه را ذخیره می‌کند؛ در حالت بدون انتخاب، `sourceOptionId` ارسال نمی‌شود.
+* مسیر ایجاد فرصت شرکت (`POST /api/companies/:companyId/opportunities`) و مسیرهای ایجاد عمومی و ویرایش از نرمال‌سازی مشترک استفاده می‌کنند؛ فیلدهای الزامی مانند عنوان حذف نشده‌اند و `stageId` انتخاب‌شده دست‌نخورده ارسال می‌شود.
+* نمایش خطای فرم بهبود یافت تا آرایه `details` در پاسخ validation استاندارد یا legacy، از جمله `sourceOptionId must be a UUID`، داخل فرم و toast نمایش داده شود.
+* جست‌وجوی الگوهای خرابی encoding فارسی در `src`، `index.html` و `README.md` انجام شد و موردی پیدا نشد.
+
+**فایل‌های تغییرکرده:**
+
+* `src/shared/utils/optionalUuid.ts`
+* `src/features/opportunities/components/OpportunityForm.tsx`
+* `src/features/opportunities/components/OpportunityFormDialog.tsx`
+* `src/features/opportunities/services/opportunities.service.ts`
+* `src/lib/apiResponse.ts`
+* `README.md`
+
+**وضعیت بررسی‌ها:**
+
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
+* `npm run build`: بدون خطا اجرا شد.
+* هشدار غیرمسدودکننده Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
+* تست زنده endpoint با نشست backend اجرا نشد؛ صحت حذف `sourceOptionId` خالی/نامعتبر در لایه مشترک payload سرویس بررسی شد.
+
+---
 **Built with ❤️ for sales team**
 
 ---

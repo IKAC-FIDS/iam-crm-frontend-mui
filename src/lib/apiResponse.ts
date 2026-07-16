@@ -156,11 +156,22 @@ export function getApiErrorMessage(
 
         const details = standardError.details;
         if (typeof details === 'string' && details.trim()) return details;
+        if (Array.isArray(details)) {
+          const messages = details.filter((item): item is string => typeof item === 'string' && Boolean(item.trim()));
+          if (messages.length) return messages.join('، ');
+        }
       }
 
       const legacyMessage = body.message;
       if (typeof legacyMessage === 'string' && legacyMessage.trim()) {
         return legacyMessage;
+      }
+
+      const legacyDetails = body.details;
+      if (typeof legacyDetails === 'string' && legacyDetails.trim()) return legacyDetails;
+      if (Array.isArray(legacyDetails)) {
+        const messages = legacyDetails.filter((item): item is string => typeof item === 'string' && Boolean(item.trim()));
+        if (messages.length) return messages.join('، ');
       }
     }
 
