@@ -8,6 +8,7 @@ import type {
   ArchiveCompanyPayload,
   UploadCompanyLegalDocumentPayload,
   UpdateCompanyLegalDocumentPayload,
+  CompanyLegalDocument,
 } from '../types/company.types';
 
 export const companyQueryKeys = {
@@ -102,7 +103,18 @@ export function useUploadCompanyLegalDocument(companyId: string) {
   return useMutation({
     mutationFn: (payload: UploadCompanyLegalDocumentPayload) =>
       companiesService.uploadLegalDocument(companyId, payload),
-    onSuccess: () => invalidateCompanyDetail(queryClient, companyId),
+    onSuccess: async (document) => {
+      if (document) {
+        queryClient.setQueryData<CompanyLegalDocument[]>(
+          companyQueryKeys.legalDocuments(companyId),
+          (current = []) => [document, ...current.filter((item) => item.id !== document.id)],
+        );
+      }
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: companyQueryKeys.detail(companyId), exact: true }),
+        queryClient.refetchQueries({ queryKey: companyQueryKeys.legalDocuments(companyId), type: 'active' }),
+      ]);
+    },
   });
 }
 

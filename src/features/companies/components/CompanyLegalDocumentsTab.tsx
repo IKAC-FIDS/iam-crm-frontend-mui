@@ -20,7 +20,7 @@ import {
 import { DataGrid, type GridColDef, type GridRenderCellParams } from '@mui/x-data-grid';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
-import { getApiErrorMessage } from '@/lib/apiResponse';
+import { getApiErrorMessage, isForbiddenError } from '@/lib/apiResponse';
 import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
 import JalaliDateField from '@/shared/components/JalaliDateField';
@@ -40,6 +40,11 @@ import {
 import { formatDate, formatDateTime, getLegalDocumentTypeLabel } from '../utils/companyDisplay';
 
 const acceptedLegalDocumentTypes = '.pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx';
+
+function uploadErrorMessage(error: unknown): string {
+  if (isForbiddenError(error)) return 'شما مجوز بارگذاری سند حقوقی شرکت را ندارید.';
+  return getApiErrorMessage(error, 'خطا در بارگذاری سند');
+}
 
 function legalDocumentFileName(document: CompanyLegalDocument): string {
   return (
@@ -74,29 +79,42 @@ function LegalDocumentUploadDialog({
   const [file, setFile] = useState<File | null>(null);
   const valid = Boolean(title.trim()) && Boolean(file);
 
+  const resetAndClose = () => {
+    setType('OFFICIAL_GAZETTE');
+    setTitle('');
+    setDescription('');
+    setDocumentDate('');
+    setFile(null);
+    onClose();
+  };
+
   const submit = async () => {
     if (!file || !title.trim()) return;
     try {
-      await upload.mutateAsync({
+      const document = await upload.mutateAsync({
         type,
         title: title.trim(),
         description: description.trim() || undefined,
         documentDate: documentDate || undefined,
         file,
       });
-      toast.success('سند حقوقی شرکت بارگذاری شد.');
-      onClose();
+      if (document) {
+        toast.success('سند با موفقیت بارگذاری شد');
+      } else {
+        toast.warning('بارگذاری انجام شد، اما رکورد سند در پاسخ API نبود؛ فهرست اسناد دوباره دریافت شد.');
+      }
+      resetAndClose();
     } catch (error) {
-      toast.error(getApiErrorMessage(error, 'بارگذاری سند حقوقی شرکت انجام نشد.'));
+      toast.error(uploadErrorMessage(error));
     }
   };
 
   return (
     <Dialog open={open} onClose={() => !upload.isPending && onClose()} fullWidth maxWidth="sm">
-      <DialogTitle>بارگذاری سند حقوقی شرکت</DialogTitle>
+      <DialogTitle>بارگذاری سند حقوقی</DialogTitle>
       <DialogContent>
         <Stack spacing={2} sx={{ pt: 1 }}>
-          {upload.isError && <Alert severity="error">بارگذاری سند حقوقی با خطا مواجه شد.</Alert>}
+          {upload.isError && <Alert severity="error">{uploadErrorMessage(upload.error)}</Alert>}
           <FormControl fullWidth>
             <InputLabel id="company-legal-document-type-label">نوع سند</InputLabel>
             <Select

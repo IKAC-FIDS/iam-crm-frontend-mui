@@ -35,6 +35,19 @@ interface CompaniesApiEnvelope {
 
 type CompaniesApiResponse = CompanyListItem[] | CompaniesApiEnvelope;
 
+function isCompanyLegalDocument(value: unknown): value is CompanyLegalDocument {
+  return typeof value === 'object' && value !== null && typeof (value as { id?: unknown }).id === 'string';
+}
+
+function uploadedLegalDocument(payload: unknown): CompanyLegalDocument | null {
+  const value = unwrapApiResponse<unknown>(payload);
+  if (isCompanyLegalDocument(value)) return value;
+  if (typeof value !== 'object' || value === null) return null;
+  const envelope = value as Record<string, unknown>;
+  const candidate = envelope.legalDocument ?? envelope.document ?? envelope.data;
+  return isCompanyLegalDocument(candidate) ? candidate : null;
+}
+
 function normalizeCompaniesResponse(
   payload: CompaniesApiResponse,
   params: GetCompaniesParams,
@@ -157,7 +170,7 @@ export const companiesService = {
   uploadLegalDocument: async (
     companyId: string,
     payload: UploadCompanyLegalDocumentPayload,
-  ): Promise<CompanyLegalDocument> => {
+  ): Promise<CompanyLegalDocument | null> => {
     const formData = new FormData();
     formData.append('file', payload.file);
     formData.append('type', payload.type);
@@ -165,12 +178,11 @@ export const companiesService = {
     if (payload.description?.trim()) formData.append('description', payload.description.trim());
     if (payload.documentDate) formData.append('documentDate', payload.documentDate);
 
-    const response = await axiosInstance.post<CompanyLegalDocument | { data: CompanyLegalDocument }>(
+    const response = await axiosInstance.post<unknown>(
       `/companies/${companyId}/legal-documents/upload`,
       formData,
-      { headers: { 'Content-Type': undefined } },
     );
-    return unwrapApiResponse<CompanyLegalDocument>(response.data);
+    return uploadedLegalDocument(response.data);
   },
   updateLegalDocument: async (
     companyId: string,

@@ -1,79 +1,4 @@
-﻿ChatGPT Plus
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Pasted markdown.md
-File
-میشه readme‌هایی که بهت میدم رو کامل انگلیسی با ادبیات یکسان بکنی؟
-
-
-Memory updated
-Worked for 5m 41s
-انجام شد. README آپلودشده 
-
- با این استانداردها بازنویسی شد:
-
-تمام بخش‌های فارسی Changelog از fix 000039 تا fix 000048 به انگلیسی حرفه‌ای تبدیل شدند.
-
-لحن Fixها، عناوین، وضعیت تست‌ها، وابستگی فرانت‌اند و الزامات Migration یکدست شدند.
-
-ساختار Markdown، APIها، کدها، مسیر فایل‌ها، enumها و شماره Fixها حفظ شدند.
-
-عنوان Change log به Changelog و عنوان ناهماهنگ backend fix 000038 نیز اصلاح شد.
-
-عبارت‌های فارسی جدول Import Excel عمداً به‌عنوان نام دقیق ستون‌های ورودی حفظ شده‌اند و معنی انگلیسی آن‌ها نیز اضافه شده است.
-
-README.backend.english.md
-
-
-
-Pasted markdown(1).md
-File
-
-Worked for 6m 52s
-انجام شد. README فرانت‌اند 
-
- به انگلیسی حرفه‌ای و یکدست تبدیل شد.
-
-تمام متن‌های فارسی، به‌ویژه fix 000053 تا fix 000070، ترجمه شدند.
-
-۲۶۲ خط فارسی یا ترکیبی بازنویسی شد.
-
-ساختار Markdown، جدول‌ها و ۳۴ بلوک کد بدون تغییر حفظ شدند.
-
-مسیرهای API، نام فایل‌ها، enumها، permissionها و شناسه‌های فنی تغییر نکردند.
-
-شماره Fixها عیناً حفظ شدند؛ چون در فایل اصلی fix 000069 وجود نداشت، مورد جدیدی ساخته نشد.
-
-فایل نهایی هیچ نویسه فارسی یا عربی ندارد.
-
-README.frontend.english.md
-
-
-
-Library
-/
-README.frontend.english.md
-
-
-# 🚀 IAM CRM Frontend MUI
+﻿# 🚀 IAM CRM Frontend MUI
 
 Frontend application for the **IAM CRM / Sales Process Management System**.
 
@@ -95,42 +20,42 @@ The frontend communicates with the backend through the `/api` routes.
 
 ---
 
-## استقرار Docker فرانت‌اند
+## 🐳 Frontend Docker Deployment
 
-این پروژه برای اجرای production با Docker و Nginx آماده شده است. در حالت production مقدار `VITE_API_URL` برابر `/api` است تا مرورگر درخواست‌ها را به همان host فرانت بفرستد و Nginx داخل container مسیر `/api/` را به سرویس بک‌اند Docker Compose منتقل کند.
+This project is prepared for production deployment with Docker and Nginx. In production, `VITE_API_URL` is set to `/api`, so browser requests are sent to the same frontend host and the Nginx container proxies `/api/` requests to the backend service in Docker Compose.
 
-مسیر درخواست‌ها در production:
+Production request flow:
 
 ```text
 Browser -> http://SERVER_IP:8080/api/... -> Nginx frontend -> http://api:3000/api/...
 ```
 
-اجرای فرانت:
+Start the frontend:
 
 ```bash
 docker compose up -d --build
 ```
 
-مشاهده logها:
+View logs:
 
 ```bash
 docker logs -f iam-crm-frontend
 ```
 
-پورت پیش‌فرض فرانت `8080` است و می‌توان آن را با متغیر محیطی تغییر داد:
+The default frontend port is `8080`. It can be changed through an environment variable:
 
 ```bash
 FRONTEND_PORT=8081 docker compose up -d --build
 ```
 
-نکات مهم:
+Important notes:
 
-* `VITE_API_URL=/api` در زمان build تنظیم می‌شود.
-* Nginx مسیر `/api/` را با resolver داخلی Docker یعنی `127.0.0.11` به سرویس `api:3000` proxy می‌کند تا پس از recreate شدن backend، IP قدیمی upstream در Nginx باقی نماند.
-* نام سرویس بک‌اند در Docker Compose باید `api` باشد.
-* این compose به شبکه خارجی `iam-crm-backend_default` وصل می‌شود. اگر نام project بک‌اند روی سرور متفاوت است، نام network در `docker-compose.yml` باید با network واقعی بک‌اند هماهنگ شود.
-* برای build داخل Docker مقدار `NODE_OPTIONS=--max-old-space-size=4096` تنظیم شده است تا خطای JavaScript heap out of memory در buildهای Vite/TypeScript کاهش پیدا کند. اگر سرور RAM کمی دارد، افزودن swap یک نیاز عملیاتی است.
-* هیچ رمز عبور، token یا secret نباید در Dockerfile، nginx config، README یا فایل‌های env commit شده قرار بگیرد.
+* `VITE_API_URL=/api` is configured at build time.
+* Nginx proxies `/api/` to `api:3000` through Docker's internal resolver at `127.0.0.11`. This prevents Nginx from retaining a stale backend upstream IP after the backend container is recreated.
+* The backend service name in Docker Compose must be `api`.
+* This Compose configuration connects to the external `iam-crm-backend_default` network. If the backend project name differs on the server, update the network name in `docker-compose.yml` to match the actual backend network.
+* Docker builds use `NODE_OPTIONS=--max-old-space-size=4096` to reduce JavaScript heap out-of-memory failures during Vite/TypeScript builds. Adding swap is an operational requirement on servers with limited RAM.
+* Passwords, tokens, and secrets must never be committed in the Dockerfile, Nginx configuration, README, or environment files.
 
 ---
 
@@ -820,7 +745,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000081
+fix 000001 → fix 000085
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -3763,95 +3688,95 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 ---
 
-## fix 000071 — اصلاح قرارداد آپلود فایل سند تجاری در فرانت
+## fix 000071 — Align commercial document file-upload contract
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* قرارداد `POST /opportunities/:opportunityId/commercial-documents/upload` در فرانت با قرارداد بک‌اند هماهنگ شد.
-* فایل سند تجاری با نام فیلد `file` داخل `FormData` ارسال می‌شود.
-* تنظیم دستی `Content-Type` برای درخواست multipart حذف شد تا مرورگر و axios مقدار boundary را درست تنظیم کنند.
-* متادیتای ارسالی به بک‌اند به فیلدهای مجاز سند تجاری محدود شد و فیلدهای داخلی فرانت مثل `file`، `attachmentId` و `fileAttachmentId` در payload متنی ارسال نمی‌شوند.
-* لینک خارجی اختیاری فرم همچنان حفظ شد، اما در قرارداد ذخیره‌سازی سند تجاری از مسیر `fileUrl` ارسال می‌شود.
-* پیام خطای ۴۰۰ در فرم سند تجاری اصلاح شد تا پیام اعتبارسنجی بک‌اند در صورت وجود نمایش داده شود و در غیر این صورت پیام فارسی «اطلاعات سند یا فایل انتخاب‌شده معتبر نیست.» نمایش داده شود.
+* Aligned the frontend contract for `POST /opportunities/:opportunityId/commercial-documents/upload` with the backend contract.
+* Commercial document files are sent in `FormData` under the `file` field.
+* Removed manual `Content-Type` configuration for multipart requests so the browser and Axios can generate the correct boundary.
+* Restricted metadata sent to the backend to supported commercial-document fields. Frontend-only fields such as `file`, `attachmentId`, and `fileAttachmentId` are no longer included in the textual payload.
+* Preserved the optional external-link field in the form, while sending it through `fileUrl` in the commercial-document persistence contract.
+* Improved HTTP 400 handling in the commercial-document form. Backend validation messages are displayed when available; otherwise, a Persian-language fallback indicates that the document information or selected file is invalid.
 
-**فایل‌های مهم تغییرکرده:**
+**Important changed files:**
 
 * `src/features/commercialDocuments/services/commercialDocuments.service.ts`
 * `src/features/commercialDocuments/components/CommercialDocumentFormDialog.tsx`
 * `README.md`
 
-**فرض‌ها و وابستگی‌های بک‌اند:**
+**Backend assumptions and dependencies:**
 
-* این اصلاح فقط فرانت‌اند است و بک‌اند تغییر نکرده است.
-* قرارداد بک‌اند برای آپلود سند تجاری از `FileInterceptor('file')` استفاده می‌کند.
-* فرانت مستقیم به MinIO وصل نمی‌شود و فایل فقط از طریق API بک‌اند ارسال می‌شود.
-* enumهای سند تجاری همچنان با کدهای بک‌اند مثل `PROPOSAL`، `PROFORMA` و `CONTRACT` ارسال می‌شوند.
-* تست زنده آپلود روی بک‌اند در حال اجرا انجام نشد.
+* This was a frontend-only fix; the backend was not changed.
+* The backend commercial-document upload contract uses `FileInterceptor('file')`.
+* The frontend does not connect directly to MinIO. Files are sent only through the backend API.
+* Commercial-document enums continue to use backend codes such as `PROPOSAL`, `PROFORMA`, and `CONTRACT`.
+* Live upload testing against a running backend was not performed.
 
-**وضعیت بررسی‌ها:**
+**Verification status:**
 
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
-* `npm run build`: بدون خطا اجرا شد.
-* هشدار غیرمسدودکننده: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
+* `npm run lint` passed without errors.
+* TypeScript checks passed as part of `npm run build`.
+* `npm run build` passed.
+* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
 
-**محدودیت‌های باقی‌مانده:**
+**Remaining limitations:**
 
-* تأیید نهایی ذخیره فایل در MinIO نیازمند اجرای دستی سناریوی آپلود با بک‌اند و زیرساخت ذخیره‌سازی فعال است.
+* Final verification of file persistence in MinIO requires a manual upload scenario with the backend and storage infrastructure running.
 
 ---
 
-## fix 000072 — اصلاح ارسال multipart در آپلود سند تجاری
+## fix 000072 — Correct multipart handling for commercial document uploads
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* درخواست آپلود سند تجاری در `commercialDocuments.service.ts` با الگوی موجود سرویس پیوست‌ها هماهنگ شد.
-* هنگام ارسال `FormData` به `POST /opportunities/:opportunityId/commercial-documents/upload`، مقدار `Content-Type` در تنظیمات همان درخواست `undefined` شد تا مرورگر boundary صحیح multipart را بسازد.
-* در interceptor مشترک Axios، اگر `config.data` از نوع `FormData` باشد، هدر `Content-Type` حذف می‌شود تا مقدار پیش‌فرض `application/json` وارد درخواست multipart نشود.
-* نام فیلد فایل همچنان `file` باقی ماند و مسیر endpoint بک‌اند تغییر نکرد.
+* Aligned the commercial-document upload request in `commercialDocuments.service.ts` with the established attachment-service pattern.
+* When sending `FormData` to `POST /opportunities/:opportunityId/commercial-documents/upload`, set the request-level `Content-Type` value to `undefined` so the browser generates the correct multipart boundary.
+* Updated the shared Axios interceptor to remove `Content-Type` when `config.data` is a `FormData` instance, preventing the default `application/json` value from leaking into multipart requests.
+* Kept the file field name as `file` and did not change the backend endpoint path.
 
-**فایل‌های مهم تغییرکرده:**
+**Important changed files:**
 
 * `src/lib/axios.ts`
 * `src/features/commercialDocuments/services/commercialDocuments.service.ts`
 * `README.md`
 
-**فرض‌ها و وابستگی‌های بک‌اند:**
+**Backend assumptions and dependencies:**
 
-* این اصلاح فقط فرانت‌اند است و بک‌اند تغییر نکرده است.
-* بک‌اند برای آپلود سند تجاری همچنان `FileInterceptor('file')` را انتظار دارد.
-* اگر پس از اصلاح header همچنان خطای ۴۰۰ دیده شود، بررسی بعدی باید روی جزئیات validation بک‌اند، مقدار `amount`، فرمت تاریخ‌ها و enumهای `type` و `status` انجام شود.
-* تست زنده آپلود با بک‌اند در حال اجرا انجام نشد.
+* This was a frontend-only fix; the backend was not changed.
+* The backend continues to expect `FileInterceptor('file')` for commercial-document uploads.
+* If HTTP 400 errors continue after the header correction, the next investigation should cover backend validation details, the `amount` value, date formats, and the `type` and `status` enums.
+* Live upload testing against a running backend was not performed.
 
-**وضعیت بررسی‌ها:**
+**Verification status:**
 
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
-* `npm run build`: بدون خطا اجرا شد.
-* هشدار غیرمسدودکننده: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
+* `npm run lint` passed without errors.
+* TypeScript checks passed as part of `npm run build`.
+* `npm run build` passed.
+* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
 
-**محدودیت‌های باقی‌مانده:**
+**Remaining limitations:**
 
-* تأیید نهایی رفع خطای ۴۰۰ نیازمند اجرای دستی آپلود روی backend و storage فعال است.
+* Final confirmation that the HTTP 400 error is resolved requires a manual upload test with the backend and storage service running.
 
 ---
 
-## fix 000073 — داکرایز کردن فرانت با Nginx و Proxy API
+## fix 000073 — Dockerize the frontend with Nginx and API proxying
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* Dockerfile production چندمرحله‌ای اضافه شد.
-* مرحله build از `node:22-bookworm-slim`، `npm ci` و `npm run build` استفاده می‌کند.
-* مقدارهای `ARG VITE_API_URL=/api`، `ENV VITE_API_URL=$VITE_API_URL` و `ENV NODE_OPTIONS=--max-old-space-size=4096` برای build اضافه شد.
-* مرحله runtime از `nginx:1.27` استفاده می‌کند و خروجی `dist` را در `/usr/share/nginx/html` سرو می‌کند.
-* `nginx.conf` برای SPA fallback و proxy مسیر `/api/` به `http://api:3000/api/` اضافه شد.
-* تنظیمات proxy headerها، timeoutهای ۳۰۰ ثانیه‌ای و `client_max_body_size 30M` اضافه شد.
-* `docker-compose.yml` برای اجرای standalone فرانت با پورت پیش‌فرض `8080` و اتصال به network خارجی `iam-crm-backend_default` اضافه شد.
-* `.dockerignore` برای کاهش build context و حذف `node_modules`، `dist`، `.git`، logها، envهای واقعی، cache و فایل‌های IDE اضافه شد.
-* رفتار موجود `src/lib/axios.ts` بازبینی شد و بدون تغییر باقی ماند؛ چون از `VITE_API_URL` پشتیبانی می‌کند و `Content-Type` را برای `FormData` حذف می‌کند.
-* دانلود پیوست‌ها بازبینی شد و همچنان از endpoint بک‌اند با `responseType: 'blob'` استفاده می‌کند.
+* Added a multi-stage production Dockerfile.
+* The build stage uses `node:22-bookworm-slim`, `npm ci`, and `npm run build`.
+* Added `ARG VITE_API_URL=/api`, `ENV VITE_API_URL=$VITE_API_URL`, and `ENV NODE_OPTIONS=--max-old-space-size=4096` for the build.
+* The runtime stage uses `nginx:1.27` and serves the `dist` output from `/usr/share/nginx/html`.
+* Added `nginx.conf` with SPA fallback and `/api/` proxying to `http://api:3000/api/`.
+* Added proxy headers, 300-second timeouts, and `client_max_body_size 30M`.
+* Added `docker-compose.yml` for standalone frontend execution on default port `8080`, connected to the external `iam-crm-backend_default` network.
+* Added `.dockerignore` to reduce the build context and exclude `node_modules`, `dist`, `.git`, logs, real environment files, caches, and IDE files.
+* Reviewed `src/lib/axios.ts` and left it unchanged because it already supports `VITE_API_URL` and removes `Content-Type` for `FormData`.
+* Reviewed attachment downloads and confirmed they continue to use the backend endpoint with `responseType: 'blob'`.
 
-**فایل‌های مهم تغییرکرده یا جدید:**
+**Important changed/new files:**
 
 * `Dockerfile`
 * `nginx.conf`
@@ -3859,86 +3784,86 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * `.dockerignore`
 * `README.md`
 
-**فرض‌ها و وابستگی‌های بک‌اند:**
+**Backend assumptions and dependencies:**
 
-* این اصلاح فقط فرانت‌اند است و بک‌اند تغییر نکرده است.
-* سرویس بک‌اند در Docker Compose باید با نام `api` روی پورت `3000` در دسترس باشد.
-* network خارجی مورد انتظار `iam-crm-backend_default` است. اگر نام project بک‌اند متفاوت باشد، این network باید در `docker-compose.yml` اصلاح شود.
-* مقدار production برای `VITE_API_URL` برابر `/api` است و هیچ IP یا URL عمومی بک‌اند در سورس فرانت hardcode نشده است.
-* Nginx داخل container فرانت، `/api/` را به `http://api:3000/api/` proxy می‌کند و به `localhost` داخل container اشاره نمی‌کند.
+* This was a frontend-only fix; the backend was not changed.
+* The backend service must be available in Docker Compose as `api` on port `3000`.
+* The expected external network is `iam-crm-backend_default`. If the backend project name differs, update the network in `docker-compose.yml`.
+* The production `VITE_API_URL` value is `/api`; no public backend IP or URL is hardcoded in frontend source code.
+* Nginx inside the frontend container proxies `/api/` to `http://api:3000/api/` rather than to container-local `localhost`.
 
-**وضعیت بررسی‌ها:**
+**Verification status:**
 
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
-* `npm run build`: بدون خطا اجرا شد.
-* `docker compose config`: اجرا شد.
-* `docker compose build --no-cache --progress=plain`: اجرا شد.
-* `docker compose up -d`: اجرا شد.
-* `docker logs --tail=100 iam-crm-frontend`: اجرا شد.
-* هشدار غیرمسدودکننده: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
+* `npm run lint` passed without errors.
+* TypeScript checks passed as part of `npm run build`.
+* `npm run build` passed.
+* `docker compose config` was run.
+* `docker compose build --no-cache --progress=plain` was run.
+* `docker compose up -d` was run.
+* `docker logs --tail=100 iam-crm-frontend` was run.
+* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
 
-**محدودیت‌های باقی‌مانده:**
+**Remaining limitations:**
 
-* اگر در محیط هدف خطای `host not found in upstream "api"` دیده شود، باید network و نام سرویس backend با Docker Compose سرور هماهنگ شود.
-* تست کامل API و احراز هویت نیازمند اجرای همزمان backend روی network مورد انتظار است.
+* If the target environment reports `host not found in upstream "api"`, align the backend Docker service and network names with the server's Docker Compose configuration.
+* Complete API and authentication testing requires the backend to run on the expected network.
 
 ---
 
-## fix 000074 — رفع stale DNS در proxy فرانت به API
+## fix 000074 — Resolve stale Docker DNS in the frontend API proxy
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* مشکل 502 گهگاهی Nginx پس از rebuild یا recreate شدن container بک‌اند بررسی شد.
-* `nginx.conf` از حالت static upstream با `proxy_pass http://api:3000/api/` خارج شد تا Nginx IP قدیمی سرویس Docker را نگه ندارد.
-* در location مربوط به `/api/`، resolver داخلی Docker با `resolver 127.0.0.11 valid=10s ipv6=off;` اضافه شد.
-* upstream بک‌اند با متغیر `set $api_upstream api:3000;` تعریف شد تا Nginx نام سرویس Docker را دوباره resolve کند.
-* `proxy_pass` به `http://$api_upstream` تغییر کرد و suffix `/api/` از آن حذف شد تا URI اصلی درخواست حفظ شود.
-* مسیرهایی مثل `/api/auth/login` اکنون به `http://api:3000/api/auth/login` ارسال می‌شوند.
-* headerهای proxy و timeoutهای ۳۰۰ ثانیه‌ای بدون تغییر حفظ شدند.
+* Investigated intermittent Nginx HTTP 502 errors after the backend container was rebuilt or recreated.
+* Replaced the static `proxy_pass http://api:3000/api/` upstream pattern so Nginx no longer retains the backend service's previous Docker IP.
+* Added Docker's internal resolver to the `/api/` location through `resolver 127.0.0.11 valid=10s ipv6=off;`.
+* Defined the backend upstream through `set $api_upstream api:3000;` so Nginx re-resolves the Docker service name.
+* Changed `proxy_pass` to `http://$api_upstream` and removed the `/api/` suffix so the original request URI is preserved.
+* Paths such as `/api/auth/login` are now forwarded to `http://api:3000/api/auth/login`.
+* Preserved the existing proxy headers and 300-second timeouts.
 
-**فایل‌های مهم تغییرکرده:**
+**Important changed files:**
 
 * `nginx.conf`
 * `README.md`
 
-**فرض‌ها و وابستگی‌های بک‌اند:**
+**Backend assumptions and dependencies:**
 
-* این اصلاح فقط فرانت‌اند/Nginx است و بک‌اند تغییر نکرده است.
-* سرویس backend باید روی همان Docker network با نام service برابر `api` و پورت `3000` در دسترس باشد.
-* اگر در محیط هدف همچنان خطای upstream دیده شود، باید نام network و نام service واقعی backend بررسی و با `docker-compose.yml` و `nginx.conf` هماهنگ شود.
+* This fix affected only the frontend/Nginx layer; the backend was not changed.
+* The backend must be available on the same Docker network under service name `api` and port `3000`.
+* If upstream errors continue in the target environment, verify the actual backend network and service names and align `docker-compose.yml` and `nginx.conf`.
 
-**وضعیت بررسی‌ها:**
+**Verification status:**
 
-* `docker compose up -d --build`: اجرا شد.
-* `docker logs --tail=100 iam-crm-frontend`: اجرا شد و Nginx بدون خطای startup بالا آمد.
-* تست مستقیم API live انجام نشد.
+* `docker compose up -d --build` was run.
+* `docker logs --tail=100 iam-crm-frontend` was run, and Nginx started without startup errors.
+* Direct live API testing was not performed.
 
-**محدودیت‌های باقی‌مانده:**
+**Remaining limitations:**
 
-* برای تأیید کامل رفع 502 باید backend در محیط هدف recreate شود و سپس login از مسیر `/api/auth/login` تست شود.
+* Full confirmation of the HTTP 502 fix requires recreating the backend in the target environment and then testing login through `/api/auth/login`.
 
 ---
 
-## fix 000075 — تکمیل فرم و پروفایل شرکت با اطلاعات ثبتی و اسناد حقوقی
+## fix 000075 — Complete company registration profile and legal documents
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* typeهای شرکت برای `registrationNumber`، `nationalId`، `economicCode`، `establishmentDate`، `activityStatus`، `registeredCapital`، `employeeCount`، `parentCompanyIds`، `subsidiaryCompanyIds`، `parentCompanies` و `subsidiaryCompanies` تکمیل شد.
-* typeهای اسناد حقوقی شرکت برای `OFFICIAL_GAZETTE` و `LATEST_CHANGES` اضافه شد.
-* فرم ایجاد و ویرایش شرکت با فیلدهای شماره ثبت، شناسه ملی، کد اقتصادی، تاریخ تاسیس، وضعیت فعالیت، سرمایه ثبتی، تعداد پرسنل، شرکت‌های مادر و شرکت‌های زیرمجموعه تکمیل شد.
-* وضعیت فعالیت با برچسب‌های فارسی «فعال»، «غیر فعال»، «ادغام شده» و «نامشخص» نمایش داده می‌شود.
-* انتخاب شرکت‌های مادر و زیرمجموعه با Autocomplete چندانتخابی و جستجوی server-side انجام می‌شود.
-* شرکت جاری در حالت ویرایش از گزینه‌های ساختار مالکیتی حذف می‌شود و انتخاب همزمان یک شرکت به‌عنوان مادر و زیرمجموعه اعتبارسنجی می‌شود.
-* مقدارهای عددی سرمایه ثبتی و تعداد پرسنل، ارقام فارسی/عربی را قبل از ارسال payload نرمال می‌کنند.
-* تاریخ تاسیس با کامپوننت Jalali موجود نمایش داده می‌شود و مقدار ISO/Gregorian به backend ارسال می‌شود.
-* صفحه جزئیات شرکت بخش‌های «اطلاعات ثبتی و حقوقی»، «وضعیت و اندازه شرکت» و «ساختار مالکیتی» را نمایش می‌دهد.
-* شرکت‌های مادر و زیرمجموعه در پروفایل شرکت به‌صورت chip قابل کلیک نمایش داده می‌شوند.
-* تب «اسناد حقوقی» به پروفایل شرکت اضافه شد.
-* بارگذاری سند حقوقی شرکت با metadata شامل نوع سند، عنوان، توضیحات و تاریخ سند پیاده‌سازی شد.
-* فهرست اسناد حقوقی، دانلود فایل از مسیر امن attachment backend، و حذف سند حقوقی پیاده‌سازی شد.
+* Extended company types with `registrationNumber`, `nationalId`, `economicCode`, `establishmentDate`, `activityStatus`, `registeredCapital`, `employeeCount`, `parentCompanyIds`, `subsidiaryCompanyIds`, `parentCompanies`, and `subsidiaryCompanies`.
+* Added company legal-document types for `OFFICIAL_GAZETTE` and `LATEST_CHANGES`.
+* Extended company create and edit forms with registration number, national ID, economic code, establishment date, activity status, registered capital, employee count, parent companies, and subsidiary companies.
+* Activity status is displayed with Persian labels for Active, Inactive, Merged, and Unknown.
+* Parent and subsidiary companies are selected through a multi-select Autocomplete with server-side search.
+* The current company is excluded from ownership-structure options during editing, and selecting the same company as both parent and subsidiary is validated.
+* Registered capital and employee count normalize Persian and Arabic digits before payload submission.
+* Establishment date uses the existing Jalali component in the UI and sends an ISO/Gregorian value to the backend.
+* Company details now include Registration and Legal Information, Company Status and Size, and Ownership Structure sections.
+* Parent and subsidiary companies are shown as clickable chips in the company profile.
+* Added a Legal Documents tab to the company profile.
+* Implemented legal-document upload with metadata for document type, title, description, and document date.
+* Implemented legal-document listing, secure backend attachment download, and deletion.
 
-**فایل‌های مهم تغییرکرده یا جدید:**
+**Important changed/new files:**
 
 * `src/features/companies/types/company.types.ts`
 * `src/features/companies/services/companies.service.ts`
@@ -3952,82 +3877,82 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * `src/features/attachments/types/attachment.types.ts`
 * `README.md`
 
-**فرض‌ها و وابستگی‌های بک‌اند:**
+**Backend assumptions and dependencies:**
 
-* backend باید فیلدهای جدید شرکت و endpointهای `/companies/:companyId/legal-documents` را پشتیبانی کند.
-* upload سند حقوقی شرکت از `POST /companies/:companyId/legal-documents/upload` با فیلد multipart `file` استفاده می‌کند.
-* دانلود فایل سند حقوقی همچنان از مسیر attachment backend انجام می‌شود و frontend هیچ URL مستقیم MinIO نمی‌سازد.
-* مجوزهای استفاده‌شده مطابق قرارداد موجود `company:view` برای مشاهده و `company:update` برای ویرایش/بارگذاری/حذف هستند.
-* تست زنده create/edit/upload/download/delete با backend در حال اجرا انجام نشد.
+* The backend must support the new company fields and `/companies/:companyId/legal-documents` endpoints.
+* Legal-document upload uses `POST /companies/:companyId/legal-documents/upload` with multipart field `file`.
+* Legal-document downloads continue through the backend attachment route; the frontend does not construct direct MinIO URLs.
+* Existing `company:view` and `company:update` permissions are used for viewing and for edit/upload/delete actions respectively.
+* Live create, edit, upload, download, and delete testing against a running backend was not performed.
 
-**وضعیت بررسی‌ها:**
+**Verification status:**
 
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
-* `npm run build`: بدون خطا اجرا شد.
-* هشدار غیرمسدودکننده: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
+* `npm run lint` passed without errors.
+* TypeScript checks passed as part of `npm run build`.
+* `npm run build` passed.
+* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
 
-**چک‌لیست دستی باقی‌مانده:**
+**Remaining manual checklist:**
 
-* ایجاد شرکت با فیلدهای جدید.
-* ویرایش شرکت با فیلدهای جدید.
-* نمایش فیلدهای جدید در جزئیات شرکت.
-* انتخاب و نمایش شرکت‌های مادر و زیرمجموعه.
-* آپلود، نمایش، دانلود و حذف روزنامه رسمی و آخرین تغییرات.
-* بررسی نمایش خطاهای validation backend در سناریوهای واقعی.
+* Create a company with the new fields.
+* Edit a company with the new fields.
+* Verify the new fields in company details.
+* Select and display parent and subsidiary companies.
+* Upload, display, download, and delete Official Gazette and Latest Changes documents.
+* Verify backend validation messages in live scenarios.
 
 ---
 
-## fix 000076 — اصلاح به‌هم‌ریختگی encoding متن‌های فارسی در فرانت
+## fix 000076 — Repair corrupted Persian text encoding in the frontend
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* متن‌های فارسی خراب‌شده در صفحه جزئیات شرکت بازبینی و اصلاح شدند.
-* برچسب‌های تب‌ها، دکمه‌ها، پیام خطا، کارت اطلاعات اصلی، بخش اطلاعات ثبتی و حقوقی، وضعیت و اندازه شرکت، ساختار مالکیتی و تب اسناد حقوقی به متن خوانای فارسی UTF-8 تبدیل شدند.
-* فایل `index.html` بررسی شد و `meta charset="UTF-8"` از قبل وجود داشت.
-* جستجوی mojibake در source و README انجام شد و نشانگرهای رایج متن خراب باقی نماندند.
+* Reviewed and corrected corrupted Persian text in the company details page.
+* Replaced broken tab labels, buttons, error messages, primary-information cards, registration and legal information, company status and size, ownership structure, and legal-document tab text with readable UTF-8 Persian strings.
+* Verified that `index.html` already contains `meta charset="UTF-8"`.
+* Searched source files and the README for mojibake and found no remaining common corruption markers.
 
-**فایل‌های مهم تغییرکرده:**
+**Important changed files:**
 
 * `src/features/companies/pages/CompanyDetailsPage.tsx`
 * `src/features/companies/components/CompanyLegalDocumentsTab.tsx`
 * `README.md`
 
-**فرض‌ها و وابستگی‌ها:**
+**Assumptions and dependencies:**
 
-* این اصلاح فقط فرانت‌اند است و هیچ قرارداد API یا رفتار backend تغییر نکرد.
-* مشکل از string literalهای خراب‌شده در source بود، نه از فونت یا theme.
-* فایل‌های تغییرکرده با متن فارسی خوانا و UTF-8 ذخیره شدند.
+* This was a frontend-only correction and did not change any API contract or backend behavior.
+* The issue originated from corrupted string literals in source code, not from the font or theme.
+* Changed files were saved with readable Persian text in UTF-8.
 
-**وضعیت بررسی‌ها:**
+**Verification status:**
 
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
-* `npm run build`: بدون خطا اجرا شد.
-* هشدار غیرمسدودکننده: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
+* `npm run lint` passed without errors.
+* TypeScript checks passed as part of `npm run build`.
+* `npm run build` passed.
+* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
 
-**چک‌لیست دستی باقی‌مانده:**
+**Remaining manual checklist:**
 
-* خروجی production در مرورگر محلی باز شد و متن فارسی صفحه ورود صحیح نمایش داده شد؛ اما صفحه جزئیات شرکت به‌دلیل نیاز به نشست احرازشده و backend قابل دسترس نبود.
-* بررسی نهایی تب‌ها، دکمه‌ها، کارت اطلاعات اصلی، اطلاعات ثبتی و حقوقی، وضعیت و اندازه شرکت، ساختار مالکیتی و اسناد حقوقی باید در محیط دارای نشست معتبر انجام شود.
+* The production build was opened locally and Persian text on the login page rendered correctly. Company details could not be opened because an authenticated session and accessible backend were unavailable.
+* Perform final verification of tabs, buttons, primary-information cards, registration and legal information, company status and size, ownership structure, and legal documents in an authenticated environment.
 
 ---
 
-## fix 000077 — افزودن سوابق شغلی و تحصیلی به پروفایل افراد
+## fix 000077 — Add employment and education history to person profiles
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* دو بخش «سوابق شغلی» و «سوابق تحصیلی» به پنل جزئیات شخص اضافه شد.
-* انتخاب شرکت سابقه شغلی با Autocomplete و جستجوی server-side شرکت‌های موجود انجام می‌شود.
-* هنگام ایجاد سابقه شغلی می‌توان چند سمت برای یک شرکت افزود؛ افزودن، ویرایش و حذف مستقل سمت‌ها نیز پشتیبانی می‌شود.
-* هر سمت شامل عنوان، تاریخ شروع و پایان، وضعیت «سمت فعلی» و توضیحات است؛ تاریخ‌ها در رابط کاربری جلالی و در payload به‌صورت ISO ارسال می‌شوند.
-* برای سمت فعلی، تاریخ پایان غیرفعال و پاک می‌شود و ترتیب تاریخ شروع/پایان در frontend اعتبارسنجی می‌شود.
-* افزودن، ویرایش و حذف سابقه تحصیلی با فیلدهای مدرک، دانشگاه، سال و توضیحات پیاده‌سازی شد.
-* ارقام فارسی و عربی سال قبل از ارسال نرمال می‌شوند و بازه عدد صحیح ۱۰۰۰ تا ۳۰۰۰ اعتبارسنجی می‌شود.
-* وضعیت‌های loading، empty و error و پیام‌های موفقیت/خطا برای هر دو بخش اضافه شد.
-* مشاهده با `person:view` و عملیات مدیریتی با مجوز موجود `person:update` انجام می‌شود و مجوز جدیدی ساخته نشد.
+* Added Employment History and Education History sections to the person detail panel.
+* Employment-history companies are selected through an Autocomplete with server-side search over existing companies.
+* Multiple positions can be added for one company when creating employment history; individual position creation, editing, and deletion are also supported.
+* Each position includes title, start date, end date, current-position status, and description. Dates are shown as Jalali values in the UI and sent as ISO values in payloads.
+* For current positions, the end date is disabled and cleared. Start/end date ordering is validated in the frontend.
+* Implemented education-history create, edit, and delete flows with degree, university, year, and description fields.
+* Persian and Arabic digits in year values are normalized before submission, and the integer range 1000–3000 is validated.
+* Added loading, empty, and error states plus success/error messages for both sections.
+* Viewing uses `person:view`; management uses the existing `person:update` permission. No new permission was created.
 
-**فایل‌های تغییرکرده یا جدید:**
+**Important changed/new files:**
 
 * `src/features/people/types/person.types.ts`
 * `src/features/people/services/people.service.ts`
@@ -4039,42 +3964,42 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * `src/features/people/pages/PeopleDirectoryPage.tsx`
 * `README.md`
 
-**وابستگی‌های backend:**
+**Backend dependencies:**
 
-* endpointهای `/people/:personId/employment-history` و `/people/:personId/education-history` باید فعال باشند.
-* مدیریت سمت‌ها از endpointهای nested مسیر `/people/:personId/employment-history/:employmentId/positions` استفاده می‌کند.
-* پاسخ سوابق شغلی باید summary شرکت و آرایه `positions` را مطابق قرارداد backend برگرداند.
-* تست زنده create/edit/delete به نشست احرازشده، backend در حال اجرا و migration اعمال‌شده نیاز دارد.
+* `/people/:personId/employment-history` and `/people/:personId/education-history` endpoints must be available.
+* Position management uses nested endpoints under `/people/:personId/employment-history/:employmentId/positions`.
+* Employment-history responses must include a company summary and `positions` array according to the backend contract.
+* Live create/edit/delete testing requires an authenticated session, a running backend, and applied migrations.
 
-**وضعیت بررسی‌ها:**
+**Verification status:**
 
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
-* `npm run build`: بدون خطا اجرا شد.
-* هشدار غیرمسدودکننده: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
+* `npm run lint` passed without errors.
+* TypeScript checks passed as part of `npm run build`.
+* `npm run build` passed.
+* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
 
-**چک‌لیست دستی باقی‌مانده:**
+**Remaining manual checklist:**
 
-* نمایش دو بخش سوابق در جزئیات شخص و بررسی حالت‌های خالی، loading و error.
-* ایجاد و ویرایش سابقه شغلی با شرکت موجود و چند سمت.
-* افزودن، ویرایش و حذف مستقل سمت و حذف کل سابقه شغلی.
-* ایجاد، ویرایش و حذف سابقه تحصیلی با مدرک، دانشگاه و سال.
-* بررسی نهایی متن‌های فارسی در محیط دارای نشست معتبر و backend آماده.
+* Verify both history sections and their empty, loading, and error states in person details.
+* Create and edit employment history with an existing company and multiple positions.
+* Add, edit, and delete individual positions and delete an entire employment-history record.
+* Create, edit, and delete education history with degree, university, and year.
+* Verify Persian UI text in an authenticated environment with the backend ready.
 
 ---
 
-## fix 000078 — اصلاح خطای crypto.randomUUID در فرم سوابق شغلی
+## fix 000078 — Fix `crypto.randomUUID` errors in the employment-history form
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* علت crash فرم «افزودن سابقه شغلی»، فراخوانی مستقیم `crypto.randomUUID()` در مرورگرها یا originهای HTTP فاقد این API بود.
-* helper مشترک `createClientId` اضافه شد که به‌ترتیب از `randomUUID`، سپس `getRandomValues` و در نهایت fallback مبتنی بر زمان و مقدار تصادفی استفاده می‌کند.
-* فراخوانی‌های مستقیم از کامپوننت سوابق شغلی حذف و شناسه‌های موقت سمت‌ها با پیشوند `employment-position` تولید شدند.
-* شناسه موقت فقط با نام `clientTempId` برای React key و مدیریت ردیف‌های فرم استفاده می‌شود و در payload سمت یا سابقه شغلی به backend ارسال نمی‌شود.
-* مسیر افزودن سابقه شغلی و افزودن چند سمت دیگر هنگام ایجاد ردیف موقت به `crypto.randomUUID` وابستگی مستقیم ندارد.
-* یک `errorElement` سبک با پیام فارسی، دکمه تلاش مجدد و بازگشت به routeهای اصلی اضافه شد.
+* Identified that the Add Employment History form crashed because `crypto.randomUUID()` was called directly in browsers or HTTP origins where the API is unavailable.
+* Added a shared `createClientId` helper that uses `randomUUID`, then `getRandomValues`, and finally a time-and-random-value fallback.
+* Removed direct calls from the employment-history component and generated temporary position IDs with the `employment-position` prefix.
+* Temporary IDs are stored only as `clientTempId` for React keys and form-row management; they are not sent to the backend in position or employment-history payloads.
+* Creating employment history and adding multiple positions no longer depends directly on `crypto.randomUUID` when temporary rows are created.
+* Added a lightweight `errorElement` with a Persian-language message, retry action, and links back to primary routes.
 
-**فایل‌های تغییرکرده یا جدید:**
+**Important changed/new files:**
 
 * `src/shared/utils/createClientId.ts`
 * `src/features/people/components/PersonEmploymentHistorySection.tsx`
@@ -4082,37 +4007,37 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * `src/routes/index.tsx`
 * `README.md`
 
-**وضعیت بررسی‌ها:**
+**Verification status:**
 
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
-* `npm run build`: بدون خطا اجرا شد.
-* هشدار غیرمسدودکننده: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
+* `npm run lint` passed without errors.
+* TypeScript checks passed as part of `npm run build`.
+* `npm run build` passed.
+* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
 
-**چک‌لیست دستی:**
+**Manual checklist:**
 
-* بازکردن جزئیات شخص و فرم افزودن سابقه شغلی روی HTTP بدون خطای `crypto.randomUUID`.
-* انتخاب شرکت، افزودن یک یا چند سمت و ذخیره سابقه.
-* بررسی افزودن، ویرایش و حذف سمت‌ها و سابقه شغلی با backend آماده و نشست معتبر.
-* بررسی console مرورگر و اطمینان از نبود خطای `crypto.randomUUID`.
-* آدرس HTTP اعلام‌شده در مرورگر باز شد و بدون خطای console به صفحه ورود هدایت شد؛ به‌دلیل نبود نشست احرازشده، تست تعاملی فرم جزئیات شخص در آن محیط انجام نشد.
+* Open person details and the Add Employment History form over HTTP without a `crypto.randomUUID` error.
+* Select a company, add one or more positions, and save the record.
+* Verify add, edit, and delete operations for positions and employment history with a ready backend and authenticated session.
+* Check the browser console and confirm that no `crypto.randomUUID` error occurs.
+* The provided HTTP address was opened in a browser and redirected to login without a console error. Interactive testing of the person-detail form was not performed because no authenticated session was available.
 
 ---
 
-## fix 000079 — اصلاح فرم سوابق تحصیلی و افزودن کتابخانه دانشگاه‌ها
+## fix 000079 — Refine education history and add the university library
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* فیلد مدرک در فرم افزودن/ویرایش سابقه تحصیلی از متن آزاد به dropdown تبدیل شد.
-* گزینه‌های مدرک دقیقاً شامل `DIPLOMA` (دیپلم)، `ASSOCIATE` (کاردانی)، `BACHELOR` (کارشناسی)، `PHD` (دکتری) و `POSTDOC` (پسا دکتری) هستند و کارشناسی ارشد اضافه نشد.
-* فیلد دانشگاه از متن آزاد به Autocomplete دانشگاه‌های فعال کتابخانه تبدیل شد و فقط `universityId` به backend ارسال می‌شود.
-* ورودی عددی سال حذف و با date picker جلالی «تاریخ تحصیل» جایگزین شد؛ مقدار ISO/Gregorian در فیلد `educationDate` ارسال می‌شود.
-* نمایش سابقه تحصیلی اکنون برچسب فارسی مدرک، نام relation دانشگاه یا snapshot تاریخی، تاریخ جلالی و توضیحات را نشان می‌دهد.
-* تب «دانشگاه‌ها» به صفحه کتابخانه‌های مدیریتی اضافه شد و فهرست، ایجاد، ویرایش، فعال/غیرفعال‌سازی و نمایش وضعیت را مطابق endpoint دانشگاه‌ها پشتیبانی می‌کند.
-* فرم دانشگاه شامل نام دانشگاه، کد/شناسه اختیاری، توضیحات و وضعیت فعال است و پیام validation backend را نمایش می‌دهد.
-* permissionهای موجود backend یعنی `library:university:view` و `library:university:manage` به فهرست شناخته‌شده frontend اضافه شدند.
+* Replaced the free-text degree field in education-history create/edit forms with a dropdown.
+* Degree options are exactly `DIPLOMA`, `ASSOCIATE`, `BACHELOR`, `PHD`, and `POSTDOC`, with Persian labels for Diploma, Associate, Bachelor, PhD, and Postdoctoral. A Master's degree option was intentionally not added.
+* Replaced the free-text university field with an Autocomplete backed by active university-library records; only `universityId` is sent to the backend.
+* Removed the numeric year input and replaced it with a Jalali Education Date picker; the ISO/Gregorian value is sent through `educationDate`.
+* Education-history display now shows the Persian degree label, university relation name or historical snapshot, Jalali date, and description.
+* Added a Universities tab to Admin Libraries with listing, create, edit, activate/deactivate, and status display through the university endpoints.
+* The university form includes name, optional code/identifier, description, active status, and backend validation-message display.
+* Added existing backend permissions `library:university:view` and `library:university:manage` to the frontend's known-permission list.
 
-**فایل‌های تغییرکرده:**
+**Important changed files:**
 
 * `src/features/people/types/person.types.ts`
 * `src/features/people/components/PersonEducationHistorySection.tsx`
@@ -4124,44 +4049,44 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * `src/features/admin/permissions/types/adminPermission.types.ts`
 * `README.md`
 
-**وابستگی‌های backend:**
+**Backend dependencies:**
 
-* endpointهای `GET/POST /universities` و `PATCH/DELETE /universities/:id` باید فعال باشند؛ DELETE طبق قرارداد backend دانشگاه را غیرفعال می‌کند.
-* فهرست مدیریتی از `includeInactive=true` و انتخاب فرم سابقه تحصیلی از فهرست پیش‌فرض دانشگاه‌های فعال استفاده می‌کند.
-* payload سابقه تحصیلی فقط شامل `degree`، `universityId`، `educationDate` و `description` است و دیگر `year` یا university/degree متن آزاد ارسال نمی‌شود.
-* migration پالایش سوابق تحصیلی و کتابخانه دانشگاه‌ها باید در محیط backend اعمال شده باشد.
+* `GET/POST /universities` and `PATCH/DELETE /universities/:id` must be available. According to the backend contract, DELETE deactivates a university.
+* The admin list uses `includeInactive=true`; education-history selection uses the default active-university list.
+* Education-history payloads contain only `degree`, `universityId`, `educationDate`, and `description`; `year` and free-text university/degree values are no longer sent.
+* The education-history cleanup and university-library migration must be applied in the backend environment.
 
-**وضعیت بررسی‌ها:**
+**Verification status:**
 
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
-* `npm run build`: بدون خطا اجرا شد.
-* هشدار غیرمسدودکننده: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
+* `npm run lint` passed without errors.
+* TypeScript checks passed as part of `npm run build`.
+* `npm run build` passed.
+* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
 
-**چک‌لیست دستی باقی‌مانده:**
+**Remaining manual checklist:**
 
-* ایجاد، ویرایش و غیرفعال‌سازی دانشگاه در تب «دانشگاه‌ها» با backend مهاجرت‌داده‌شده و نشست معتبر.
-* بازکردن فرم سابقه تحصیلی و بررسی dropdown مدرک، دانشگاه‌های فعال و date picker جلالی.
-* ذخیره و نمایش برچسب مدرک، نام دانشگاه و تاریخ تحصیل در جزئیات شخص.
-* بررسی پیام validation واقعی backend و رفتار ویرایش/حذف در محیط یکپارچه.
+* Create, edit, and deactivate a university in the Universities tab against a migrated backend and authenticated session.
+* Open the education-history form and verify the degree dropdown, active university options, and Jalali date picker.
+* Save and verify the degree label, university name, and education date in person details.
+* Verify live backend validation messages and edit/delete behavior in the integrated environment.
 
 ---
 
-## fix 000080 — بازطراحی صفحه مدیریت نقش‌ها و مجوزها
+## fix 000080 — Redesign role and permission management
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* صفحه مدیریت قبلی ماتریس چهار نقش ثابت با صفحه «مدیریت نقش‌ها و مجوزها» و تب‌های مستقل «مجوزها» و «نقش‌ها» جایگزین شد.
-* تب مجوزها فهرست، جستجو، ایجاد، ویرایش و حذف permission را با فیلدهای کد مجوز، نام نمایشی، گروه، توضیحات و وضعیت پشتیبانی می‌کند.
-* مجوزهای سیستمی با نشانگر مشخص نمایش داده می‌شوند، کد آن‌ها قابل تغییر نیست و حذف آن‌ها در UI غیرفعال است؛ خطاهای محدودیت backend نیز نمایش داده می‌شوند.
-* تب نقش‌ها فهرست، جستجو، ایجاد، ویرایش و حذف role را با کد، نام، نقش پایه، توضیحات، وضعیت، سیستمی بودن و تعداد مجوزها ارائه می‌کند.
-* حذف نقش‌های سیستمی و ADMIN در UI غیرفعال است و محدودیت نقش‌های دارای کاربر به backend واگذار و پیام آن نمایش داده می‌شود.
-* دکمه «اختصاص مجوز» برای هر نقش اضافه شد و dialog مدیریت مجوزهای نقش، همه مجوزهای فعال، وضعیت assigned، جستجو، گروه‌بندی، انتخاب همه و حذف انتخاب همه را نمایش می‌دهد.
-* ذخیره تخصیص‌ها به‌صورت replacement کامل آرایه `permissionIds` انجام می‌شود و پس از موفقیت، فهرست نقش‌ها و تعداد مجوزها refresh می‌شوند.
-* فرم ویرایش نقش کاربر اکنون نقش‌های فعال دیتابیسی را از API می‌گیرد و `roleId` ارسال می‌کند؛ نمایش نقش کاربر نیز `roleName`/`assignedRole` را ترجیح می‌دهد.
-* منوی مدیریت با permissionهای واقعی `permission:view`، `permission:manage`، `role:view` و `role:manage` هم‌تراز شد.
+* Replaced the previous fixed four-role matrix with a Role and Permission Management page containing separate Permissions and Roles tabs.
+* The Permissions tab supports listing, search, create, edit, and delete operations with permission code, display name, group, description, and status fields.
+* System permissions are clearly marked; their codes cannot be edited and deletion is disabled in the UI. Backend restriction errors are also displayed.
+* The Roles tab supports listing, search, create, edit, and delete operations with code, name, base role, description, status, system-role flag, and permission count.
+* Deletion is disabled in the UI for system roles and ADMIN. Restrictions for roles assigned to users are delegated to the backend and their messages are displayed.
+* Added an Assign Permissions action for each role. The role-permission dialog displays all active permissions, assigned state, search, grouping, select all, and clear all.
+* Assignments are saved as a complete replacement of the `permissionIds` array. After success, the role list and permission counts are refreshed.
+* The user-role edit form now loads active database-backed roles from the API and sends `roleId`; user-role display prefers `roleName`/`assignedRole`.
+* Aligned the admin menu with actual `permission:view`, `permission:manage`, `role:view`, and `role:manage` permissions.
 
-**فایل‌های تغییرکرده:**
+**Important changed files:**
 
 * `src/features/admin/permissions/types/adminPermission.types.ts`
 * `src/features/admin/permissions/services/adminPermissions.service.ts`
@@ -4173,83 +4098,83 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * `src/components/dashboard/SideMenu.tsx`
 * `README.md`
 
-**وابستگی‌ها و محدودیت‌های backend:**
+**Backend dependencies and limitations:**
 
-* permission CRUD از `/permissions` و role CRUD از `/roles` استفاده می‌کند.
-* تخصیص نقش از `GET /roles/:id/permissions` و replacement اتمیک از `PUT /roles/:id/permissions` با `{ permissionIds }` استفاده می‌کند.
-* permissionهای مورد استفاده UI دقیقاً `permission:view`، `permission:manage`، `role:view` و `role:manage` هستند.
-* endpoint ویرایش نقش کاربر `PATCH /users/:id/role` از `roleId` پشتیبانی می‌کند و در frontend پویا شد.
-* DTO ایجاد کاربر backend هنوز `roleId` را نمی‌پذیرد و `role` enum پایه را الزامی می‌داند؛ بنابراین فرم ایجاد کاربر عمداً چهار نقش پایه را حفظ کرده و نقش پویا را جعل نمی‌کند.
-* migration و seed مربوط به RBAC پویا باید اعمال شده و کاربران برای دریافت permissionهای جدید دوباره login کرده باشند.
+* Permission CRUD uses `/permissions`; role CRUD uses `/roles`.
+* Role assignments use `GET /roles/:id/permissions` and atomic replacement through `PUT /roles/:id/permissions` with `{ permissionIds }`.
+* UI permission checks use exactly `permission:view`, `permission:manage`, `role:view`, and `role:manage`.
+* `PATCH /users/:id/role` supports `roleId`, enabling dynamic frontend role editing.
+* The backend create-user DTO still does not accept `roleId` and requires the base `role` enum. The create-user form therefore intentionally retains the four base roles rather than fabricating dynamic-role support.
+* Dynamic-RBAC migrations and seeds must be applied, and users must log in again to receive updated permissions.
 
-**وضعیت بررسی‌ها:**
+**Verification status:**
 
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
-* `npm run build`: بدون خطا اجرا شد.
-* هشدار غیرمسدودکننده: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
+* `npm run lint` passed without errors.
+* TypeScript checks passed as part of `npm run build`.
+* `npm run build` passed.
+* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
 
-**چک‌لیست دستی باقی‌مانده:**
+**Remaining manual checklist:**
 
-* ایجاد، ویرایش و حذف permission عادی و بررسی حفاظت permission سیستمی.
-* ایجاد، ویرایش و حذف role عادی و بررسی حفاظت role سیستمی/ADMIN و role دارای کاربر.
-* بازکردن dialog اختصاص مجوز، تغییر انتخاب‌ها و ذخیره replacement کامل.
-* بررسی refresh تعداد مجوزهای نقش و خطاهای validation/محدودیت backend.
-* ویرایش نقش کاربر با role دیتابیسی فعال و login مجدد برای مشاهده permissions جدید.
+* Create, edit, and delete a regular permission and verify system-permission protection.
+* Create, edit, and delete a regular role and verify protection for system roles, ADMIN, and roles assigned to users.
+* Open the permission-assignment dialog, change selections, and save the full replacement.
+* Verify refreshed permission counts and backend validation/restriction errors.
+* Edit a user's role with an active database-backed role and log in again to verify updated permissions.
 
 ---
 
-## fix 000081 — بهبود چیدمان صفحه پایپ‌لاین و حذف اسکرول افقی
+## fix 000081 — Improve pipeline layout and remove horizontal page scrolling
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* علت UX نامناسب، نمایش همه مراحل پایپ‌لاین در یک Stack افقی با عرض ثابت ۳۱۰ پیکسل برای هر ستون و `overflowX: auto` بود.
-* چیدمان افقی با CSS Grid چندردیفه جایگزین شد تا صفحه به‌جای اسکرول افقی با اسکرول عمودی پیمایش شود.
-* تعداد ستون‌های responsive به‌ترتیب یک ستون در موبایل، دو ستون در نمایشگر کوچک، سه ستون در medium، چهار ستون در large و پنج ستون در desktop عریض تنظیم شد.
-* ترتیب stageها همچنان براساس `sortOrder` backend است؛ source order تغییر نکرده و در RTL اولین مرحله به‌طور طبیعی در سمت راست ردیف قرار می‌گیرد.
-* کارت هر مرحله عرض منعطف بدون min-width اجباری و ارتفاع ثابت/viewport-aware بین ۵۲۰ تا ۶۴۰ پیکسل دارد.
-* header مرحله شامل نام و تعداد فرصت‌ها خارج از ناحیه اسکرول باقی می‌ماند و فقط فهرست فرصت‌های همان مرحله با `overflowY: auto` اسکرول می‌شود.
-* متن خالی هر مرحله به «فرصتی در این وضعیت وجود ندارد.» هم‌راستا شد و loading/error مستقل ستون‌ها حفظ شدند.
-* کارت فرصت فشرده‌تر شد و همچنان عنوان، شرکت، مخاطب، اولویت، مالک، تاریخ بسته‌شدن، ارزش و عملیات مشاهده/شرکت/تغییر مرحله را نمایش می‌دهد.
-* فیلتر جستجو، فیلتر اولویت، refresh، بازکردن جزئیات فرصت و تغییر مرحله بدون تغییر قرارداد یا رفتار API حفظ شدند.
-* در پیاده‌سازی موجود drag-and-drop وجود نداشت؛ fallback واقعی «تغییر مرحله» حفظ شد و هیچ قابلیت DnD حذف نشد.
+* Identified that the poor UX came from rendering every pipeline stage in one horizontal Stack with a fixed 310-pixel column width and `overflowX: auto`.
+* Replaced the horizontal layout with a multi-row CSS Grid so the page scrolls vertically instead of horizontally.
+* Configured responsive columns as one on mobile, two on small screens, three on medium screens, four on large screens, and five on wide desktop screens.
+* Stage ordering still follows backend `sortOrder`; source order was not changed, and in RTL the first stage naturally appears at the right side of a row.
+* Each stage card now has flexible width without a forced minimum width and a fixed, viewport-aware height between 520 and 640 pixels.
+* The stage header, including name and opportunity count, remains outside the scroll area. Only that stage's opportunity list scrolls through `overflowY: auto`.
+* Standardized each stage's empty-state message to the Persian equivalent of “No opportunities exist in this stage,” while preserving independent loading and error states.
+* Made opportunity cards more compact while retaining title, company, contact, priority, owner, close date, value, and view/company/change-stage actions.
+* Preserved search, priority filtering, refresh, opportunity details, and stage-change behavior without changing API contracts.
+* The existing implementation did not contain drag-and-drop. The real Change Stage fallback remains available, and no DnD capability was removed.
 
-**فایل‌های تغییرکرده:**
+**Important changed files:**
 
 * `src/features/pipeline/pages/PipelinePage.tsx`
 * `src/features/pipeline/components/PipelineColumn.tsx`
 * `src/features/opportunities/components/OpportunityCard.tsx`
 * `README.md`
 
-**وضعیت بررسی‌ها:**
+**Verification status:**
 
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
-* `npm run build`: بدون خطا اجرا شد.
-* هشدار غیرمسدودکننده: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
+* `npm run lint` passed without errors.
+* TypeScript checks passed as part of `npm run build`.
+* `npm run build` passed.
+* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
 
-**چک‌لیست دستی باقی‌مانده:**
+**Remaining manual checklist:**
 
-* بررسی `/pipeline` در viewportهای موبایل، تبلت، medium، large و desktop عریض با داده واقعی چندمرحله‌ای.
-* اطمینان از پنج ستون در ردیف desktop عریض، نبود اسکرول افقی صفحه و ترتیب صحیح RTL.
-* بررسی اسکرول داخلی مستقل مرحله دارای فرصت‌های زیاد و ثابت‌ماندن header مرحله.
-* بررسی کلیک فرصت، مشاهده شرکت، تغییر مرحله، جستجو، فیلتر اولویت و refresh با backend و نشست معتبر.
-* آدرس اعلام‌شده `/pipeline` در مرورگر باز شد اما به صفحه ورود هدایت شد؛ به‌دلیل نبود نشست احرازشده، بررسی بصری grid جدید با داده واقعی در آن deployment انجام نشد.
+* Verify `/pipeline` on mobile, tablet, medium, large, and wide-desktop viewports with real multi-stage data.
+* Confirm five columns per row on wide desktop, no page-level horizontal scrolling, and correct RTL ordering.
+* Verify independent internal scrolling for a stage with many opportunities while its header remains fixed.
+* Verify opportunity clicks, company navigation, stage changes, search, priority filtering, and refresh with a valid backend session.
+* The provided `/pipeline` URL was opened but redirected to login. The new grid could not be visually verified with real data in that deployment because no authenticated session was available.
 
 ---
 
-## fix 000082 — اصلاح ارسال sourceOptionId در ایجاد فرصت
+## fix 000082 — Correct `sourceOptionId` submission during opportunity creation
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* علت خطا ارسال مقدار نامعتبر (از جمله رشته خالی یا مقدار غیر UUID) در `sourceOptionId` از frontend بود.
-* شناسه‌های UUID اختیاری فرصت در مرز سرویس create/update نرمال می‌شوند؛ `sourceOptionId`، `ownerId` و `primaryContactId` فقط در صورت UUID معتبر ارسال و در غیر این صورت از payload حذف می‌شوند.
-* dropdown منبع ایجاد فرصت فقط گزینه‌های دارای شناسه UUID معتبر را نمایش می‌دهد و مقدار `id` گزینه را ذخیره می‌کند؛ در حالت بدون انتخاب، `sourceOptionId` ارسال نمی‌شود.
-* مسیر ایجاد فرصت شرکت (`POST /api/companies/:companyId/opportunities`) و مسیرهای ایجاد عمومی و ویرایش از نرمال‌سازی مشترک استفاده می‌کنند؛ فیلدهای الزامی مانند عنوان حذف نشده‌اند و `stageId` انتخاب‌شده دست‌نخورده ارسال می‌شود.
-* نمایش خطای فرم بهبود یافت تا آرایه `details` در پاسخ validation استاندارد یا legacy، از جمله `sourceOptionId must be a UUID`، داخل فرم و toast نمایش داده شود.
-* جست‌وجوی الگوهای خرابی encoding فارسی در `src`، `index.html` و `README.md` انجام شد و موردی پیدا نشد.
+* Identified that the frontend sent invalid `sourceOptionId` values, including empty strings and non-UUID values.
+* Optional opportunity UUID fields are normalized at the create/update service boundary. `sourceOptionId`, `ownerId`, and `primaryContactId` are sent only when valid UUIDs; otherwise, they are removed from the payload.
+* The opportunity-source dropdown shows only options with valid UUID identifiers and stores each option's `id`. When no option is selected, `sourceOptionId` is omitted.
+* Company-scoped creation through `POST /api/companies/:companyId/opportunities`, global creation, and update flows share the same normalization. Required fields such as title are preserved, and the selected `stageId` is sent unchanged.
+* Improved form errors so `details` arrays from standardized or legacy validation responses, including `sourceOptionId must be a UUID`, are shown both in the form and in toasts.
+* Searched `src`, `index.html`, and `README.md` for Persian encoding-corruption patterns and found none.
 
-**فایل‌های تغییرکرده:**
+**Important changed files:**
 
 * `src/shared/utils/optionalUuid.ts`
 * `src/features/opportunities/components/OpportunityForm.tsx`
@@ -4258,32 +4183,32 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * `src/lib/apiResponse.ts`
 * `README.md`
 
-**وضعیت بررسی‌ها:**
+**Verification status:**
 
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
-* `npm run build`: بدون خطا اجرا شد.
-* هشدار غیرمسدودکننده Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
-* تست زنده endpoint با نشست backend اجرا نشد؛ صحت حذف `sourceOptionId` خالی/نامعتبر در لایه مشترک payload سرویس بررسی شد.
+* `npm run lint` passed without errors.
+* TypeScript checks passed as part of `npm run build`.
+* `npm run build` passed.
+* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
+* Live endpoint testing with an authenticated backend session was not performed. Removal of empty or invalid `sourceOptionId` values was verified in the shared service-payload layer.
 
 ---
 
-## fix 000083 — پیاده‌سازی تمدید خودکار access token در فرانت
+## fix 000083 — Implement automatic access-token renewal in the frontend
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* refresh token مطابق قرارداد backend فقط در cookie از نوع HttpOnly نگهداری می‌شود؛ frontend آن را از JavaScript نمی‌خواند و در body یا header ارسال نمی‌کند.
-* گزینه `withCredentials: true` به Axios اضافه شد تا cookie نشست در درخواست `POST /auth/refresh` و سایر درخواست‌های احراز هویت ارسال شود.
-* request interceptor همچنان `accessToken` موجود در `localStorage` را به‌صورت Bearer token به درخواست‌ها اضافه می‌کند.
-* response interceptor فقط برای پاسخ 401 درخواست‌های غیر login/refresh، یک بار `POST /auth/refresh` را اجرا می‌کند، `accessToken` و کاربر جدید را ذخیره می‌کند و درخواست اصلی را با توکن تازه retry می‌کند.
-* 401های هم‌زمان یک refresh promise مشترک دارند؛ بنابراین تنها یک درخواست refresh در حال اجرا است و درخواست‌های دیگر تا نتیجه همان درخواست منتظر می‌مانند.
-* در صورت شکست refresh یا دریافت 401 دوباره پس از retry، access token و کاربر پاک، query cache خالی و کاربر به صفحه ورود هدایت می‌شود؛ پاسخ 403 وارد فرایند refresh نمی‌شود.
-* logout موجود در نوار اصلی و layout قدیمی ابتدا `POST /auth/logout` را فراخوانی می‌کند و cleanup محلی را حتی در صورت شکست endpoint در بخش `finally` انجام می‌دهد.
-* login معمولی، passkey و SSO همچنان فقط `accessToken` و `user` پاسخ را ذخیره می‌کنند و به وجود refresh token در JSON وابسته نیستند.
-* مقدار `VITE_API_URL` و fallback فعلی localhost حفظ شد و IP سرور جدیدی hardcode نشد.
-* جست‌وجوی الگوهای خرابی encoding فارسی در `src`، `index.html` و `README.md` انجام شد و موردی پیدا نشد.
+* The refresh token is stored only in an HttpOnly cookie according to the backend contract. The frontend does not read it from JavaScript or send it in a request body or header.
+* Added `withCredentials: true` to Axios so the session cookie is included in `POST /auth/refresh` and other authentication requests.
+* The request interceptor continues to add the `accessToken` stored in `localStorage` as a Bearer token.
+* For HTTP 401 responses from non-login/non-refresh requests, the response interceptor runs `POST /auth/refresh` once, stores the new `accessToken` and user, and retries the original request with the refreshed token.
+* Concurrent HTTP 401 responses share one refresh promise, so only one refresh request runs while the others wait for its result.
+* If refresh fails or the retried request returns HTTP 401 again, the access token and user are cleared, the query cache is reset, and the user is redirected to login. HTTP 403 responses do not enter the refresh flow.
+* Existing logout actions in the main navigation and legacy layout call `POST /auth/logout` first and always perform local cleanup in `finally`, even if the endpoint fails.
+* Password, passkey, and SSO login flows continue to store only `accessToken` and `user` from the response and do not depend on a refresh token in JSON.
+* Preserved the current `VITE_API_URL` and localhost fallback; no new server IP was hardcoded.
+* Searched `src`, `index.html`, and `README.md` for Persian encoding-corruption patterns and found none.
 
-**فایل‌های تغییرکرده:**
+**Important changed files:**
 
 * `src/lib/axios.ts`
 * `src/features/auth/services/auth.service.ts`
@@ -4291,36 +4216,36 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * `src/layouts/MainLayout.tsx`
 * `README.md`
 
-**وابستگی backend:**
+**Backend dependency:**
 
-* backend باید cookie مربوط به refresh token را با تنظیمات مناسب HttpOnly/SameSite/Secure و CORS سازگار با credentials صادر کند، `POST /api/auth/refresh` را برای rotation cookie و بازگرداندن `accessToken` و `user` پشتیبانی کند و endpoint `POST /api/auth/logout` را در دسترس قرار دهد.
+* The backend must issue the refresh-token cookie with appropriate HttpOnly/SameSite/Secure settings and credential-compatible CORS, support `POST /api/auth/refresh` for cookie rotation and `{ accessToken, user }` responses, and expose `POST /api/auth/logout`.
 
-**وضعیت بررسی‌ها:**
+**Verification status:**
 
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
-* `npm run build`: بدون خطا اجرا شد.
-* هشدار غیرمسدودکننده Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
-* بررسی دستی login/cookie/انقضای access token با backend و نشست مرورگر اجرا نشد؛ این بررسی به backend در حال اجرا، تنظیمات CORS/cookie و نشست معتبر نیاز دارد.
+* `npm run lint` passed without errors.
+* TypeScript checks passed as part of `npm run build`.
+* `npm run build` passed.
+* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
+* Manual login, cookie, and access-token-expiration testing with a backend browser session was not performed. It requires a running backend, correct CORS/cookie configuration, and a valid session.
 
 ---
 
-## fix 000084 — افزودن فیلتر نمایش همه / مال من در شرکت‌ها و فرصت‌ها
+## fix 000084 — Add All/Mine ownership filters to companies and opportunities
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* نوع مشترک `OwnershipScope` با مقادیر `all`، `mine`، `team` و `unassigned` اضافه و در پارامترهای فهرست شرکت‌ها و فرصت‌ها استفاده شد.
-* فیلتر «نمایش» به فهرست شرکت‌ها اضافه شد و گزینه‌های «همه شرکت‌ها»، «شرکت‌های من»، «تیم من» و «بدون مالک» را ارائه می‌کند.
-* فیلتر «نمایش» به فهرست فرصت‌ها اضافه شد و گزینه‌های «همه»، «فقط مال من»، «تیم من» و «بدون مالک» را بدون حذف جستجو، فیلترهای قبلی یا pagination ارسال می‌کند.
-* مقدار پیش‌فرض هر دو فهرست `all` است؛ frontend دیگر برای حالت پیش‌فرض `ownerId` کاربر جاری را تولید نمی‌کند و انتخاب scope مستقیماً با پارامتر `ownershipScope` به backend ارسال می‌شود.
-* برای کاربری که team ندارد، گزینه «تیم من» در فهرست‌های شرکت و فرصت و پایپ‌لاین نمایش داده نمی‌شود.
-* کنترل فشرده «نمایش» با گزینه‌های «همه فرصت‌ها»، «فرصت‌های من» و «تیم من» به پایپ‌لاین اضافه شد؛ scope در query key هر ستون و درخواست فرصت‌های همان stage قرار می‌گیرد تا تغییر فیلتر refetch و شمارش stageها را به‌روز کند.
-* grid چندستونه و رفتار بدون اسکرول افقی پایپ‌لاین تغییر نکرد و فقط بعد جدید فیلتر به queryهای موجود اضافه شد.
-* خطاهای validation backend برای فهرست شرکت‌ها، فرصت‌ها و ستون‌های پایپ‌لاین با جزئیات پاسخ API نمایش داده می‌شوند.
-* گزارش‌ها بررسی شدند؛ فیلترهای پیشرفته موجود owner/team اختیاری هستند و هیچ `ownerId` یا حالت «مال من» به‌صورت پیش‌فرض اعمال نمی‌کنند، بنابراین برای جلوگیری از ارسال پارامتر پشتیبانی‌نشده تغییری در گزارش‌ها داده نشد.
-* جست‌وجوی الگوهای خرابی encoding فارسی در `src`، `index.html` و `README.md` انجام شد و موردی پیدا نشد.
+* Added the shared `OwnershipScope` type with `all`, `mine`, `team`, and `unassigned` values and used it in company and opportunity list parameters.
+* Added a Display filter to the company list with All Companies, My Companies, My Team, and Unassigned options.
+* Added a Display filter to the opportunity list with All, Mine Only, My Team, and Unassigned options while preserving search, existing filters, and pagination.
+* Both lists default to `all`. The frontend no longer generates the current user's `ownerId` for the default state; it sends the selected scope directly through the `ownershipScope` parameter.
+* The My Team option is hidden from company, opportunity, and pipeline lists for users without a team.
+* Added a compact Display control to the pipeline with All Opportunities, My Opportunities, and My Team. The scope is included in each column's query key and stage request, so changes trigger refetching and update stage counts.
+* Preserved the multi-column grid and no-horizontal-scroll behavior; only the new filter dimension was added to existing queries.
+* Backend validation errors for company lists, opportunity lists, and pipeline columns are displayed with API response details.
+* Reviewed reports. Existing advanced owner/team filters are optional and do not apply `ownerId` or a Mine state by default, so reports were not changed to avoid sending unsupported parameters.
+* Searched `src`, `index.html`, and `README.md` for Persian encoding-corruption patterns and found none.
 
-**فایل‌های تغییرکرده:**
+**Important changed files:**
 
 * `src/shared/types/ownership.ts`
 * `src/features/companies/types/company.types.ts`
@@ -4331,40 +4256,40 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * `src/features/pipeline/pages/PipelinePage.tsx`
 * `README.md`
 
-**وابستگی backend:**
+**Backend dependency:**
 
-* endpointهای فهرست شرکت‌ها و فرصت‌ها باید پارامتر `ownershipScope=all|mine|team|unassigned` را با محدودیت organization و مجوز view اعمال کنند؛ شمارش pagination نیز باید پس از همین فیلتر محاسبه شود.
+* Company and opportunity list endpoints must apply `ownershipScope=all|mine|team|unassigned` together with organization scoping and view permissions. Pagination totals must be calculated after the same filter.
 
-**وضعیت بررسی‌ها:**
+**Verification status:**
 
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
-* `npm run build`: بدون خطا اجرا شد.
-* هشدار غیرمسدودکننده Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
-* بررسی دستی با backend و کاربران فروش دارای/بدون team اجرا نشد؛ این بررسی به داده سازمانی و نشست‌های معتبر نیاز دارد.
+* `npm run lint` passed without errors.
+* TypeScript checks passed as part of `npm run build`.
+* `npm run build` passed.
+* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
+* Manual testing with the backend and sales users with and without teams was not performed. It requires organizational data and valid sessions.
 
-**چک‌لیست بررسی دستی:**
+**Manual verification checklist:**
 
-* در فهرست شرکت‌ها، حالت پیش‌فرض همه شرکت‌های قابل مشاهده سازمان را نشان دهد؛ «شرکت‌های من» و «بدون مالک» نتایج متناظر را نشان دهند و جستجو/pagination حفظ شود.
-* در فهرست فرصت‌ها، حالت پیش‌فرض همه فرصت‌های قابل مشاهده را نشان دهد و «فقط مال من» و «تیم من» نتایج متناظر را برگردانند.
-* در پایپ‌لاین، تغییر از «همه فرصت‌ها» به «فرصت‌های من» ستون‌ها و شمارش stageها را refetch کند و بازگشت به همه نیز درست کار کند.
+* In Companies, the default state should show all organization-visible companies; My Companies and Unassigned should show the corresponding records while preserving search and pagination.
+* In Opportunities, the default state should show all visible opportunities; Mine Only and My Team should return the corresponding records.
+* In Pipeline, switching from All Opportunities to My Opportunities should refetch columns and stage counts, and switching back to All should work correctly.
 
 ---
 
-## fix 000085 — نمایش label گزینه‌های پایه در صفحه مخاطبین
+## fix 000085 — Display lookup labels on people screens
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* علت نمایش نادرست این بود که جدول‌ها و جزئیات شخص مقدار ذخیره‌شده lookup مانند `ECONOMIC_BUYER` را مستقیماً نمایش می‌دادند و آن را با گزینه‌های پایه تطبیق نمی‌دادند.
-* helper مشترک `getLookupLabel` اضافه شد که مقدار را با `id`، `code` یا `value` گزینه تطبیق می‌دهد و `label` فارسی API را نمایش می‌دهد.
-* نقش پرسونا از گروه `persona-roles` در فهرست سراسری `/people`، تب افراد شرکت و drawer جزئیات شخص با label نمایش داده می‌شود.
-* فیلدهای lookup-backed دیگر شخص شامل دپارتمان، سمت سازمانی و سطح ارشدیت نیز در همین نماها از گروه‌های متناظر خود label می‌گیرند.
-* فیلترها و dropdownهای فرم همچنان label گزینه را نمایش می‌دهند و مقدار backend-compatible موجود (`value`/code و در رکورد legacy شناسه موجود) را نگه می‌دارند؛ label فارسی به‌جای مقدار قرارداد API ارسال نمی‌شود.
-* هنگام loading یا خطای lookup و همچنین نبود گزینه متناظر، مقدار خام قبلی به‌عنوان fallback نمایش داده می‌شود و مقدار خالی با «—» نمایش داده می‌شود.
-* نمایش نوع راه تماس و پلتفرم اجتماعی تغییر داده نشد، زیرا این بخش‌ها از enumها و labelهای صریح موجود خود استفاده می‌کنند و قرارداد lookup جاری آن‌ها در فرم‌های شخص فعال نیست.
-* جست‌وجوی الگوهای خرابی encoding فارسی در `src`، `index.html` و `README.md` انجام شد و موردی پیدا نشد.
+* Identified that people tables and details displayed stored lookup values such as `ECONOMIC_BUYER` directly instead of resolving them against lookup options.
+* Added the shared `getLookupLabel` helper, which matches values against an option's `id`, `code`, or `value` and displays the Persian API `label`.
+* Persona roles from `persona-roles` now display their labels in the global `/people` directory, company People tab, and person detail drawer.
+* Other lookup-backed person fields, including department, job title, and seniority level, also resolve labels from their corresponding groups in the same views.
+* Filters and form dropdowns continue to display option labels while preserving backend-compatible stored values (`value`/code, or existing IDs in legacy records). Persian labels are not sent instead of API contract values.
+* During lookup loading/errors or when no matching option exists, the previous raw value is shown as a fallback; empty values display `—`.
+* Contact-method type and social-platform display were not changed because those areas use their existing explicit enums and labels, and their current person forms do not use the lookup contract.
+* Searched `src`, `index.html`, and `README.md` for Persian encoding-corruption patterns and found none.
 
-**فایل‌های تغییرکرده:**
+**Important changed files:**
 
 * `src/features/catalogs/types/catalog.types.ts`
 * `src/features/people/pages/PeopleDirectoryPage.tsx`
@@ -4373,9 +4298,50 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * `src/features/people/components/PersonForm.tsx`
 * `README.md`
 
+**Backend dependency:**
+
+* The backend must return active options for `persona-roles`, `departments`, `job-titles`, and `seniority-levels` with `id`, `code`, and `label` through the existing lookup API. If lookup data is missing or unavailable, the frontend displays the stored value.
+
+**Verification status:**
+
+* `npm run lint` passed without errors.
+* TypeScript checks passed as part of `npm run build`.
+* `npm run build` passed.
+* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
+* Manual testing with a backend record containing `ECONOMIC_BUYER` was not performed. It requires lookup data and a valid session.
+
+**Manual verification checklist:**
+
+* In `/people`, the Persona Role column should display the Persian label equivalent of Economic Decision Maker instead of `ECONOMIC_BUYER`, while search and filters continue to work.
+* The company People tab and person detail drawer should display the same resolved label.
+* Person create/edit forms should display labels in dropdowns and submit backend-compatible values.
+* Records without matching lookup options should display their raw codes without crashing.
+
+---
+
+## fix 000086 — اصلاح نمایش نتیجه بارگذاری اسناد حقوقی شرکت
+
+**موارد پیاده‌سازی‌شده:**
+
+* مسیر بارگذاری بررسی و روی `POST /companies/:companyId/legal-documents/upload` با `FormData` و نام فیلد فایل `file` حفظ شد؛ metadata شامل `type`، `title`، `description` و `documentDate` است.
+* تنظیم دستی `Content-Type` از درخواست upload حذف شد تا interceptor مشترک Axios مقدار JSON را بردارد و مرورگر boundary صحیح multipart را تولید کند.
+* پاسخ upload اکنون unwrap و اعتبارسنجی می‌شود و رکورد ایجادشده را از پاسخ مستقیم یا envelopeهای `data`، `document` و `legalDocument` می‌خواند.
+* در صورت دریافت رکورد معتبر، cache فهرست اسناد فوراً با سند جدید به‌روزرسانی و سپس query فعال اسناد حقوقی صریحاً refetch می‌شود؛ query جزئیات شرکت نیز invalidate می‌شود.
+* پس از موفقیت واقعی پیام «سند با موفقیت بارگذاری شد» نمایش داده می‌شود و فرم reset و بسته می‌شود.
+* اگر پاسخ 2xx فاقد رکورد سند باشد، موفقیت کاذب نمایش داده نمی‌شود؛ پیام هشدار نمایش داده، فهرست مجدداً دریافت و dialog reset/بسته می‌شود.
+* خطاهای non-2xx با پیام backend داخل فرم و toast نمایش داده می‌شوند، فرم برای اصلاح/تلاش مجدد باز می‌ماند و برای خطای 403 پیام روشن نبود مجوز نمایش داده می‌شود.
+* عنوان بخش «اسناد حقوقی شرکت» و عنوان dialog «بارگذاری سند حقوقی» با برچسب‌های فارسی هماهنگ شدند.
+
+**فایل‌های تغییرکرده:**
+
+* `src/features/companies/services/companies.service.ts`
+* `src/features/companies/hooks/useCompanies.ts`
+* `src/features/companies/components/CompanyLegalDocumentsTab.tsx`
+* `README.md`
+
 **وابستگی backend:**
 
-* backend باید گزینه‌های فعال گروه‌های `persona-roles`، `departments`، `job-titles` و `seniority-levels` را با `id`، `code` و `label` از API lookup موجود برگرداند؛ در صورت نبود یا خطای lookup، frontend مقدار ذخیره‌شده را نمایش می‌دهد.
+* backend باید endpoint `POST /api/companies/:companyId/legal-documents/upload` را با `FileInterceptor('file')` و metadata یادشده پشتیبانی کند، پس از ایجاد موفق رکورد سند را در پاسخ برگرداند و endpoint فهرست اسناد را بلافاصله سازگار با رکورد جدید ارائه دهد.
 
 **وضعیت بررسی‌ها:**
 
@@ -4383,14 +4349,7 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
 * `npm run build`: بدون خطا اجرا شد.
 * هشدار غیرمسدودکننده Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
-* بررسی دستی با backend و رکورد دارای `ECONOMIC_BUYER` اجرا نشد؛ این بررسی به داده lookup و نشست معتبر نیاز دارد.
-
-**چک‌لیست بررسی دستی:**
-
-* در `/people` ستون «نقش پرسونا» به‌جای `ECONOMIC_BUYER` مقدار label فارسی مانند «تصمیم‌گیر اقتصادی» را نشان دهد و جستجو/فیلترها کار کنند.
-* تب افراد شرکت و drawer جزئیات شخص نیز همان label را نمایش دهند.
-* ایجاد/ویرایش شخص label را در dropdown نشان دهد و مقدار backend-compatible را ارسال کند.
-* برای مقدار بدون گزینه متناظر، کد خام بدون crash نمایش داده شود.
+* تست دستی upload با backend و فایل واقعی اجرا نشد؛ این بررسی به نشست دارای مجوز، backend در حال اجرا و فضای ذخیره‌سازی متصل نیاز دارد.
 
 ---
 **Built with ❤️ for sales team**
