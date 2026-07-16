@@ -19,38 +19,41 @@ export default function OpportunityCard({
   const navigate = useNavigate();
 
   return (
-    <Card variant="outlined">
-      <CardContent>
-        <Stack spacing={1}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+    <Card variant="outlined" sx={{ minWidth: 0 }}>
+      <CardContent sx={{ p: 1.25, '&:last-child': { pb: 1.25 } }}>
+        <Stack spacing={0.5}>
+          <Typography variant="subtitle2" sx={{ fontWeight: 700, lineHeight: 1.45 }}>
             {opportunity.title}
           </Typography>
 
-          <Typography variant="body2">
+          <Typography variant="caption" color="text.secondary" noWrap title={show(opportunity.company?.brandName || opportunity.company?.legalName)}>
             شرکت: {show(opportunity.company?.brandName || opportunity.company?.legalName)}
           </Typography>
 
-          <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
-            <Chip size="small" label={`اولویت: ${getPriorityLabel(opportunity.priority)}`} />
-
-            <Typography variant="caption">
-              مالک: {show(opportunity.owner?.fullName)}
+          {opportunity.primaryContact?.fullName && (
+            <Typography variant="caption" color="text.secondary" noWrap title={opportunity.primaryContact.fullName}>
+              مخاطب: {opportunity.primaryContact.fullName}
             </Typography>
+          )}
+
+          <Stack direction="row" spacing={0.5} useFlexGap sx={{ flexWrap: 'wrap', alignItems: 'center' }}>
+            <Chip size="small" label={getPriorityLabel(opportunity.priority)} sx={{ height: 22 }} />
+            <Typography variant="caption">مالک: {show(opportunity.owner?.fullName)}</Typography>
           </Stack>
 
-          <Typography variant="caption">
-            تاریخ بسته‌شدن:{' '}
+          <Typography variant="caption" color="text.secondary">
+            بسته‌شدن:{' '}
             {opportunity.expectedCloseDate ? formatDateTime(opportunity.expectedCloseDate) : '—'}
           </Typography>
 
-          <Typography variant="caption">
-            ارزش تخمینی:{' '}
+          <Typography variant="caption" sx={{ fontWeight: 600 }}>
+            ارزش:{' '}
             {opportunity.estimatedValue == null
               ? '—'
               : Number(opportunity.estimatedValue).toLocaleString('fa-IR')}
           </Typography>
 
-          <Stack direction="row">
+          <Stack direction="row" useFlexGap sx={{ flexWrap: 'wrap', mt: 0.25, '& .MuiButton-root': { minWidth: 0, px: 0.75 } }}>
             <Button
               size="small"
               onClick={() =>

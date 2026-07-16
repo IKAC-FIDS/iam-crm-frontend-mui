@@ -25,19 +25,28 @@ export default function PipelineColumn({
   return (
     <Paper
       sx={{
-        width: 310,
-        minWidth: 310,
-        p: 2,
+        width: '100%',
+        minWidth: 0,
+        height: { xs: 520, md: 'clamp(520px, calc(100vh - 260px), 640px)' },
+        p: 1.5,
         bgcolor: 'background.default',
         borderTop: 4,
         borderTopColor: stage.color || 'primary.main',
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
       }}
     >
-      <Stack spacing={2}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-          {stage.label} — {total.toLocaleString('fa-IR')}
+      <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'space-between', flexShrink: 0, mb: 1.25 }}>
+        <Typography variant="subtitle1" sx={{ fontWeight: 700, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={stage.label}>
+          {stage.label}
         </Typography>
+        <Typography variant="caption" color="text.secondary" sx={{ flexShrink: 0 }}>
+          {total.toLocaleString('fa-IR')} فرصت
+        </Typography>
+      </Stack>
 
+      <Box sx={{ flex: 1, minHeight: 0, overflowY: 'auto', overflowX: 'hidden', pe: 0.5 }}>
         {query.isLoading ? (
           <Stack sx={{ alignItems: 'center', py: 5 }}>
             <CircularProgress size={26} />
@@ -47,7 +56,7 @@ export default function PipelineColumn({
             خطا در دریافت فرصت‌های این مرحله.
           </Alert>
         ) : items.length ? (
-          <Stack spacing={1.5}>
+          <Stack spacing={1}>
             {items.map((item) => (
               <OpportunityCard
                 key={item.id}
@@ -60,11 +69,11 @@ export default function PipelineColumn({
         ) : (
           <Box sx={{ py: 4, textAlign: 'center' }}>
             <Typography color="text.secondary">
-              فرصتی در این مرحله نیست.
+              فرصتی در این وضعیت وجود ندارد.
             </Typography>
           </Box>
         )}
-      </Stack>
+      </Box>
     </Paper>
   );
 }

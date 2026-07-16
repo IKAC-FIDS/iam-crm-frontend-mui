@@ -820,7 +820,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000080
+fix 000001 → fix 000081
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -4196,6 +4196,45 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * بازکردن dialog اختصاص مجوز، تغییر انتخاب‌ها و ذخیره replacement کامل.
 * بررسی refresh تعداد مجوزهای نقش و خطاهای validation/محدودیت backend.
 * ویرایش نقش کاربر با role دیتابیسی فعال و login مجدد برای مشاهده permissions جدید.
+
+---
+
+## fix 000081 — بهبود چیدمان صفحه پایپ‌لاین و حذف اسکرول افقی
+
+**موارد پیاده‌سازی‌شده:**
+
+* علت UX نامناسب، نمایش همه مراحل پایپ‌لاین در یک Stack افقی با عرض ثابت ۳۱۰ پیکسل برای هر ستون و `overflowX: auto` بود.
+* چیدمان افقی با CSS Grid چندردیفه جایگزین شد تا صفحه به‌جای اسکرول افقی با اسکرول عمودی پیمایش شود.
+* تعداد ستون‌های responsive به‌ترتیب یک ستون در موبایل، دو ستون در نمایشگر کوچک، سه ستون در medium، چهار ستون در large و پنج ستون در desktop عریض تنظیم شد.
+* ترتیب stageها همچنان براساس `sortOrder` backend است؛ source order تغییر نکرده و در RTL اولین مرحله به‌طور طبیعی در سمت راست ردیف قرار می‌گیرد.
+* کارت هر مرحله عرض منعطف بدون min-width اجباری و ارتفاع ثابت/viewport-aware بین ۵۲۰ تا ۶۴۰ پیکسل دارد.
+* header مرحله شامل نام و تعداد فرصت‌ها خارج از ناحیه اسکرول باقی می‌ماند و فقط فهرست فرصت‌های همان مرحله با `overflowY: auto` اسکرول می‌شود.
+* متن خالی هر مرحله به «فرصتی در این وضعیت وجود ندارد.» هم‌راستا شد و loading/error مستقل ستون‌ها حفظ شدند.
+* کارت فرصت فشرده‌تر شد و همچنان عنوان، شرکت، مخاطب، اولویت، مالک، تاریخ بسته‌شدن، ارزش و عملیات مشاهده/شرکت/تغییر مرحله را نمایش می‌دهد.
+* فیلتر جستجو، فیلتر اولویت، refresh، بازکردن جزئیات فرصت و تغییر مرحله بدون تغییر قرارداد یا رفتار API حفظ شدند.
+* در پیاده‌سازی موجود drag-and-drop وجود نداشت؛ fallback واقعی «تغییر مرحله» حفظ شد و هیچ قابلیت DnD حذف نشد.
+
+**فایل‌های تغییرکرده:**
+
+* `src/features/pipeline/pages/PipelinePage.tsx`
+* `src/features/pipeline/components/PipelineColumn.tsx`
+* `src/features/opportunities/components/OpportunityCard.tsx`
+* `README.md`
+
+**وضعیت بررسی‌ها:**
+
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
+* `npm run build`: بدون خطا اجرا شد.
+* هشدار غیرمسدودکننده: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
+
+**چک‌لیست دستی باقی‌مانده:**
+
+* بررسی `/pipeline` در viewportهای موبایل، تبلت، medium، large و desktop عریض با داده واقعی چندمرحله‌ای.
+* اطمینان از پنج ستون در ردیف desktop عریض، نبود اسکرول افقی صفحه و ترتیب صحیح RTL.
+* بررسی اسکرول داخلی مستقل مرحله دارای فرصت‌های زیاد و ثابت‌ماندن header مرحله.
+* بررسی کلیک فرصت، مشاهده شرکت، تغییر مرحله، جستجو، فیلتر اولویت و refresh با backend و نشست معتبر.
+* آدرس اعلام‌شده `/pipeline` در مرورگر باز شد اما به صفحه ورود هدایت شد؛ به‌دلیل نبود نشست احرازشده، بررسی بصری grid جدید با داده واقعی در آن deployment انجام نشد.
 
 ---
 **Built with ❤️ for sales team**

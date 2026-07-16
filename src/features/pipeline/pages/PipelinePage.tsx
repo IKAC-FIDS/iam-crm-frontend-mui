@@ -51,7 +51,7 @@ export default function PipelinePage() {
 
   return (
     <Box sx={{ minWidth: 0 }}>
-      <Stack sx={{ mb: 3 }}>
+      <Stack sx={{ mb: 2 }}>
         <Typography variant="h4">پایپ‌لاین فروش</Typography>
         <Typography color="text.secondary">
           مدیریت فرصت‌های فروش؛ شرکت به‌عنوان حساب مرجع نمایش داده می‌شود.
@@ -105,10 +105,22 @@ export default function PipelinePage() {
         </Alert>
       )}
 
-      <Stack
-        direction="row"
-        spacing={2}
-        sx={{ overflowX: 'auto', pb: 2, alignItems: 'stretch' }}
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: {
+            xs: 'minmax(0, 1fr)',
+            sm: 'repeat(2, minmax(0, 1fr))',
+            md: 'repeat(3, minmax(0, 1fr))',
+            lg: 'repeat(4, minmax(0, 1fr))',
+            xl: 'repeat(5, minmax(0, 1fr))',
+          },
+          gap: 2,
+          alignItems: 'start',
+          width: '100%',
+          minWidth: 0,
+          mb: 2,
+        }}
       >
         {stages.map((stage, i) => (
           <PipelineColumn
@@ -119,7 +131,7 @@ export default function PipelinePage() {
             onChangeStage={setSelected}
           />
         ))}
-      </Stack>
+      </Box>
 
       <Typography variant="caption">
         مجموع فرصت‌ها: {total.toLocaleString('fa-IR')}
