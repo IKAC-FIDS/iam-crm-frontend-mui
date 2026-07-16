@@ -820,7 +820,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000075
+fix 000001 → fix 000076
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -3975,6 +3975,41 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * انتخاب و نمایش شرکت‌های مادر و زیرمجموعه.
 * آپلود، نمایش، دانلود و حذف روزنامه رسمی و آخرین تغییرات.
 * بررسی نمایش خطاهای validation backend در سناریوهای واقعی.
+
+---
+
+## fix 000076 — اصلاح به‌هم‌ریختگی encoding متن‌های فارسی در فرانت
+
+**موارد پیاده‌سازی‌شده:**
+
+* متن‌های فارسی خراب‌شده در صفحه جزئیات شرکت بازبینی و اصلاح شدند.
+* برچسب‌های تب‌ها، دکمه‌ها، پیام خطا، کارت اطلاعات اصلی، بخش اطلاعات ثبتی و حقوقی، وضعیت و اندازه شرکت، ساختار مالکیتی و تب اسناد حقوقی به متن خوانای فارسی UTF-8 تبدیل شدند.
+* فایل `index.html` بررسی شد و `meta charset="UTF-8"` از قبل وجود داشت.
+* جستجوی mojibake در source و README انجام شد و نشانگرهای رایج متن خراب باقی نماندند.
+
+**فایل‌های مهم تغییرکرده:**
+
+* `src/features/companies/pages/CompanyDetailsPage.tsx`
+* `src/features/companies/components/CompanyLegalDocumentsTab.tsx`
+* `README.md`
+
+**فرض‌ها و وابستگی‌ها:**
+
+* این اصلاح فقط فرانت‌اند است و هیچ قرارداد API یا رفتار backend تغییر نکرد.
+* مشکل از string literalهای خراب‌شده در source بود، نه از فونت یا theme.
+* فایل‌های تغییرکرده با متن فارسی خوانا و UTF-8 ذخیره شدند.
+
+**وضعیت بررسی‌ها:**
+
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
+* `npm run build`: بدون خطا اجرا شد.
+* هشدار غیرمسدودکننده: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
+
+**چک‌لیست دستی باقی‌مانده:**
+
+* خروجی production در مرورگر محلی باز شد و متن فارسی صفحه ورود صحیح نمایش داده شد؛ اما صفحه جزئیات شرکت به‌دلیل نیاز به نشست احرازشده و backend قابل دسترس نبود.
+* بررسی نهایی تب‌ها، دکمه‌ها، کارت اطلاعات اصلی، اطلاعات ثبتی و حقوقی، وضعیت و اندازه شرکت، ساختار مالکیتی و اسناد حقوقی باید در محیط دارای نشست معتبر انجام شود.
 
 ---
 **Built with ❤️ for sales team**

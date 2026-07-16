@@ -110,7 +110,7 @@ function LegalDocumentUploadDialog({
               ))}
             </Select>
           </FormControl>
-          <TextField required label="عنوان" value={title} onChange={(event) => setTitle(event.target.value)} />
+          <TextField required label="عنوان سند" value={title} onChange={(event) => setTitle(event.target.value)} />
           <TextField label="توضیحات" multiline minRows={2} value={description} onChange={(event) => setDescription(event.target.value)} />
           <JalaliDateField label="تاریخ سند" value={documentDate} onChange={(value) => setDocumentDate(value ?? '')} />
           <Button variant="outlined" component="label" disabled={upload.isPending}>
@@ -142,7 +142,7 @@ export default function CompanyLegalDocumentsTab({ companyId }: { companyId: str
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   const columns = useMemo<GridColDef<CompanyLegalDocument>[]>(() => [
-    { field: 'title', headerName: 'عنوان', minWidth: 180, flex: 1 },
+    { field: 'title', headerName: 'عنوان سند', minWidth: 180, flex: 1 },
     { field: 'type', headerName: 'نوع سند', minWidth: 150, valueFormatter: getLegalDocumentTypeLabel },
     { field: 'fileName', headerName: 'فایل', minWidth: 180, flex: 0.8, valueGetter: (_value, row) => legalDocumentFileName(row) },
     { field: 'documentDate', headerName: 'تاریخ سند', minWidth: 140, valueFormatter: formatDate },
