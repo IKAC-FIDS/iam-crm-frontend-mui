@@ -42,6 +42,9 @@ export const authService = {
     const response = await axiosInstance.post<ApiWrappedResponse<LoginResponse>>('/auth/login', data);
     return unwrapApiResponse<LoginResponse>(response.data);
   },
+  logout: async (): Promise<void> => {
+    await axiosInstance.post('/auth/logout');
+  },
   getPasskeyAuthenticationOptions: async (): Promise<PasskeyAuthenticationOptionsResponse> => {
     const response = await axiosInstance.post<ApiWrappedResponse<PasskeyAuthenticationOptionsResponse>>(
       '/auth/passkeys/authentication/options',

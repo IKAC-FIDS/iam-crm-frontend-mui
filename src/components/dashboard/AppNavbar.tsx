@@ -12,6 +12,7 @@ import { useAuthStore } from '@/store/authStore';
 import { useNavigate } from 'react-router-dom';
 import NotificationBell from '@/features/notifications/components/NotificationBell';
 import CurrentOrganizationBadge from '@/features/organizations/components/CurrentOrganizationBadge';
+import { authService } from '@/features/auth/services/auth.service';
 
 interface AppNavbarProps {
   onOpenNavigation: () => void;
@@ -30,10 +31,14 @@ export default function AppNavbar({ onOpenNavigation }: AppNavbarProps) {
     handleClose();
     navigate('/account/security');
   };
-  const handleLogout = () => {
-    localStorage.removeItem('accessToken');
-    clearUser();
-    navigate('/login');
+  const handleLogout = async () => {
+    handleClose();
+    try {
+      await authService.logout();
+    } finally {
+      clearUser();
+      navigate('/login', { replace: true });
+    }
   };
 
   return (

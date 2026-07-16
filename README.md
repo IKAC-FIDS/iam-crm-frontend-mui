@@ -4267,6 +4267,43 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * تست زنده endpoint با نشست backend اجرا نشد؛ صحت حذف `sourceOptionId` خالی/نامعتبر در لایه مشترک payload سرویس بررسی شد.
 
 ---
+
+## fix 000083 — پیاده‌سازی تمدید خودکار access token در فرانت
+
+**موارد پیاده‌سازی‌شده:**
+
+* refresh token مطابق قرارداد backend فقط در cookie از نوع HttpOnly نگهداری می‌شود؛ frontend آن را از JavaScript نمی‌خواند و در body یا header ارسال نمی‌کند.
+* گزینه `withCredentials: true` به Axios اضافه شد تا cookie نشست در درخواست `POST /auth/refresh` و سایر درخواست‌های احراز هویت ارسال شود.
+* request interceptor همچنان `accessToken` موجود در `localStorage` را به‌صورت Bearer token به درخواست‌ها اضافه می‌کند.
+* response interceptor فقط برای پاسخ 401 درخواست‌های غیر login/refresh، یک بار `POST /auth/refresh` را اجرا می‌کند، `accessToken` و کاربر جدید را ذخیره می‌کند و درخواست اصلی را با توکن تازه retry می‌کند.
+* 401های هم‌زمان یک refresh promise مشترک دارند؛ بنابراین تنها یک درخواست refresh در حال اجرا است و درخواست‌های دیگر تا نتیجه همان درخواست منتظر می‌مانند.
+* در صورت شکست refresh یا دریافت 401 دوباره پس از retry، access token و کاربر پاک، query cache خالی و کاربر به صفحه ورود هدایت می‌شود؛ پاسخ 403 وارد فرایند refresh نمی‌شود.
+* logout موجود در نوار اصلی و layout قدیمی ابتدا `POST /auth/logout` را فراخوانی می‌کند و cleanup محلی را حتی در صورت شکست endpoint در بخش `finally` انجام می‌دهد.
+* login معمولی، passkey و SSO همچنان فقط `accessToken` و `user` پاسخ را ذخیره می‌کنند و به وجود refresh token در JSON وابسته نیستند.
+* مقدار `VITE_API_URL` و fallback فعلی localhost حفظ شد و IP سرور جدیدی hardcode نشد.
+* جست‌وجوی الگوهای خرابی encoding فارسی در `src`، `index.html` و `README.md` انجام شد و موردی پیدا نشد.
+
+**فایل‌های تغییرکرده:**
+
+* `src/lib/axios.ts`
+* `src/features/auth/services/auth.service.ts`
+* `src/components/dashboard/AppNavbar.tsx`
+* `src/layouts/MainLayout.tsx`
+* `README.md`
+
+**وابستگی backend:**
+
+* backend باید cookie مربوط به refresh token را با تنظیمات مناسب HttpOnly/SameSite/Secure و CORS سازگار با credentials صادر کند، `POST /api/auth/refresh` را برای rotation cookie و بازگرداندن `accessToken` و `user` پشتیبانی کند و endpoint `POST /api/auth/logout` را در دسترس قرار دهد.
+
+**وضعیت بررسی‌ها:**
+
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
+* `npm run build`: بدون خطا اجرا شد.
+* هشدار غیرمسدودکننده Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
+* بررسی دستی login/cookie/انقضای access token با backend و نشست مرورگر اجرا نشد؛ این بررسی به backend در حال اجرا، تنظیمات CORS/cookie و نشست معتبر نیاز دارد.
+
+---
 **Built with ❤️ for sales team**
 
 ---

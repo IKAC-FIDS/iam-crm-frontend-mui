@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { useNavigate } from 'react-router-dom';
 import { AccountCircle, Logout, Settings } from '@mui/icons-material';
+import { authService } from '@/features/auth/services/auth.service';
 
 export default function MainLayout() {
   const { user, clearUser } = useAuthStore();
@@ -12,10 +13,14 @@ export default function MainLayout() {
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
-  const handleLogout = () => {
-    localStorage.removeItem('accessToken');
-    clearUser();
-    navigate('/login');
+  const handleLogout = async () => {
+    handleClose();
+    try {
+      await authService.logout();
+    } finally {
+      clearUser();
+      navigate('/login', { replace: true });
+    }
   };
 
   return (
