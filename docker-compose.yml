@@ -1,0 +1,17 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: /api
+    container_name: iam-crm-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+    networks:
+      - iam-crm-backend_default
+
+networks:
+  iam-crm-backend_default:
+    external: true

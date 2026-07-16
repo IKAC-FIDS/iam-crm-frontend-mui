@@ -95,6 +95,45 @@ The frontend communicates with the backend through the `/api` routes.
 
 ---
 
+## استقرار Docker فرانت‌اند
+
+این پروژه برای اجرای production با Docker و Nginx آماده شده است. در حالت production مقدار `VITE_API_URL` برابر `/api` است تا مرورگر درخواست‌ها را به همان host فرانت بفرستد و Nginx داخل container مسیر `/api/` را به سرویس بک‌اند Docker Compose منتقل کند.
+
+مسیر درخواست‌ها در production:
+
+```text
+Browser -> http://SERVER_IP:8080/api/... -> Nginx frontend -> http://api:3000/api/...
+```
+
+اجرای فرانت:
+
+```bash
+docker compose up -d --build
+```
+
+مشاهده logها:
+
+```bash
+docker logs -f iam-crm-frontend
+```
+
+پورت پیش‌فرض فرانت `8080` است و می‌توان آن را با متغیر محیطی تغییر داد:
+
+```bash
+FRONTEND_PORT=8081 docker compose up -d --build
+```
+
+نکات مهم:
+
+* `VITE_API_URL=/api` در زمان build تنظیم می‌شود.
+* Nginx مسیر `/api/` را به `http://api:3000/api/` proxy می‌کند.
+* نام سرویس بک‌اند در Docker Compose باید `api` باشد.
+* این compose به شبکه خارجی `iam-crm-backend_default` وصل می‌شود. اگر نام project بک‌اند روی سرور متفاوت است، نام network در `docker-compose.yml` باید با network واقعی بک‌اند هماهنگ شود.
+* برای build داخل Docker مقدار `NODE_OPTIONS=--max-old-space-size=4096` تنظیم شده است تا خطای JavaScript heap out of memory در buildهای Vite/TypeScript کاهش پیدا کند. اگر سرور RAM کمی دارد، افزودن swap یک نیاز عملیاتی است.
+* هیچ رمز عبور، token یا secret نباید در Dockerfile، nginx config، README یا فایل‌های env commit شده قرار بگیرد.
+
+---
+
 ## 🎯 Project Goal
 
 The goal of this frontend is to provide a production-ready CRM interface for the sales team.
@@ -781,7 +820,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000072
+fix 000001 → fix 000073
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -3794,6 +3833,55 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 **محدودیت‌های باقی‌مانده:**
 
 * تأیید نهایی رفع خطای ۴۰۰ نیازمند اجرای دستی آپلود روی backend و storage فعال است.
+
+---
+
+## fix 000073 — داکرایز کردن فرانت با Nginx و Proxy API
+
+**موارد پیاده‌سازی‌شده:**
+
+* Dockerfile production چندمرحله‌ای اضافه شد.
+* مرحله build از `node:22-bookworm-slim`، `npm ci` و `npm run build` استفاده می‌کند.
+* مقدارهای `ARG VITE_API_URL=/api`، `ENV VITE_API_URL=$VITE_API_URL` و `ENV NODE_OPTIONS=--max-old-space-size=4096` برای build اضافه شد.
+* مرحله runtime از `nginx:1.27` استفاده می‌کند و خروجی `dist` را در `/usr/share/nginx/html` سرو می‌کند.
+* `nginx.conf` برای SPA fallback و proxy مسیر `/api/` به `http://api:3000/api/` اضافه شد.
+* تنظیمات proxy headerها، timeoutهای ۳۰۰ ثانیه‌ای و `client_max_body_size 30M` اضافه شد.
+* `docker-compose.yml` برای اجرای standalone فرانت با پورت پیش‌فرض `8080` و اتصال به network خارجی `iam-crm-backend_default` اضافه شد.
+* `.dockerignore` برای کاهش build context و حذف `node_modules`، `dist`، `.git`، logها، envهای واقعی، cache و فایل‌های IDE اضافه شد.
+* رفتار موجود `src/lib/axios.ts` بازبینی شد و بدون تغییر باقی ماند؛ چون از `VITE_API_URL` پشتیبانی می‌کند و `Content-Type` را برای `FormData` حذف می‌کند.
+* دانلود پیوست‌ها بازبینی شد و همچنان از endpoint بک‌اند با `responseType: 'blob'` استفاده می‌کند.
+
+**فایل‌های مهم تغییرکرده یا جدید:**
+
+* `Dockerfile`
+* `nginx.conf`
+* `docker-compose.yml`
+* `.dockerignore`
+* `README.md`
+
+**فرض‌ها و وابستگی‌های بک‌اند:**
+
+* این اصلاح فقط فرانت‌اند است و بک‌اند تغییر نکرده است.
+* سرویس بک‌اند در Docker Compose باید با نام `api` روی پورت `3000` در دسترس باشد.
+* network خارجی مورد انتظار `iam-crm-backend_default` است. اگر نام project بک‌اند متفاوت باشد، این network باید در `docker-compose.yml` اصلاح شود.
+* مقدار production برای `VITE_API_URL` برابر `/api` است و هیچ IP یا URL عمومی بک‌اند در سورس فرانت hardcode نشده است.
+* Nginx داخل container فرانت، `/api/` را به `http://api:3000/api/` proxy می‌کند و به `localhost` داخل container اشاره نمی‌کند.
+
+**وضعیت بررسی‌ها:**
+
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
+* `npm run build`: بدون خطا اجرا شد.
+* `docker compose config`: اجرا شد.
+* `docker compose build --no-cache --progress=plain`: اجرا شد.
+* `docker compose up -d`: اجرا شد.
+* `docker logs --tail=100 iam-crm-frontend`: اجرا شد.
+* هشدار غیرمسدودکننده: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
+
+**محدودیت‌های باقی‌مانده:**
+
+* اگر در محیط هدف خطای `host not found in upstream "api"` دیده شود، باید network و نام سرویس backend با Docker Compose سرور هماهنگ شود.
+* تست کامل API و احراز هویت نیازمند اجرای همزمان backend روی network مورد انتظار است.
 
 ---
 **Built with ❤️ for sales team**
