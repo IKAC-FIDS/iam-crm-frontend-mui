@@ -11,6 +11,8 @@ import type { Opportunity } from '@/features/opportunities/types/opportunity.typ
 import ChangeOpportunityStageDialog from '@/features/opportunities/components/ChangeOpportunityStageDialog';
 import PipelineColumn from '../components/PipelineColumn';
 import { pipelineQueryKeys, usePipeline } from '../hooks/usePipeline';
+import { getApiErrorMessage } from '@/lib/apiResponse';
+import type { OwnershipScope } from '@/shared/types/ownership';
 
 export default function PipelinePage() {
   const user = useAuthStore((s) => s.user);
@@ -21,6 +23,7 @@ export default function PipelinePage() {
 
   const [search, setSearch] = useState('');
   const [priority, setPriority] = useState<Priority | ''>('');
+  const [ownershipScope, setOwnershipScope] = useState<Exclude<OwnershipScope, 'unassigned'>>('all');
   const [selected, setSelected] = useState<Opportunity | null>(null);
 
   const debounced = useDebouncedValue(search.trim(), 400);
@@ -35,6 +38,7 @@ export default function PipelinePage() {
 
   const queries = usePipeline(
     stages.map((s) => s.id),
+    ownershipScope,
     priority || undefined,
     debounced || undefined
   );
@@ -83,6 +87,15 @@ export default function PipelinePage() {
             </Select>
           </FormControl>
 
+          <FormControl sx={{ minWidth: { md: 180 } }}>
+            <InputLabel>نمایش</InputLabel>
+            <Select label="نمایش" value={ownershipScope} onChange={(e) => setOwnershipScope(e.target.value as Exclude<OwnershipScope, 'unassigned'>)}>
+              <MenuItem value="all">همه فرصت‌ها</MenuItem>
+              <MenuItem value="mine">فرصت‌های من</MenuItem>
+              {user?.team && <MenuItem value="team">تیم من</MenuItem>}
+            </Select>
+          </FormControl>
+
           <Button
             variant="outlined"
             startIcon={<RefreshIcon />}
@@ -101,7 +114,7 @@ export default function PipelinePage() {
 
       {queries.some((q) => q.isError) && (
         <Alert severity="warning" sx={{ mb: 2 }}>
-          دریافت برخی ستون‌های فرصت‌ها انجام نشد.
+          {getApiErrorMessage(queries.find((query) => query.error)?.error, 'دریافت برخی ستون‌های فرصت‌ها انجام نشد.')}
         </Alert>
       )}
 

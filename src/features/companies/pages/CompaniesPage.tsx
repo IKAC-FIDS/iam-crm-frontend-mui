@@ -27,6 +27,8 @@ import Header from '@/components/dashboard/Header';
 import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
 import { RowActions } from '@/shared/components/RowActions';
+import { getApiErrorMessage } from '@/lib/apiResponse';
+import type { OwnershipScope } from '@/shared/types/ownership';
 import CreateCompanyDialog from '../components/CreateCompanyDialog';
 import ArchiveCompanyDialog from '../components/ArchiveCompanyDialog';
 import RestoreCompanyDialog from '../components/RestoreCompanyDialog';
@@ -50,8 +52,6 @@ import type {
   CompanyArchiveStatus,
 } from '../types/company.types';
 
-type OwnerFilter = 'ALL' | 'WITHOUT_OWNER' | 'SPECIFIC_OWNER';
-
 function displayValue(value?: string | null): string {
   return value?.trim() || '—';
 }
@@ -67,8 +67,7 @@ export default function CompaniesPage() {
     pageSize: 10,
   });
   const [priority, setPriority] = useState<CompanyPriority | ''>('');
-  const [ownerFilter, setOwnerFilter] = useState<OwnerFilter>('ALL');
-  const [ownerId] = useState('');
+  const [ownershipScope, setOwnershipScope] = useState<OwnershipScope>('all');
   const [search, setSearch] = useState('');
   const [archiveStatus, setArchiveStatus] = useState<CompanyArchiveStatus>('ACTIVE');
   const [archiving, setArchiving] = useState<CompanyListItem | null>(null);
@@ -80,15 +79,14 @@ export default function CompaniesPage() {
       page: paginationModel.page + 1,
       limit: paginationModel.pageSize as CompanyPageSize,
       ...(priority && { priority }),
-      ...(ownerFilter === 'WITHOUT_OWNER' && { withoutOwner: true }),
-      ...(ownerFilter === 'SPECIFIC_OWNER' && ownerId && { ownerId }),
+      ownershipScope,
       ...(debouncedSearch && { search: debouncedSearch }),
       archiveStatus,
     }),
-    [archiveStatus, debouncedSearch, ownerFilter, ownerId, paginationModel, priority],
+    [archiveStatus, debouncedSearch, ownershipScope, paginationModel, priority],
   );
 
-  const { data, isError, isFetching } = useCompanies(queryParams);
+  const { data, error, isError, isFetching } = useCompanies(queryParams);
 
   const resetToFirstPage = () => {
     setPaginationModel((current) => ({ ...current, page: 0 }));
@@ -215,21 +213,20 @@ export default function CompaniesPage() {
           </FormControl>
 
           <FormControl fullWidth>
-            <InputLabel id="company-owner-label">مالک</InputLabel>
+            <InputLabel id="company-ownership-scope-label">نمایش</InputLabel>
             <Select
-              labelId="company-owner-label"
-              label="مالک"
-              value={ownerFilter}
+              labelId="company-ownership-scope-label"
+              label="نمایش"
+              value={ownershipScope}
               onChange={(event) => {
-                setOwnerFilter(event.target.value as OwnerFilter);
+                setOwnershipScope(event.target.value as OwnershipScope);
                 resetToFirstPage();
               }}
             >
-              <MenuItem value="ALL">همه مالکان</MenuItem>
-              <MenuItem value="WITHOUT_OWNER">بدون مالک</MenuItem>
-              <MenuItem value="SPECIFIC_OWNER" disabled>
-                مالک مشخص (به‌زودی)
-              </MenuItem>
+              <MenuItem value="all">همه شرکت‌ها</MenuItem>
+              <MenuItem value="mine">شرکت‌های من</MenuItem>
+              {user?.team && <MenuItem value="team">تیم من</MenuItem>}
+              <MenuItem value="unassigned">بدون مالک</MenuItem>
             </Select>
           </FormControl>
         </Stack>
@@ -237,7 +234,7 @@ export default function CompaniesPage() {
 
       {isError && (
         <Alert severity="error" sx={{ mb: 2 }}>
-          خطا در دریافت اطلاعات شرکت‌ها.
+          {getApiErrorMessage(error, 'خطا در دریافت اطلاعات شرکت‌ها.')}
         </Alert>
       )}
 

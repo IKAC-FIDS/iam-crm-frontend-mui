@@ -2,6 +2,7 @@ import type { Priority } from '@/features/companies/types/company.types';
 import type { CommercialDocument } from '@/features/commercialDocuments/types/commercialDocument.types';
 import type { OpportunityLineItem } from '@/features/opportunityLineItems/types/opportunityLineItem.types';
 import type { OpportunityPayment } from '@/features/payments/types/payment.types';
+import type { OwnershipScope } from '@/shared/types/ownership';
 
 export interface OpportunityStage { id: string; code: string; label: string; sortOrder: number; color?: string | null; isTerminal?: boolean; terminalType?: string | null }
 export interface Opportunity {
@@ -27,7 +28,7 @@ export interface Opportunity {
     tasks?: number;
   };
 }
-export interface OpportunityListParams { page: number; limit: number; search?: string; companyId?: string; ownerId?: string; team?: string; stageId?: string; priority?: Priority; source?: string; opportunitySource?: string; sourceOptionId?: string; primaryContactId?: string; includeArchived?: boolean; archivedOnly?: boolean }
+export interface OpportunityListParams { page: number; limit: number; search?: string; companyId?: string; ownerId?: string; team?: string; ownershipScope?: OwnershipScope; stageId?: string; priority?: Priority; source?: string; opportunitySource?: string; sourceOptionId?: string; primaryContactId?: string; includeArchived?: boolean; archivedOnly?: boolean }
 export interface OpportunityPayload { companyId: string; title: string; description?: string; ownerId?: string; stageId?: string; priority?: Priority; estimatedValue?: number; expectedCloseDate?: string; source?: string; sourceOptionId?: string; opportunitySource?: string; primaryContactId?: string; probability?: number; competitor?: string }
 export type CompanyOpportunityPayload = Omit<OpportunityPayload, 'companyId'>;
 export type UpdateOpportunityPayload = Partial<Omit<OpportunityPayload, 'companyId' | 'ownerId' | 'stageId'>>;

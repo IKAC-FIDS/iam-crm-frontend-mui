@@ -13,6 +13,8 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
 import { RowActions } from '@/shared/components/RowActions';
+import { getApiErrorMessage } from '@/lib/apiResponse';
+import type { OwnershipScope } from '@/shared/types/ownership';
 import { useDebouncedValue } from '@/features/companies/hooks/useDebouncedValue';
 import { COMPANY_PRIORITY_OPTIONS, type Priority } from '@/features/companies/types/company.types';
 import { formatDateTime, getPriorityLabel } from '@/features/companies/utils/companyDisplay';
@@ -37,6 +39,7 @@ export default function OpportunitiesPage() {
   const [stageId, setStageId] = useState('');
   const [sourceOptionId, setSourceOptionId] = useState('');
   const [archive, setArchive] = useState<ArchiveFilter>('ACTIVE');
+  const [ownershipScope, setOwnershipScope] = useState<OwnershipScope>('all');
   const [form, setForm] = useState<Opportunity | null | undefined>(undefined);
   const [stage, setStage] = useState<Opportunity | null>(null);
   const [owner, setOwner] = useState<Opportunity | null>(null);
@@ -51,6 +54,7 @@ export default function OpportunitiesPage() {
     priority: priority || undefined,
     stageId: stageId || undefined,
     sourceOptionId: sourceOptionId || undefined,
+    ownershipScope,
     includeArchived: archive === 'ALL' ? true : undefined,
     archivedOnly: archive === 'ARCHIVED' ? true : undefined,
   }, allowed);
@@ -148,13 +152,14 @@ export default function OpportunitiesPage() {
       <Paper sx={{ p: 2, mb: 2 }}>
         <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
           <TextField fullWidth label="جستجو" value={search} onChange={(event) => { setSearch(event.target.value); setPagination((p) => ({ ...p, page: 0 })); }} />
+          <FormControl fullWidth><InputLabel>نمایش</InputLabel><Select label="نمایش" value={ownershipScope} onChange={(event) => { setOwnershipScope(event.target.value as OwnershipScope); setPagination((p) => ({ ...p, page: 0 })); }}><MenuItem value="all">همه</MenuItem><MenuItem value="mine">فقط مال من</MenuItem>{user?.team && <MenuItem value="team">تیم من</MenuItem>}<MenuItem value="unassigned">بدون مالک</MenuItem></Select></FormControl>
           <FormControl fullWidth><InputLabel>مرحله فروش</InputLabel><Select label="مرحله فروش" value={stageId} onChange={(event) => { setStageId(event.target.value); setPagination((p) => ({ ...p, page: 0 })); }}><MenuItem value="">همه</MenuItem>{(stages.data ?? []).map((item) => <MenuItem key={item.id} value={item.id}>{item.label}</MenuItem>)}</Select></FormControl>
           <FormControl fullWidth><InputLabel>اولویت</InputLabel><Select label="اولویت" value={priority} onChange={(event) => { setPriority(event.target.value as Priority | ''); setPagination((p) => ({ ...p, page: 0 })); }}><MenuItem value="">همه</MenuItem>{COMPANY_PRIORITY_OPTIONS.map((item) => <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>)}</Select></FormControl>
           <FormControl fullWidth disabled={sourceOptionsQuery.isError}><InputLabel>منبع ایجاد فرصت</InputLabel><Select label="منبع ایجاد فرصت" value={sourceOptionId} onChange={(event) => { setSourceOptionId(event.target.value); setPagination((p) => ({ ...p, page: 0 })); }}><MenuItem value="">همه منابع</MenuItem>{sourceOptions.map((item) => <MenuItem key={item.id} value={item.id}>{getCatalogItemLabel(item)}</MenuItem>)}</Select></FormControl>
           <FormControl fullWidth><InputLabel>بایگانی</InputLabel><Select label="بایگانی" value={archive} onChange={(event) => { setArchive(event.target.value as ArchiveFilter); setPagination((p) => ({ ...p, page: 0 })); }}><MenuItem value="ACTIVE">فعال</MenuItem><MenuItem value="ALL">همه</MenuItem><MenuItem value="ARCHIVED">بایگانی</MenuItem></Select></FormControl>
         </Stack>
       </Paper>
-      {query.isError && <Alert severity="error" sx={{ mb: 2 }}>دریافت فرصت‌ها انجام نشد.</Alert>}
+      {query.isError && <Alert severity="error" sx={{ mb: 2 }}>{getApiErrorMessage(query.error, 'دریافت فرصت‌ها انجام نشد.')}</Alert>}
       {stages.isError && <Alert severity="warning" sx={{ mb: 2 }}>دریافت مراحل پایپ‌لاین انجام نشد.</Alert>}
       {sourceOptionsQuery.isError && <Alert severity="warning" sx={{ mb: 2 }}>دریافت منابع ایجاد فرصت انجام نشد.</Alert>}
       <Paper>

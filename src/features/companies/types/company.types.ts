@@ -1,3 +1,5 @@
+import type { OwnershipScope } from '@/shared/types/ownership';
+
 export const COMPANY_PRIORITIES = ['LOW', 'MEDIUM', 'HIGH', 'STRATEGIC'] as const;
 export const COMPANY_OWNERSHIPS = [
   'PRIVATE',
@@ -199,9 +201,9 @@ export interface GetCompaniesParams {
   page: number;
   limit: CompanyPageSize;
   priority?: CompanyPriority;
-  withoutOwner?: boolean;
   search?: string;
   ownerId?: string;
+  ownershipScope?: OwnershipScope;
   archiveStatus?: CompanyArchiveStatus;
 }
 
