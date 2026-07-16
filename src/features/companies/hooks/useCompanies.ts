@@ -6,12 +6,15 @@ import type {
   CreateCompanyPayload,
   UpdateCompanyPayload,
   ArchiveCompanyPayload,
+  UploadCompanyLegalDocumentPayload,
+  UpdateCompanyLegalDocumentPayload,
 } from '../types/company.types';
 
 export const companyQueryKeys = {
   all: ['companies'] as const,
   list: (params: GetCompaniesParams) => [...companyQueryKeys.all, 'list', params] as const,
   detail: (companyId: string) => [...companyQueryKeys.all, 'detail', companyId] as const,
+  legalDocuments: (companyId: string) => [...companyQueryKeys.detail(companyId), 'legal-documents'] as const,
 };
 
 function invalidateCompanyData(queryClient: ReturnType<typeof useQueryClient>) {
@@ -19,6 +22,14 @@ function invalidateCompanyData(queryClient: ReturnType<typeof useQueryClient>) {
     queryClient.invalidateQueries({ queryKey: companyQueryKeys.all }),
     queryClient.invalidateQueries({ queryKey: ['pipeline'] }),
     queryClient.invalidateQueries({ queryKey: ['reports'] }),
+  ]);
+}
+
+function invalidateCompanyDetail(queryClient: ReturnType<typeof useQueryClient>, companyId: string) {
+  return Promise.all([
+    queryClient.invalidateQueries({ queryKey: companyQueryKeys.detail(companyId) }),
+    queryClient.invalidateQueries({ queryKey: companyQueryKeys.legalDocuments(companyId) }),
+    queryClient.invalidateQueries({ queryKey: companyQueryKeys.all }),
   ]);
 }
 
@@ -35,6 +46,14 @@ export function useCompany(companyId: string) {
     queryKey: companyQueryKeys.detail(companyId),
     queryFn: () => companiesService.getCompanyById(companyId),
     enabled: Boolean(companyId),
+  });
+}
+
+export function useCompanyLegalDocuments(companyId: string, enabled = true) {
+  return useQuery({
+    queryKey: companyQueryKeys.legalDocuments(companyId),
+    queryFn: () => companiesService.listLegalDocuments(companyId),
+    enabled: enabled && Boolean(companyId),
   });
 }
 
@@ -76,4 +95,30 @@ export function useArchiveCompany(companyId: string) {
 export function useRestoreCompany(companyId: string) {
   const queryClient = useQueryClient();
   return useMutation({ mutationFn: () => companiesService.restoreCompany(companyId), onSuccess: () => invalidateCompanyData(queryClient) });
+}
+
+export function useUploadCompanyLegalDocument(companyId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: UploadCompanyLegalDocumentPayload) =>
+      companiesService.uploadLegalDocument(companyId, payload),
+    onSuccess: () => invalidateCompanyDetail(queryClient, companyId),
+  });
+}
+
+export function useUpdateCompanyLegalDocument(companyId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: UpdateCompanyLegalDocumentPayload }) =>
+      companiesService.updateLegalDocument(companyId, id, payload),
+    onSuccess: () => invalidateCompanyDetail(queryClient, companyId),
+  });
+}
+
+export function useDeleteCompanyLegalDocument(companyId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => companiesService.deleteLegalDocument(companyId, id),
+    onSuccess: () => invalidateCompanyDetail(queryClient, companyId),
+  });
 }

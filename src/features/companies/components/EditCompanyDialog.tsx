@@ -45,7 +45,7 @@ export default function EditCompanyDialog({ company, open, onClose }: EditCompan
     : undefined;
 
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
       <DialogTitle>ویرایش اطلاعات شرکت</DialogTitle>
       <DialogContent>
         <CompanyForm

@@ -1,4 +1,4 @@
-ChatGPT Plus
+﻿ChatGPT Plus
 
 
 
@@ -820,7 +820,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000074
+fix 000001 → fix 000075
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -3917,6 +3917,64 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 **محدودیت‌های باقی‌مانده:**
 
 * برای تأیید کامل رفع 502 باید backend در محیط هدف recreate شود و سپس login از مسیر `/api/auth/login` تست شود.
+
+---
+
+## fix 000075 — تکمیل فرم و پروفایل شرکت با اطلاعات ثبتی و اسناد حقوقی
+
+**موارد پیاده‌سازی‌شده:**
+
+* typeهای شرکت برای `registrationNumber`، `nationalId`، `economicCode`، `establishmentDate`، `activityStatus`، `registeredCapital`، `employeeCount`، `parentCompanyIds`، `subsidiaryCompanyIds`، `parentCompanies` و `subsidiaryCompanies` تکمیل شد.
+* typeهای اسناد حقوقی شرکت برای `OFFICIAL_GAZETTE` و `LATEST_CHANGES` اضافه شد.
+* فرم ایجاد و ویرایش شرکت با فیلدهای شماره ثبت، شناسه ملی، کد اقتصادی، تاریخ تاسیس، وضعیت فعالیت، سرمایه ثبتی، تعداد پرسنل، شرکت‌های مادر و شرکت‌های زیرمجموعه تکمیل شد.
+* وضعیت فعالیت با برچسب‌های فارسی «فعال»، «غیر فعال»، «ادغام شده» و «نامشخص» نمایش داده می‌شود.
+* انتخاب شرکت‌های مادر و زیرمجموعه با Autocomplete چندانتخابی و جستجوی server-side انجام می‌شود.
+* شرکت جاری در حالت ویرایش از گزینه‌های ساختار مالکیتی حذف می‌شود و انتخاب همزمان یک شرکت به‌عنوان مادر و زیرمجموعه اعتبارسنجی می‌شود.
+* مقدارهای عددی سرمایه ثبتی و تعداد پرسنل، ارقام فارسی/عربی را قبل از ارسال payload نرمال می‌کنند.
+* تاریخ تاسیس با کامپوننت Jalali موجود نمایش داده می‌شود و مقدار ISO/Gregorian به backend ارسال می‌شود.
+* صفحه جزئیات شرکت بخش‌های «اطلاعات ثبتی و حقوقی»، «وضعیت و اندازه شرکت» و «ساختار مالکیتی» را نمایش می‌دهد.
+* شرکت‌های مادر و زیرمجموعه در پروفایل شرکت به‌صورت chip قابل کلیک نمایش داده می‌شوند.
+* تب «اسناد حقوقی» به پروفایل شرکت اضافه شد.
+* بارگذاری سند حقوقی شرکت با metadata شامل نوع سند، عنوان، توضیحات و تاریخ سند پیاده‌سازی شد.
+* فهرست اسناد حقوقی، دانلود فایل از مسیر امن attachment backend، و حذف سند حقوقی پیاده‌سازی شد.
+
+**فایل‌های مهم تغییرکرده یا جدید:**
+
+* `src/features/companies/types/company.types.ts`
+* `src/features/companies/services/companies.service.ts`
+* `src/features/companies/hooks/useCompanies.ts`
+* `src/features/companies/components/CompanyForm.tsx`
+* `src/features/companies/components/CreateCompanyDialog.tsx`
+* `src/features/companies/components/EditCompanyDialog.tsx`
+* `src/features/companies/components/CompanyLegalDocumentsTab.tsx`
+* `src/features/companies/pages/CompanyDetailsPage.tsx`
+* `src/features/companies/utils/companyDisplay.ts`
+* `src/features/attachments/types/attachment.types.ts`
+* `README.md`
+
+**فرض‌ها و وابستگی‌های بک‌اند:**
+
+* backend باید فیلدهای جدید شرکت و endpointهای `/companies/:companyId/legal-documents` را پشتیبانی کند.
+* upload سند حقوقی شرکت از `POST /companies/:companyId/legal-documents/upload` با فیلد multipart `file` استفاده می‌کند.
+* دانلود فایل سند حقوقی همچنان از مسیر attachment backend انجام می‌شود و frontend هیچ URL مستقیم MinIO نمی‌سازد.
+* مجوزهای استفاده‌شده مطابق قرارداد موجود `company:view` برای مشاهده و `company:update` برای ویرایش/بارگذاری/حذف هستند.
+* تست زنده create/edit/upload/download/delete با backend در حال اجرا انجام نشد.
+
+**وضعیت بررسی‌ها:**
+
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
+* `npm run build`: بدون خطا اجرا شد.
+* هشدار غیرمسدودکننده: هشدار Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
+
+**چک‌لیست دستی باقی‌مانده:**
+
+* ایجاد شرکت با فیلدهای جدید.
+* ویرایش شرکت با فیلدهای جدید.
+* نمایش فیلدهای جدید در جزئیات شرکت.
+* انتخاب و نمایش شرکت‌های مادر و زیرمجموعه.
+* آپلود، نمایش، دانلود و حذف روزنامه رسمی و آخرین تغییرات.
+* بررسی نمایش خطاهای validation backend در سناریوهای واقعی.
 
 ---
 **Built with ❤️ for sales team**

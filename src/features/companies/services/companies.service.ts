@@ -5,10 +5,13 @@ import type {
   PaginatedResult,
   Company,
   CompanyListItem,
+  CompanyLegalDocument,
   ChangeCompanyOwnerPayload,
   CreateCompanyPayload,
   UpdateCompanyPayload,
   ArchiveCompanyPayload,
+  UploadCompanyLegalDocumentPayload,
+  UpdateCompanyLegalDocumentPayload,
 } from '../types/company.types';
 
 interface CompaniesApiMeta {
@@ -144,5 +147,43 @@ export const companiesService = {
   restoreCompany: async (companyId: string): Promise<Company> => {
     const response = await axiosInstance.patch<Company | { data: Company }>(`/companies/${companyId}/restore`);
     return unwrapApiResponse<Company>(response.data);
+  },
+  listLegalDocuments: async (companyId: string): Promise<CompanyLegalDocument[]> => {
+    const response = await axiosInstance.get<CompanyLegalDocument[] | { data: CompanyLegalDocument[] }>(
+      `/companies/${companyId}/legal-documents`,
+    );
+    return unwrapApiResponse<CompanyLegalDocument[]>(response.data);
+  },
+  uploadLegalDocument: async (
+    companyId: string,
+    payload: UploadCompanyLegalDocumentPayload,
+  ): Promise<CompanyLegalDocument> => {
+    const formData = new FormData();
+    formData.append('file', payload.file);
+    formData.append('type', payload.type);
+    formData.append('title', payload.title);
+    if (payload.description?.trim()) formData.append('description', payload.description.trim());
+    if (payload.documentDate) formData.append('documentDate', payload.documentDate);
+
+    const response = await axiosInstance.post<CompanyLegalDocument | { data: CompanyLegalDocument }>(
+      `/companies/${companyId}/legal-documents/upload`,
+      formData,
+      { headers: { 'Content-Type': undefined } },
+    );
+    return unwrapApiResponse<CompanyLegalDocument>(response.data);
+  },
+  updateLegalDocument: async (
+    companyId: string,
+    documentId: string,
+    payload: UpdateCompanyLegalDocumentPayload,
+  ): Promise<CompanyLegalDocument> => {
+    const response = await axiosInstance.patch<CompanyLegalDocument | { data: CompanyLegalDocument }>(
+      `/companies/${companyId}/legal-documents/${documentId}`,
+      payload,
+    );
+    return unwrapApiResponse<CompanyLegalDocument>(response.data);
+  },
+  deleteLegalDocument: async (companyId: string, documentId: string): Promise<void> => {
+    await axiosInstance.delete(`/companies/${companyId}/legal-documents/${documentId}`);
   },
 };

@@ -1,6 +1,6 @@
 import type { PaginatedMeta } from '@/lib/apiResponse';
 
-export type AttachmentEntityType = 'OPPORTUNITY' | 'COMMERCIAL_DOCUMENT' | 'PAYMENT';
+export type AttachmentEntityType = 'OPPORTUNITY' | 'COMMERCIAL_DOCUMENT' | 'PAYMENT' | 'COMPANY_LEGAL_DOCUMENT';
 export type AttachmentStorageProvider = 'LOCAL' | 'MINIO';
 
 export interface FileAttachment {

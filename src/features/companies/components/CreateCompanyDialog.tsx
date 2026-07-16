@@ -46,7 +46,7 @@ export default function CreateCompanyDialog({ open, onClose }: CreateCompanyDial
     : undefined;
 
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
       <DialogTitle>افزودن شرکت</DialogTitle>
       <DialogContent>
         <CompanyForm

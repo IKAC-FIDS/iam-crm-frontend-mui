@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
   Alert,
@@ -29,23 +29,28 @@ import CompanyBranchesTab from '@/features/companyBranches/components/CompanyBra
 import CompanySocialChannelsTab from '@/features/companySocialChannels/components/CompanySocialChannelsTab';
 import CompanyOpportunitiesTab from '@/features/opportunities/components/CompanyOpportunitiesTab';
 import CompanyTasksTab from '@/features/tasks/components/CompanyTasksTab';
+import CompanyLegalDocumentsTab from '../components/CompanyLegalDocumentsTab';
 import { useCompany } from '../hooks/useCompanies';
-import { isCompanyArchived } from '../types/company.types';
+import { isCompanyArchived, type CompanySummary } from '../types/company.types';
 import {
+  formatDate,
   formatDateTime,
+  formatNumber,
+  getActivityStatusLabel,
   getOwnershipLabel,
   getPriorityLabel,
 } from '../utils/companyDisplay';
 
 const detailTabs = [
-  { label: 'نمای کلی', value: 'overview' },
-  { label: 'افراد', value: 'people' },
-  { label: 'فرصت‌ها', value: 'opportunities' },
-  { label: 'کارها', value: 'tasks' },
-  { label: 'فعالیت‌ها', value: 'activities' },
-  { label: 'کال کارت', value: 'call-card' },
-  { label: 'شعب', value: 'branches' },
-  { label: 'کانال‌های اجتماعی', value: 'social-channels' },
+  { label: 'Ù†Ù…Ø§ÛŒ Ú©Ù„ÛŒ', value: 'overview' },
+  { label: 'Ø§ÙØ±Ø§Ø¯', value: 'people' },
+  { label: 'ÙØ±ØµØªâ€ŒÙ‡Ø§', value: 'opportunities' },
+  { label: 'Ú©Ø§Ø±Ù‡Ø§', value: 'tasks' },
+  { label: 'ÙØ¹Ø§Ù„ÛŒØªâ€ŒÙ‡Ø§', value: 'activities' },
+  { label: 'Ú©Ø§Ù„ Ú©Ø§Ø±Øª', value: 'call-card' },
+  { label: 'اسناد حقوقی', value: 'legal-documents' },
+  { label: 'Ø´Ø¹Ø¨', value: 'branches' },
+  { label: 'Ú©Ø§Ù†Ø§Ù„â€ŒÙ‡Ø§ÛŒ Ø§Ø¬ØªÙ…Ø§Ø¹ÛŒ', value: 'social-channels' },
 ] as const;
 
 type DetailTab = (typeof detailTabs)[number]['value'];
@@ -61,14 +66,31 @@ function DetailItem({ label, value }: DetailItemProps) {
     <Box>
       <Typography variant="body2" color="text.secondary">{label}</Typography>
       <Typography variant="body1" sx={{ mt: 0.5, overflowWrap: 'anywhere' }}>
-        {value?.trim() || '—'}
+        {value?.trim() || 'â€”'}
       </Typography>
     </Box>
   );
 }
 
 function getTeamName(team?: string): string {
-  return team || '—';
+  return team || 'â€”';
+}
+
+function CompanyLinks({ companies }: { companies?: CompanySummary[] }) {
+  const navigate = useNavigate();
+  if (!companies?.length) return <Typography variant="body1" sx={{ mt: 0.5 }}>—</Typography>;
+  return (
+    <Stack direction="row" spacing={1} sx={{ mt: 0.5, flexWrap: 'wrap', gap: 1 }}>
+      {companies.map((item) => (
+        <Chip
+          key={item.id}
+          label={item.brandName ? `${item.legalName} (${item.brandName})` : item.legalName}
+          variant="outlined"
+          onClick={() => navigate(`/companies/${item.id}`)}
+        />
+      ))}
+    </Stack>
+  );
 }
 
 export default function CompanyDetailsPage() {
@@ -76,7 +98,7 @@ export default function CompanyDetailsPage() {
   const location = useLocation();
   const navigationState = location.state as CompanyDetailLocationState | null;
   const backTo = navigationState?.backTo ?? '/companies';
-  const backLabel = navigationState?.backLabel ?? 'بازگشت به شرکت‌ها';
+  const backLabel = navigationState?.backLabel ?? 'Ø¨Ø§Ø²Ú¯Ø´Øª Ø¨Ù‡ Ø´Ø±Ú©Øªâ€ŒÙ‡Ø§';
   const { companyId = '' } = useParams<{ companyId: string }>();
   const user = useAuthStore((state) => state.user);
   const { data: company, isLoading, isError } = useCompany(companyId);
@@ -101,7 +123,7 @@ export default function CompanyDetailsPage() {
   if (isError || !company) {
     return (
       <Box>
-        <Alert severity="error" sx={{ mb: 2 }}>دریافت اطلاعات شرکت با خطا مواجه شد.</Alert>
+        <Alert severity="error" sx={{ mb: 2 }}>Ø¯Ø±ÛŒØ§ÙØª Ø§Ø·Ù„Ø§Ø¹Ø§Øª Ø´Ø±Ú©Øª Ø¨Ø§ Ø®Ø·Ø§ Ù…ÙˆØ§Ø¬Ù‡ Ø´Ø¯.</Alert>
         <Button onClick={() => navigate(backTo)}>{backLabel}</Button>
       </Box>
     );
@@ -123,12 +145,12 @@ export default function CompanyDetailsPage() {
           <Box>
             <Typography variant="h4">{company.legalName}</Typography>
             <Typography color="text.secondary" sx={{ mt: 0.5 }}>
-              {company.brandName || 'بدون نام برند'}
+              {company.brandName || 'Ø¨Ø¯ÙˆÙ† Ù†Ø§Ù… Ø¨Ø±Ù†Ø¯'}
             </Typography>
             <Stack direction="row" spacing={1} sx={{ mt: 1.5, flexWrap: 'wrap', gap: 1 }}>
               <Chip label={priorityLabel} color="secondary" variant="outlined" />
-              <Chip label={`مالک: ${company.owner?.fullName || 'بدون مالک'}`} variant="outlined" />
-              {archived && <Chip label="بایگانی‌شده" color="warning" />}
+              <Chip label={`Ù…Ø§Ù„Ú©: ${company.owner?.fullName || 'Ø¨Ø¯ÙˆÙ† Ù…Ø§Ù„Ú©'}`} variant="outlined" />
+              {archived && <Chip label="Ø¨Ø§ÛŒÚ¯Ø§Ù†ÛŒâ€ŒØ´Ø¯Ù‡" color="warning" />}
             </Stack>
           </Box>
           <Button startIcon={<ArrowBackIcon />} onClick={() => navigate(backTo)}>
@@ -161,50 +183,80 @@ export default function CompanyDetailsPage() {
             >
               {canEditCompany && !archived && (
                 <Button variant="contained" onClick={() => setEditOpen(true)}>
-                  ویرایش اطلاعات شرکت
+                  ÙˆÛŒØ±Ø§ÛŒØ´ Ø§Ø·Ù„Ø§Ø¹Ø§Øª Ø´Ø±Ú©Øª
                 </Button>
               )}
               {canAssignOwner && !archived && (
                 <Button variant="outlined" onClick={() => setOwnerOpen(true)}>
-                  تخصیص مالک
+                  ØªØ®ØµÛŒØµ Ù…Ø§Ù„Ú©
                 </Button>
               )}
               {canEditCompany && !archived && (
                 <Button variant="outlined" onClick={() => setPriorityOpen(true)}>
-                  تغییر اولویت
+                  ØªØºÛŒÛŒØ± Ø§ÙˆÙ„ÙˆÛŒØª
                 </Button>
               )}
               {canArchiveCompany && (archived
-                ? <Button color="success" variant="outlined" onClick={() => setRestoreOpen(true)}>بازیابی</Button>
-                : <Button color="warning" variant="outlined" onClick={() => setArchiveOpen(true)}>بایگانی</Button>)}
+                ? <Button color="success" variant="outlined" onClick={() => setRestoreOpen(true)}>Ø¨Ø§Ø²ÛŒØ§Ø¨ÛŒ</Button>
+                : <Button color="warning" variant="outlined" onClick={() => setArchiveOpen(true)}>Ø¨Ø§ÛŒÚ¯Ø§Ù†ÛŒ</Button>)}
             </Stack>
 
             <Grid container spacing={3}>
-              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="نام حقوقی" value={company.legalName} /></Grid>
-              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="نام برند" value={company.brandName} /></Grid>
-              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="صنعت" value={company.industry} /></Grid>
-              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="نوع مالکیت" value={getOwnershipLabel(company.ownership)} /></Grid>
-              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="اولویت" value={priorityLabel} /></Grid>
-              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="مالک" value={company.owner?.fullName} /></Grid>
-              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="تیم مالک" value={getTeamName(company.owner?.team)} /></Grid>
-              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="شهر دفتر مرکزی" value={company.headOfficeCity} /></Grid>
-              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="وب‌سایت" value={company.website} /></Grid>
-              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="منبع" value={company.source} /></Grid>
-              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="تاریخ ایجاد" value={formatDateTime(company.createdAt)} /></Grid>
-              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="آخرین بروزرسانی" value={formatDateTime(company.updatedAt)} /></Grid>
-              {archived && <><Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="تاریخ بایگانی" value={formatDateTime(company.archivedAt)} /></Grid><Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="دلیل بایگانی" value={company.archiveReason} /></Grid></>}
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="Ù†Ø§Ù… Ø­Ù‚ÙˆÙ‚ÛŒ" value={company.legalName} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="Ù†Ø§Ù… Ø¨Ø±Ù†Ø¯" value={company.brandName} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="ØµÙ†Ø¹Øª" value={company.industry} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="Ù†ÙˆØ¹ Ù…Ø§Ù„Ú©ÛŒØª" value={getOwnershipLabel(company.ownership)} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="Ø§ÙˆÙ„ÙˆÛŒØª" value={priorityLabel} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="Ù…Ø§Ù„Ú©" value={company.owner?.fullName} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="ØªÛŒÙ… Ù…Ø§Ù„Ú©" value={getTeamName(company.owner?.team)} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="Ø´Ù‡Ø± Ø¯ÙØªØ± Ù…Ø±Ú©Ø²ÛŒ" value={company.headOfficeCity} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="ÙˆØ¨â€ŒØ³Ø§ÛŒØª" value={company.website} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="Ù…Ù†Ø¨Ø¹" value={company.source} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="ØªØ§Ø±ÛŒØ® Ø§ÛŒØ¬Ø§Ø¯" value={formatDateTime(company.createdAt)} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="Ø¢Ø®Ø±ÛŒÙ† Ø¨Ø±ÙˆØ²Ø±Ø³Ø§Ù†ÛŒ" value={formatDateTime(company.updatedAt)} /></Grid>
+              {archived && <><Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="ØªØ§Ø±ÛŒØ® Ø¨Ø§ÛŒÚ¯Ø§Ù†ÛŒ" value={formatDateTime(company.archivedAt)} /></Grid><Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="Ø¯Ù„ÛŒÙ„ Ø¨Ø§ÛŒÚ¯Ø§Ù†ÛŒ" value={company.archiveReason} /></Grid></>}
             </Grid>
           </Paper>
           <Alert
             severity="info"
             action={
               <Button color="inherit" size="small" onClick={() => setActiveTab('opportunities')}>
-                مشاهده فرصت‌های فروش
+                Ù…Ø´Ø§Ù‡Ø¯Ù‡ ÙØ±ØµØªâ€ŒÙ‡Ø§ÛŒ ÙØ±ÙˆØ´
               </Button>
             }
           >
-            مرحله فروش از طریق فرصت‌های فروش این شرکت مدیریت می‌شود.
+            Ù…Ø±Ø­Ù„Ù‡ ÙØ±ÙˆØ´ Ø§Ø² Ø·Ø±ÛŒÙ‚ ÙØ±ØµØªâ€ŒÙ‡Ø§ÛŒ ÙØ±ÙˆØ´ Ø§ÛŒÙ† Ø´Ø±Ú©Øª Ù…Ø¯ÛŒØ±ÛŒØª Ù…ÛŒâ€ŒØ´ÙˆØ¯.
           </Alert>
+          <Paper sx={{ p: { xs: 2, md: 3 } }}>
+            <Typography variant="h6" sx={{ mb: 3 }}>اطلاعات ثبتی و حقوقی</Typography>
+            <Grid container spacing={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="شماره ثبت" value={company.registrationNumber} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="شناسه ملی" value={company.nationalId} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="کد اقتصادی" value={company.economicCode} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="تاریخ تاسیس" value={formatDate(company.establishmentDate)} /></Grid>
+            </Grid>
+          </Paper>
+          <Paper sx={{ p: { xs: 2, md: 3 } }}>
+            <Typography variant="h6" sx={{ mb: 3 }}>وضعیت و اندازه شرکت</Typography>
+            <Grid container spacing={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="وضعیت فعالیت" value={getActivityStatusLabel(company.activityStatus)} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="سرمایه ثبتی" value={formatNumber(company.registeredCapital)} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="تعداد پرسنل" value={formatNumber(company.employeeCount)} /></Grid>
+            </Grid>
+          </Paper>
+          <Paper sx={{ p: { xs: 2, md: 3 } }}>
+            <Typography variant="h6" sx={{ mb: 3 }}>ساختار مالکیتی</Typography>
+            <Grid container spacing={3}>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="body2" color="text.secondary">شرکت‌های مادر</Typography>
+                <CompanyLinks companies={company.parentCompanies} />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="body2" color="text.secondary">شرکت‌های زیرمجموعه</Typography>
+                <CompanyLinks companies={company.subsidiaryCompanies} />
+              </Grid>
+            </Grid>
+          </Paper>
         </Stack>
       ) : activeTab === 'people' ? (
         <PeopleTab companyId={company.id} />
@@ -216,6 +268,8 @@ export default function CompanyDetailsPage() {
         <ActivitiesTab companyId={company.id} />
       ) : activeTab === 'call-card' ? (
         <CallCardTab companyId={company.id} />
+      ) : activeTab === 'legal-documents' ? (
+        <CompanyLegalDocumentsTab companyId={company.id} />
       ) : activeTab === 'branches' ? (
         <CompanyBranchesTab companyId={company.id} />
       ) : activeTab === 'social-channels' ? (
@@ -226,7 +280,7 @@ export default function CompanyDetailsPage() {
             {detailTabs.find((tab) => tab.value === activeTab)?.label}
           </Typography>
           <Typography color="text.secondary" sx={{ mt: 1 }}>
-            این بخش برای پیاده‌سازی در مرحله بعد آماده شده است.
+            Ø§ÛŒÙ† Ø¨Ø®Ø´ Ø¨Ø±Ø§ÛŒ Ù¾ÛŒØ§Ø¯Ù‡â€ŒØ³Ø§Ø²ÛŒ Ø¯Ø± Ù…Ø±Ø­Ù„Ù‡ Ø¨Ø¹Ø¯ Ø¢Ù…Ø§Ø¯Ù‡ Ø´Ø¯Ù‡ Ø§Ø³Øª.
           </Typography>
         </Paper>
       )}
