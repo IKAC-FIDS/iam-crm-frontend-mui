@@ -25,3 +25,9 @@ export interface CatalogPayload {
 export interface CatalogQueryOptions { group?: LookupGroup; includeInactive?: boolean }
 export function isCatalogItemActive(item: CatalogItem): boolean { return item.isActive; }
 export function getCatalogItemLabel(item: CatalogItem): string { return item.label || '—'; }
+export function getLookupLabel(options: CatalogItem[], value?: string | null): string {
+  const normalized = value?.trim();
+  if (!normalized) return '—';
+  const option = options.find((item) => item.id === normalized || item.code === normalized || item.value === normalized);
+  return option ? getCatalogItemLabel(option) : normalized;
+}

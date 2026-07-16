@@ -4350,6 +4350,49 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * در پایپ‌لاین، تغییر از «همه فرصت‌ها» به «فرصت‌های من» ستون‌ها و شمارش stageها را refetch کند و بازگشت به همه نیز درست کار کند.
 
 ---
+
+## fix 000085 — نمایش label گزینه‌های پایه در صفحه مخاطبین
+
+**موارد پیاده‌سازی‌شده:**
+
+* علت نمایش نادرست این بود که جدول‌ها و جزئیات شخص مقدار ذخیره‌شده lookup مانند `ECONOMIC_BUYER` را مستقیماً نمایش می‌دادند و آن را با گزینه‌های پایه تطبیق نمی‌دادند.
+* helper مشترک `getLookupLabel` اضافه شد که مقدار را با `id`، `code` یا `value` گزینه تطبیق می‌دهد و `label` فارسی API را نمایش می‌دهد.
+* نقش پرسونا از گروه `persona-roles` در فهرست سراسری `/people`، تب افراد شرکت و drawer جزئیات شخص با label نمایش داده می‌شود.
+* فیلدهای lookup-backed دیگر شخص شامل دپارتمان، سمت سازمانی و سطح ارشدیت نیز در همین نماها از گروه‌های متناظر خود label می‌گیرند.
+* فیلترها و dropdownهای فرم همچنان label گزینه را نمایش می‌دهند و مقدار backend-compatible موجود (`value`/code و در رکورد legacy شناسه موجود) را نگه می‌دارند؛ label فارسی به‌جای مقدار قرارداد API ارسال نمی‌شود.
+* هنگام loading یا خطای lookup و همچنین نبود گزینه متناظر، مقدار خام قبلی به‌عنوان fallback نمایش داده می‌شود و مقدار خالی با «—» نمایش داده می‌شود.
+* نمایش نوع راه تماس و پلتفرم اجتماعی تغییر داده نشد، زیرا این بخش‌ها از enumها و labelهای صریح موجود خود استفاده می‌کنند و قرارداد lookup جاری آن‌ها در فرم‌های شخص فعال نیست.
+* جست‌وجوی الگوهای خرابی encoding فارسی در `src`، `index.html` و `README.md` انجام شد و موردی پیدا نشد.
+
+**فایل‌های تغییرکرده:**
+
+* `src/features/catalogs/types/catalog.types.ts`
+* `src/features/people/pages/PeopleDirectoryPage.tsx`
+* `src/features/people/components/PeopleTab.tsx`
+* `src/features/people/components/PersonDetailDrawer.tsx`
+* `src/features/people/components/PersonForm.tsx`
+* `README.md`
+
+**وابستگی backend:**
+
+* backend باید گزینه‌های فعال گروه‌های `persona-roles`، `departments`، `job-titles` و `seniority-levels` را با `id`، `code` و `label` از API lookup موجود برگرداند؛ در صورت نبود یا خطای lookup، frontend مقدار ذخیره‌شده را نمایش می‌دهد.
+
+**وضعیت بررسی‌ها:**
+
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
+* `npm run build`: بدون خطا اجرا شد.
+* هشدار غیرمسدودکننده Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
+* بررسی دستی با backend و رکورد دارای `ECONOMIC_BUYER` اجرا نشد؛ این بررسی به داده lookup و نشست معتبر نیاز دارد.
+
+**چک‌لیست بررسی دستی:**
+
+* در `/people` ستون «نقش پرسونا» به‌جای `ECONOMIC_BUYER` مقدار label فارسی مانند «تصمیم‌گیر اقتصادی» را نشان دهد و جستجو/فیلترها کار کنند.
+* تب افراد شرکت و drawer جزئیات شخص نیز همان label را نمایش دهند.
+* ایجاد/ویرایش شخص label را در dropdown نشان دهد و مقدار backend-compatible را ارسال کند.
+* برای مقدار بدون گزینه متناظر، کد خام بدون crash نمایش داده شود.
+
+---
 **Built with ❤️ for sales team**
 
 ---

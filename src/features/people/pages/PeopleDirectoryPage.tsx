@@ -13,7 +13,7 @@ import { useDebouncedValue } from '@/features/companies/hooks/useDebouncedValue'
 import type { CompanyListItem } from '@/features/companies/types/company.types';
 import { useReportFilterOptions } from '@/features/reports/hooks/useReports';
 import { useCatalog } from '@/features/catalogs/hooks/useCatalogs';
-import { getCatalogItemLabel, isCatalogItemActive } from '@/features/catalogs/types/catalog.types';
+import { getCatalogItemLabel, getLookupLabel, isCatalogItemActive } from '@/features/catalogs/types/catalog.types';
 import PersonDetailDrawer from '../components/PersonDetailDrawer';
 import { usePeopleDirectory } from '../hooks/usePeople';
 import {
@@ -23,7 +23,6 @@ import {
 } from '../types/person.types';
 
 type BooleanFilter = '' | 'true' | 'false';
-const display = (value?: string | null) => value?.trim() || '—';
 const booleanValue = (value: BooleanFilter): boolean | undefined => value === '' ? undefined : value === 'true';
 
 function primaryContactSummary(person: DirectoryPerson): string {
@@ -80,10 +79,10 @@ export default function PeopleDirectoryPage() {
 
   const columns = useMemo<GridColDef<DirectoryPerson>[]>(() => [
     { field: 'fullName', headerName: 'نام', minWidth: 170, flex: 1 },
-    { field: 'jobTitle', headerName: 'سمت سازمانی', minWidth: 150, valueGetter: (_value, row) => row.jobTitle ?? row.title ?? '—' },
-    { field: 'department', headerName: 'دپارتمان', minWidth: 130, valueFormatter: display },
-    { field: 'personaRole', headerName: 'نقش در فرآیند فروش', minWidth: 170, valueGetter: (_value, row) => row.personaRole ?? row.personaTag ?? '—' },
-    { field: 'seniorityLevel', headerName: 'سطح ارشدیت', minWidth: 130, valueFormatter: display },
+    { field: 'jobTitle', headerName: 'سمت سازمانی', minWidth: 150, valueGetter: (_value, row) => getLookupLabel(jobTitles, row.jobTitle ?? row.title) },
+    { field: 'department', headerName: 'دپارتمان', minWidth: 130, valueGetter: (_value, row) => getLookupLabel(departments, row.department) },
+    { field: 'personaRole', headerName: 'نقش پرسونا', minWidth: 170, valueGetter: (_value, row) => getLookupLabel(personaRoles, row.personaRole ?? row.personaTag) },
+    { field: 'seniorityLevel', headerName: 'سطح ارشدیت', minWidth: 130, valueGetter: (_value, row) => getLookupLabel(seniorityLevels, row.seniorityLevel) },
     { field: 'isPrimaryContact', headerName: 'مخاطب اصلی', minWidth: 110, renderCell: ({ value }) => <Chip size="small" color={value ? 'success' : 'default'} label={value ? 'بله' : 'خیر'} /> },
     { field: 'company', headerName: 'شرکت', minWidth: 180, flex: 1, valueGetter: (_value, row) => row.company?.legalName ?? '—' },
     { field: 'owner', headerName: 'مالک', minWidth: 150, valueGetter: (_value, row) => row.owner?.fullName ?? row.company?.owner?.fullName ?? '—' },
@@ -124,7 +123,7 @@ export default function PeopleDirectoryPage() {
         />
       ),
     },
-  ], [navigate]);
+  ], [departments, jobTitles, navigate, personaRoles, seniorityLevels]);
 
   if (!allowed) return <Alert severity="warning">شما دسترسی مشاهده افراد را ندارید.</Alert>;
   const boolSelect = (id: string, label: string, value: BooleanFilter, onChange: (value: BooleanFilter) => void) => <FormControl fullWidth><InputLabel id={id}>{label}</InputLabel><Select labelId={id} label={label} value={value} onChange={(event) => { onChange(event.target.value as BooleanFilter); resetPage(); }}><MenuItem value="">همه</MenuItem><MenuItem value="true">بله</MenuItem><MenuItem value="false">خیر</MenuItem></Select></FormControl>;
@@ -137,7 +136,7 @@ export default function PeopleDirectoryPage() {
       <FormControl fullWidth disabled={reportOptions.isError}><InputLabel id="people-team">تیم</InputLabel><Select labelId="people-team" label="تیم" value={team} onChange={(event) => { setTeam(event.target.value); resetPage(); }}><MenuItem value="">همه تیم‌ها</MenuItem>{(reportOptions.data?.teams ?? []).map((item) => <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>)}</Select></FormControl>
       <FormControl fullWidth disabled={departmentsQuery.isError}><InputLabel id="people-department">دپارتمان</InputLabel><Select labelId="people-department" label="دپارتمان" value={department} onChange={(event) => { setDepartment(event.target.value); resetPage(); }}><MenuItem value="">همه دپارتمان‌ها</MenuItem>{departments.map((item) => <MenuItem key={item.id} value={item.value}>{getCatalogItemLabel(item)}</MenuItem>)}</Select></FormControl>
       <FormControl fullWidth disabled={jobTitlesQuery.isError}><InputLabel id="people-job-title">سمت سازمانی</InputLabel><Select labelId="people-job-title" label="سمت سازمانی" value={jobTitle} onChange={(event) => { setJobTitle(event.target.value); resetPage(); }}><MenuItem value="">همه سمت‌ها</MenuItem>{jobTitles.map((item) => <MenuItem key={item.id} value={item.value}>{getCatalogItemLabel(item)}</MenuItem>)}</Select></FormControl>
-      <FormControl fullWidth disabled={personaRolesQuery.isError}><InputLabel id="people-persona-role">نقش در فرآیند فروش</InputLabel><Select labelId="people-persona-role" label="نقش در فرآیند فروش" value={personaRole} onChange={(event) => { setPersonaRole(event.target.value); resetPage(); }}><MenuItem value="">همه نقش‌های فروش</MenuItem>{personaRoles.map((item) => <MenuItem key={item.id} value={item.value}>{getCatalogItemLabel(item)}</MenuItem>)}</Select></FormControl>
+      <FormControl fullWidth disabled={personaRolesQuery.isError}><InputLabel id="people-persona-role">نقش پرسونا</InputLabel><Select labelId="people-persona-role" label="نقش پرسونا" value={personaRole} onChange={(event) => { setPersonaRole(event.target.value); resetPage(); }}><MenuItem value="">همه نقش‌های پرسونا</MenuItem>{personaRoles.map((item) => <MenuItem key={item.id} value={item.value}>{getCatalogItemLabel(item)}</MenuItem>)}</Select></FormControl>
       <FormControl fullWidth disabled={seniorityLevelsQuery.isError}><InputLabel id="people-seniority">سطح ارشدیت</InputLabel><Select labelId="people-seniority" label="سطح ارشدیت" value={seniorityLevel} onChange={(event) => { setSeniorityLevel(event.target.value); resetPage(); }}><MenuItem value="">همه سطوح ارشدیت</MenuItem>{seniorityLevels.map((item) => <MenuItem key={item.id} value={item.value}>{getCatalogItemLabel(item)}</MenuItem>)}</Select></FormControl>
       {boolSelect('people-primary', 'مخاطب اصلی', primary, setPrimary)}{boolSelect('people-email', 'دارای ایمیل', hasEmail, setHasEmail)}{boolSelect('people-phone', 'دارای تلفن', hasPhone, setHasPhone)}
     </Box>{(reportOptions.isError || departmentsQuery.isError || jobTitlesQuery.isError || personaRolesQuery.isError || seniorityLevelsQuery.isError || companyOptions.isError) && <Alert severity="warning" sx={{ mt: 2 }}>دریافت بخشی از گزینه‌های فیلتر با خطا مواجه شد.</Alert>}</Paper>

@@ -23,6 +23,8 @@ import PersonContactForm from './PersonContactForm';
 import PersonSocialForm from './PersonSocialForm';
 import PersonEducationHistorySection from './PersonEducationHistorySection';
 import PersonEmploymentHistorySection from './PersonEmploymentHistorySection';
+import { useCatalog } from '@/features/catalogs/hooks/useCatalogs';
+import { getLookupLabel, isCatalogItemActive } from '@/features/catalogs/types/catalog.types';
 import {
   useCreatePersonContact,
   useCreatePersonSocial,
@@ -73,6 +75,10 @@ export default function PersonDetailDrawer({
   canManageSocials,
   canManageHistories,
 }: PersonDetailDrawerProps) {
+  const departments = (useCatalog('lookupOptions', open, { group: 'departments' }).data ?? []).filter(isCatalogItemActive);
+  const jobTitles = (useCatalog('lookupOptions', open, { group: 'job-titles' }).data ?? []).filter(isCatalogItemActive);
+  const personaRoles = (useCatalog('lookupOptions', open, { group: 'persona-roles' }).data ?? []).filter(isCatalogItemActive);
+  const seniorityLevels = (useCatalog('lookupOptions', open, { group: 'seniority-levels' }).data ?? []).filter(isCatalogItemActive);
   const personQuery = usePerson(personId);
   const contactsQuery = usePersonContacts(personId);
   const socialsQuery = usePersonSocials(personId);
@@ -174,10 +180,10 @@ export default function PersonDetailDrawer({
               <Typography variant="h6" sx={{ mb: 2 }}>اطلاعات شخص</Typography>
               <Stack spacing={1.5}>
                 <Info label="نام کامل" value={personQuery.data.fullName} />
-                <Info label="دپارتمان" value={personQuery.data.department} />
-                <Info label="سمت سازمانی" value={personQuery.data.jobTitle ?? personQuery.data.title} />
-                <Info label="نقش در فرآیند فروش" value={personQuery.data.personaRole ?? personQuery.data.personaTag} />
-                <Info label="سطح ارشدیت" value={personQuery.data.seniorityLevel} />
+                <Info label="دپارتمان" value={getLookupLabel(departments, personQuery.data.department)} />
+                <Info label="سمت سازمانی" value={getLookupLabel(jobTitles, personQuery.data.jobTitle ?? personQuery.data.title)} />
+                <Info label="نقش پرسونا" value={getLookupLabel(personaRoles, personQuery.data.personaRole ?? personQuery.data.personaTag)} />
+                <Info label="سطح ارشدیت" value={getLookupLabel(seniorityLevels, personQuery.data.seniorityLevel)} />
                 {/* <Info label="لینکدین" value={personQuery.data.linkedinUrl} />
                 <Info label="ایمیل" value={personQuery.data.email} />
                 <Info label="تلفن" value={personQuery.data.phone} /> */}

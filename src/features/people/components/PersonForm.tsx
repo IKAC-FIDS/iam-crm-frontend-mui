@@ -18,6 +18,7 @@ import {
 import { useCatalog } from '@/features/catalogs/hooks/useCatalogs';
 import {
   getCatalogItemLabel,
+  getLookupLabel,
   isCatalogItemActive,
 } from '@/features/catalogs/types/catalog.types';
 
@@ -154,6 +155,7 @@ export default function PersonForm({
               {...field}
               labelId={`${mode}-person-department`}
               label="دپارتمان"
+              renderValue={(value) => getLookupLabel(departmentOptions, value)}
             >
               <MenuItem value="">
                 انتخاب نشده
@@ -182,6 +184,7 @@ export default function PersonForm({
               {...field}
               labelId={`${mode}-person-job-title`}
               label="سمت سازمانی"
+              renderValue={(value) => getLookupLabel(jobTitleOptions, value)}
             >
               <MenuItem value="">
                 انتخاب نشده
@@ -203,13 +206,14 @@ export default function PersonForm({
         render={({ field }) => (
           <FormControl fullWidth disabled={personaRoles.isLoading || personaRoles.isError}>
             <InputLabel id={`${mode}-person-persona`}>
-              نقش در فرآیند فروش
+              نقش پرسونا
             </InputLabel>
 
             <Select
               {...field}
               labelId={`${mode}-person-persona`}
-              label="نقش در فرآیند فروش"
+              label="نقش پرسونا"
+              renderValue={(value) => getLookupLabel(personaRoleOptions, value)}
             >
               <MenuItem value="">
                 انتخاب نشده
@@ -238,6 +242,7 @@ export default function PersonForm({
               {...field}
               labelId={`${mode}-person-seniority`}
               label="سطح ارشدیت"
+              renderValue={(value) => getLookupLabel(seniorityLevelOptions, value)}
             >
               <MenuItem value="">
                 انتخاب نشده

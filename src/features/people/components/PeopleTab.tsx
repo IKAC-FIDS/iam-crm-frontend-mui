@@ -21,6 +21,8 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { can } from '@/features/auth/utils/permissions';
 import { RowActions } from '@/shared/components/RowActions';
 import { useAuthStore } from '@/store/authStore';
+import { useCatalog } from '@/features/catalogs/hooks/useCatalogs';
+import { getLookupLabel, isCatalogItemActive } from '@/features/catalogs/types/catalog.types';
 import PersonDetailDrawer from './PersonDetailDrawer';
 import PersonFormDialog from './PersonFormDialog';
 import { useDeletePerson, usePeople } from '../hooks/usePeople';
@@ -55,6 +57,10 @@ export default function PeopleTab({ companyId }: PeopleTabProps) {
   const canDelete = can(user, 'person:delete', ['ADMIN', 'MANAGER']);
   const canManageContacts = can(user, 'person:update', ['ADMIN', 'MANAGER', 'REP']);
   const canManageSocials = can(user, 'person:update', ['ADMIN', 'MANAGER', 'REP']);
+  const departments = (useCatalog('lookupOptions', canView, { group: 'departments' }).data ?? []).filter(isCatalogItemActive);
+  const jobTitles = (useCatalog('lookupOptions', canView, { group: 'job-titles' }).data ?? []).filter(isCatalogItemActive);
+  const personaRoles = (useCatalog('lookupOptions', canView, { group: 'persona-roles' }).data ?? []).filter(isCatalogItemActive);
+  const seniorityLevels = (useCatalog('lookupOptions', canView, { group: 'seniority-levels' }).data ?? []).filter(isCatalogItemActive);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({ page: 0, pageSize: 10 });
   const [formMode, setFormMode] = useState<'create' | 'edit'>('create');
   const [formOpen, setFormOpen] = useState(false);
@@ -70,10 +76,10 @@ export default function PeopleTab({ companyId }: PeopleTabProps) {
 
   const columns = useMemo<GridColDef<Person>[]>(() => [
     { field: 'fullName', headerName: 'نام', minWidth: 170, flex: 1 },
-    { field: 'jobTitle', headerName: 'سمت سازمانی', minWidth: 150, flex: 0.7, valueGetter: (_value, row) => row.jobTitle ?? row.title ?? '—' },
-    { field: 'department', headerName: 'دپارتمان', minWidth: 130, flex: 0.7 },
-    { field: 'personaRole', headerName: 'نقش در فرآیند فروش', minWidth: 170, valueGetter: (_value, row) => row.personaRole ?? row.personaTag ?? '—' },
-    { field: 'seniorityLevel', headerName: 'سطح ارشدیت', minWidth: 125 },
+    { field: 'jobTitle', headerName: 'سمت سازمانی', minWidth: 150, flex: 0.7, valueGetter: (_value, row) => getLookupLabel(jobTitles, row.jobTitle ?? row.title) },
+    { field: 'department', headerName: 'دپارتمان', minWidth: 130, flex: 0.7, valueGetter: (_value, row) => getLookupLabel(departments, row.department) },
+    { field: 'personaRole', headerName: 'نقش پرسونا', minWidth: 170, valueGetter: (_value, row) => getLookupLabel(personaRoles, row.personaRole ?? row.personaTag) },
+    { field: 'seniorityLevel', headerName: 'سطح ارشدیت', minWidth: 125, valueGetter: (_value, row) => getLookupLabel(seniorityLevels, row.seniorityLevel) },
     {
       field: 'isPrimaryContact',
       headerName: 'مخاطب اصلی',
@@ -139,7 +145,7 @@ export default function PeopleTab({ companyId }: PeopleTabProps) {
         />
       ),
     },
-  ], [canDelete, canEdit]);
+  ], [canDelete, canEdit, departments, jobTitles, personaRoles, seniorityLevels]);
 
   if (!canView) {
     return <Alert severity="warning">دسترسی مشاهده افراد برای این حساب فعال نیست.</Alert>;
