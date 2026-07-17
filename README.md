@@ -745,7 +745,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000085
+fix 000001 → fix 000086
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -4319,37 +4319,37 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 ---
 
-## fix 000086 — اصلاح نمایش نتیجه بارگذاری اسناد حقوقی شرکت
+## fix 000086 — Correct legal-document upload result handling
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* مسیر بارگذاری بررسی و روی `POST /companies/:companyId/legal-documents/upload` با `FormData` و نام فیلد فایل `file` حفظ شد؛ metadata شامل `type`، `title`، `description` و `documentDate` است.
-* تنظیم دستی `Content-Type` از درخواست upload حذف شد تا interceptor مشترک Axios مقدار JSON را بردارد و مرورگر boundary صحیح multipart را تولید کند.
-* پاسخ upload اکنون unwrap و اعتبارسنجی می‌شود و رکورد ایجادشده را از پاسخ مستقیم یا envelopeهای `data`، `document` و `legalDocument` می‌خواند.
-* در صورت دریافت رکورد معتبر، cache فهرست اسناد فوراً با سند جدید به‌روزرسانی و سپس query فعال اسناد حقوقی صریحاً refetch می‌شود؛ query جزئیات شرکت نیز invalidate می‌شود.
-* پس از موفقیت واقعی پیام «سند با موفقیت بارگذاری شد» نمایش داده می‌شود و فرم reset و بسته می‌شود.
-* اگر پاسخ 2xx فاقد رکورد سند باشد، موفقیت کاذب نمایش داده نمی‌شود؛ پیام هشدار نمایش داده، فهرست مجدداً دریافت و dialog reset/بسته می‌شود.
-* خطاهای non-2xx با پیام backend داخل فرم و toast نمایش داده می‌شوند، فرم برای اصلاح/تلاش مجدد باز می‌ماند و برای خطای 403 پیام روشن نبود مجوز نمایش داده می‌شود.
-* عنوان بخش «اسناد حقوقی شرکت» و عنوان dialog «بارگذاری سند حقوقی» با برچسب‌های فارسی هماهنگ شدند.
+* Reviewed and preserved the upload route as `POST /companies/:companyId/legal-documents/upload`, using `FormData` with the file field named `file`. Metadata includes `type`, `title`, `description`, and `documentDate`.
+* Removed manual `Content-Type` configuration from the upload request so the shared Axios interceptor can remove the JSON header and the browser can generate the correct multipart boundary.
+* The upload response is now unwrapped and validated. The created record can be read from a direct response or from `data`, `document`, and `legalDocument` envelopes.
+* When a valid record is returned, the legal-document list cache is updated immediately with the new document, the active legal-document query is explicitly refetched, and the company-detail query is invalidated.
+* After confirmed success, the UI displays a success message, resets the form, and closes the dialog.
+* When a 2xx response does not contain a document record, the UI no longer reports false success. It displays a warning, refetches the list, and then resets and closes the dialog.
+* Non-2xx errors display the backend message both inside the form and in a toast. The form remains open for correction or retry, and HTTP 403 responses show a clear permission-denied message.
+* Aligned the Company Legal Documents section title and the Upload Legal Document dialog title with the Persian UI labels.
 
-**فایل‌های تغییرکرده:**
+**Important changed files:**
 
 * `src/features/companies/services/companies.service.ts`
 * `src/features/companies/hooks/useCompanies.ts`
 * `src/features/companies/components/CompanyLegalDocumentsTab.tsx`
 * `README.md`
 
-**وابستگی backend:**
+**Backend dependency:**
 
-* backend باید endpoint `POST /api/companies/:companyId/legal-documents/upload` را با `FileInterceptor('file')` و metadata یادشده پشتیبانی کند، پس از ایجاد موفق رکورد سند را در پاسخ برگرداند و endpoint فهرست اسناد را بلافاصله سازگار با رکورد جدید ارائه دهد.
+* The backend must support `POST /api/companies/:companyId/legal-documents/upload` with `FileInterceptor('file')` and the metadata listed above. After a successful upload, it must return the created document record and make the new record immediately available through the legal-document list endpoint.
 
-**وضعیت بررسی‌ها:**
+**Verification status:**
 
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
-* `npm run build`: بدون خطا اجرا شد.
-* هشدار غیرمسدودکننده Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
-* تست دستی upload با backend و فایل واقعی اجرا نشد؛ این بررسی به نشست دارای مجوز، backend در حال اجرا و فضای ذخیره‌سازی متصل نیاز دارد.
+* `npm run lint` passed without errors.
+* TypeScript checks passed as part of `npm run build`.
+* `npm run build` passed.
+* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
+* Manual upload testing with a real file and running backend was not performed. It requires an authenticated session, a running backend, and connected storage.
 
 ---
 **Built with ❤️ for sales team**
