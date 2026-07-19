@@ -12,6 +12,8 @@ import type {
   ArchiveCompanyPayload,
   UploadCompanyLegalDocumentPayload,
   UpdateCompanyLegalDocumentPayload,
+  CompanyOption,
+  GetCompanyOptionsParams,
 } from '../types/company.types';
 
 interface CompaniesApiMeta {
@@ -103,6 +105,19 @@ function cleanRequestParams(params: GetCompaniesParams): Record<string, string |
 }
 
 export const companiesService = {
+  getCompanyOptions: async (
+    params: GetCompanyOptionsParams,
+    signal?: AbortSignal,
+  ): Promise<PaginatedResult<CompanyOption>> => {
+    const response = await axiosInstance.get<unknown>('/companies/options', { params, signal });
+    return unwrapPaginatedApiResponse<CompanyOption>(response.data);
+  },
+
+  getCompanyOptionById: async (companyId: string, signal?: AbortSignal): Promise<CompanyOption> => {
+    const response = await axiosInstance.get<unknown>(`/companies/options/${companyId}`, { signal });
+    return unwrapApiResponse<CompanyOption>(response.data);
+  },
+
   getCompanies: async (
     params: GetCompaniesParams,
   ): Promise<PaginatedResult<CompanyListItem>> => {

@@ -49,6 +49,7 @@ export default function EditCompanyDialog({ company, open, onClose }: EditCompan
       <DialogTitle>ویرایش اطلاعات شرکت</DialogTitle>
       <DialogContent>
         <CompanyForm
+          key={`${company.id}-${company.updatedAt ?? ''}`}
           mode="edit"
           initialValues={company}
           isSubmitting={updateCompany.isPending}

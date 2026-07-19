@@ -4395,6 +4395,56 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * مالک مشخص انتخاب و ارسال `ownerId` بررسی شود؛ سپس «بدون مالک» انتخاب و نتیجه شرکت‌های فاقد مالک بررسی شود.
 
 ---
+
+## fix 000088 — جستجو و صفحه‌بندی پیشرفته در انتخاب شرکت‌ها
+
+**موارد پیاده‌سازی‌شده:**
+
+* علت اصلی نمایش فهرست ناقص شرکت‌ها، دریافت یک صفحه ثابت و کوچک و سپس فیلترکردن همان داده‌ها در مرورگر بود. انتخاب‌گر مشترک شرکت اکنون جستجو و صفحه‌بندی را به backend واگذار می‌کند.
+* کامپوننت‌های reusable تک‌انتخابی و چندانتخابی شرکت با debounce برابر ۴۰۰ میلی‌ثانیه، صفحه‌های ۲۵ رکوردی و بارگذاری صفحه بعد هنگام نزدیک‌شدن scroll به انتهای فهرست اضافه شدند.
+* query key شامل متن جستجوی normalize‌شده و شناسه شرکت مستثناشده است؛ `AbortSignal` نیز به Axios منتقل می‌شود تا پاسخ جستجوی قدیمی جای نتیجه جدید را نگیرد.
+* نتایج صفحه‌ها و رکورد انتخاب‌شده بر اساس `id` ادغام و deduplicate می‌شوند. مقدار انتخاب‌شده از داده توسعه‌یافته رکورد و، در انتخاب‌گر تک‌مقداری، در صورت نبود label از endpoint جزئیات گزینه hydrate می‌شود.
+* label گزینه‌ها از نام برند و نام قانونی ساخته می‌شود و شناسه ملی یا شماره ثبت به‌عنوان متن تکمیلی نمایش داده می‌شود؛ خطای API داخل خود فیلد قابل مشاهده است و فرم crash نمی‌کند.
+* انتخاب شرکت در فیلتر دایرکتوری مخاطبین، فرم وظیفه، سابقه اشتغال مخاطب و روابط شرکت مادر/زیرمجموعه به کامپوننت مشترک منتقل شد. payloadها همچنان فقط شناسه شرکت را ارسال می‌کنند.
+* در ویرایش شرکت، شرکت جاری با `excludeId` در سمت server از گزینه‌های شرکت مادر/زیرمجموعه حذف می‌شود و انتخاب‌های دو بخش نیز با یکدیگر تداخل ندارند.
+* هیچ local filtering روی یک صفحه محدود انجام نمی‌شود و تغییر عبارت جستجو pagination همان query را از صفحه اول آغاز می‌کند.
+
+**فایل‌های تغییرکرده:**
+
+* `src/components/companies/CompanyAutocomplete.tsx`
+* `src/features/companies/hooks/useCompanies.ts`
+* `src/features/companies/services/companies.service.ts`
+* `src/features/companies/types/company.types.ts`
+* `src/features/companies/utils/companyOption.ts`
+* `src/features/companies/components/CompanyForm.tsx`
+* `src/features/companies/components/EditCompanyDialog.tsx`
+* `src/features/people/pages/PeopleDirectoryPage.tsx`
+* `src/features/people/components/PersonEmploymentHistorySection.tsx`
+* `src/features/tasks/components/TaskFormDialog.tsx`
+* `README.md`
+
+**وابستگی backend:**
+
+* backend باید `GET /api/companies/options` را با پارامترهای `search`، `page`، `limit` و `excludeId` و همچنین `GET /api/companies/options/:id` را برای hydrate کردن انتخاب موجود پشتیبانی کند. این endpointها باید محدودیت سازمانی و مجوز مشاهده شرکت را اعمال کنند و اطلاعات مورد نیاز label را برگردانند.
+
+**وضعیت بررسی‌ها:**
+
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
+* `npm run build`: بدون خطا اجرا شد.
+* هشدار غیرمسدودکننده Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
+* تست خودکار اجرا نشد، زیرا در `package.json` این repository اسکریپت `test` یا test runner پیکربندی نشده است.
+* بررسی دستی در مرورگر با backend و نشست احرازشده اجرا نشد.
+
+**چک‌لیست بررسی دستی:**
+
+* عبارتی را جستجو کنید که شرکت متناظر آن در صفحه اول نتایج نباشد و نمایش نتیجه backend را بررسی کنید.
+* فهرست را تا انتها scroll کنید و دریافت و ادغام صفحه بعد بدون گزینه تکراری را در Network بررسی کنید.
+* فرم ویرایش دارای شرکت انتخاب‌شده را باز کنید و نمایش label مقدار موجود را پیش از جستجو تأیید کنید.
+* در روابط شرکت، نبود شرکت جاری در نتایج و ارسال فقط آرایه شناسه‌های شرکت مادر/زیرمجموعه را بررسی کنید.
+* خطای مجوز یا شبکه endpoint گزینه‌ها را شبیه‌سازی و نمایش پیام خطا بدون crash فرم را تأیید کنید.
+
+---
 **Built with ❤️ for sales team**
 
 ---

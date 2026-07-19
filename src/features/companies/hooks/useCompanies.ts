@@ -1,4 +1,4 @@
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { companiesService } from '../services/companies.service';
 import type {
   ChangeCompanyOwnerPayload,
@@ -9,6 +9,7 @@ import type {
   UploadCompanyLegalDocumentPayload,
   UpdateCompanyLegalDocumentPayload,
   CompanyLegalDocument,
+  GetCompanyOptionsParams,
 } from '../types/company.types';
 
 export const companyQueryKeys = {
@@ -17,6 +18,33 @@ export const companyQueryKeys = {
   detail: (companyId: string) => [...companyQueryKeys.all, 'detail', companyId] as const,
   legalDocuments: (companyId: string) => [...companyQueryKeys.detail(companyId), 'legal-documents'] as const,
 };
+
+export const companyOptionQueryKeys = {
+  all: ['company-options'] as const,
+  list: (search: string, excludeId?: string) => [...companyOptionQueryKeys.all, 'list', search, excludeId ?? null] as const,
+  detail: (companyId: string) => [...companyOptionQueryKeys.all, 'detail', companyId] as const,
+};
+
+export function useCompanyOptions({ search = '', excludeId, limit = 25, includeArchived = false }: Omit<GetCompanyOptionsParams, 'page'> & { search?: string }, enabled = true) {
+  const normalizedSearch = search.trim();
+  return useInfiniteQuery({
+    queryKey: companyOptionQueryKeys.list(normalizedSearch, excludeId),
+    queryFn: ({ pageParam, signal }) => companiesService.getCompanyOptions({ search: normalizedSearch || undefined, page: pageParam, limit, excludeId, includeArchived }, signal),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => lastPage.meta.hasNext ? lastPage.meta.page + 1 : undefined,
+    enabled,
+    staleTime: 2 * 60 * 1000,
+  });
+}
+
+export function useCompanyOptionById(companyId?: string, enabled = true) {
+  return useQuery({
+    queryKey: companyOptionQueryKeys.detail(companyId ?? ''),
+    queryFn: ({ signal }) => companiesService.getCompanyOptionById(companyId!, signal),
+    enabled: enabled && Boolean(companyId),
+    staleTime: 5 * 60 * 1000,
+  });
+}
 
 function invalidateCompanyData(queryClient: ReturnType<typeof useQueryClient>) {
   return Promise.all([

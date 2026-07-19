@@ -1,16 +1,16 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import {
-  Alert, Autocomplete, Box, Button, Checkbox, Dialog, DialogActions, DialogContent,
+  Alert, Box, Button, Checkbox, Dialog, DialogActions, DialogContent,
   DialogTitle, FormControlLabel, IconButton, Paper, Stack, TextField, Typography,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useQueryClient } from '@tanstack/react-query';
-import { useCompanies } from '@/features/companies/hooks/useCompanies';
-import { useDebouncedValue } from '@/features/companies/hooks/useDebouncedValue';
-import type { CompanyListItem } from '@/features/companies/types/company.types';
+import type { CompanyOption } from '@/features/companies/types/company.types';
+import { CompanyAutocomplete } from '@/components/companies/CompanyAutocomplete';
+import { getCompanyLabel } from '@/features/companies/utils/companyOption';
 import { getApiErrorMessage } from '@/lib/apiResponse';
 import JalaliDateField from '@/shared/components/JalaliDateField';
 import { formatJalaliDate } from '@/shared/utils/jalaliDate';
@@ -30,9 +30,6 @@ import type {
   PersonEmploymentHistory,
   PersonEmploymentPosition,
 } from '../types/person.types';
-
-const companyLabel = (company?: { legalName: string; brandName?: string | null } | null) =>
-  company ? company.brandName?.trim() || company.legalName : '';
 
 type PositionDraft = CreatePersonEmploymentPositionPayload & { clientTempId: string };
 const emptyPosition = (): PositionDraft => ({
@@ -87,22 +84,15 @@ function EmploymentDialog({ personId, item, onClose }: {
   onClose: () => void;
 }) {
   const initialCompany = item?.company
-    ? { id: item.company.id, legalName: item.company.legalName, brandName: item.company.brandName } as CompanyListItem
+    ? { id: item.company.id, legalName: item.company.legalName, brandName: item.company.brandName } as CompanyOption
     : null;
-  const [company, setCompany] = useState<CompanyListItem | null>(initialCompany);
-  const [companySearch, setCompanySearch] = useState(companyLabel(initialCompany));
+  const [company, setCompany] = useState<CompanyOption | null>(initialCompany);
   const [description, setDescription] = useState(item?.description ?? '');
   const [positions, setPositions] = useState<PositionDraft[]>(item ? [] : [emptyPosition()]);
   const [attempted, setAttempted] = useState(false);
-  const debouncedSearch = useDebouncedValue(companySearch.trim(), 400);
-  const companies = useCompanies({ page: 1, limit: 20, search: debouncedSearch || undefined });
   const create = useCreatePersonEmploymentHistory(personId);
   const update = useUpdatePersonEmploymentHistory(personId, item?.id ?? '');
   const queryClient = useQueryClient();
-  const options = useMemo(() => {
-    const values = companies.data?.data ?? [];
-    return company && !values.some((option) => option.id === company.id) ? [company, ...values] : values;
-  }, [companies.data?.data, company]);
   const invalidPositions = positions.some((position) => !position.title.trim()
     || Boolean(position.startDate && position.endDate && new Date(position.endDate) < new Date(position.startDate)));
   const pending = create.isPending || update.isPending;
@@ -136,11 +126,8 @@ function EmploymentDialog({ personId, item, onClose }: {
       <DialogTitle>{item ? 'ویرایش سابقه شغلی' : 'افزودن سابقه شغلی'}</DialogTitle>
       <DialogContent><Stack spacing={2} sx={{ pt: 1 }}>
         {(create.isError || update.isError) && <Alert severity="error">ذخیره سابقه شغلی با خطا مواجه شد.</Alert>}
-        <Autocomplete options={options} value={company} loading={companies.isFetching} inputValue={companySearch}
-          onInputChange={(_, value) => setCompanySearch(value)} onChange={(_, value) => setCompany(value)}
-          getOptionLabel={companyLabel} isOptionEqualToValue={(option, value) => option.id === value.id}
-          renderInput={(params) => <TextField {...params} required label="شرکت" error={attempted && !company}
-            helperText={attempted && !company ? 'انتخاب شرکت الزامی است.' : undefined} />} />
+        <CompanyAutocomplete value={company} onChange={setCompany} required label="شرکت"
+          error={attempted && !company} helperText={attempted && !company ? 'انتخاب شرکت الزامی است.' : undefined} />
         <TextField label="توضیحات" multiline minRows={2} value={description} onChange={(event) => setDescription(event.target.value)} />
         {!item && <>
           <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
@@ -214,7 +201,7 @@ export default function PersonEmploymentHistorySection({ personId, canManage }: 
       : !query.data?.length ? <Typography color="text.secondary">سابقه شغلی ثبت نشده است.</Typography>
         : <Stack spacing={2}>{query.data.map((employment) => <Paper key={employment.id} variant="outlined" sx={{ p: 2 }}>
           <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <Box><Typography sx={{ fontWeight: 700 }}>{companyLabel(employment.company) || 'شرکت'}</Typography>
+            <Box><Typography sx={{ fontWeight: 700 }}>{getCompanyLabel(employment.company) || 'شرکت'}</Typography>
               {employment.description && <Typography variant="body2" color="text.secondary">{employment.description}</Typography>}</Box>
             {canManage && <Box><IconButton size="small" aria-label="ویرایش سابقه شغلی" onClick={() => setFormItem(employment)}><EditIcon /></IconButton>
               <IconButton size="small" color="error" aria-label="حذف سابقه شغلی" onClick={() => setDeletingEmployment(employment)}><DeleteIcon /></IconButton></Box>}

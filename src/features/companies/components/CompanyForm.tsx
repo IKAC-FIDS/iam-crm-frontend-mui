@@ -1,10 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, useForm, useWatch } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import {
   Alert,
-  Autocomplete,
   Button,
   FormControl,
   InputLabel,
@@ -18,8 +17,7 @@ import IranProvinceSelect from '@/shared/components/IranProvinceSelect';
 import JalaliDateField from '@/shared/components/JalaliDateField';
 import { useCatalog } from '@/features/catalogs/hooks/useCatalogs';
 import { getCatalogItemLabel, isCatalogItemActive } from '@/features/catalogs/types/catalog.types';
-import { useCompanies } from '../hooks/useCompanies';
-import { useDebouncedValue } from '../hooks/useDebouncedValue';
+import { CompanyMultiAutocomplete } from '@/components/companies/CompanyAutocomplete';
 import {
   COMPANY_ACTIVITY_STATUSES,
   COMPANY_ACTIVITY_STATUS_OPTIONS,
@@ -31,6 +29,7 @@ import {
 import type {
   Company,
   CompanyListItem,
+  CompanyOption,
   CompanySummary,
   CreateCompanyPayload,
   UpdateCompanyPayload,
@@ -107,7 +106,7 @@ const companyFormSchema = z.object({
 
 type CompanyFormData = z.infer<typeof companyFormSchema>;
 
-function summaryFromCompany(company: Company | CompanySummary | CompanyListItem): CompanySummary {
+function summaryFromCompany(company: Company | CompanySummary | CompanyListItem): CompanyOption {
   return {
     id: company.id,
     legalName: company.legalName,
@@ -115,7 +114,7 @@ function summaryFromCompany(company: Company | CompanySummary | CompanyListItem)
   };
 }
 
-function uniqueCompanies(companies: CompanySummary[]): CompanySummary[] {
+function uniqueCompanies(companies: CompanyOption[]): CompanyOption[] {
   return Array.from(new Map(companies.map((company) => [company.id, company])).values());
 }
 
@@ -155,8 +154,8 @@ function optionalValue(value?: string): string | undefined {
   return value?.trim() || undefined;
 }
 
-function companyLabel(company: CompanySummary): string {
-  return company.brandName ? `${company.legalName} (${company.brandName})` : company.legalName;
+function initialRelatedCompanies(companies?: CompanySummary[]): CompanyOption[] {
+  return uniqueCompanies((companies ?? []).map(summaryFromCompany));
 }
 
 export default function CompanyForm({
@@ -169,14 +168,8 @@ export default function CompanyForm({
 }: CompanyFormProps) {
   const industries = useCatalog('industries');
   const leadSources = useCatalog('leadSources');
-  const [companySearch, setCompanySearch] = useState('');
-  const debouncedCompanySearch = useDebouncedValue(companySearch.trim(), 400);
-  const companyOptions = useCompanies({
-    page: 1,
-    limit: 10,
-    search: debouncedCompanySearch || undefined,
-    archiveStatus: 'ACTIVE',
-  });
+  const [selectedParents, setSelectedParents] = useState<CompanyOption[]>(() => initialRelatedCompanies(initialValues?.parentCompanies));
+  const [selectedSubsidiaries, setSelectedSubsidiaries] = useState<CompanyOption[]>(() => initialRelatedCompanies(initialValues?.subsidiaryCompanies));
   const {
     control,
     handleSubmit,
@@ -193,15 +186,6 @@ export default function CompanyForm({
   }, [initialValues, reset]);
 
   const currentCompanyId = initialValues?.id;
-  const parentIds = useWatch({ control, name: 'parentCompanyIds' }) ?? [];
-  const subsidiaryIds = useWatch({ control, name: 'subsidiaryCompanyIds' }) ?? [];
-  const relatedOptions = useMemo(() => {
-    const searched = companyOptions.data?.data.map(summaryFromCompany) ?? [];
-    const initialParents = initialValues?.parentCompanies?.map(summaryFromCompany) ?? [];
-    const initialSubsidiaries = initialValues?.subsidiaryCompanies?.map(summaryFromCompany) ?? [];
-    return uniqueCompanies([...initialParents, ...initialSubsidiaries, ...searched])
-      .filter((company) => company.id !== currentCompanyId);
-  }, [companyOptions.data?.data, currentCompanyId, initialValues?.parentCompanies, initialValues?.subsidiaryCompanies]);
 
   const submit = (data: CompanyFormData) => {
     const normalizedCapital = normalizedDigits(data.registeredCapital ?? '');
@@ -359,19 +343,14 @@ export default function CompanyForm({
         name="parentCompanyIds"
         control={control}
         render={({ field }) => (
-          <Autocomplete
-            multiple
-            options={relatedOptions.filter((company) => !subsidiaryIds.includes(company.id))}
-            value={relatedOptions.filter((company) => field.value.includes(company.id))}
-            loading={companyOptions.isFetching}
-            inputValue={companySearch}
-            onInputChange={(_, value) => setCompanySearch(value)}
-            onChange={(_, value) => field.onChange(value.map((company) => company.id))}
-            getOptionLabel={companyLabel}
-            isOptionEqualToValue={(option, value) => option.id === value.id}
-            renderInput={(params) => (
-              <TextField {...params} label="شرکت‌های مادر" helperText={errors.parentCompanyIds?.message} error={Boolean(errors.parentCompanyIds)} />
-            )}
+          <CompanyMultiAutocomplete
+            value={selectedParents}
+            onChange={(value) => { setSelectedParents(value); field.onChange(value.map((company) => company.id)); }}
+            label="شرکت‌های مادر"
+            excludeCompanyId={currentCompanyId}
+            excludeOptionIds={selectedSubsidiaries.map((company) => company.id)}
+            helperText={errors.parentCompanyIds?.message}
+            error={Boolean(errors.parentCompanyIds)}
           />
         )}
       />
@@ -379,24 +358,17 @@ export default function CompanyForm({
         name="subsidiaryCompanyIds"
         control={control}
         render={({ field }) => (
-          <Autocomplete
-            multiple
-            options={relatedOptions.filter((company) => !parentIds.includes(company.id))}
-            value={relatedOptions.filter((company) => field.value.includes(company.id))}
-            loading={companyOptions.isFetching}
-            inputValue={companySearch}
-            onInputChange={(_, value) => setCompanySearch(value)}
-            onChange={(_, value) => field.onChange(value.map((company) => company.id))}
-            getOptionLabel={companyLabel}
-            isOptionEqualToValue={(option, value) => option.id === value.id}
-            renderInput={(params) => (
-              <TextField {...params} label="شرکت‌های زیرمجموعه" helperText={errors.subsidiaryCompanyIds?.message} error={Boolean(errors.subsidiaryCompanyIds)} />
-            )}
+          <CompanyMultiAutocomplete
+            value={selectedSubsidiaries}
+            onChange={(value) => { setSelectedSubsidiaries(value); field.onChange(value.map((company) => company.id)); }}
+            label="شرکت‌های زیرمجموعه"
+            excludeCompanyId={currentCompanyId}
+            excludeOptionIds={selectedParents.map((company) => company.id)}
+            helperText={errors.subsidiaryCompanyIds?.message}
+            error={Boolean(errors.subsidiaryCompanyIds)}
           />
         )}
       />
-      {companyOptions.isError && <Alert severity="error">دریافت فهرست شرکت‌ها برای ساختار مالکیتی انجام نشد.</Alert>}
-
       <Stack direction="row" spacing={1} sx={{ justifyContent: 'flex-end' }}>
         {onCancel && (
           <Button type="button" onClick={onCancel} disabled={isSubmitting}>

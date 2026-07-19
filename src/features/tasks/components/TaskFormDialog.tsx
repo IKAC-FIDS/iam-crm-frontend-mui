@@ -15,27 +15,22 @@ import {
   Typography,
 } from '@mui/material';
 import { useOwnerOptions } from '@/features/admin/users/hooks/useAdminUsers';
-import { useCompanies } from '@/features/companies/hooks/useCompanies';
 import { useDebouncedValue } from '@/features/companies/hooks/useDebouncedValue';
+import { CompanyAutocomplete } from '@/components/companies/CompanyAutocomplete';
+import { getCompanyLabel } from '@/features/companies/utils/companyOption';
 import { useOpportunities } from '@/features/opportunities/hooks/useOpportunities';
 import { usePeople } from '@/features/people/hooks/usePeople';
 import JalaliDateField from '@/shared/components/JalaliDateField';
 import { getApiErrorMessage } from '@/lib/apiResponse';
 import { useCreateTask, useUpdateTask } from '../hooks/useTasks';
 import { taskPriorityOptions, taskStatusOptions } from '../utils/taskDisplay';
-import type { CompanyListItem } from '@/features/companies/types/company.types';
+import type { CompanyOption } from '@/features/companies/types/company.types';
 import type { Opportunity } from '@/features/opportunities/types/opportunity.types';
 import type { Person } from '@/features/people/types/person.types';
 import type { CreateTaskPayload, Task, TaskPriority, TaskStatus } from '../types/task.types';
 
-type CompanyOption = Pick<CompanyListItem, 'id' | 'legalName' | 'brandName'>;
 type OpportunityOption = Pick<Opportunity, 'id' | 'title' | 'company'> & { companyId?: string | null };
 type PersonOption = Pick<Person, 'id' | 'fullName' | 'title' | 'jobTitle'>;
-
-function companyLabel(company?: CompanyOption | null): string {
-  if (!company) return '';
-  return company.brandName || company.legalName || 'شرکت';
-}
 
 function opportunityLabel(opportunity?: OpportunityOption | null): string {
   return opportunity?.title || 'فرصت';
@@ -98,22 +93,15 @@ export default function TaskFormDialog({
   const [selectedPerson, setSelectedPerson] = useState<PersonOption | null>(
     task?.person ? { id: task.person.id, fullName: task.person.fullName || 'مخاطب', title: task.person.title ?? undefined } : null,
   );
-  const [companySearch, setCompanySearch] = useState('');
   const [opportunitySearch, setOpportunitySearch] = useState('');
-  const debouncedCompanySearch = useDebouncedValue(companySearch.trim(), 400);
   const debouncedOpportunitySearch = useDebouncedValue(opportunitySearch.trim(), 400);
   const selectedCompanyId = selectedCompany?.id ?? '';
   const selectedOpportunityId = selectedOpportunity?.id ?? '';
-  const companyOptionsQuery = useCompanies({ page: 1, limit: 20, search: debouncedCompanySearch || undefined });
   const opportunityOptionsQuery = useOpportunities(
     { page: 1, limit: 20, search: debouncedOpportunitySearch || undefined, companyId: selectedCompanyId || undefined },
     open && !lockOpportunity,
   );
   const peopleQuery = usePeople({ companyId: selectedCompanyId, page: 1, limit: 100 });
-  const companyOptions = useMemo(
-    () => addSelectedOption(companyOptionsQuery.data?.data ?? [], selectedCompany),
-    [companyOptionsQuery.data?.data, selectedCompany],
-  );
   const opportunityOptions = useMemo(
     () => addSelectedOption(opportunityOptionsQuery.data?.data ?? [], selectedOpportunity)
       .filter((item) => !selectedCompanyId || !item.companyId || item.companyId === selectedCompanyId),
@@ -136,7 +124,7 @@ export default function TaskFormDialog({
     if (opportunity?.companyId && !lockCompany) {
       setSelectedCompany(opportunity.company
         ? { id: opportunity.companyId, legalName: opportunity.company.legalName, brandName: opportunity.company.brandName ?? undefined }
-        : { id: opportunity.companyId, legalName: companyLabel(selectedCompany) || 'شرکت فرصت' });
+        : { id: opportunity.companyId, legalName: getCompanyLabel(selectedCompany) || 'شرکت فرصت' });
       setSelectedPerson(null);
     }
   };
@@ -175,22 +163,12 @@ export default function TaskFormDialog({
           <TextField label="توضیحات" multiline minRows={2} value={description} onChange={(event) => setDescription(event.target.value)} />
           {(lockCompany || lockOpportunity) && (
             <Box sx={{ border: 1, borderColor: 'divider', borderRadius: 1, p: 1.5 }}>
-              {lockCompany && <Typography variant="body2">شرکت: {companyLabel(selectedCompany) || contextCompanyName || 'شرکت جاری'}</Typography>}
+              {lockCompany && <Typography variant="body2">شرکت: {getCompanyLabel(selectedCompany) || contextCompanyName || 'شرکت جاری'}</Typography>}
               {lockOpportunity && <Typography variant="body2">فرصت: {opportunityLabel(selectedOpportunity) || contextOpportunityTitle || 'فرصت جاری'}</Typography>}
             </Box>
           )}
           {!lockCompany && (
-            <Autocomplete
-              options={companyOptions}
-              value={selectedCompany}
-              loading={companyOptionsQuery.isFetching}
-              inputValue={companySearch}
-              onInputChange={(_, value) => setCompanySearch(value)}
-              onChange={(_, value) => selectCompany(value)}
-              getOptionLabel={companyLabel}
-              isOptionEqualToValue={(item, value) => item.id === value.id}
-              renderInput={(params) => <TextField {...params} label="شرکت" placeholder="انتخاب شرکت" />}
-            />
+            <CompanyAutocomplete value={selectedCompany} onChange={selectCompany} label="شرکت" placeholder="انتخاب شرکت" />
           )}
           {!lockOpportunity && (
             <Autocomplete

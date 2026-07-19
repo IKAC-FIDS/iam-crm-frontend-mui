@@ -72,6 +72,24 @@ export interface CompanySummary {
   brandName?: string | null;
 }
 
+export interface CompanyOption {
+  id: string;
+  legalName: string;
+  brandName?: string | null;
+  nationalId?: string | null;
+  registrationNumber?: string | null;
+  economicCode?: string | null;
+  parentCompanyId?: string | null;
+}
+
+export interface GetCompanyOptionsParams {
+  search?: string;
+  page: number;
+  limit: number;
+  excludeId?: string;
+  includeArchived?: boolean;
+}
+
 export interface CompanyLegalDocumentAttachment {
   id: string;
   originalFileName?: string | null;
