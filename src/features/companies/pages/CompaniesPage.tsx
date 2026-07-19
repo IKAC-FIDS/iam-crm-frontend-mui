@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Alert,
   Box,
@@ -7,6 +7,7 @@ import {
   Chip,
   FormControl,
   InputLabel,
+  ListItemText,
   MenuItem,
   Paper,
   Select,
@@ -29,6 +30,8 @@ import { useAuthStore } from '@/store/authStore';
 import { RowActions } from '@/shared/components/RowActions';
 import { getApiErrorMessage } from '@/lib/apiResponse';
 import type { OwnershipScope } from '@/shared/types/ownership';
+import { useOwnerOptions } from '@/features/admin/users/hooks/useAdminUsers';
+import { isUserActive } from '@/features/admin/users/types/adminUser.types';
 import CreateCompanyDialog from '../components/CreateCompanyDialog';
 import ArchiveCompanyDialog from '../components/ArchiveCompanyDialog';
 import RestoreCompanyDialog from '../components/RestoreCompanyDialog';
@@ -56,23 +59,66 @@ function displayValue(value?: string | null): string {
   return value?.trim() || '—';
 }
 
+const COMPANY_PAGE_SIZE_STORAGE_KEY = 'companies-page-size';
+
+function validPageSize(value: string | null): CompanyPageSize | undefined {
+  const parsed = Number(value);
+  return COMPANY_PAGE_SIZES.find((size) => size === parsed);
+}
+
+function validPage(value: string | null): number {
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed > 0 ? parsed - 1 : 0;
+}
+
 export default function CompaniesPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const user = useAuthStore((state) => state.user);
   const canCreateCompany = can(user, 'company:create', ['ADMIN', 'MANAGER']);
   const canArchiveCompany = can(user, 'company:archive', ['ADMIN', 'MANAGER']);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-    page: 0,
-    pageSize: 10,
-  });
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>(() => ({
+    page: validPage(searchParams.get('page')),
+    pageSize: validPageSize(searchParams.get('limit')) ?? validPageSize(localStorage.getItem(COMPANY_PAGE_SIZE_STORAGE_KEY)) ?? 10,
+  }));
   const [priority, setPriority] = useState<CompanyPriority | ''>('');
   const [ownershipScope, setOwnershipScope] = useState<OwnershipScope>('all');
+  const [ownerId, setOwnerId] = useState('');
   const [search, setSearch] = useState('');
   const [archiveStatus, setArchiveStatus] = useState<CompanyArchiveStatus>('ACTIVE');
   const [archiving, setArchiving] = useState<CompanyListItem | null>(null);
   const [restoring, setRestoring] = useState<CompanyListItem | null>(null);
   const debouncedSearch = useDebouncedValue(search.trim(), 400);
+  const ownersQuery = useOwnerOptions(true);
+  const ownerOptions = (ownersQuery.data ?? []).filter(isUserActive);
+
+  const updatePagination = (model: GridPaginationModel) => {
+    const next = {
+      page: model.pageSize !== paginationModel.pageSize ? 0 : model.page,
+      pageSize: model.pageSize,
+    };
+    setPaginationModel(next);
+    localStorage.setItem(COMPANY_PAGE_SIZE_STORAGE_KEY, String(next.pageSize));
+    setSearchParams((current) => {
+      const params = new URLSearchParams(current);
+      params.set('page', String(next.page + 1));
+      params.set('limit', String(next.pageSize));
+      return params;
+    }, { replace: true });
+  };
+
+  useEffect(() => {
+    localStorage.setItem(COMPANY_PAGE_SIZE_STORAGE_KEY, String(paginationModel.pageSize));
+    setSearchParams((current) => {
+      if (current.get('page') === String(paginationModel.page + 1) && current.get('limit') === String(paginationModel.pageSize)) return current;
+      const params = new URLSearchParams(current);
+      params.set('page', String(paginationModel.page + 1));
+      params.set('limit', String(paginationModel.pageSize));
+      return params;
+    }, { replace: true });
+  }, [paginationModel.page, paginationModel.pageSize, setSearchParams]);
 
   const queryParams = useMemo<GetCompaniesParams>(
     () => ({
@@ -80,16 +126,17 @@ export default function CompaniesPage() {
       limit: paginationModel.pageSize as CompanyPageSize,
       ...(priority && { priority }),
       ownershipScope,
+      ...(ownerId && ownershipScope === 'all' && { ownerId }),
       ...(debouncedSearch && { search: debouncedSearch }),
       archiveStatus,
     }),
-    [archiveStatus, debouncedSearch, ownershipScope, paginationModel, priority],
+    [archiveStatus, debouncedSearch, ownerId, ownershipScope, paginationModel, priority],
   );
 
   const { data, error, isError, isFetching } = useCompanies(queryParams);
 
   const resetToFirstPage = () => {
-    setPaginationModel((current) => ({ ...current, page: 0 }));
+    updatePagination({ ...paginationModel, page: 0 });
   };
 
   const columns = useMemo<GridColDef<CompanyListItem>[]>(
@@ -138,7 +185,7 @@ export default function CompaniesPage() {
                 key: 'view',
                 label: 'مشاهده جزئیات',
                 icon: <VisibilityOutlinedIcon fontSize="small" />,
-                onClick: () => navigate(`/companies/${row.id}`, { state: { backTo: '/companies', backLabel: 'بازگشت به شرکت‌ها' } }),
+                onClick: () => navigate(`/companies/${row.id}`, { state: { backTo: `/companies${location.search}`, backLabel: 'بازگشت به شرکت‌ها' } }),
               },
               {
                 key: 'archive-toggle',
@@ -153,7 +200,7 @@ export default function CompaniesPage() {
         ),
       },
     ],
-    [canArchiveCompany, navigate],
+    [canArchiveCompany, location.search, navigate],
   );
 
   return (
@@ -219,7 +266,9 @@ export default function CompaniesPage() {
               label="نمایش"
               value={ownershipScope}
               onChange={(event) => {
-                setOwnershipScope(event.target.value as OwnershipScope);
+                const nextScope = event.target.value as OwnershipScope;
+                setOwnershipScope(nextScope);
+                if (nextScope !== 'all') setOwnerId('');
                 resetToFirstPage();
               }}
             >
@@ -229,7 +278,41 @@ export default function CompaniesPage() {
               <MenuItem value="unassigned">بدون مالک</MenuItem>
             </Select>
           </FormControl>
+
+          <FormControl fullWidth disabled={ownersQuery.isLoading || ownersQuery.isError}>
+            <InputLabel id="company-owner-filter-label">مالک</InputLabel>
+            <Select
+              labelId="company-owner-filter-label"
+              label="مالک"
+              value={ownershipScope === 'unassigned' ? 'unassigned' : ownerId}
+              onChange={(event) => {
+                const value = event.target.value;
+                if (value === 'unassigned') {
+                  setOwnerId('');
+                  setOwnershipScope('unassigned');
+                } else {
+                  setOwnerId(value);
+                  if (value) setOwnershipScope('all');
+                  else if (ownershipScope === 'unassigned') setOwnershipScope('all');
+                }
+                resetToFirstPage();
+              }}
+              renderValue={(value) => value === '' ? 'همه مالکان' : value === 'unassigned' ? 'بدون مالک' : ownerOptions.find((owner) => owner.id === value)?.fullName ?? value}
+            >
+              <MenuItem value="">همه مالکان</MenuItem>
+              <MenuItem value="unassigned">بدون مالک</MenuItem>
+              {ownerOptions.map((owner) => (
+                <MenuItem key={owner.id} value={owner.id}>
+                  <ListItemText
+                    primary={owner.fullName}
+                    secondary={[owner.email, owner.teamName ?? owner.team, owner.roleName].filter(Boolean).join(' — ') || undefined}
+                  />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Stack>
+        {ownersQuery.isError && <Alert severity="warning" sx={{ mt: 2 }}>دریافت فهرست مالکان انجام نشد؛ سایر فیلترهای شرکت‌ها همچنان قابل استفاده هستند.</Alert>}
       </Paper>
 
       {isError && (
@@ -247,10 +330,10 @@ export default function CompaniesPage() {
           rowCount={data?.meta.total ?? 0}
           paginationMode="server"
           paginationModel={paginationModel}
-          onPaginationModelChange={setPaginationModel}
+          onPaginationModelChange={updatePagination}
           pageSizeOptions={[...COMPANY_PAGE_SIZES]}
           disableRowSelectionOnClick
-          localeText={{ noRowsLabel: 'هنوز شرکتی ثبت نشده است.' }}
+          localeText={{ noRowsLabel: 'شرکتی با این فیلترها یافت نشد.', paginationRowsPerPage: 'تعداد ردیف در صفحه:' }}
           sx={{
             border: 0,
             minHeight: 420,

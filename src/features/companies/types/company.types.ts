@@ -9,7 +9,7 @@ export const COMPANY_OWNERSHIPS = [
   'BANK',
   'HOLDING',
 ] as const;
-export const COMPANY_PAGE_SIZES = [5, 10, 20] as const;
+export const COMPANY_PAGE_SIZES = [5, 10, 20, 50, 100] as const;
 export const COMPANY_ACTIVITY_STATUSES = ['ACTIVE', 'INACTIVE', 'MERGED', 'UNKNOWN'] as const;
 export const COMPANY_LEGAL_DOCUMENT_TYPES = ['OFFICIAL_GAZETTE', 'LATEST_CHANGES'] as const;
 
