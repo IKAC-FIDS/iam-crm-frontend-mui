@@ -26,6 +26,7 @@ import SecurityIcon from '@mui/icons-material/Security';
 import ViewKanbanIcon from '@mui/icons-material/ViewKanban';
 import WorkIcon from '@mui/icons-material/Work';
 import EventIcon from '@mui/icons-material/Event';
+import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 
 import { can, canAny } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
@@ -58,6 +59,7 @@ const menuItems = [
   { group: 'عملیات فروش', text: 'گزارش‌ها', icon: <AssessmentIcon />, path: '/reports', reportOnly: true },
   { group: 'مدیریت', text: 'کاربران', icon: <PeopleIcon />, path: '/admin/users', permission: 'user:manage' },
   { group: 'مدیریت', text: 'تیم‌ها', icon: <GroupsIcon />, path: '/admin/teams', permissions: ['team:view', 'team:manage'] },
+  { group: 'مدیریت', text: 'نرخ دلار', icon: <CurrencyExchangeIcon />, path: '/admin/exchange-rates', permissions: ['exchange-rate:view', 'exchange-rate:manage'] },
   { group: 'مدیریت', text: 'سازمان‌ها', icon: <CorporateFareIcon />, path: '/admin/organizations', permission: 'organization:manage' },
   { group: 'مدیریت', text: 'ورود سازمانی', icon: <LoginIcon />, path: '/admin/sso-providers', permissions: ['sso-provider:view', 'sso-provider:manage'] },
   { group: 'مدیریت', text: 'نقش‌ها و مجوزها', icon: <SecurityIcon />, path: '/admin/permissions', permissions: ['permission:view', 'permission:manage', 'role:view', 'role:manage'] },

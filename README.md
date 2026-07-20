@@ -4508,6 +4508,59 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * بررسی دستی با backend فعال، داده واقعی، مرورگر و نشست احرازشده اجرا نشد.
 
 ---
+
+## fix 000090 — افزودن قیمت‌گذاری چندکاناله محصولات و مدیریت نرخ دلار
+
+**موارد پیاده‌سازی‌شده:**
+
+* فرم محصول در کتابخانه‌ها از قرارداد واقعی backend برای `pricingCurrency`، قیمت ورودی حضوری/دیجی‌کالا، درصد سود کانال‌ها و قیمت نهایی ریالی استفاده می‌کند.
+* در حالت IRR فقط قیمت ریالی دو کانال نمایش داده می‌شود؛ در حالت USD قیمت پایه دلاری و درصد سود هر کانال به‌صورت مستقل دریافت می‌شود.
+* نرخ فعال دلار از `GET /api/admin/exchange-rates/current` دریافت و پیش‌نمایش ریالی دو کانال با محاسبات integer/BigInt نمایش داده می‌شود تا خطای floating-point پولی کاهش یابد. مقادیر نهایی محاسبه‌شده به‌عنوان ورودی قابل اعتماد ارسال نمی‌شوند و پاسخ backend مرجع نهایی است.
+* نبود نرخ فعال، خطای واضح و blocking ایجاد می‌کند و ذخیره محصول USD را غیرفعال می‌سازد. قیمت‌ها و درصدهای خالی/منفی نیز قبل از submit رد می‌شوند و پیام validation backend در فرم حفظ می‌شود.
+* فرم ویرایش ارز، ورودی‌های دو کانال، درصد سود و نرخ آخرین محاسبه محصول را hydrate می‌کند و قیمت نهایی ریالی ذخیره‌شده را نمایش می‌دهد.
+* formatter مرکزی `formatIrrPrice` با جداکننده هزارگان فارسی و label «ریال» اضافه و فهرست محصولات به ستون‌های «قیمت حضوری» و «قیمت دیجی‌کالا» با مقادیر نهایی IRR تغییر کرد.
+* انتخاب محصول در آیتم فرصت، قیمت واحد پیش‌فرض را از `inPersonPriceIrr` می‌گیرد؛ قیمت همچنان قابل ویرایش است و آیتم‌های فروش ذخیره‌شده با تغییر نرخ دلار بازنویسی نمی‌شوند.
+* صفحه read-only تاریخچه نرخ دلار و کارت نرخ فعلی در مسیر `/admin/exchange-rates` اضافه شد. صفحه دارای loading، empty، error/retry، pagination سمت server، تاریخ‌های جلالی، وضعیت فعال/منقضی و «تاکنون» برای نرخ جاری است.
+* ثبت نرخ جدید فقط با `exchange-rate:manage` نمایش داده می‌شود و پیش از submit پیام اثر محاسبه مجدد محصولات دلاری را تأیید می‌گیرد. پس از موفقیت نرخ فعلی، تاریخچه و queryهای محصولات invalidate می‌شوند و تعداد محصولات محاسبه‌شده نمایش داده می‌شود.
+* گزینه «نرخ دلار» با permissionهای پویا `exchange-rate:view`/`exchange-rate:manage` به منوی مدیریت اضافه شد؛ محدودیت ADMIN/MANAGER hardcode نشده است.
+
+**endpointهای backend تأییدشده:**
+
+* `GET /api/admin/exchange-rates/current`
+* `GET /api/admin/exchange-rates?page=&limit=`
+* `POST /api/admin/exchange-rates`
+* `GET/POST/PATCH /api/product-catalog`
+
+**فایل‌های مهم تغییرکرده/جدید:**
+
+* `src/features/productCatalog/types/productCatalog.types.ts`
+* `src/features/productCatalog/components/ProductCatalogFormDialog.tsx`
+* `src/features/productCatalog/components/ProductCatalogTable.tsx`
+* `src/features/opportunityLineItems/components/OpportunityLineItemFormDialog.tsx`
+* `src/features/opportunityLineItems/utils/money.ts`
+* `src/features/exchangeRates/types/exchangeRate.types.ts`
+* `src/features/exchangeRates/services/exchangeRates.service.ts`
+* `src/features/exchangeRates/hooks/useExchangeRates.ts`
+* `src/features/exchangeRates/pages/ExchangeRatesPage.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+* `src/routes/index.tsx`
+* `README.md`
+
+**وابستگی backend:**
+
+* backend باید فیلدهای pricing چندکاناله را در list/detail محصول برگرداند، برای محصول USD نرخ فعال را الزامی کند، قیمت‌های نهایی IRR را محاسبه و `defaultUnitPrice` را با قیمت حضوری نهایی سازگار نگه دارد.
+* ثبت نرخ جدید باید بازه نرخ جاری را ببندد، محصولات USD را transactionally محاسبه مجدد کند و `{ rate, recalculatedProductCount }` برگرداند. فروش‌ها، اسناد و line itemهای تاریخی نباید تغییر کنند.
+* permissionهای `exchange-rate:view` و `exchange-rate:manage` باید در پاسخ احراز هویت کاربر موجود باشند.
+
+**وضعیت بررسی‌ها:**
+
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check و `npm run build`: بدون خطا اجرا شد.
+* هشدار غیرمسدودکننده Vite درباره chunk بزرگ‌تر از 500 kB وجود دارد؛ bundle اصلی حدود 1,879.94 kB و gzip آن حدود 538.07 kB است.
+* تست خودکار اجرا نشد، زیرا این repository اسکریپت `test` یا test runner پیکربندی‌شده ندارد.
+* بررسی دستی با backend فعال، نرخ واقعی و مرورگر احرازشده اجرا نشد.
+
+---
 **Built with ❤️ for sales team**
 
 ---

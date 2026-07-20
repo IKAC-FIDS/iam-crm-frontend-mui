@@ -43,7 +43,7 @@ export default function OpportunityLineItemFormDialog({
   const [product, setProduct] = useState<ProductCatalogItem | null>(item?.product ?? null);
   const [description, setDescription] = useState(item?.description ?? '');
   const [quantity, setQuantity] = useState(String(item?.quantity ?? '1'));
-  const [unitPrice, setUnitPrice] = useState(String(item?.unitPrice ?? item?.product?.defaultUnitPrice ?? '0'));
+  const [unitPrice, setUnitPrice] = useState(String(item?.unitPrice ?? item?.product?.inPersonPriceIrr ?? item?.product?.defaultUnitPrice ?? '0'));
   const [discountAmount, setDiscountAmount] = useState(String(item?.discountAmount ?? '0'));
   const [taxAmount, setTaxAmount] = useState(String(item?.taxAmount ?? '0'));
   const [sortOrder, setSortOrder] = useState(String(item?.sortOrder ?? 0));
@@ -100,7 +100,7 @@ export default function OpportunityLineItemFormDialog({
             onChange={(_, value) => {
               setProduct(value);
               if (value) {
-                setUnitPrice(String(value.defaultUnitPrice ?? '0'));
+                setUnitPrice(String(value.inPersonPriceIrr ?? value.defaultUnitPrice ?? '0'));
                 if (!description.trim()) setDescription(value.name);
               }
             }}

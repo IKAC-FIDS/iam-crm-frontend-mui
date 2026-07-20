@@ -17,6 +17,30 @@ export function formatMoney(value?: number | string | null, currency?: string | 
   return currency === 'IRR' ? `${formatted} ریال` : `${formatted} ${currency}`;
 }
 
+export function formatIrrPrice(value?: number | string | null): string {
+  const raw = typeof value === 'string' ? value.trim().replace(/,/g, '') : String(value ?? '0');
+  const integer = raw.split('.')[0] || '0';
+  try {
+    return `${new Intl.NumberFormat('fa-IR', { maximumFractionDigits: 0 }).format(BigInt(integer))} ریال`;
+  } catch {
+    return '۰ ریال';
+  }
+}
+
+export function calculateUsdPricePreview(input: string, rate: string, profitPercent: string): string | null {
+  const parseScaled = (value: string, scale: number) => {
+    const normalized = value.trim().replace(/,/g, '');
+    if (!/^\d+(\.\d+)?$/.test(normalized)) return null;
+    const [whole, fraction = ''] = normalized.split('.');
+    return BigInt(whole) * 10n ** BigInt(scale) + BigInt((fraction + '0'.repeat(scale)).slice(0, scale));
+  };
+  const inputScaled = parseScaled(input, 6), rateScaled = parseScaled(rate, 6), profitScaled = parseScaled(profitPercent, 3);
+  if (inputScaled === null || rateScaled === null || profitScaled === null) return null;
+  const numerator = inputScaled * rateScaled * (100000n + profitScaled);
+  const divisor = 1000000n * 1000000n * 100000n;
+  return ((numerator + divisor / 2n) / divisor).toString();
+}
+
 export function calculateLineTotalPreview(
   quantity?: number | string | null,
   unitPrice?: number | string | null,

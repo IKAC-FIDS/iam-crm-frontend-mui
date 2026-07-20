@@ -26,6 +26,7 @@ import AdminOrganizationsPage from '@/features/organizations/pages/AdminOrganiza
 import SsoCallbackPage from '@/features/sso/pages/SsoCallbackPage';
 import AdminSsoProvidersPage from '@/features/sso/pages/AdminSsoProvidersPage';
 import AdminTeamsPage from '@/features/teams/pages/AdminTeamsPage';
+import ExchangeRatesPage from '@/features/exchangeRates/pages/ExchangeRatesPage';
 import RouteErrorPage from './RouteErrorPage';
 
 export const router = createBrowserRouter([
@@ -54,6 +55,7 @@ export const router = createBrowserRouter([
           { path: 'account/security', element: <AccountSecurityPage /> },
           { path: 'admin/users', element: <AdminUsersPage /> },
           { path: 'admin/teams', element: <AdminTeamsPage /> },
+          { path: 'admin/exchange-rates', element: <ExchangeRatesPage /> },
           { path: 'admin/organizations', element: <AdminOrganizationsPage /> },
           { path: 'admin/sso-providers', element: <AdminSsoProvidersPage /> },
           { path: 'admin/permissions', element: <AdminPermissionsPage /> },

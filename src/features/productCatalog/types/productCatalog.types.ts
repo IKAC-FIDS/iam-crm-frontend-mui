@@ -9,11 +9,23 @@ export interface ProductCatalogItem {
   unit?: string | null;
   defaultUnitPrice: number | string;
   currency: string;
+  pricingCurrency: PricingCurrency;
+  inPersonInputPrice: number | string;
+  digikalaInputPrice: number | string;
+  inPersonProfitPercent?: number | string | null;
+  digikalaProfitPercent?: number | string | null;
+  inPersonPriceIrr: number | string;
+  digikalaPriceIrr: number | string;
+  calculatedExchangeRateId?: string | null;
+  calculatedExchangeRate?: { id: string; rate: number | string; validFrom: string; validTo?: string | null } | null;
+  priceCalculatedAt?: string | null;
   isActive: boolean;
   sortOrder: number;
   createdAt: string;
   updatedAt: string;
 }
+
+export type PricingCurrency = 'IRR' | 'USD';
 
 export interface ProductCatalogListParams {
   page?: number;
@@ -31,6 +43,11 @@ export interface CreateProductCatalogItemPayload {
   unit?: string;
   defaultUnitPrice?: number | string;
   currency?: string;
+  pricingCurrency: PricingCurrency;
+  inPersonInputPrice: string;
+  digikalaInputPrice: string;
+  inPersonProfitPercent?: string;
+  digikalaProfitPercent?: string;
   sortOrder?: number;
   isActive?: boolean;
 }

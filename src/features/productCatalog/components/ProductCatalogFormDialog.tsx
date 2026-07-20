@@ -1,88 +1,41 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
-import {
-  Alert,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormControlLabel,
-  Stack,
-  Switch,
-  TextField,
-} from '@mui/material';
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, MenuItem, Paper, Stack, Switch, TextField, Typography } from '@mui/material';
+import { getApiErrorMessage } from '@/lib/apiResponse';
+import { useCurrentExchangeRate } from '@/features/exchangeRates/hooks/useExchangeRates';
+import { calculateUsdPricePreview, formatIrrPrice } from '@/features/opportunityLineItems/utils/money';
 import { useCreateProductCatalogItem, useUpdateProductCatalogItem } from '../hooks/useProductCatalog';
-import type { ProductCatalogItem, CreateProductCatalogItemPayload } from '../types/productCatalog.types';
+import type { CreateProductCatalogItemPayload, PricingCurrency, ProductCatalogItem } from '../types/productCatalog.types';
 
-export default function ProductCatalogFormDialog({
-  item,
-  open,
-  onClose,
-}: {
-  item: ProductCatalogItem | null;
-  open: boolean;
-  onClose: () => void;
-}) {
-  const create = useCreateProductCatalogItem();
-  const update = useUpdateProductCatalogItem();
-  const [code, setCode] = useState(item?.code ?? '');
-  const [name, setName] = useState(item?.name ?? '');
-  const [description, setDescription] = useState(item?.description ?? '');
-  const [category, setCategory] = useState(item?.category ?? '');
-  const [unit, setUnit] = useState(item?.unit ?? '');
-  const [defaultUnitPrice, setDefaultUnitPrice] = useState(String(item?.defaultUnitPrice ?? '0'));
-  const [currency, setCurrency] = useState(item?.currency ?? 'IRR');
-  const [sortOrder, setSortOrder] = useState(String(item?.sortOrder ?? 0));
-  const [isActive, setIsActive] = useState(item?.isActive ?? true);
+export default function ProductCatalogFormDialog({ item, open, onClose }: { item: ProductCatalogItem | null; open: boolean; onClose: () => void }) {
+  const create = useCreateProductCatalogItem(), update = useUpdateProductCatalogItem();
+  const [code, setCode] = useState(item?.code ?? ''), [name, setName] = useState(item?.name ?? ''), [description, setDescription] = useState(item?.description ?? ''), [category, setCategory] = useState(item?.category ?? ''), [unit, setUnit] = useState(item?.unit ?? '');
+  const [pricingCurrency, setPricingCurrency] = useState<PricingCurrency>(item?.pricingCurrency ?? 'IRR');
+  const [inPersonInputPrice, setInPersonInputPrice] = useState(String(item?.inPersonInputPrice ?? item?.defaultUnitPrice ?? ''));
+  const [digikalaInputPrice, setDigikalaInputPrice] = useState(String(item?.digikalaInputPrice ?? item?.defaultUnitPrice ?? ''));
+  const [inPersonProfitPercent, setInPersonProfitPercent] = useState(String(item?.inPersonProfitPercent ?? ''));
+  const [digikalaProfitPercent, setDigikalaProfitPercent] = useState(String(item?.digikalaProfitPercent ?? ''));
+  const [sortOrder, setSortOrder] = useState(String(item?.sortOrder ?? 0)), [isActive, setIsActive] = useState(item?.isActive ?? true);
+  const rateQuery = useCurrentExchangeRate(open && pricingCurrency === 'USD');
+  const currentRate = rateQuery.data?.rate ? String(rateQuery.data.rate) : '';
+  const previewRate = currentRate || (item?.calculatedExchangeRate?.rate ? String(item.calculatedExchangeRate.rate) : '');
+  const inPersonPreview = pricingCurrency === 'IRR' ? inPersonInputPrice : calculateUsdPricePreview(inPersonInputPrice, previewRate, inPersonProfitPercent);
+  const digikalaPreview = pricingCurrency === 'IRR' ? digikalaInputPrice : calculateUsdPricePreview(digikalaInputPrice, previewRate, digikalaProfitPercent);
   const pending = create.isPending || update.isPending;
-
-  const payload = (): CreateProductCatalogItemPayload => ({
-    code: code.trim(),
-    name: name.trim(),
-    description: description.trim() || undefined,
-    category: category.trim() || undefined,
-    unit: unit.trim() || undefined,
-    defaultUnitPrice: defaultUnitPrice.trim() || '0',
-    currency: currency.trim() || 'IRR',
-    sortOrder: Number(sortOrder) || 0,
-    isActive,
-  });
-
-  const submit = async () => {
-    try {
-      if (item) await update.mutateAsync({ id: item.id, payload: payload() });
-      else await create.mutateAsync(payload());
-      toast.success(item ? 'محصول با موفقیت بروزرسانی شد.' : 'محصول با موفقیت ایجاد شد.');
-      onClose();
-    } catch {
-      toast.error(item ? 'بروزرسانی محصول انجام نشد.' : 'ایجاد محصول انجام نشد.');
-    }
-  };
-
-  const valid = Boolean(code.trim()) && Boolean(name.trim()) && Number.isFinite(Number(sortOrder));
-
-  return (
-    <Dialog open={open} onClose={() => !pending && onClose()} fullWidth maxWidth="sm">
-      <DialogTitle>{item ? 'ویرایش محصول' : 'افزودن محصول'}</DialogTitle>
-      <DialogContent>
-        <Stack spacing={2} sx={{ pt: 1 }}>
-          {(create.isError || update.isError) && <Alert severity="error">عملیات محصول با خطا مواجه شد.</Alert>}
-          <TextField autoFocus required label="کد محصول" value={code} onChange={(event) => setCode(event.target.value)} />
-          <TextField required label="نام محصول" value={name} onChange={(event) => setName(event.target.value)} />
-          <TextField label="توضیحات" multiline minRows={2} value={description} onChange={(event) => setDescription(event.target.value)} />
-          <TextField label="دسته‌بندی" value={category} onChange={(event) => setCategory(event.target.value)} />
-          <TextField label="واحد" value={unit} onChange={(event) => setUnit(event.target.value)} />
-          <TextField label="قیمت پیش‌فرض" inputMode="decimal" value={defaultUnitPrice} onChange={(event) => setDefaultUnitPrice(event.target.value)} />
-          <TextField label="ارز" value={currency} onChange={(event) => setCurrency(event.target.value.toUpperCase())} />
-          <TextField required label="ترتیب نمایش" type="number" value={sortOrder} onChange={(event) => setSortOrder(event.target.value)} />
-          <FormControlLabel label="فعال" control={<Switch checked={isActive} onChange={(_, checked) => setIsActive(checked)} />} />
-        </Stack>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} disabled={pending}>انصراف</Button>
-        <Button variant="contained" onClick={submit} disabled={!valid || pending}>ذخیره</Button>
-      </DialogActions>
-    </Dialog>
-  );
+  const nonNegative = (value: string) => value.trim() !== '' && /^\d+(\.\d+)?$/.test(value.trim().replace(/,/g, ''));
+  const error = !code.trim() || !name.trim() ? 'کد و نام محصول الزامی است.' : !nonNegative(inPersonInputPrice) || !nonNegative(digikalaInputPrice) ? 'قیمت هر دو کانال الزامی است و نمی‌تواند منفی باشد.' : pricingCurrency === 'USD' && (!nonNegative(inPersonProfitPercent) || !nonNegative(digikalaProfitPercent)) ? 'درصد سود هر دو کانال الزامی است و نمی‌تواند منفی باشد.' : pricingCurrency === 'USD' && !currentRate ? 'نرخ فعال دلار ثبت نشده است؛ ذخیره محصول دلاری امکان‌پذیر نیست.' : !Number.isFinite(Number(sortOrder)) ? 'ترتیب نمایش معتبر نیست.' : '';
+  const payload = (): CreateProductCatalogItemPayload => ({ code: code.trim(), name: name.trim(), description: description.trim() || undefined, category: category.trim() || undefined, unit: unit.trim() || undefined, pricingCurrency, inPersonInputPrice: inPersonInputPrice.replace(/,/g, ''), digikalaInputPrice: digikalaInputPrice.replace(/,/g, ''), inPersonProfitPercent: pricingCurrency === 'USD' ? inPersonProfitPercent.replace(/,/g, '') : undefined, digikalaProfitPercent: pricingCurrency === 'USD' ? digikalaProfitPercent.replace(/,/g, '') : undefined, defaultUnitPrice: undefined, currency: 'IRR', sortOrder: Number(sortOrder) || 0, isActive });
+  const submit = async () => { if (error) return; try { if (item) await update.mutateAsync({ id: item.id, payload: payload() }); else await create.mutateAsync(payload()); toast.success(item ? 'محصول با موفقیت بروزرسانی شد.' : 'محصول با موفقیت ایجاد شد.'); onClose(); } catch (reason) { toast.error(getApiErrorMessage(reason, item ? 'بروزرسانی محصول انجام نشد.' : 'ایجاد محصول انجام نشد.')); } };
+  const backendError = create.error || update.error;
+  return <Dialog open={open} onClose={() => !pending && onClose()} fullWidth maxWidth="md"><DialogTitle>{item ? 'ویرایش محصول' : 'افزودن محصول'}</DialogTitle><DialogContent><Stack spacing={2} sx={{ pt: 1 }}>
+    {backendError && <Alert severity="error">{getApiErrorMessage(backendError, 'عملیات محصول با خطا مواجه شد.')}</Alert>}
+    <TextField autoFocus required label="کد محصول" value={code} onChange={(e) => setCode(e.target.value)} /><TextField required label="نام محصول" value={name} onChange={(e) => setName(e.target.value)} /><TextField label="توضیحات" multiline minRows={2} value={description} onChange={(e) => setDescription(e.target.value)} /><Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}><TextField fullWidth label="دسته‌بندی" value={category} onChange={(e) => setCategory(e.target.value)} /><TextField fullWidth label="واحد" value={unit} onChange={(e) => setUnit(e.target.value)} /></Stack>
+    <Paper variant="outlined" sx={{ p: 2 }}><Stack spacing={2}><Typography variant="h6">قیمت‌گذاری کانال‌های فروش</Typography><TextField select required label="ارز قیمت‌گذاری" value={pricingCurrency} onChange={(e) => setPricingCurrency(e.target.value as PricingCurrency)}><MenuItem value="IRR">ریال ایران — IRR</MenuItem><MenuItem value="USD">دلار آمریکا — USD</MenuItem></TextField>
+      {pricingCurrency === 'USD' && rateQuery.isLoading && <Alert severity="info">در حال دریافت نرخ فعلی دلار...</Alert>}{pricingCurrency === 'USD' && rateQuery.isError && <Alert severity="error">دریافت نرخ دلار انجام نشد.</Alert>}{pricingCurrency === 'USD' && !rateQuery.isLoading && !currentRate && <Alert severity="error">نرخ فعال دلار وجود ندارد. ابتدا نرخ دلار را در تنظیمات مالی ثبت کنید.</Alert>}
+      {pricingCurrency === 'USD' && previewRate && <Alert severity="info">نرخ محاسبه: هر ۱ دلار = {formatIrrPrice(previewRate)}{!currentRate && item?.calculatedExchangeRate ? ' (نرخ آخرین محاسبه محصول)' : ''}</Alert>}
+      <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}><Stack sx={{ flex: 1 }} spacing={1}><TextField required label={pricingCurrency === 'IRR' ? 'قیمت مشتریان حضوری، ریال' : 'قیمت پایه مشتریان حضوری، دلار'} value={inPersonInputPrice} onChange={(e) => setInPersonInputPrice(e.target.value)} />{pricingCurrency === 'USD' && <TextField required label="درصد سود مشتریان حضوری" value={inPersonProfitPercent} onChange={(e) => setInPersonProfitPercent(e.target.value)} />}<Typography color="text.secondary">قیمت نهایی مشتری حضوری: {formatIrrPrice(inPersonPreview ?? item?.inPersonPriceIrr)}</Typography></Stack><Stack sx={{ flex: 1 }} spacing={1}><TextField required label={pricingCurrency === 'IRR' ? 'قیمت دیجی‌کالا، ریال' : 'قیمت پایه دیجی‌کالا، دلار'} value={digikalaInputPrice} onChange={(e) => setDigikalaInputPrice(e.target.value)} />{pricingCurrency === 'USD' && <TextField required label="درصد سود دیجی‌کالا" value={digikalaProfitPercent} onChange={(e) => setDigikalaProfitPercent(e.target.value)} />}<Typography color="text.secondary">قیمت نهایی دیجی‌کالا: {formatIrrPrice(digikalaPreview ?? item?.digikalaPriceIrr)}</Typography></Stack></Stack>
+      {item?.priceCalculatedAt && <Typography variant="caption" color="text.secondary">آخرین محاسبه قیمت: {new Intl.DateTimeFormat('fa-IR', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(item.priceCalculatedAt))}</Typography>}
+    </Stack></Paper>
+    <TextField required label="ترتیب نمایش" type="number" value={sortOrder} onChange={(e) => setSortOrder(e.target.value)} /><FormControlLabel label="فعال" control={<Switch checked={isActive} onChange={(_, checked) => setIsActive(checked)} />} />{error && <Alert severity="warning">{error}</Alert>}
+  </Stack></DialogContent><DialogActions><Button onClick={onClose} disabled={pending}>انصراف</Button><Button variant="contained" onClick={submit} disabled={Boolean(error) || pending}>ذخیره</Button></DialogActions></Dialog>;
 }

@@ -20,7 +20,7 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
 import { useDebouncedValue } from '@/features/companies/hooks/useDebouncedValue';
-import { formatMoney } from '@/features/opportunityLineItems/utils/money';
+import { formatIrrPrice } from '@/features/opportunityLineItems/utils/money';
 import { RowActions } from '@/shared/components/RowActions';
 import {
   useActivateProductCatalogItem,
@@ -69,12 +69,12 @@ export default function ProductCatalogTable() {
     { field: 'category', headerName: 'دسته‌بندی', minWidth: 150, valueFormatter: (value) => value || '—' },
     { field: 'unit', headerName: 'واحد', minWidth: 100, valueFormatter: (value) => value || '—' },
     {
-      field: 'defaultUnitPrice',
-      headerName: 'قیمت پیش‌فرض',
+      field: 'inPersonPriceIrr',
+      headerName: 'قیمت حضوری',
       minWidth: 160,
-      valueFormatter: (value, row) => formatMoney(value, row.currency),
+      valueFormatter: (value) => formatIrrPrice(value),
     },
-    { field: 'currency', headerName: 'ارز', minWidth: 90 },
+    { field: 'digikalaPriceIrr', headerName: 'قیمت دیجی‌کالا', minWidth: 170, valueFormatter: (value) => formatIrrPrice(value) },
     {
       field: 'isActive',
       headerName: 'وضعیت',
