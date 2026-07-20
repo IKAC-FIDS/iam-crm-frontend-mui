@@ -4610,6 +4610,56 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * بررسی دستی با backend فعال، داده واقعی و نشست احرازشده اجرا نشد.
 
 ---
+
+## fix 000092 — افزودن داشبورد مدیریتی و گزارش‌های پیشرفته فروش و عملیات
+
+**موارد پیاده‌سازی‌شده:**
+
+* داشبورد مدیریتی از یک query تجمیعی `GET /api/dashboard/summary` استفاده می‌کند و دیگر برای محاسبه شاخص‌های سازمانی، ردیف‌های صفحه‌بندی‌شده فرصت و کار را شمارش نمی‌کند. تصویر فروش جاری، کارها و جلسات نیازمند اقدام، عملکرد دوره، پیش‌بینی ۹۰روزه و سه فهرست توجه با زمان تولید گزارش نمایش داده می‌شوند.
+* failure خلاصه مدیریتی از مقدار صفر متمایز است و loading، unavailable و retry مستقل دارد؛ وضعیت سازمان، اعلان خوانده‌نشده و دسترسی‌های سریع در صورت خطای summary باقی می‌مانند.
+* لینک‌های فهرست توجه فقط با permission پویای `opportunity:view`، `task:view` و `meeting:view` ساخته می‌شوند؛ مشاهده آمار تجمیعی همچنان با `report:view` کنترل می‌شود و محدودیت role جدیدی اضافه نشده است.
+* صفحه گزارش‌ها به تب‌های «نمای کلی»، «پیش‌بینی فروش»، «Aging فرصت‌ها»، «جلسات» و «کارها و SLA» تقسیم شد و گزارش‌های قبلی در نمای کلی حفظ شدند. تب، فیلترهای اعمال‌شده و صفحه/اندازه صفحه Aging در URL نگهداری می‌شوند؛ draft تا فشردن «اعمال فیلترها» query جدید صادر نمی‌کند و reset به نمای کلی و صفحه اول بازمی‌گردد.
+* گزارش Forecast کارت‌های وضعیت و مقادیر اسمی/وزنی authoritative backend، نمودار ماهانه و جزئیات مرحله/مالک را نمایش می‌دهد. کارت‌ها و جدول‌ها از formatter مرکزی IRR با پشتیبانی decimal string استفاده می‌کنند و aggregation وزنی در مرورگر انجام نمی‌شود.
+* گزارش Aging یک snapshot بدون `startDate/endDate` است، bucketهای backend را نمایش می‌دهد و جدول جزئیات آن pagination سمت سرور، تاریخ جلالی و تأکید موارد معوق، بدون مالک، بدون تاریخ بستن و حضور طولانی در مرحله را دارد.
+* گزارش عملکرد جلسات summary، تفکیک وضعیت/نحوه برگزاری و جدول برگزارکنندگان را با عبارت صحیح «مدت برنامه‌ریزی‌شده» نمایش می‌دهد. گزارش کارها snapshot جاری را از flow دوره جدا و تفکیک اولویت و جدول SLA مسئولان را ارائه می‌کند؛ مسئول خالی با «بدون مسئول» نمایش داده می‌شود.
+* قراردادهای TypeScript، serviceها، hookهای React Query، AbortSignal، staleTime و query keyهای شامل تمام فیلترهای مربوط اضافه شدند. mapper هر endpoint فقط پارامترهای پشتیبانی‌شده را ارسال می‌کند؛ Aging عمداً بازه تاریخ را حذف می‌کند.
+* فیلترهای fix 000091 بازاستفاده شدند و وضعیت/نحوه جلسه و وضعیت کار به‌عنوان فیلترهای ثابت اضافه شدند. خرابی گزینه‌های async شرکت/گزارش، فیلترهای ثابت را از کار نمی‌اندازد و متن‌های فارسی خراب موجود در صفحه و پنل گزارش اصلاح شدند.
+
+**endpointهای backend استفاده‌شده:**
+
+* `GET /api/dashboard/summary`
+* `GET /api/reports/opportunities/forecast`
+* `GET /api/reports/opportunities/aging`
+* `GET /api/reports/meetings/performance`
+* `GET /api/reports/tasks/performance`
+* endpointهای قبلی `/api/reports/*` در تب نمای کلی بدون حذف حفظ شده‌اند.
+
+**فایل‌های تغییرکرده/جدید:**
+
+* `src/components/dashboard/MainGrid.tsx`
+* `src/features/reports/types/report.types.ts`
+* `src/features/reports/services/reports.service.ts`
+* `src/features/reports/hooks/useReports.ts`
+* `src/features/reports/pages/ReportsPage.tsx`
+* `src/features/reports/components/ReportFilterPanel.tsx`
+* `src/features/reports/components/AdvancedReportSections.tsx`
+* `README.md`
+
+**وابستگی‌ها و هشدارها:**
+
+* این پیاده‌سازی به قراردادهای backend fix `000071` وابسته است. endpointها و DTOهای واقعی در working tree بک‌اند بررسی شدند، اما fix `000071` هنگام بررسی هنوز commit نشده بود؛ استقرار backend باید این فایل‌ها و permission `report:view` را شامل شود.
+* مقدارهای پولی کارت و جدول به decimal string امن متکی‌اند؛ برای نمودار فقط مقدار finite قابل تبدیل به Number استفاده می‌شود و داده خارج از محدوده قابل‌نمایش رسم نمی‌شود.
+* تست مرورگر، درخواست API با نشست احرازشده و داده واقعی اجرا نشد؛ بنابراین رفتار داده‌های production و permissionهای واقعی به‌صورت دستی تأیید نشده است.
+
+**وضعیت بررسی‌ها:**
+
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check و `npm run build`: بدون خطا اجرا شد.
+* تست خودکار اجرا نشد، زیرا `package.json` اسکریپت `test` یا test runner پیکربندی‌شده ندارد.
+* Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,169.60 kB و gzip آن حدود 627.46 kB است.
+* اسکن mojibake در `src`، `index.html` و `README.md` موردی پیدا نکرد.
+
+---
 **Built with ❤️ for sales team**
 
 ---

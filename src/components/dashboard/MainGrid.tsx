@@ -1,219 +1,41 @@
 import { Link as RouterLink } from 'react-router-dom';
-import Alert from '@mui/material/Alert';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Chip from '@mui/material/Chip';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
+import { Alert, Box, Button, Chip, Grid, Paper, Skeleton, Stack, Typography } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-
 import { can, canAny } from '@/features/auth/utils/permissions';
-import { useCompanies } from '@/features/companies/hooks/useCompanies';
 import { useCurrentOrganization } from '@/features/organizations/hooks/useCurrentOrganization';
 import { getOrganizationStatusColor, getOrganizationStatusLabel } from '@/features/organizations/utils/organizationDisplay';
 import { useUnreadNotificationCount } from '@/features/notifications/hooks/useNotifications';
-import { useOpportunities } from '@/features/opportunities/hooks/useOpportunities';
 import ReportMetricCard from '@/features/reports/components/ReportMetricCard';
-import {
-  useActivityReport,
-  useConversionRatesReport,
-  usePipelineSummaryReport,
-} from '@/features/reports/hooks/useReports';
-import {
-  defaultActivityDateRange,
-  formatCount,
-  formatPercent,
-  isForbiddenError,
-} from '@/features/reports/utils/reportDisplay';
-import { useTasks } from '@/features/tasks/hooks/useTasks';
+import { useDashboardSummary } from '@/features/reports/hooks/useReports';
+import type { NumericValue } from '@/features/reports/types/report.types';
+import { formatCount, formatPercent } from '@/features/reports/utils/reportDisplay';
+import { formatIrrPrice } from '@/features/opportunityLineItems/utils/money';
+import { formatJalaliDateTime } from '@/shared/utils/jalaliDate';
 import { useAuthStore } from '@/store/authStore';
 
-interface DashboardMetric {
-  label: string;
-  value: string;
-  loading?: boolean;
-  unavailable?: boolean;
-}
-
-interface QuickLink {
-  label: string;
-  to: string;
-  visible: boolean;
-}
-
-function MetricGrid({ metrics }: { metrics: DashboardMetric[] }) {
-  return (
-    <Grid container spacing={2}>
-      {metrics.map((metric) => (
-        <Grid key={metric.label} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-          <ReportMetricCard
-            label={metric.label}
-            value={metric.loading ? 'در حال دریافت...' : metric.value}
-            unavailable={metric.unavailable}
-          />
-        </Grid>
-      ))}
-    </Grid>
-  );
-}
-
-function QuickLinks({ links }: { links: QuickLink[] }) {
-  const visibleLinks = links.filter((link) => link.visible);
-  if (!visibleLinks.length) return null;
-
-  return (
-    <Paper sx={{ p: 2 }}>
-      <Stack spacing={2}>
-        <Typography variant="h6">دسترسی سریع</Typography>
-        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
-          {visibleLinks.map((link) => (
-            <Button
-              key={link.to}
-              component={RouterLink}
-              to={link.to}
-              variant="outlined"
-              size="small"
-              startIcon={<ArrowForwardIcon />}
-            >
-              {link.label}
-            </Button>
-          ))}
-        </Stack>
-      </Stack>
-    </Paper>
-  );
-}
+interface Metric { label: string; value: string }
+function Metrics({ title, items }: { title: string; items: Metric[] }) { return <Box><Typography variant="h5" sx={{ mb: 2 }}>{title}</Typography><Grid container spacing={2}>{items.map((item) => <Grid key={item.label} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}><ReportMetricCard label={item.label} value={item.value} /></Grid>)}</Grid></Box>; }
+function value(value: NumericValue | undefined, money = false) { return money ? formatIrrPrice(value) : formatCount(value); }
+function AttentionList({ title, rows }: { title: string; rows: Array<{ id: string; title: string; subtitle: string; to?: string }> }) { return <Paper sx={{ p: 2, minWidth: 0 }}><Typography variant="h6" sx={{ mb: 1 }}>{title}</Typography><Stack divider={<Box sx={{ borderTop: 1, borderColor: 'divider' }} />}>{rows.length ? rows.map((row) => <Stack key={row.id} direction="row" sx={{ py: 1, justifyContent: 'space-between', gap: 1 }}><Box sx={{ minWidth: 0 }}><Typography noWrap>{row.title}</Typography><Typography variant="caption" color="text.secondary">{row.subtitle}</Typography></Box>{row.to && <Button component={RouterLink} to={row.to} size="small">مشاهده</Button>}</Stack>) : <Typography color="text.secondary">موردی نیازمند توجه نیست.</Typography>}</Stack></Paper>; }
 
 export default function MainGrid() {
-  const user = useAuthStore((state) => state.user);
-  const hasReports = can(user, 'report:view', ['ADMIN', 'MANAGER', 'BOARDS']);
-  const canViewOpportunities = can(user, 'opportunity:view', ['ADMIN', 'MANAGER', 'REP', 'BOARDS']);
-  const canViewTasks = can(user, 'task:view', ['ADMIN', 'MANAGER', 'REP', 'BOARDS']);
-  const canViewNotifications = can(user, 'notification:view', ['ADMIN']);
-  const canViewOrganization = can(user, 'organization:view', ['ADMIN']);
-  const canManageOrganizations = can(user, 'organization:manage', ['ADMIN']);
-  const canViewSso = canAny(user, ['sso-provider:view', 'sso-provider:manage'], ['ADMIN']);
-  const canViewProducts = canAny(user, ['product:view', 'product:manage'], ['ADMIN']);
-  const activityDateRange = defaultActivityDateRange();
-
-  const companies = useCompanies({ page: 1, limit: 5, archiveStatus: 'ACTIVE' });
-  const opportunities = useOpportunities({ page: 1, limit: 1, activeOnly: true }, canViewOpportunities);
-  const todoTasks = useTasks({ page: 1, limit: 1, status: 'TODO' }, canViewTasks);
-  const inProgressTasks = useTasks({ page: 1, limit: 1, status: 'IN_PROGRESS' }, canViewTasks);
-  const overdueTasks = useTasks({ page: 1, limit: 1, overdueOnly: true }, canViewTasks);
-  const unreadNotifications = useUnreadNotificationCount(canViewNotifications);
-  const organization = useCurrentOrganization(canViewOrganization);
-
-  const pipeline = usePipelineSummaryReport({}, hasReports);
-  const conversion = useConversionRatesReport({}, hasReports);
-  const activities = useActivityReport(activityDateRange, hasReports);
-  const forbidden = [pipeline.error, conversion.error, activities.error].some(isForbiddenError);
-
-  const salesMetrics: DashboardMetric[] = [
-    {
-      label: 'تعداد شرکت‌ها',
-      value: formatCount(companies.data?.meta.total),
-      loading: companies.isLoading,
-      unavailable: companies.isError,
-    },
-    {
-      label: 'فرصت‌های فعال',
-      value: formatCount(opportunities.data?.meta.total),
-      loading: opportunities.isLoading,
-      unavailable: opportunities.isError || !canViewOpportunities,
-    },
-    {
-      label: 'کل فرصت‌ها در گزارش',
-      value: formatCount(pipeline.data?.summary.totalOpportunities ?? pipeline.data?.summary.totalCompanies),
-      loading: pipeline.isLoading,
-      unavailable: pipeline.isError || !hasReports,
-    },
-    {
-      label: 'نرخ تبدیل کل',
-      value: formatPercent(conversion.data?.summary.overallOpportunityConversionRate ?? conversion.data?.summary.overallConversionRate),
-      loading: conversion.isLoading,
-      unavailable: conversion.isError || !hasReports,
-    },
-  ];
-
-  const operationsMetrics: DashboardMetric[] = [
-    {
-      label: 'کارهای باز',
-      value: formatCount((todoTasks.data?.meta.total ?? 0) + (inProgressTasks.data?.meta.total ?? 0)),
-      loading: todoTasks.isLoading || inProgressTasks.isLoading,
-      unavailable: todoTasks.isError || inProgressTasks.isError || !canViewTasks,
-    },
-    {
-      label: 'کارهای سررسید گذشته',
-      value: formatCount(overdueTasks.data?.meta.total),
-      loading: overdueTasks.isLoading,
-      unavailable: overdueTasks.isError || !canViewTasks,
-    },
-    {
-      label: 'اعلان‌های خوانده‌نشده',
-      value: formatCount(unreadNotifications.data?.total),
-      loading: unreadNotifications.isLoading,
-      unavailable: unreadNotifications.isError || !canViewNotifications,
-    },
-    {
-      label: 'فعالیت‌های ۳۰ روز اخیر',
-      value: formatCount(activities.data?.totalActivities),
-      loading: activities.isLoading,
-      unavailable: activities.isError || !hasReports,
-    },
-  ];
-
-  const quickLinks: QuickLink[] = [
-    { label: 'فرصت‌ها', to: '/opportunities', visible: canViewOpportunities },
-    { label: 'کارها', to: '/tasks', visible: canViewTasks },
-    { label: 'اعلان‌ها', to: '/notifications', visible: canViewNotifications },
-    { label: 'گزارش‌ها', to: '/reports', visible: hasReports },
-    { label: 'کاتالوگ محصولات', to: '/admin/libraries', visible: canViewProducts },
-    { label: 'سازمان‌ها', to: '/admin/organizations', visible: canManageOrganizations },
-    { label: 'ورود سازمانی', to: '/admin/sso-providers', visible: canViewSso },
-  ];
-
-  return (
-    <Stack spacing={3} sx={{ width: '100%', mt: 2 }}>
-      {forbidden && (
-        <Alert severity="info">
-          گزارش‌های مدیریتی برای نقش شما فعال نیست.
-        </Alert>
-      )}
-
-      <Box>
-        <Typography variant="h5" sx={{ mb: 2 }}>خلاصه فروش</Typography>
-        <MetricGrid metrics={salesMetrics} />
-      </Box>
-
-      <Box>
-        <Typography variant="h5" sx={{ mb: 2 }}>کارها و اعلان‌ها</Typography>
-        <MetricGrid metrics={operationsMetrics} />
-      </Box>
-
-      {canViewOrganization && (
-        <Paper sx={{ p: 2 }}>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ justifyContent: 'space-between', alignItems: { sm: 'center' } }}>
-            <Box>
-              <Typography variant="h6">وضعیت سازمان جاری</Typography>
-              <Typography color="text.secondary">
-                {organization.isLoading ? 'در حال دریافت سازمان...' : organization.data?.name ?? 'سازمان نامشخص'}
-              </Typography>
-            </Box>
-            {organization.data && (
-              <Chip
-                color={getOrganizationStatusColor(organization.data.status)}
-                label={getOrganizationStatusLabel(organization.data.status)}
-              />
-            )}
-            {organization.isError && <Alert severity="warning">دریافت وضعیت سازمان انجام نشد.</Alert>}
-          </Stack>
-        </Paper>
-      )}
-
-      <QuickLinks links={quickLinks} />
-    </Stack>
-  );
+  const user = useAuthStore((state) => state.user); const hasReports = can(user, 'report:view', ['ADMIN', 'MANAGER', 'BOARDS']);
+  const canOpportunity = can(user, 'opportunity:view'), canTask = can(user, 'task:view'), canMeeting = can(user, 'meeting:view');
+  const canNotifications = can(user, 'notification:view', ['ADMIN']), canOrganization = can(user, 'organization:view', ['ADMIN']);
+  const summary = useDashboardSummary({}, hasReports); const unread = useUnreadNotificationCount(canNotifications); const organization = useCurrentOrganization(canOrganization); const data = summary.data;
+  const quickLinks = [{ label: 'فرصت‌ها', to: '/opportunities', visible: canOpportunity }, { label: 'کارها', to: '/tasks', visible: canTask }, { label: 'جلسات', to: '/meetings', visible: canMeeting }, { label: 'اعلان‌ها', to: '/notifications', visible: canNotifications }, { label: 'گزارش‌ها', to: '/reports', visible: hasReports }, { label: 'کاتالوگ محصولات', to: '/admin/libraries', visible: canAny(user, ['product:view', 'product:manage'], ['ADMIN']) }].filter((item) => item.visible);
+  return <Stack spacing={3} sx={{ width: '100%', mt: 2 }}>
+    {hasReports && summary.isLoading && <Paper sx={{ p: 3 }}><Skeleton height={48} /><Skeleton height={120} /></Paper>}
+    {hasReports && summary.isError && <Alert severity="error" action={<Button onClick={() => summary.refetch()}>تلاش مجدد</Button>}>خلاصه مدیریتی در دسترس نیست؛ مقادیر خطا به‌صورت صفر نمایش داده نمی‌شوند.</Alert>}
+    {data && <><Typography color="text.secondary">آخرین تولید گزارش: {formatJalaliDateTime(data.generatedAt)}</Typography>
+      <Metrics title="تصویر فعلی فروش" items={[{ label: 'فرصت‌های فعال', value: value(data.current.activeOpportunities.count) }, { label: 'ارزش پایپ‌لاین فعال', value: value(data.current.activeOpportunities.estimatedValueIrr, true) }, { label: 'ارزش وزنی پایپ‌لاین', value: value(data.current.activeOpportunities.weightedValueIrr, true) }, { label: 'فرصت‌های فاقد ارزش', value: value(data.current.activeOpportunities.missingValueCount) }, { label: 'فرصت‌های فاقد احتمال موفقیت', value: value(data.current.activeOpportunities.missingProbabilityCount) }]} />
+      <Metrics title="کارها و جلسات نیازمند اقدام" items={[{ label: 'کارهای باز', value: value(data.current.tasks.openCount) }, { label: 'کارهای سررسید گذشته', value: value(data.current.tasks.overdueCount) }, { label: 'کارهای امروز', value: value(data.current.tasks.dueTodayCount) }, { label: 'جلسات امروز', value: value(data.current.meetings.todayCount) }, { label: 'جلسات هفت روز آینده', value: value(data.current.meetings.upcomingSevenDaysCount) }, { label: 'جلسات گذشته تعیین‌تکلیف‌نشده', value: value(data.current.meetings.pastScheduledCount) }]} />
+      <Metrics title="عملکرد دوره ۳۰ روزه" items={[{ label: 'فرصت‌های ایجادشده', value: value(data.periodPerformance.opportunities.createdCount) }, { label: 'فرصت‌های موفق', value: value(data.periodPerformance.opportunities.wonCount) }, { label: 'فرصت‌های ازدست‌رفته', value: value(data.periodPerformance.opportunities.lostCount) }, { label: 'ارزش فرصت‌های موفق', value: value(data.periodPerformance.opportunities.wonEstimatedValueIrr, true) }, { label: 'نرخ برد', value: formatPercent(data.periodPerformance.opportunities.winRate) }, { label: 'کارهای تکمیل‌شده', value: value(data.periodPerformance.tasks.completedCount) }, { label: 'نرخ انجام به‌موقع کارها', value: formatPercent(data.periodPerformance.tasks.onTimeCompletionRate) }, { label: 'جلسات برگزارشده', value: value(data.periodPerformance.meetings.completedCount) }, { label: 'نرخ برگزاری جلسات', value: formatPercent(data.periodPerformance.meetings.executionRate) }]} />
+      <Metrics title="پیش‌بینی ۹۰ روزه" items={[{ label: 'تعداد فرصت‌های Forecast', value: value(data.forecast.opportunityCount) }, { label: 'ارزش اسمی Forecast', value: value(data.forecast.estimatedValueIrr, true) }, { label: 'ارزش وزنی Forecast', value: value(data.forecast.weightedValueIrr, true) }, { label: 'فرصت‌های دارای تاریخ بستن گذشته', value: value(data.forecast.overdueCloseCount) }, { label: 'فرصت‌های بدون تاریخ بستن', value: value(data.forecast.withoutCloseDateCount) }]} />
+      <Grid container spacing={2}><Grid size={{ xs: 12, lg: 4 }}><AttentionList title="فرصت‌های دارای تاریخ بستن گذشته" rows={data.attention.overdueOpportunities.map((item) => ({ id: item.id, title: item.title, subtitle: `${formatJalaliDateTime(item.expectedCloseDate)} · ${item.stage?.label ?? '—'}`, to: canOpportunity ? `/opportunities/${item.id}` : undefined }))} /></Grid><Grid size={{ xs: 12, lg: 4 }}><AttentionList title="کارهای سررسید گذشته" rows={data.attention.overdueTasks.map((item) => ({ id: item.id, title: item.title, subtitle: `${formatJalaliDateTime(item.dueAt)} · ${item.priority}`, to: canTask ? `/tasks?taskId=${item.id}` : undefined }))} /></Grid><Grid size={{ xs: 12, lg: 4 }}><AttentionList title="جلسات گذشته برنامه‌ریزی‌شده" rows={data.attention.pastScheduledMeetings.map((item) => ({ id: item.id, title: item.title, subtitle: formatJalaliDateTime(item.startAt), to: canMeeting ? `/meetings/${item.id}` : undefined }))} /></Grid></Grid>
+    </>}
+    {canNotifications && <ReportMetricCard label="اعلان‌های خوانده‌نشده" value={unread.isError ? 'ناموجود' : formatCount(unread.data?.total)} />}
+    {canOrganization && <Paper sx={{ p: 2 }}><Stack direction="row" sx={{ justifyContent: 'space-between' }}><Box><Typography variant="h6">وضعیت سازمان جاری</Typography><Typography>{organization.data?.name ?? (organization.isLoading ? 'در حال دریافت...' : 'ناموجود')}</Typography></Box>{organization.data && <Chip color={getOrganizationStatusColor(organization.data.status)} label={getOrganizationStatusLabel(organization.data.status)} />}</Stack></Paper>}
+    {quickLinks.length > 0 && <Paper sx={{ p: 2 }}><Typography variant="h6" sx={{ mb: 1 }}>دسترسی سریع</Typography><Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>{quickLinks.map((link) => <Button key={link.to} component={RouterLink} to={link.to} variant="outlined" size="small" startIcon={<ArrowForwardIcon />}>{link.label}</Button>)}</Stack></Paper>}
+  </Stack>;
 }
