@@ -38,6 +38,7 @@ export default function StageDurationsSection({
   return (
     <Stack spacing={2}>
       <Typography variant="h5">زمان ماندگاری مراحل</Typography>
+      <Typography color="text.secondary">نمونه‌ها بر اساس تاریخ خروج از مرحله در بازه انتخابی محاسبه می‌شوند.</Typography>
 
       {data?.length ? (
         <TableContainer component={Paper}>

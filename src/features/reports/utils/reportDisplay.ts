@@ -1,4 +1,10 @@
 import axios from 'axios';
+import type { ReportPeriod } from '../types/report.types';
+
+export function reportDateBasisText(period: ReportPeriod | undefined, fallback: string): string {
+  const labels: Record<string, string> = { OPPORTUNITY_CREATED_AT: 'بر اساس تاریخ ایجاد فرصت', STAGE_TRANSITION_CHANGED_AT: 'بر اساس تاریخ تغییر مرحله', ACTIVITY_OCCURRED_AT: 'بر اساس تاریخ انجام فعالیت' };
+  return period?.dateBasis ? (labels[period.dateBasis] ?? fallback) : fallback;
+}
 
 export function toSafeNumber(value?: number | string | null): number | null {
   if (value === null || value === undefined || value === '') return null;

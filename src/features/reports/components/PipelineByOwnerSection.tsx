@@ -59,6 +59,7 @@ export default function PipelineByOwnerSection({
   return (
     <Stack spacing={2}>
       <Typography variant="h5">پایپ‌لاین به تفکیک مالک</Typography>
+      <Typography color="text.secondary">عملکرد مالکان بر اساس تاریخ ایجاد فرصت در بازه انتخابی محاسبه می‌شود.</Typography>
 
       {data?.length ? (
         <TableContainer component={Paper}>

@@ -24,9 +24,10 @@ import {
   useStageDurationsReport,
 } from '../hooks/useReports';
 import type { ReportFilters } from '../types/report.types';
+import type { CompanyOption } from '@/features/companies/types/company.types';
 import { defaultActivityDateRange, isForbiddenError } from '../utils/reportDisplay';
 
-function initialFilters(): ReportFilters { return defaultActivityDateRange(); }
+function initialFilters(): ReportFilters { return { ...defaultActivityDateRange(), ownershipScope: 'all' }; }
 
 export default function ReportsPage() {
   const user = useAuthStore((state) => state.user);
@@ -38,6 +39,7 @@ export default function ReportsPage() {
   const queryClient = useQueryClient();
   const [draft, setDraft] = useState<ReportFilters>(initialFilters);
   const [filters, setFilters] = useState<ReportFilters>(initialFilters);
+  const [selectedCompanies, setSelectedCompanies] = useState<CompanyOption[]>([]);
   const filterOptions = useReportFilterOptions(hasAccess);
   const pipeline = usePipelineSummaryReport(filters, hasAccess);
   const conversion = useConversionRatesReport(filters, hasAccess);
@@ -55,6 +57,7 @@ export default function ReportsPage() {
     const next = initialFilters();
     setDraft(next);
     setFilters(next);
+    setSelectedCompanies([]);
   };
 
   const operationalLinks = [
@@ -81,7 +84,7 @@ export default function ReportsPage() {
           </Stack>
         </Paper>
       )}
-      <ReportFilterPanel draft={draft} options={filterOptions.data} isLoading={filterOptions.isLoading} isError={filterOptions.isError} isApplying={reports.some((query) => query.isFetching)} onChange={setDraft} onApply={() => setFilters({ ...draft })} onReset={reset} />
+      <ReportFilterPanel draft={draft} selectedCompanies={selectedCompanies} options={filterOptions.data} isLoading={filterOptions.isLoading} isError={filterOptions.isError} isApplying={reports.some((query) => query.isFetching)} onChange={setDraft} onCompaniesChange={(companies) => { setSelectedCompanies(companies); setDraft((current) => ({ ...current, companyIds: companies.map((item) => item.id) })); }} onApply={() => setFilters({ ...draft })} onReset={reset} />
       <PipelineSummarySection data={pipeline.data} isLoading={pipeline.isLoading} isError={pipeline.isError} />
       <ConversionRatesSection data={conversion.data} isLoading={conversion.isLoading} isError={conversion.isError} />
       <StageDurationsSection data={durations.data} isLoading={durations.isLoading} isError={durations.isError} />

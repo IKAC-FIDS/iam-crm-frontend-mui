@@ -28,7 +28,6 @@ import {
   isForbiddenError,
 } from '@/features/reports/utils/reportDisplay';
 import { useTasks } from '@/features/tasks/hooks/useTasks';
-import { isTaskOverdue } from '@/features/tasks/utils/taskDisplay';
 import { useAuthStore } from '@/store/authStore';
 
 interface DashboardMetric {
@@ -97,22 +96,20 @@ export default function MainGrid() {
   const canManageOrganizations = can(user, 'organization:manage', ['ADMIN']);
   const canViewSso = canAny(user, ['sso-provider:view', 'sso-provider:manage'], ['ADMIN']);
   const canViewProducts = canAny(user, ['product:view', 'product:manage'], ['ADMIN']);
-  const dateRange = defaultActivityDateRange();
+  const activityDateRange = defaultActivityDateRange();
 
   const companies = useCompanies({ page: 1, limit: 5, archiveStatus: 'ACTIVE' });
-  const opportunities = useOpportunities({ page: 1, limit: 5, includeArchived: false }, canViewOpportunities);
-  const todoTasks = useTasks({ page: 1, limit: 100, status: 'TODO' }, canViewTasks);
-  const inProgressTasks = useTasks({ page: 1, limit: 100, status: 'IN_PROGRESS' }, canViewTasks);
+  const opportunities = useOpportunities({ page: 1, limit: 1, activeOnly: true }, canViewOpportunities);
+  const todoTasks = useTasks({ page: 1, limit: 1, status: 'TODO' }, canViewTasks);
+  const inProgressTasks = useTasks({ page: 1, limit: 1, status: 'IN_PROGRESS' }, canViewTasks);
+  const overdueTasks = useTasks({ page: 1, limit: 1, overdueOnly: true }, canViewTasks);
   const unreadNotifications = useUnreadNotificationCount(canViewNotifications);
   const organization = useCurrentOrganization(canViewOrganization);
 
-  const pipeline = usePipelineSummaryReport(dateRange, hasReports);
-  const conversion = useConversionRatesReport(dateRange, hasReports);
-  const activities = useActivityReport(dateRange, hasReports);
+  const pipeline = usePipelineSummaryReport({}, hasReports);
+  const conversion = useConversionRatesReport({}, hasReports);
+  const activities = useActivityReport(activityDateRange, hasReports);
   const forbidden = [pipeline.error, conversion.error, activities.error].some(isForbiddenError);
-
-  const openTaskRows = [...(todoTasks.data?.data ?? []), ...(inProgressTasks.data?.data ?? [])];
-  const overdueTasks = openTaskRows.filter(isTaskOverdue).length;
 
   const salesMetrics: DashboardMetric[] = [
     {
@@ -122,7 +119,7 @@ export default function MainGrid() {
       unavailable: companies.isError,
     },
     {
-      label: 'تعداد فرصت‌های فعال',
+      label: 'فرصت‌های فعال',
       value: formatCount(opportunities.data?.meta.total),
       loading: opportunities.isLoading,
       unavailable: opportunities.isError || !canViewOpportunities,
@@ -150,9 +147,9 @@ export default function MainGrid() {
     },
     {
       label: 'کارهای سررسید گذشته',
-      value: formatCount(overdueTasks),
-      loading: todoTasks.isLoading || inProgressTasks.isLoading,
-      unavailable: todoTasks.isError || inProgressTasks.isError || !canViewTasks,
+      value: formatCount(overdueTasks.data?.meta.total),
+      loading: overdueTasks.isLoading,
+      unavailable: overdueTasks.isError || !canViewTasks,
     },
     {
       label: 'اعلان‌های خوانده‌نشده',

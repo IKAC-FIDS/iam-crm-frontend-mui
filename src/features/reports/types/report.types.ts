@@ -1,4 +1,5 @@
 import type { ActivityType } from '@/features/activities/types/activity.types';
+import type { OwnershipScope } from '@/shared/types/ownership';
 
 export type NumericValue = number | string;
 
@@ -20,6 +21,8 @@ export interface ReportFilterOptions {
 }
 
 export interface ReportFilters {
+  ownershipScope?: OwnershipScope;
+  companyIds?: string[];
   startDate?: string;
   endDate?: string;
   userIds?: string[];
@@ -32,6 +35,12 @@ export interface ReportFilters {
   activityTypes?: string[];
 }
 
+export interface ReportPeriod {
+  startDate?: string | null;
+  endDate?: string | null;
+  dateBasis?: 'OPPORTUNITY_CREATED_AT' | 'STAGE_TRANSITION_CHANGED_AT' | 'ACTIVITY_OCCURRED_AT' | string;
+}
+
 export interface ReportStageBreakdownItem {
   stage: string;
   stageId?: string;
@@ -42,6 +51,7 @@ export interface ReportStageBreakdownItem {
 }
 
 export interface PipelineSummaryReport {
+  period?: ReportPeriod;
   stages: ReportStageBreakdownItem[];
   summary: {
     totalCompanies: NumericValue;
@@ -59,6 +69,7 @@ export interface PipelineSummaryReport {
 }
 
 export interface ConversionRatesReport {
+  period?: ReportPeriod;
   stages: Array<{
     fromStageId?: string | null;
     fromStage?: string | null;
@@ -93,6 +104,7 @@ export interface StageDurationReportItem {
 }
 
 export interface ActivityReport {
+  period?: ReportPeriod;
   startDate: string;
   endDate: string;
   totalActivities: NumericValue;

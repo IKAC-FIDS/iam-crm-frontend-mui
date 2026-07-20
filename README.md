@@ -4561,6 +4561,55 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * بررسی دستی با backend فعال، نرخ واقعی و مرورگر احرازشده اجرا نشد.
 
 ---
+
+## fix 000091 — اصلاح شاخص‌های داشبورد و تکمیل فیلترهای گزارش
+
+**موارد پیاده‌سازی‌شده:**
+
+* کارت «فرصت‌های فعال» داشبورد اکنون `GET /api/opportunities?page=1&limit=1&activeOnly=true` را فراخوانی و مقدار دقیق `meta.total` را نمایش می‌دهد؛ فرصت‌های WON/LOST دیگر به‌دلیل صرفاً archive نبودن در این شاخص محاسبه نمی‌شوند.
+* فیلد `activeOnly` به type فیلتر فرصت اضافه شد و به‌عنوان بخشی از object پارامتر در query key موجود React Query شرکت می‌کند، بدون تغییر رفتار فهرست‌های قبلی فرصت.
+* شمارش کارهای سررسیدگذشته از پردازش client-side اولین ۱۰۰ کار حذف شد. داشبورد اکنون `GET /api/tasks?page=1&limit=1&overdueOnly=true` را فراخوانی و `meta.total` را مرجع قرار می‌دهد.
+* فیلد `overdueOnly` به فیلترهای task افزوده شد و query مستقل آن loading/error جدا دارد. شمارش کارهای باز نیز از جمع `meta.total` دقیق queryهای TODO و IN_PROGRESS با `limit=1` به دست می‌آید.
+* شاخص‌های snapshot داشبورد شامل فرصت فعال، کار باز و کار سررسیدگذشته بدون بازه ۳۰روزه هستند. خلاصه پایپ‌لاین و نرخ تبدیل کلی نیز بدون `startDate/endDate` و به‌صورت all-history درخواست می‌شوند؛ فقط کارت «فعالیت‌های ۳۰ روز اخیر» بازه ۳۰روزه را حفظ کرده است.
+* فیلتر `ownershipScope` با مقادیر واقعی backend یعنی `all`، `mine`، `team` و `unassigned` و labelهای «همه»، «متعلق به من»، «تیم من» و «بدون مالک» به گزارش‌ها اضافه شد. مقدار پیش‌فرض و reset برابر `all` است و منطق مالکیت در frontend بازسازی نمی‌شود.
+* فیلتر چندشرکتی با `CompanyMultiAutocomplete` مشترک، جستجوی server-side با debounce، pagination، load-more، deduplicate و حفظ optionهای انتخاب‌شده اضافه شد. درخواست گزارش فقط UUIDهای `companyIds` را ارسال می‌کند و خطای company options سایر فیلترها یا report queryها را از کار نمی‌اندازد.
+* state پیش‌نویس و applied گزارش‌ها جدا باقی مانده است؛ تغییر selector شرکت یا سایر فیلترها تا فشردن «اعمال فیلترها» report query جدید صادر نمی‌کند. reset، شرکت‌های انتخاب‌شده و scope را نیز پاک/بازنشانی می‌کند و تعداد فیلترهای فعال نمایش داده می‌شود.
+* نوع `ReportPeriod` به‌صورت optional و backward-compatible اضافه شد. subtitleهای خلاصه پایپ‌لاین و عملکرد مالکان مبنای `opportunity.createdAt`، نرخ تبدیل مبنای تغییر مرحله، مدت ماندگاری مبنای خروج از مرحله و فعالیت‌ها مبنای `occurredAt` را صریح می‌کنند.
+* خلاصه پایپ‌لاین به‌عنوان فرصت‌های ایجادشده در بازه و نرخ تبدیل به‌عنوان transitionهای انجام‌شده در بازه توضیح داده شده است؛ نام فیلدهای backend و سازگاری responseهای قدیمی تغییر نکرده‌اند.
+* وضعیت خطا و loading هر metric/report همچنان از مقدار صفر متمایز است و permissionهای پویا و helperهای موجود API حفظ شده‌اند.
+
+**فایل‌های تغییرکرده:**
+
+* `src/components/dashboard/MainGrid.tsx`
+* `src/features/opportunities/types/opportunity.types.ts`
+* `src/features/tasks/types/task.types.ts`
+* `src/features/reports/types/report.types.ts`
+* `src/features/reports/pages/ReportsPage.tsx`
+* `src/features/reports/components/ReportFilterPanel.tsx`
+* `src/features/reports/components/PipelineSummarySection.tsx`
+* `src/features/reports/components/ConversionRatesSection.tsx`
+* `src/features/reports/components/StageDurationsSection.tsx`
+* `src/features/reports/components/ActivityReportSection.tsx`
+* `src/features/reports/components/PipelineByOwnerSection.tsx`
+* `src/features/reports/utils/reportDisplay.ts`
+* `README.md`
+
+**وابستگی backend:**
+
+* backend fix `000070` باید `activeOnly=true` را در `/api/opportunities` و `overdueOnly=true` را در `/api/tasks` با شمارش دقیق pagination metadata پشتیبانی کند.
+* endpointهای `/api/reports/*` باید فیلترهای `ownershipScope` و `companyIds` را مطابق `ReportFiltersDto` اعمال کنند. enum واقعی `OwnershipScope` در backend مقادیر lowercase دارد.
+* `GET /api/companies/options` و `GET /api/companies/options/:id` باید scope سازمانی، pagination، جستجو و hydrate انتخاب موجود را پشتیبانی کنند.
+* متادیتای optional `period.dateBasis` برای pipeline summary، conversion و activity استفاده می‌شود؛ نبود آن در پاسخ‌های قدیمی باعث خطا نمی‌شود. endpoint stage duration در قرارداد فعلی period metadata برنمی‌گرداند و UI label ثابت و صحیح نمایش می‌دهد.
+
+**وضعیت بررسی‌ها:**
+
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check و `npm run build`: بدون خطا اجرا شد.
+* تست خودکار اجرا نشد، زیرا `package.json` اسکریپت `test` یا test runner پیکربندی‌شده ندارد.
+* هشدار غیرمسدودکننده Vite درباره chunk بزرگ‌تر از 500 kB وجود دارد؛ bundle اصلی حدود 1,882.49 kB و gzip آن حدود 538.70 kB است.
+* بررسی دستی با backend فعال، داده واقعی و نشست احرازشده اجرا نشد.
+
+---
 **Built with ❤️ for sales team**
 
 ---

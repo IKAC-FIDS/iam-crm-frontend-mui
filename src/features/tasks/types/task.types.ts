@@ -51,6 +51,7 @@ export interface FindTasksParams {
   dueFrom?: string;
   dueTo?: string;
   search?: string;
+  overdueOnly?: boolean;
 }
 
 export interface CreateTaskPayload {

@@ -28,7 +28,7 @@ export interface Opportunity {
     tasks?: number;
   };
 }
-export interface OpportunityListParams { page: number; limit: number; search?: string; companyId?: string; ownerId?: string; team?: string; ownershipScope?: OwnershipScope; stageId?: string; priority?: Priority; source?: string; opportunitySource?: string; sourceOptionId?: string; primaryContactId?: string; includeArchived?: boolean; archivedOnly?: boolean }
+export interface OpportunityListParams { page: number; limit: number; search?: string; companyId?: string; ownerId?: string; team?: string; ownershipScope?: OwnershipScope; stageId?: string; priority?: Priority; source?: string; opportunitySource?: string; sourceOptionId?: string; primaryContactId?: string; includeArchived?: boolean; archivedOnly?: boolean; activeOnly?: boolean }
 export interface OpportunityPayload { companyId: string; title: string; description?: string; ownerId?: string; stageId?: string; priority?: Priority; estimatedValue?: number; expectedCloseDate?: string; source?: string; sourceOptionId?: string; opportunitySource?: string; primaryContactId?: string; probability?: number; competitor?: string }
 export type CompanyOpportunityPayload = Omit<OpportunityPayload, 'companyId'>;
 export type UpdateOpportunityPayload = Partial<Omit<OpportunityPayload, 'companyId' | 'ownerId' | 'stageId'>>;

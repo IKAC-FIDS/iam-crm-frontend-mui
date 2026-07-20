@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 
 import type { ConversionRatesReport } from '../types/report.types';
-import { formatCount, formatPercent } from '../utils/reportDisplay';
+import { formatCount, formatPercent, reportDateBasisText } from '../utils/reportDisplay';
 import ReportMetricCard from './ReportMetricCard';
 
 function fromLabel(item: ConversionRatesReport['stages'][number]) {
@@ -50,6 +50,7 @@ export default function ConversionRatesSection({
   return (
     <Stack spacing={2}>
       <Typography variant="h5">نرخ تبدیل بر اساس قوانین انتقال</Typography>
+      <Typography color="text.secondary">انتقال‌های انجام‌شده در بازه انتخابی — {reportDateBasisText(data.period, 'بر اساس تاریخ تغییر مرحله')}. کل فرصت‌ها، فرصت‌های متمایز دارای انتقال واجد شرایط هستند.</Typography>
 
       <Grid container spacing={2}>
         {[

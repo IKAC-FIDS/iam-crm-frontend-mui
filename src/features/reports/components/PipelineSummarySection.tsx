@@ -1,7 +1,7 @@
 import { Alert, Box, Grid, LinearProgress, Paper, Stack, Typography } from '@mui/material';
 
 import type { PipelineSummaryReport } from '../types/report.types';
-import { formatCount, formatPercent, toSafeNumber } from '../utils/reportDisplay';
+import { formatCount, formatPercent, reportDateBasisText, toSafeNumber } from '../utils/reportDisplay';
 import ReportMetricCard from './ReportMetricCard';
 
 function stageLabel(item: { label?: string; stage?: string }) {
@@ -34,6 +34,7 @@ export default function PipelineSummarySection({
   return (
     <Stack spacing={2}>
       <Typography variant="h5">خلاصه پایپ‌لاین</Typography>
+      <Typography color="text.secondary">فرصت‌های ایجادشده در بازه انتخابی — {reportDateBasisText(data.period, 'بر اساس تاریخ ایجاد فرصت')}</Typography>
 
       <Grid container spacing={2}>
         {[
