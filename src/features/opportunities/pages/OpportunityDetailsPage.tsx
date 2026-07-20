@@ -11,6 +11,7 @@ import CommercialDocumentsTab from '@/features/commercialDocuments/components/Co
 import OpportunityLineItemsTab from '@/features/opportunityLineItems/components/OpportunityLineItemsTab';
 import PaymentsTab from '@/features/payments/components/PaymentsTab';
 import OpportunityTasksTab from '@/features/tasks/components/OpportunityTasksTab';
+import ScopedMeetingsTab from '@/features/meetings/components/ScopedMeetingsTab';
 import ChangeOpportunityOwnerDialog from '../components/ChangeOpportunityOwnerDialog';
 import ChangeOpportunityStageDialog from '../components/ChangeOpportunityStageDialog';
 import OpportunityFormDialog from '../components/OpportunityFormDialog';
@@ -126,6 +127,7 @@ export default function OpportunityDetailsPage() {
           <Tab value="documents" label="اسناد تجاری" />
           <Tab value="payments" label="پرداخت‌ها" />
           <Tab value="tasks" label="کارها" />
+          <Tab value="meetings" label="جلسات" />
           <Tab value="attachments" label="پیوست‌ها" />
           <Tab value="activities" label="فعالیت‌ها" />
         </Tabs>
@@ -142,6 +144,7 @@ export default function OpportunityDetailsPage() {
           companyName={opportunity.company?.brandName || opportunity.company?.legalName}
         />
       )}
+      {tab === 'meetings' && <ScopedMeetingsTab company={{ id: opportunity.companyId, legalName: opportunity.company?.legalName || '', brandName: opportunity.company?.brandName }} opportunity={opportunity} />}
       {tab === 'attachments' && <AttachmentsTab entityType="OPPORTUNITY" entityId={opportunity.id} title="پیوست‌های فرصت" emptyMessage="هنوز پیوستی برای این فرصت ثبت نشده است." />}
       {tab === 'activities' && <PlaceholderCard text={placeholder.activities} />}
       {formOpen && <OpportunityFormDialog companyId={opportunity.companyId} opportunity={opportunity} open onClose={() => setFormOpen(false)} />}

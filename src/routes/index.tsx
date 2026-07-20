@@ -19,6 +19,8 @@ import AccountSecurityPage from '@/features/accountSecurity/pages/AccountSecurit
 import OpportunitiesPage from '@/features/opportunities/pages/OpportunitiesPage';
 import OpportunityDetailsPage from '@/features/opportunities/pages/OpportunityDetailsPage';
 import TasksPage from '@/features/tasks/pages/TasksPage';
+import MeetingsPage from '@/features/meetings/pages/MeetingsPage';
+import MeetingDetailsPage from '@/features/meetings/pages/MeetingDetailsPage';
 import NotificationsPage from '@/features/notifications/pages/NotificationsPage';
 import AdminOrganizationsPage from '@/features/organizations/pages/AdminOrganizationsPage';
 import SsoCallbackPage from '@/features/sso/pages/SsoCallbackPage';
@@ -43,6 +45,8 @@ export const router = createBrowserRouter([
           { path: 'opportunities', element: <OpportunitiesPage /> },
           { path: 'opportunities/:opportunityId', element: <OpportunityDetailsPage /> },
           { path: 'tasks', element: <TasksPage /> },
+          { path: 'meetings', element: <MeetingsPage /> },
+          { path: 'meetings/:meetingId', element: <MeetingDetailsPage /> },
           { path: 'notifications', element: <NotificationsPage /> },
           { path: 'pipeline', element: <PipelinePage /> },
           { path: 'follow-ups', element: <FollowUpsPage /> },

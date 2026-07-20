@@ -11,6 +11,7 @@ export const notificationTypes = [
   'COMMERCIAL_DOCUMENT_UPDATED',
   'PAYMENT_UPDATED',
   'ATTACHMENT_UPLOADED',
+  'MEETING_REMINDER',
 ] as const;
 
 export type NotificationType = (typeof notificationTypes)[number];
@@ -27,6 +28,7 @@ export const notificationEntityTypes = [
   'COMMERCIAL_DOCUMENT',
   'PAYMENT',
   'ATTACHMENT',
+  'MEETING',
 ] as const;
 
 export type NotificationEntityType = (typeof notificationEntityTypes)[number];

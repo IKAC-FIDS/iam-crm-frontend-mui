@@ -4445,6 +4445,69 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * خطای مجوز یا شبکه endpoint گزینه‌ها را شبیه‌سازی و نمایش پیام خطا بدون crash فرم را تأیید کنید.
 
 ---
+
+## fix 000089 — افزودن رابط کاربری مدیریت جلسات
+
+**موارد پیاده‌سازی‌شده:**
+
+* گزینه «جلسات» با مجوز پویا `meeting:view` به منوی عملیات فروش و مسیرهای `/meetings` و `/meetings/:meetingId` اضافه شد؛ هیچ محدودیت hardcodeشده‌ای بر اساس نقش برای جلسات استفاده نشده است.
+* صفحه سراسری جلسات با جستجو، quick filterهای امروز/پیش‌رو/گذشته/برگزارش‌شده/لغوشده/جلسات من، فیلتر وضعیت، نوع برگزاری و بازه تاریخ، pagination سمت server و DataGrid واکنش‌گرا پیاده‌سازی شد. پارامترهای فیلتر و pagination در URL نگهداری می‌شوند.
+* فرم reusable ایجاد/ویرایش جلسه شامل شرکت، فرصت مرتبط، عنوان، دستور جلسه، توضیحات، نوع برگزاری، محل، لینک، شروع/پایان، یادآوری، مسئولان داخلی و مدعوین شرکت است.
+* انتخاب شرکت از `GET /api/companies/options`، فرصت‌ها از API فرصت‌های همان شرکت، مسئولان از `GET /api/users/assignee-options` و مدعوین از directory مخاطبین با جستجو و pagination سمت server انجام می‌شود؛ payload فقط شناسه‌ها را ارسال می‌کند.
+* مسئولان و مدعوین انتخاب‌شده خارج از صفحه اول در option list باقی می‌مانند و بر اساس `id` deduplicate می‌شوند. تغییر شرکت پس از تأیید کاربر، فرصت و مدعوین ناسازگار را پاک می‌کند.
+* presetهای بدون یادآوری، ۱۵/۳۰ دقیقه، ۱/۲ ساعت، یک روز قبل و زمان دلخواه اضافه شدند. presetها `reminderAt` دقیق UTC را از `startAt` محاسبه می‌کنند و زمان پایان و یادآوری قبل از submit اعتبارسنجی می‌شوند.
+* نوع حضوری فقط محل، آنلاین فقط لینک و ترکیبی هر دو را نمایش می‌دهد. لینک جلسه در جزئیات با `target="_blank"` و `rel="noopener noreferrer"` ارائه می‌شود.
+* صفحه جزئیات جلسه، ویرایش با `meeting:update`، تکمیل با `meeting:complete` و لغو با `meeting:cancel` را همراه dialog تأیید، یادداشت نتیجه/دلیل لغو، پیام backend و invalidation queryها پشتیبانی می‌کند.
+* تب جلسات به جزئیات شرکت و فرصت اضافه شد و همان فرم reusable را با شرکت/فرصت از پیش انتخاب‌شده باز می‌کند؛ لینک مشاهده همه جلسات scoped نیز به صفحه سراسری هدایت می‌شود.
+* نوع اعلان `MEETING_REMINDER` و entity نوع `MEETING` با label فارسی اضافه و مسیر امن `/meetings/:meetingId` در navigation اعلان‌ها مجاز شد.
+* enumهای status و mode در UI با label و Chip فارسی نمایش داده می‌شوند و URL طولانی جلسه مستقیماً در جدول چاپ نمی‌شود.
+
+**endpointهای backend مورد استفاده:**
+
+* `GET/POST /api/meetings`
+* `GET/PATCH /api/meetings/:id`
+* `PATCH /api/meetings/:id/complete`
+* `PATCH /api/meetings/:id/cancel`
+* `GET /api/companies/options`
+* `GET /api/companies/:companyId/opportunities`
+* `GET /api/users/assignee-options`
+* `GET /api/people/directory`
+
+**فایل‌های مهم تغییرکرده/جدید:**
+
+* `src/features/meetings/types/meeting.types.ts`
+* `src/features/meetings/services/meetings.service.ts`
+* `src/features/meetings/hooks/useMeetings.ts`
+* `src/features/meetings/utils/meetingDisplay.ts`
+* `src/features/meetings/components/MeetingFormDialog.tsx`
+* `src/features/meetings/components/MeetingStatusActionDialog.tsx`
+* `src/features/meetings/components/ScopedMeetingsTab.tsx`
+* `src/features/meetings/pages/MeetingsPage.tsx`
+* `src/features/meetings/pages/MeetingDetailsPage.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+* `src/routes/index.tsx`
+* `src/features/companies/pages/CompanyDetailsPage.tsx`
+* `src/features/opportunities/pages/OpportunityDetailsPage.tsx`
+* `src/features/notifications/types/notification.types.ts`
+* `src/features/notifications/utils/notificationDisplay.ts`
+* `src/features/notifications/utils/notificationNavigation.ts`
+* `README.md`
+
+**وابستگی‌ها و محدودیت‌های backend:**
+
+* endpointهای Meetings و optionها باید permissionها و scope سازمانی را مطابق قرارداد backend اعمال کنند. اعلان یادآوری باید `actionUrl=/meetings/:meetingId` و entity type برابر `MEETING` برگرداند.
+* قرارداد فعلی `UpdateMeetingDto` مقدار `null` را برای `opportunityId` و `reminderAt` نمی‌پذیرد؛ بنابراین پاک‌کردن قطعی این دو مقدار موجود در edit به پشتیبانی صریح null در backend نیاز دارد.
+* endpoint فرصت‌ها AbortSignal را در service فعلی frontend دریافت نمی‌کند؛ جستجو با query key مجزا انجام می‌شود، اما cancellation شبکه‌ای آن مانند endpoint جلسات/شرکت/کاربر نیست.
+
+**وضعیت بررسی‌ها:**
+
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check و `npm run build`: بدون خطا اجرا شد.
+* هشدار غیرمسدودکننده Vite درباره chunk بزرگ‌تر از 500 kB وجود دارد؛ bundle اصلی حدود 1,869 kB و gzip آن حدود 535 kB است.
+* تست خودکار اجرا نشد، زیرا `package.json` اسکریپت `test` یا test runner ندارد.
+* بررسی دستی با backend فعال، داده واقعی، مرورگر و نشست احرازشده اجرا نشد.
+
+---
 **Built with ❤️ for sales team**
 
 ---

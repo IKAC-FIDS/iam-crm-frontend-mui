@@ -18,6 +18,7 @@ export const notificationTypeOptions: { value: NotificationType; label: string }
   { value: 'COMMERCIAL_DOCUMENT_UPDATED', label: 'بروزرسانی سند تجاری' },
   { value: 'PAYMENT_UPDATED', label: 'بروزرسانی پرداخت' },
   { value: 'ATTACHMENT_UPLOADED', label: 'بارگذاری پیوست' },
+  { value: 'MEETING_REMINDER', label: 'یادآوری جلسه' },
 ];
 
 export const notificationPriorityOptions: { value: NotificationPriority; label: string }[] = [
@@ -35,6 +36,7 @@ export const notificationEntityTypeOptions: { value: NotificationEntityType; lab
   { value: 'COMMERCIAL_DOCUMENT', label: 'سند تجاری' },
   { value: 'PAYMENT', label: 'پرداخت' },
   { value: 'ATTACHMENT', label: 'پیوست' },
+  { value: 'MEETING', label: 'جلسه' },
 ];
 
 export function getNotificationTypeLabel(type: NotificationType): string {

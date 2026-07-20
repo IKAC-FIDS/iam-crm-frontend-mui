@@ -6,6 +6,7 @@ const exactInternalRoutes = [
   '/people',
   '/opportunities',
   '/tasks',
+  '/meetings',
   '/pipeline',
   '/follow-ups',
   '/reports',
@@ -18,7 +19,7 @@ const exactInternalRoutes = [
   '/admin/audit-logs',
 ];
 
-const detailRoutePrefixes = ['/companies/', '/opportunities/'];
+const detailRoutePrefixes = ['/companies/', '/opportunities/', '/meetings/'];
 
 function isKnownInternalRoute(path: string): boolean {
   return (

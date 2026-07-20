@@ -29,6 +29,7 @@ import CompanyBranchesTab from '@/features/companyBranches/components/CompanyBra
 import CompanySocialChannelsTab from '@/features/companySocialChannels/components/CompanySocialChannelsTab';
 import CompanyOpportunitiesTab from '@/features/opportunities/components/CompanyOpportunitiesTab';
 import CompanyTasksTab from '@/features/tasks/components/CompanyTasksTab';
+import ScopedMeetingsTab from '@/features/meetings/components/ScopedMeetingsTab';
 import CompanyLegalDocumentsTab from '../components/CompanyLegalDocumentsTab';
 import { useCompany } from '../hooks/useCompanies';
 import { isCompanyArchived, type CompanySummary } from '../types/company.types';
@@ -46,6 +47,7 @@ const detailTabs = [
   { label: 'افراد', value: 'people' },
   { label: 'فرصت‌ها', value: 'opportunities' },
   { label: 'کارها', value: 'tasks' },
+  { label: 'جلسات', value: 'meetings' },
   { label: 'فعالیت‌ها', value: 'activities' },
   { label: 'کال کارت', value: 'call-card' },
   { label: 'اسناد حقوقی', value: 'legal-documents' },
@@ -269,6 +271,8 @@ export default function CompanyDetailsPage() {
         <CompanyOpportunitiesTab companyId={company.id} />
       ) : activeTab === 'tasks' ? (
         <CompanyTasksTab companyId={company.id} companyName={company.brandName || company.legalName} />
+      ) : activeTab === 'meetings' ? (
+        <ScopedMeetingsTab company={{ id: company.id, legalName: company.legalName, brandName: company.brandName }} />
       ) : activeTab === 'activities' ? (
         <ActivitiesTab companyId={company.id} />
       ) : activeTab === 'call-card' ? (

@@ -25,6 +25,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import SecurityIcon from '@mui/icons-material/Security';
 import ViewKanbanIcon from '@mui/icons-material/ViewKanban';
 import WorkIcon from '@mui/icons-material/Work';
+import EventIcon from '@mui/icons-material/Event';
 
 import { can, canAny } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
@@ -50,6 +51,7 @@ const menuItems = [
   { group: 'عملیات فروش', text: 'فرصت‌ها', icon: <WorkIcon />, path: '/opportunities', permission: 'opportunity:view', fallbackRoles: ['ADMIN', 'MANAGER', 'REP', 'BOARDS'] },
   { group: 'عملیات فروش', text: 'پایپ‌لاین', icon: <ViewKanbanIcon />, path: '/pipeline' },
   { group: 'عملیات فروش', text: 'کارها', icon: <AssignmentIcon />, path: '/tasks', permission: 'task:view', fallbackRoles: ['ADMIN', 'MANAGER', 'REP', 'BOARDS'] },
+  { group: 'عملیات فروش', text: 'جلسات', icon: <EventIcon />, path: '/meetings', permission: 'meeting:view', fallbackRoles: [] },
   { group: 'عملیات فروش', text: 'پیگیری‌ها', icon: <NotificationsActiveIcon />, path: '/follow-ups' },
   { group: 'عملیات فروش', text: 'اعلان‌ها', icon: <NotificationsIcon />, path: '/notifications', permission: 'notification:view', fallbackRoles: ['ADMIN'] },
   { group: 'عملیات فروش', text: 'افراد', icon: <PeopleIcon />, path: '/people', peopleOnly: true },
