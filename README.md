@@ -745,7 +745,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000086
+fix 000001 → fix 000093
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -4353,63 +4353,63 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 
 ---
 
-## fix 000087 — افزودن فیلتر مالک و حفظ تعداد ردیف‌های لیست شرکت‌ها
+## fix 000087 — Add owner filtering and preserve company-list page size
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* فیلتر «مالک» به صفحه فهرست شرکت‌ها اضافه شد و گزینه‌های «همه مالکان»، «بدون مالک» و کاربران فعال دریافت‌شده از endpoint گزینه‌های مالک را نمایش می‌دهد.
-* گزینه هر مالک نام کامل را نمایش می‌دهد و ایمیل، تیم و نام نقش موجود را به‌عنوان اطلاعات تکمیلی نشان می‌دهد؛ هیچ کاربری در frontend hardcode نشده است.
-* انتخاب مالک مشخص `ownerId` را همراه `ownershipScope=all` به API شرکت‌ها می‌فرستد و انتخاب «بدون مالک» از قرارداد موجود `ownershipScope=unassigned` استفاده می‌کند.
-* انتخاب scopeهای «شرکت‌های من»، «تیم من» یا «بدون مالک» مالک مشخص قبلی را پاک می‌کند تا `ownerId` با scope انتخابی تعارض نداشته باشد؛ انتخاب مالک مشخص scope را به `all` برمی‌گرداند.
-* خطای دریافت فهرست مالکان فیلتر مالک را غیرفعال و یک هشدار فارسی نمایش می‌دهد، اما دریافت شرکت‌ها و سایر فیلترها همچنان قابل استفاده هستند.
-* گزینه‌های تعداد ردیف DataGrid شرکت‌ها اکنون شامل `5`، `10`، `20`، `50` و `100` است و label آن «تعداد ردیف در صفحه» نمایش داده می‌شود.
-* مدل pagination به‌صورت controlled باقی مانده و `page` و `limit` در query string مسیر `/companies` نگهداری می‌شوند؛ اندازه صفحه همچنین در `localStorage` ذخیره می‌شود تا refresh و بازگشت به فهرست آن را حفظ کند.
-* تغییر صفحه، اندازه انتخاب‌شده را حفظ می‌کند؛ تغییر جستجو یا فیلترها فقط page را به ۱ برمی‌گرداند و page size را تغییر نمی‌دهد.
-* لینک بازگشت از جزئیات شرکت query string جاری فهرست را حفظ می‌کند و query key/API request همچنان از page و limit کنترل‌شده استفاده می‌کنند.
-* متن حالت خالی به «شرکتی با این فیلترها یافت نشد.» تغییر کرد.
-* جست‌وجوی الگوهای خرابی encoding فارسی در `src`، `index.html` و `README.md` انجام شد و موردی پیدا نشد.
+* Added an Owner filter to the Companies page with All Owners, Unassigned, and active users returned by the owner-options endpoint.
+* Each owner option displays the user's full name and shows available email, team, and role information as secondary details. No users are hardcoded in the frontend.
+* Selecting a specific owner sends `ownerId` together with `ownershipScope=all` to the Companies API. Selecting Unassigned uses the existing `ownershipScope=unassigned` contract.
+* Selecting My Companies, My Team, or Unassigned clears any previously selected owner to prevent conflicts between `ownerId` and the selected ownership scope. Selecting a specific owner resets the scope to `all`.
+* If the owner-options request fails, the Owner filter is disabled and a Persian-language warning is displayed, while company loading and all other filters remain usable.
+* Company DataGrid page-size options now include `5`, `10`, `20`, `50`, and `100`, with a Persian-language Rows per Page label.
+* Pagination remains controlled. The `page` and `limit` values are stored in the `/companies` query string, and the selected page size is also persisted in `localStorage` so it survives refreshes and navigation back to the list.
+* Changing pages preserves the selected page size. Changing search text or filters resets only the page to 1 and does not change the page size.
+* The back link from Company Details preserves the current company-list query string, and the query key/API request continue to use the controlled page and limit values.
+* Updated the empty-state message to the Persian equivalent of “No companies were found with these filters.”
+* Searched `src`, `index.html`, and `README.md` for Persian encoding-corruption patterns and found none.
 
-**فایل‌های تغییرکرده:**
+**Important changed files:**
 
 * `src/features/companies/pages/CompaniesPage.tsx`
 * `src/features/companies/types/company.types.ts`
 * `README.md`
 
-**وابستگی backend:**
+**Backend dependency:**
 
-* backend باید `GET /api/users/owner-options` را برای کاربران قابل تخصیص و endpoint فهرست شرکت‌ها را با پارامترهای `ownerId`، `ownershipScope`, `page` و `limit` (از جمله `limit=100`) پشتیبانی کند.
+* The backend must support `GET /api/users/owner-options` for assignable users and the Companies list endpoint with `ownerId`, `ownershipScope`, `page`, and `limit`, including `limit=100`.
 
-**وضعیت بررسی‌ها:**
+**Verification status:**
 
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
-* `npm run build`: بدون خطا اجرا شد.
-* هشدار غیرمسدودکننده Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
-* بررسی دستی با backend و مرورگر احرازشده اجرا نشد؛ این بررسی به داده چندمالک و نشست معتبر نیاز دارد.
+* `npm run lint` passed without errors.
+* TypeScript checks passed as part of `npm run build`.
+* `npm run build` passed.
+* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
+* Manual testing with a running backend and authenticated browser session was not performed. It requires multi-owner data and a valid session.
 
-**چک‌لیست بررسی دستی:**
+**Manual verification checklist:**
 
-* در `/companies` اندازه ۲۰ انتخاب، به صفحه ۲ رفته و بررسی شود اندازه ۲۰ باقی می‌ماند؛ پس از refresh نیز `limit=20` حفظ شود.
-* اندازه ۵۰ انتخاب و یک فیلتر/جستجو تغییر داده شود؛ page به ۱ برگردد و اندازه ۵۰ باقی بماند.
-* اندازه ۱۰۰ انتخاب و در Network تأیید شود درخواست شرکت‌ها `limit=100` می‌فرستد.
-* مالک مشخص انتخاب و ارسال `ownerId` بررسی شود؛ سپس «بدون مالک» انتخاب و نتیجه شرکت‌های فاقد مالک بررسی شود.
+* On `/companies`, select page size 20, navigate to page 2, and confirm that page size 20 remains selected. Refresh and confirm that `limit=20` is preserved.
+* Select page size 50 and change a filter or search term. Confirm that the page resets to 1 while page size 50 remains selected.
+* Select page size 100 and confirm in Network that the Companies request sends `limit=100`.
+* Select a specific owner and verify that `ownerId` is sent. Then select Unassigned and verify that only unassigned companies are returned.
 
 ---
 
-## fix 000088 — جستجو و صفحه‌بندی پیشرفته در انتخاب شرکت‌ها
+## fix 000088 — Add server-side search and pagination to company selectors
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* علت اصلی نمایش فهرست ناقص شرکت‌ها، دریافت یک صفحه ثابت و کوچک و سپس فیلترکردن همان داده‌ها در مرورگر بود. انتخاب‌گر مشترک شرکت اکنون جستجو و صفحه‌بندی را به backend واگذار می‌کند.
-* کامپوننت‌های reusable تک‌انتخابی و چندانتخابی شرکت با debounce برابر ۴۰۰ میلی‌ثانیه، صفحه‌های ۲۵ رکوردی و بارگذاری صفحه بعد هنگام نزدیک‌شدن scroll به انتهای فهرست اضافه شدند.
-* query key شامل متن جستجوی normalize‌شده و شناسه شرکت مستثناشده است؛ `AbortSignal` نیز به Axios منتقل می‌شود تا پاسخ جستجوی قدیمی جای نتیجه جدید را نگیرد.
-* نتایج صفحه‌ها و رکورد انتخاب‌شده بر اساس `id` ادغام و deduplicate می‌شوند. مقدار انتخاب‌شده از داده توسعه‌یافته رکورد و، در انتخاب‌گر تک‌مقداری، در صورت نبود label از endpoint جزئیات گزینه hydrate می‌شود.
-* label گزینه‌ها از نام برند و نام قانونی ساخته می‌شود و شناسه ملی یا شماره ثبت به‌عنوان متن تکمیلی نمایش داده می‌شود؛ خطای API داخل خود فیلد قابل مشاهده است و فرم crash نمی‌کند.
-* انتخاب شرکت در فیلتر دایرکتوری مخاطبین، فرم وظیفه، سابقه اشتغال مخاطب و روابط شرکت مادر/زیرمجموعه به کامپوننت مشترک منتقل شد. payloadها همچنان فقط شناسه شرکت را ارسال می‌کنند.
-* در ویرایش شرکت، شرکت جاری با `excludeId` در سمت server از گزینه‌های شرکت مادر/زیرمجموعه حذف می‌شود و انتخاب‌های دو بخش نیز با یکدیگر تداخل ندارند.
-* هیچ local filtering روی یک صفحه محدود انجام نمی‌شود و تغییر عبارت جستجو pagination همان query را از صفحه اول آغاز می‌کند.
+* Identified that incomplete company option lists were caused by loading one small fixed page and filtering only that data in the browser. The shared company selector now delegates searching and pagination to the backend.
+* Added reusable single-select and multi-select company components with a 400-millisecond debounce, 25-record pages, and next-page loading when the option list is scrolled near the end.
+* Query keys include the normalized search text and excluded company ID. `AbortSignal` is passed to Axios so stale search responses cannot replace newer results.
+* Results from multiple pages and selected records are merged and deduplicated by `id`. Existing selections are hydrated from expanded record data or, for the single-select component, from the option-detail endpoint when a label is unavailable.
+* Option labels are built from brand name and legal name, with national ID or registration number shown as secondary text. API errors are displayed inside the field and do not crash the form.
+* Company selection in the People Directory filter, Task form, person employment history, and parent/subsidiary company relationships now uses the shared component. Payloads continue to send only company IDs.
+* While editing a company, the current company is excluded server-side from parent/subsidiary options through `excludeId`, and the two relationship selections cannot overlap.
+* No local filtering is performed over a limited page. Changing the search term restarts pagination for that query from page 1.
 
-**فایل‌های تغییرکرده:**
+**Important changed files:**
 
 * `src/components/companies/CompanyAutocomplete.tsx`
 * `src/features/companies/hooks/useCompanies.ts`
@@ -4423,46 +4423,46 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * `src/features/tasks/components/TaskFormDialog.tsx`
 * `README.md`
 
-**وابستگی backend:**
+**Backend dependency:**
 
-* backend باید `GET /api/companies/options` را با پارامترهای `search`، `page`، `limit` و `excludeId` و همچنین `GET /api/companies/options/:id` را برای hydrate کردن انتخاب موجود پشتیبانی کند. این endpointها باید محدودیت سازمانی و مجوز مشاهده شرکت را اعمال کنند و اطلاعات مورد نیاز label را برگردانند.
+* The backend must support `GET /api/companies/options` with `search`, `page`, `limit`, and `excludeId`, plus `GET /api/companies/options/:id` for hydrating existing selections. These endpoints must enforce organization scope and company-view permissions and return the fields required to build option labels.
 
-**وضعیت بررسی‌ها:**
+**Verification status:**
 
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check: به‌عنوان بخشی از `npm run build` بدون خطا اجرا شد.
-* `npm run build`: بدون خطا اجرا شد.
-* هشدار غیرمسدودکننده Vite درباره chunk بزرگ‌تر از 500 kB همچنان وجود دارد.
-* تست خودکار اجرا نشد، زیرا در `package.json` این repository اسکریپت `test` یا test runner پیکربندی نشده است.
-* بررسی دستی در مرورگر با backend و نشست احرازشده اجرا نشد.
+* `npm run lint` passed without errors.
+* TypeScript checks passed as part of `npm run build`.
+* `npm run build` passed.
+* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
+* Automated tests were not run because this repository has no configured `test` script or test runner in `package.json`.
+* Manual browser testing with a running backend and authenticated session was not performed.
 
-**چک‌لیست بررسی دستی:**
+**Manual verification checklist:**
 
-* عبارتی را جستجو کنید که شرکت متناظر آن در صفحه اول نتایج نباشد و نمایش نتیجه backend را بررسی کنید.
-* فهرست را تا انتها scroll کنید و دریافت و ادغام صفحه بعد بدون گزینه تکراری را در Network بررسی کنید.
-* فرم ویرایش دارای شرکت انتخاب‌شده را باز کنید و نمایش label مقدار موجود را پیش از جستجو تأیید کنید.
-* در روابط شرکت، نبود شرکت جاری در نتایج و ارسال فقط آرایه شناسه‌های شرکت مادر/زیرمجموعه را بررسی کنید.
-* خطای مجوز یا شبکه endpoint گزینه‌ها را شبیه‌سازی و نمایش پیام خطا بدون crash فرم را تأیید کنید.
+* Search for a company that is not present on the first result page and confirm that the backend result is displayed.
+* Scroll to the end of the list and verify in Network that the next page is fetched and merged without duplicate options.
+* Open an edit form with an existing company selection and confirm that the selected label appears before any search is performed.
+* In company relationships, confirm that the current company is absent and that payloads contain only arrays of parent/subsidiary company IDs.
+* Simulate an authorization or network error from the options endpoint and confirm that the field displays the error without crashing the form.
 
 ---
 
-## fix 000089 — افزودن رابط کاربری مدیریت جلسات
+## fix 000089 — Add meeting-management user interface
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* گزینه «جلسات» با مجوز پویا `meeting:view` به منوی عملیات فروش و مسیرهای `/meetings` و `/meetings/:meetingId` اضافه شد؛ هیچ محدودیت hardcodeشده‌ای بر اساس نقش برای جلسات استفاده نشده است.
-* صفحه سراسری جلسات با جستجو، quick filterهای امروز/پیش‌رو/گذشته/برگزارش‌شده/لغوشده/جلسات من، فیلتر وضعیت، نوع برگزاری و بازه تاریخ، pagination سمت server و DataGrid واکنش‌گرا پیاده‌سازی شد. پارامترهای فیلتر و pagination در URL نگهداری می‌شوند.
-* فرم reusable ایجاد/ویرایش جلسه شامل شرکت، فرصت مرتبط، عنوان، دستور جلسه، توضیحات، نوع برگزاری، محل، لینک، شروع/پایان، یادآوری، مسئولان داخلی و مدعوین شرکت است.
-* انتخاب شرکت از `GET /api/companies/options`، فرصت‌ها از API فرصت‌های همان شرکت، مسئولان از `GET /api/users/assignee-options` و مدعوین از directory مخاطبین با جستجو و pagination سمت server انجام می‌شود؛ payload فقط شناسه‌ها را ارسال می‌کند.
-* مسئولان و مدعوین انتخاب‌شده خارج از صفحه اول در option list باقی می‌مانند و بر اساس `id` deduplicate می‌شوند. تغییر شرکت پس از تأیید کاربر، فرصت و مدعوین ناسازگار را پاک می‌کند.
-* presetهای بدون یادآوری، ۱۵/۳۰ دقیقه، ۱/۲ ساعت، یک روز قبل و زمان دلخواه اضافه شدند. presetها `reminderAt` دقیق UTC را از `startAt` محاسبه می‌کنند و زمان پایان و یادآوری قبل از submit اعتبارسنجی می‌شوند.
-* نوع حضوری فقط محل، آنلاین فقط لینک و ترکیبی هر دو را نمایش می‌دهد. لینک جلسه در جزئیات با `target="_blank"` و `rel="noopener noreferrer"` ارائه می‌شود.
-* صفحه جزئیات جلسه، ویرایش با `meeting:update`، تکمیل با `meeting:complete` و لغو با `meeting:cancel` را همراه dialog تأیید، یادداشت نتیجه/دلیل لغو، پیام backend و invalidation queryها پشتیبانی می‌کند.
-* تب جلسات به جزئیات شرکت و فرصت اضافه شد و همان فرم reusable را با شرکت/فرصت از پیش انتخاب‌شده باز می‌کند؛ لینک مشاهده همه جلسات scoped نیز به صفحه سراسری هدایت می‌شود.
-* نوع اعلان `MEETING_REMINDER` و entity نوع `MEETING` با label فارسی اضافه و مسیر امن `/meetings/:meetingId` در navigation اعلان‌ها مجاز شد.
-* enumهای status و mode در UI با label و Chip فارسی نمایش داده می‌شوند و URL طولانی جلسه مستقیماً در جدول چاپ نمی‌شود.
+* Added a Meetings navigation item governed by the dynamic `meeting:view` permission and added `/meetings` and `/meetings/:meetingId` routes. No role-based meeting restriction is hardcoded in the frontend.
+* Implemented a global Meetings page with search, quick filters for Today, Upcoming, Past, Completed, Cancelled, and My Meetings, plus status, meeting mode, and date-range filters, server-side pagination, and a responsive DataGrid. Filter and pagination parameters are persisted in the URL.
+* Added a reusable create/edit meeting form with company, related opportunity, title, agenda, description, meeting mode, location, meeting link, start/end date and time, reminder, internal assignees, and company attendees.
+* Company options come from `GET /api/companies/options`, opportunities from the selected company's opportunity API, assignees from `GET /api/users/assignee-options`, and attendees from the People Directory with server-side search and pagination. Payloads send only IDs.
+* Selected assignees and attendees remain available even when they are not on the first page of options, and all options are deduplicated by `id`. Changing the company clears incompatible opportunity and attendee selections after user confirmation.
+* Added reminder presets for None, 15/30 Minutes Before, 1/2 Hours Before, One Day Before, and Custom Time. Presets calculate an exact UTC `reminderAt` value from `startAt`; end time and reminder timing are validated before submission.
+* In-person meetings show only Location, online meetings show only Meeting Link, and hybrid meetings show both. Meeting links open with `target="_blank"` and `rel="noopener noreferrer"`.
+* The Meeting Details page supports edit with `meeting:update`, completion with `meeting:complete`, and cancellation with `meeting:cancel`, including confirmation dialogs, result notes/cancellation reasons, backend messages, and query invalidation.
+* Added a Meetings tab to Company Details and Opportunity Details. The shared form opens with the company/opportunity preselected, and a scoped View All Meetings link navigates to the global Meetings page.
+* Added the `MEETING_REMINDER` notification type and `MEETING` entity type with Persian labels, and allowed safe notification navigation to `/meetings/:meetingId`.
+* Meeting status and mode enums are displayed with Persian labels and Chips. Long meeting URLs are not printed directly in table cells.
 
-**endpointهای backend مورد استفاده:**
+**Backend endpoints used:**
 
 * `GET/POST /api/meetings`
 * `GET/PATCH /api/meetings/:id`
@@ -4473,7 +4473,7 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * `GET /api/users/assignee-options`
 * `GET /api/people/directory`
 
-**فایل‌های مهم تغییرکرده/جدید:**
+**Important changed/new files:**
 
 * `src/features/meetings/types/meeting.types.ts`
 * `src/features/meetings/services/meetings.service.ts`
@@ -4493,45 +4493,45 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * `src/features/notifications/utils/notificationNavigation.ts`
 * `README.md`
 
-**وابستگی‌ها و محدودیت‌های backend:**
+**Backend dependencies and limitations:**
 
-* endpointهای Meetings و optionها باید permissionها و scope سازمانی را مطابق قرارداد backend اعمال کنند. اعلان یادآوری باید `actionUrl=/meetings/:meetingId` و entity type برابر `MEETING` برگرداند.
-* قرارداد فعلی `UpdateMeetingDto` مقدار `null` را برای `opportunityId` و `reminderAt` نمی‌پذیرد؛ بنابراین پاک‌کردن قطعی این دو مقدار موجود در edit به پشتیبانی صریح null در backend نیاز دارد.
-* endpoint فرصت‌ها AbortSignal را در service فعلی frontend دریافت نمی‌کند؛ جستجو با query key مجزا انجام می‌شود، اما cancellation شبکه‌ای آن مانند endpoint جلسات/شرکت/کاربر نیست.
+* Meeting and option endpoints must enforce permissions and organization scope according to the backend contract. Reminder notifications must return `actionUrl=/meetings/:meetingId` and entity type `MEETING`.
+* The current `UpdateMeetingDto` does not accept `null` for `opportunityId` or `reminderAt`. Definitively clearing either existing value during edit therefore requires explicit backend support for `null`.
+* The current frontend opportunity service does not accept an `AbortSignal`. Opportunity searches use distinct query keys, but their network requests are not cancelled like meeting, company, and user option requests.
 
-**وضعیت بررسی‌ها:**
+**Verification status:**
 
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check و `npm run build`: بدون خطا اجرا شد.
-* هشدار غیرمسدودکننده Vite درباره chunk بزرگ‌تر از 500 kB وجود دارد؛ bundle اصلی حدود 1,869 kB و gzip آن حدود 535 kB است.
-* تست خودکار اجرا نشد، زیرا `package.json` اسکریپت `test` یا test runner ندارد.
-* بررسی دستی با backend فعال، داده واقعی، مرورگر و نشست احرازشده اجرا نشد.
+* `npm run lint` passed without errors.
+* TypeScript checks and `npm run build` passed.
+* Non-blocking warning: Vite reports a chunk larger than 500 kB. The main bundle is approximately 1,869 kB and approximately 535 kB gzip-compressed.
+* Automated tests were not run because `package.json` has no configured `test` script or test runner.
+* Manual testing with a running backend, real data, an authenticated browser session, and meeting permissions was not performed.
 
 ---
 
-## fix 000090 — افزودن قیمت‌گذاری چندکاناله محصولات و مدیریت نرخ دلار
+## fix 000090 — Add multi-channel product pricing and exchange-rate management
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* فرم محصول در کتابخانه‌ها از قرارداد واقعی backend برای `pricingCurrency`، قیمت ورودی حضوری/دیجی‌کالا، درصد سود کانال‌ها و قیمت نهایی ریالی استفاده می‌کند.
-* در حالت IRR فقط قیمت ریالی دو کانال نمایش داده می‌شود؛ در حالت USD قیمت پایه دلاری و درصد سود هر کانال به‌صورت مستقل دریافت می‌شود.
-* نرخ فعال دلار از `GET /api/admin/exchange-rates/current` دریافت و پیش‌نمایش ریالی دو کانال با محاسبات integer/BigInt نمایش داده می‌شود تا خطای floating-point پولی کاهش یابد. مقادیر نهایی محاسبه‌شده به‌عنوان ورودی قابل اعتماد ارسال نمی‌شوند و پاسخ backend مرجع نهایی است.
-* نبود نرخ فعال، خطای واضح و blocking ایجاد می‌کند و ذخیره محصول USD را غیرفعال می‌سازد. قیمت‌ها و درصدهای خالی/منفی نیز قبل از submit رد می‌شوند و پیام validation backend در فرم حفظ می‌شود.
-* فرم ویرایش ارز، ورودی‌های دو کانال، درصد سود و نرخ آخرین محاسبه محصول را hydrate می‌کند و قیمت نهایی ریالی ذخیره‌شده را نمایش می‌دهد.
-* formatter مرکزی `formatIrrPrice` با جداکننده هزارگان فارسی و label «ریال» اضافه و فهرست محصولات به ستون‌های «قیمت حضوری» و «قیمت دیجی‌کالا» با مقادیر نهایی IRR تغییر کرد.
-* انتخاب محصول در آیتم فرصت، قیمت واحد پیش‌فرض را از `inPersonPriceIrr` می‌گیرد؛ قیمت همچنان قابل ویرایش است و آیتم‌های فروش ذخیره‌شده با تغییر نرخ دلار بازنویسی نمی‌شوند.
-* صفحه read-only تاریخچه نرخ دلار و کارت نرخ فعلی در مسیر `/admin/exchange-rates` اضافه شد. صفحه دارای loading، empty، error/retry، pagination سمت server، تاریخ‌های جلالی، وضعیت فعال/منقضی و «تاکنون» برای نرخ جاری است.
-* ثبت نرخ جدید فقط با `exchange-rate:manage` نمایش داده می‌شود و پیش از submit پیام اثر محاسبه مجدد محصولات دلاری را تأیید می‌گیرد. پس از موفقیت نرخ فعلی، تاریخچه و queryهای محصولات invalidate می‌شوند و تعداد محصولات محاسبه‌شده نمایش داده می‌شود.
-* گزینه «نرخ دلار» با permissionهای پویا `exchange-rate:view`/`exchange-rate:manage` به منوی مدیریت اضافه شد؛ محدودیت ADMIN/MANAGER hardcode نشده است.
+* Updated the Product Library form to use the real backend contract for `pricingCurrency`, in-person and Digikala pricing inputs, channel margin percentages, and final IRR prices.
+* In IRR mode, the form shows only the two channel prices in rials. In USD mode, it collects a base USD price and a separate margin percentage for each channel.
+* Loads the active dollar exchange rate from `GET /api/admin/exchange-rates/current` and displays IRR previews for both channels using integer/BigInt calculations to reduce floating-point errors in monetary values. Calculated previews are not sent as trusted final values; the backend response remains authoritative.
+* Missing active exchange-rate data produces a clear blocking error and disables saving USD-priced products. Empty or negative prices and percentages are rejected before submission, while backend validation messages remain visible in the form.
+* The edit form hydrates currency, both channel inputs, margin percentages, and the exchange rate used for the product's latest calculation, and displays the stored final IRR prices.
+* Added the centralized `formatIrrPrice` formatter with Persian thousand separators and a Rial label. The Product list now has In-person Price and Digikala Price columns displaying final IRR values.
+* Selecting a product in an opportunity line item uses `inPersonPriceIrr` as the default unit price. The value remains editable, and previously stored sales line items are not rewritten when the dollar rate changes.
+* Added a read-only dollar exchange-rate history page and current-rate card at `/admin/exchange-rates`. The page includes loading, empty, error/retry, server-side pagination, Jalali dates, active/expired status, and a Persian-language “Until Present” value for the current rate.
+* The Add Exchange Rate action is shown only with `exchange-rate:manage`. Before submission, the UI confirms that USD product prices will be recalculated. After success, current-rate, history, and product queries are invalidated and the recalculated product count is displayed.
+* Added a Dollar Exchange Rate navigation item under Administration using dynamic `exchange-rate:view` and `exchange-rate:manage` permissions. No ADMIN/MANAGER role restriction is hardcoded.
 
-**endpointهای backend تأییدشده:**
+**Confirmed backend endpoints:**
 
 * `GET /api/admin/exchange-rates/current`
 * `GET /api/admin/exchange-rates?page=&limit=`
 * `POST /api/admin/exchange-rates`
 * `GET/POST/PATCH /api/product-catalog`
 
-**فایل‌های مهم تغییرکرده/جدید:**
+**Important changed/new files:**
 
 * `src/features/productCatalog/types/productCatalog.types.ts`
 * `src/features/productCatalog/components/ProductCatalogFormDialog.tsx`
@@ -4546,39 +4546,39 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * `src/routes/index.tsx`
 * `README.md`
 
-**وابستگی backend:**
+**Backend dependency:**
 
-* backend باید فیلدهای pricing چندکاناله را در list/detail محصول برگرداند، برای محصول USD نرخ فعال را الزامی کند، قیمت‌های نهایی IRR را محاسبه و `defaultUnitPrice` را با قیمت حضوری نهایی سازگار نگه دارد.
-* ثبت نرخ جدید باید بازه نرخ جاری را ببندد، محصولات USD را transactionally محاسبه مجدد کند و `{ rate, recalculatedProductCount }` برگرداند. فروش‌ها، اسناد و line itemهای تاریخی نباید تغییر کنند.
-* permissionهای `exchange-rate:view` و `exchange-rate:manage` باید در پاسخ احراز هویت کاربر موجود باشند.
+* The backend must return the multi-channel pricing fields in product list/detail responses, require an active exchange rate for USD products, calculate final IRR prices, and keep `defaultUnitPrice` aligned with the final in-person price.
+* Adding a new exchange rate must close the current rate period, transactionally recalculate USD products, and return `{ rate, recalculatedProductCount }`. Historical sales, documents, and line items must not be changed.
+* The authenticated user's permission set must include `exchange-rate:view` and `exchange-rate:manage` as applicable.
 
-**وضعیت بررسی‌ها:**
+**Verification status:**
 
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check و `npm run build`: بدون خطا اجرا شد.
-* هشدار غیرمسدودکننده Vite درباره chunk بزرگ‌تر از 500 kB وجود دارد؛ bundle اصلی حدود 1,879.94 kB و gzip آن حدود 538.07 kB است.
-* تست خودکار اجرا نشد، زیرا این repository اسکریپت `test` یا test runner پیکربندی‌شده ندارد.
-* بررسی دستی با backend فعال، نرخ واقعی و مرورگر احرازشده اجرا نشد.
+* `npm run lint` passed without errors.
+* TypeScript checks and `npm run build` passed.
+* Non-blocking warning: Vite reports a chunk larger than 500 kB. The main bundle is approximately 1,879.94 kB and approximately 538.07 kB gzip-compressed.
+* Automated tests were not run because this repository has no configured `test` script or test runner.
+* Manual testing with a running backend, a real exchange rate, and an authenticated browser session was not performed.
 
 ---
 
-## fix 000091 — اصلاح شاخص‌های داشبورد و تکمیل فیلترهای گزارش
+## fix 000091 — Correct dashboard metrics and complete report filters
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* کارت «فرصت‌های فعال» داشبورد اکنون `GET /api/opportunities?page=1&limit=1&activeOnly=true` را فراخوانی و مقدار دقیق `meta.total` را نمایش می‌دهد؛ فرصت‌های WON/LOST دیگر به‌دلیل صرفاً archive نبودن در این شاخص محاسبه نمی‌شوند.
-* فیلد `activeOnly` به type فیلتر فرصت اضافه شد و به‌عنوان بخشی از object پارامتر در query key موجود React Query شرکت می‌کند، بدون تغییر رفتار فهرست‌های قبلی فرصت.
-* شمارش کارهای سررسیدگذشته از پردازش client-side اولین ۱۰۰ کار حذف شد. داشبورد اکنون `GET /api/tasks?page=1&limit=1&overdueOnly=true` را فراخوانی و `meta.total` را مرجع قرار می‌دهد.
-* فیلد `overdueOnly` به فیلترهای task افزوده شد و query مستقل آن loading/error جدا دارد. شمارش کارهای باز نیز از جمع `meta.total` دقیق queryهای TODO و IN_PROGRESS با `limit=1` به دست می‌آید.
-* شاخص‌های snapshot داشبورد شامل فرصت فعال، کار باز و کار سررسیدگذشته بدون بازه ۳۰روزه هستند. خلاصه پایپ‌لاین و نرخ تبدیل کلی نیز بدون `startDate/endDate` و به‌صورت all-history درخواست می‌شوند؛ فقط کارت «فعالیت‌های ۳۰ روز اخیر» بازه ۳۰روزه را حفظ کرده است.
-* فیلتر `ownershipScope` با مقادیر واقعی backend یعنی `all`، `mine`، `team` و `unassigned` و labelهای «همه»، «متعلق به من»، «تیم من» و «بدون مالک» به گزارش‌ها اضافه شد. مقدار پیش‌فرض و reset برابر `all` است و منطق مالکیت در frontend بازسازی نمی‌شود.
-* فیلتر چندشرکتی با `CompanyMultiAutocomplete` مشترک، جستجوی server-side با debounce، pagination، load-more، deduplicate و حفظ optionهای انتخاب‌شده اضافه شد. درخواست گزارش فقط UUIDهای `companyIds` را ارسال می‌کند و خطای company options سایر فیلترها یا report queryها را از کار نمی‌اندازد.
-* state پیش‌نویس و applied گزارش‌ها جدا باقی مانده است؛ تغییر selector شرکت یا سایر فیلترها تا فشردن «اعمال فیلترها» report query جدید صادر نمی‌کند. reset، شرکت‌های انتخاب‌شده و scope را نیز پاک/بازنشانی می‌کند و تعداد فیلترهای فعال نمایش داده می‌شود.
-* نوع `ReportPeriod` به‌صورت optional و backward-compatible اضافه شد. subtitleهای خلاصه پایپ‌لاین و عملکرد مالکان مبنای `opportunity.createdAt`، نرخ تبدیل مبنای تغییر مرحله، مدت ماندگاری مبنای خروج از مرحله و فعالیت‌ها مبنای `occurredAt` را صریح می‌کنند.
-* خلاصه پایپ‌لاین به‌عنوان فرصت‌های ایجادشده در بازه و نرخ تبدیل به‌عنوان transitionهای انجام‌شده در بازه توضیح داده شده است؛ نام فیلدهای backend و سازگاری responseهای قدیمی تغییر نکرده‌اند.
-* وضعیت خطا و loading هر metric/report همچنان از مقدار صفر متمایز است و permissionهای پویا و helperهای موجود API حفظ شده‌اند.
+* The dashboard's Active Opportunities card now calls `GET /api/opportunities?page=1&limit=1&activeOnly=true` and displays the exact `meta.total`. WON and LOST opportunities are no longer counted simply because they are not archived.
+* Added `activeOnly` to opportunity filter types and included it in the existing React Query parameter object/query key without changing prior opportunity-list behavior.
+* Removed client-side overdue-task counting over the first 100 tasks. The dashboard now calls `GET /api/tasks?page=1&limit=1&overdueOnly=true` and uses `meta.total` as the source of truth.
+* Added `overdueOnly` to task filters with an independent query and separate loading/error state. Open Tasks is calculated from the exact `meta.total` values of TODO and IN_PROGRESS queries using `limit=1`.
+* Snapshot dashboard metrics—active opportunities, open tasks, and overdue tasks—no longer use a 30-day range. Pipeline summary and overall conversion rate are also requested as all-history values without `startDate/endDate`. Only the Recent 30-Day Activities card retains a 30-day range.
+* Added the `ownershipScope` report filter using the backend values `all`, `mine`, `team`, and `unassigned`, with Persian labels for All, Mine, My Team, and Unassigned. The default and reset value is `all`; ownership logic is not reconstructed in the frontend.
+* Added a multi-company filter through the shared `CompanyMultiAutocomplete`, including server-side debounced search, pagination, load-more, deduplication, and preservation of selected options. Report requests send only UUID values in `companyIds`, and company-options errors do not disable other filters or report queries.
+* Preserved separate draft and applied report-filter state. Changing company selections or any other filter does not issue a new report query until Apply Filters is pressed. Reset clears selected companies, restores scope, and updates the active-filter count.
+* Added optional, backward-compatible `ReportPeriod` typing. Subtitles explicitly describe the date basis: pipeline summary uses `opportunity.createdAt`, conversion uses stage transitions, stage duration uses stage exit, and activity reports use `occurredAt`.
+* Clarified that pipeline summary represents opportunities created in the range and conversion rates represent transitions performed in the range. Backend field names and legacy response compatibility were not changed.
+* Error/loading states for each metric and report remain distinct from a legitimate zero value, and existing dynamic permissions and API helpers were preserved.
 
-**فایل‌های تغییرکرده:**
+**Important changed files:**
 
 * `src/components/dashboard/MainGrid.tsx`
 * `src/features/opportunities/types/opportunity.types.ts`
@@ -4594,47 +4594,47 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * `src/features/reports/utils/reportDisplay.ts`
 * `README.md`
 
-**وابستگی backend:**
+**Backend dependency:**
 
-* backend fix `000070` باید `activeOnly=true` را در `/api/opportunities` و `overdueOnly=true` را در `/api/tasks` با شمارش دقیق pagination metadata پشتیبانی کند.
-* endpointهای `/api/reports/*` باید فیلترهای `ownershipScope` و `companyIds` را مطابق `ReportFiltersDto` اعمال کنند. enum واقعی `OwnershipScope` در backend مقادیر lowercase دارد.
-* `GET /api/companies/options` و `GET /api/companies/options/:id` باید scope سازمانی، pagination، جستجو و hydrate انتخاب موجود را پشتیبانی کنند.
-* متادیتای optional `period.dateBasis` برای pipeline summary، conversion و activity استفاده می‌شود؛ نبود آن در پاسخ‌های قدیمی باعث خطا نمی‌شود. endpoint stage duration در قرارداد فعلی period metadata برنمی‌گرداند و UI label ثابت و صحیح نمایش می‌دهد.
+* Backend fix `000070` must support `activeOnly=true` on `/api/opportunities` and `overdueOnly=true` on `/api/tasks`, with accurate pagination metadata.
+* `/api/reports/*` endpoints must apply `ownershipScope` and `companyIds` according to `ReportFiltersDto`. The backend `OwnershipScope` enum uses lowercase values.
+* `GET /api/companies/options` and `GET /api/companies/options/:id` must support organization scope, pagination, search, and hydration of existing selections.
+* Optional `period.dateBasis` metadata is used for pipeline summary, conversion, and activity responses. Missing metadata in legacy responses is handled safely. The current stage-duration endpoint does not return period metadata, so the UI displays a fixed correct label.
 
-**وضعیت بررسی‌ها:**
+**Verification status:**
 
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check و `npm run build`: بدون خطا اجرا شد.
-* تست خودکار اجرا نشد، زیرا `package.json` اسکریپت `test` یا test runner پیکربندی‌شده ندارد.
-* هشدار غیرمسدودکننده Vite درباره chunk بزرگ‌تر از 500 kB وجود دارد؛ bundle اصلی حدود 1,882.49 kB و gzip آن حدود 538.70 kB است.
-* بررسی دستی با backend فعال، داده واقعی و نشست احرازشده اجرا نشد.
+* `npm run lint` passed without errors.
+* TypeScript checks and `npm run build` passed.
+* Automated tests were not run because `package.json` has no configured `test` script or test runner.
+* Non-blocking warning: Vite reports a chunk larger than 500 kB. The main bundle is approximately 1,882.49 kB and approximately 538.70 kB gzip-compressed.
+* Manual testing with a running backend, real data, and an authenticated session was not performed.
 
 ---
 
-## fix 000092 — افزودن داشبورد مدیریتی و گزارش‌های پیشرفته فروش و عملیات
+## fix 000092 — Add management dashboard and advanced sales and operations reports
 
-**موارد پیاده‌سازی‌شده:**
+**Implemented items:**
 
-* داشبورد مدیریتی از یک query تجمیعی `GET /api/dashboard/summary` استفاده می‌کند و دیگر برای محاسبه شاخص‌های سازمانی، ردیف‌های صفحه‌بندی‌شده فرصت و کار را شمارش نمی‌کند. تصویر فروش جاری، کارها و جلسات نیازمند اقدام، عملکرد دوره، پیش‌بینی ۹۰روزه و سه فهرست توجه با زمان تولید گزارش نمایش داده می‌شوند.
-* failure خلاصه مدیریتی از مقدار صفر متمایز است و loading، unavailable و retry مستقل دارد؛ وضعیت سازمان، اعلان خوانده‌نشده و دسترسی‌های سریع در صورت خطای summary باقی می‌مانند.
-* لینک‌های فهرست توجه فقط با permission پویای `opportunity:view`، `task:view` و `meeting:view` ساخته می‌شوند؛ مشاهده آمار تجمیعی همچنان با `report:view` کنترل می‌شود و محدودیت role جدیدی اضافه نشده است.
-* صفحه گزارش‌ها به تب‌های «نمای کلی»، «پیش‌بینی فروش»، «Aging فرصت‌ها»، «جلسات» و «کارها و SLA» تقسیم شد و گزارش‌های قبلی در نمای کلی حفظ شدند. تب، فیلترهای اعمال‌شده و صفحه/اندازه صفحه Aging در URL نگهداری می‌شوند؛ draft تا فشردن «اعمال فیلترها» query جدید صادر نمی‌کند و reset به نمای کلی و صفحه اول بازمی‌گردد.
-* گزارش Forecast کارت‌های وضعیت و مقادیر اسمی/وزنی authoritative backend، نمودار ماهانه و جزئیات مرحله/مالک را نمایش می‌دهد. کارت‌ها و جدول‌ها از formatter مرکزی IRR با پشتیبانی decimal string استفاده می‌کنند و aggregation وزنی در مرورگر انجام نمی‌شود.
-* گزارش Aging یک snapshot بدون `startDate/endDate` است، bucketهای backend را نمایش می‌دهد و جدول جزئیات آن pagination سمت سرور، تاریخ جلالی و تأکید موارد معوق، بدون مالک، بدون تاریخ بستن و حضور طولانی در مرحله را دارد.
-* گزارش عملکرد جلسات summary، تفکیک وضعیت/نحوه برگزاری و جدول برگزارکنندگان را با عبارت صحیح «مدت برنامه‌ریزی‌شده» نمایش می‌دهد. گزارش کارها snapshot جاری را از flow دوره جدا و تفکیک اولویت و جدول SLA مسئولان را ارائه می‌کند؛ مسئول خالی با «بدون مسئول» نمایش داده می‌شود.
-* قراردادهای TypeScript، serviceها، hookهای React Query، AbortSignal، staleTime و query keyهای شامل تمام فیلترهای مربوط اضافه شدند. mapper هر endpoint فقط پارامترهای پشتیبانی‌شده را ارسال می‌کند؛ Aging عمداً بازه تاریخ را حذف می‌کند.
-* فیلترهای fix 000091 بازاستفاده شدند و وضعیت/نحوه جلسه و وضعیت کار به‌عنوان فیلترهای ثابت اضافه شدند. خرابی گزینه‌های async شرکت/گزارش، فیلترهای ثابت را از کار نمی‌اندازد و متن‌های فارسی خراب موجود در صفحه و پنل گزارش اصلاح شدند.
+* The management dashboard now uses a single aggregated `GET /api/dashboard/summary` query and no longer counts paginated opportunity and task rows to calculate organization-level metrics. It displays current sales position, tasks and meetings requiring action, period performance, a 90-day forecast, three attention lists, and the report generation time.
+* Summary failure is distinguished from legitimate zero values and has independent loading, unavailable, and retry states. Organization status, unread notifications, and quick-access actions remain available when the summary request fails.
+* Attention-list links are created only when the user has the dynamic `opportunity:view`, `task:view`, or `meeting:view` permission. Viewing aggregated statistics remains controlled by `report:view`; no new role restriction was added.
+* Split the Reports page into Overview, Sales Forecast, Opportunity Aging, Meetings, and Tasks & SLA tabs while retaining all previous reports under Overview. The selected tab, applied filters, and Aging page/page size are stored in the URL. Draft filters do not issue queries until Apply Filters is pressed, and Reset returns to Overview and page 1.
+* The Forecast report displays authoritative backend status cards, nominal and weighted values, a monthly chart, and stage/owner details. Cards and tables use the centralized IRR formatter with decimal-string support, and weighted aggregation is not recalculated in the browser.
+* Opportunity Aging is a snapshot report that intentionally omits `startDate/endDate`. It displays backend-provided buckets and a server-paginated detail table with Jalali dates and emphasis for overdue, unassigned, missing-close-date, and long-in-stage items.
+* Meeting Performance displays summary metrics, status/mode breakdowns, and an organizer table using the correct Scheduled Duration wording. Task Performance separates the current snapshot from period flow and includes priority breakdowns plus an assignee SLA table. Missing assignees are shown as Unassigned.
+* Added TypeScript contracts, service methods, React Query hooks, `AbortSignal` support, stale times, and query keys containing all relevant filters. Each endpoint mapper sends only supported parameters; Aging intentionally excludes date-range filters.
+* Reused filters introduced in fix `000091` and added static meeting status/mode and task status filters. Failure of async company/report options does not disable static filters, and existing corrupted Persian text in the Reports page and filter panel was corrected.
 
-**endpointهای backend استفاده‌شده:**
+**Backend endpoints used:**
 
 * `GET /api/dashboard/summary`
 * `GET /api/reports/opportunities/forecast`
 * `GET /api/reports/opportunities/aging`
 * `GET /api/reports/meetings/performance`
 * `GET /api/reports/tasks/performance`
-* endpointهای قبلی `/api/reports/*` در تب نمای کلی بدون حذف حفظ شده‌اند.
+* Existing `/api/reports/*` endpoints remain available under the Overview tab.
 
-**فایل‌های تغییرکرده/جدید:**
+**Important changed/new files:**
 
 * `src/components/dashboard/MainGrid.tsx`
 * `src/features/reports/types/report.types.ts`
@@ -4645,19 +4645,78 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * `src/features/reports/components/AdvancedReportSections.tsx`
 * `README.md`
 
-**وابستگی‌ها و هشدارها:**
+**Dependencies and warnings:**
 
-* این پیاده‌سازی به قراردادهای backend fix `000071` وابسته است. endpointها و DTOهای واقعی در working tree بک‌اند بررسی شدند، اما fix `000071` هنگام بررسی هنوز commit نشده بود؛ استقرار backend باید این فایل‌ها و permission `report:view` را شامل شود.
-* مقدارهای پولی کارت و جدول به decimal string امن متکی‌اند؛ برای نمودار فقط مقدار finite قابل تبدیل به Number استفاده می‌شود و داده خارج از محدوده قابل‌نمایش رسم نمی‌شود.
-* تست مرورگر، درخواست API با نشست احرازشده و داده واقعی اجرا نشد؛ بنابراین رفتار داده‌های production و permissionهای واقعی به‌صورت دستی تأیید نشده است.
+* This implementation depends on backend fix `000071`. The actual backend endpoints and DTOs were inspected in the backend working tree, but fix `000071` had not yet been committed at the time of review. The deployed backend must include those files and the `report:view` permission.
+* Monetary card and table values rely on safe decimal strings. Charts use only finite values that can be converted to Number; out-of-range values are not plotted.
+* Browser testing, authenticated API requests, and validation with real data were not performed. Production data behavior and real permission combinations therefore require manual verification.
 
-**وضعیت بررسی‌ها:**
+**Verification status:**
 
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check و `npm run build`: بدون خطا اجرا شد.
-* تست خودکار اجرا نشد، زیرا `package.json` اسکریپت `test` یا test runner پیکربندی‌شده ندارد.
-* Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,169.60 kB و gzip آن حدود 627.46 kB است.
-* اسکن mojibake در `src`، `index.html` و `README.md` موردی پیدا نکرد.
+* `npm run lint` passed without errors.
+* TypeScript checks and `npm run build` passed.
+* Automated tests were not run because `package.json` has no configured `test` script or test runner.
+* Non-blocking warning: Vite reports a chunk larger than 500 kB. The main bundle is approximately 2,169.60 kB and approximately 627.46 kB gzip-compressed.
+* A mojibake scan of `src`, `index.html`, and `README.md` found no remaining issues.
+
+---
+
+## fix 000093 — Add sales channels, price history, and financial/commercial reports
+
+**Implemented items:**
+
+* Added the centralized `SalesChannel` type and shared label/Chip formatter for `LEGACY_UNKNOWN`, `IN_PERSON`, `DIGIKALA`, and `OTHER`. The legacy value is display-only and cannot be selected during create or edit.
+* For new opportunity line items, the form defaults to the in-person channel and its current price. Switching to Digikala suggests that channel's current price, while the Other channel requires an explicit negotiated price. The catalog price snapshot, actual price, amount difference, and percentage difference are displayed separately, and the calculated snapshot field is not sent to the backend.
+* Editing a legacy line item without changing its product or channel preserves `LEGACY_UNKNOWN` and displays a historical-data warning. The opportunity line-items table now includes Sales Channel, Catalog Price Snapshot, and Actual/Negotiated Price columns.
+* Added a read-only Price History action to the product table, governed by the dynamic `product:view` permission. The dialog supports server-side pagination, reason filtering, a Jalali date range, loading/empty/error/retry states, and all snapshots for both sales channels, exchange rate, creator, and notes.
+* Added Financial & Collections, Product Performance, and Exchange Rate & Price Impact report tabs without removing the tabs introduced in fix `000092`. Related tab and page state is preserved in the URL.
+* The financial report separates the current snapshot from period flow, displays aging, collection trends, and owner/company breakdowns using backend aggregations, and clearly warns when non-IRR currencies are excluded from IRR totals.
+* The product report separates won sales based on `wonAt` from the current value of the active pipeline, preserves historical product name/code snapshots, and displays all four sales channels without merging legacy records.
+* The exchange-rate impact report displays the current and previous rates, rate history, aggregate pricing impact, and a paginated detail table. Missing previous values are shown as insufficient history rather than being replaced with synthetic zero values.
+* Added optional finance, catalog, and sales-channel sections to the dashboard. During staggered deployments, missing new sections are displayed as unavailable in the backend response and are not mistaken for zero values.
+* Completed the required types, services, React Query hooks, `AbortSignal` handling, filter/page-aware query keys, and targeted invalidation for product history, product reports, exchange-rate impact, dashboard data, and opportunity line items.
+
+**Backend endpoints used:**
+
+* `GET /api/product-catalog/:id/price-history`
+* `GET /api/reports/financial/collections`
+* `GET /api/reports/products/performance`
+* `GET /api/reports/exchange-rates/impact`
+* `GET /api/dashboard/summary`
+* Existing opportunity line-item create, update, and list endpoints with the `salesChannel` field
+
+**Important changed/new files:**
+
+* `src/features/opportunityLineItems/types/opportunityLineItem.types.ts`
+* `src/features/opportunityLineItems/utils/salesChannel.ts`
+* `src/features/opportunityLineItems/components/OpportunityLineItemFormDialog.tsx`
+* `src/features/opportunityLineItems/components/OpportunityLineItemsTab.tsx`
+* `src/features/opportunityLineItems/hooks/useOpportunityLineItems.ts`
+* `src/features/productCatalog/types/productCatalog.types.ts`
+* `src/features/productCatalog/services/productCatalog.service.ts`
+* `src/features/productCatalog/hooks/useProductCatalog.ts`
+* `src/features/productCatalog/components/ProductCatalogTable.tsx`
+* `src/features/productCatalog/components/ProductPriceHistoryDialog.tsx`
+* `src/features/reports/types/report.types.ts`
+* `src/features/reports/services/reports.service.ts`
+* `src/features/reports/hooks/useReports.ts`
+* `src/features/reports/pages/ReportsPage.tsx`
+* `src/features/reports/components/ReportFilterPanel.tsx`
+* `src/features/reports/components/ReportProductMultiAutocomplete.tsx`
+* `src/features/reports/components/CommercialReportSections.tsx`
+* `src/components/dashboard/MainGrid.tsx`
+* `src/features/exchangeRates/hooks/useExchangeRates.ts`
+* `README.md`
+
+**Dependencies and verification status:**
+
+* The backend contract from fix `000072` was reviewed in commit `9ff5875d`, and the implementation was based on the actual enums, DTOs, and response shapes.
+* `npm run lint` passed without errors.
+* TypeScript checks and `npm run build` passed without errors.
+* Automated tests were not run because `package.json` has no configured `test` script or test runner.
+* Browser testing, live API testing, and real-session permission testing were not performed.
+* Vite reported a non-blocking chunk-size warning for a chunk larger than 500 kB. The main bundle is approximately 2,210.36 kB and approximately 639.43 kB gzip-compressed.
+* A mojibake scan of `src`, `index.html`, and `README.md` found no issues.
 
 ---
 **Built with ❤️ for sales team**

@@ -26,6 +26,10 @@ export interface ProductCatalogItem {
 }
 
 export type PricingCurrency = 'IRR' | 'USD';
+export type ProductPriceHistoryReason = 'MIGRATION_BASELINE' | 'PRODUCT_CREATED' | 'PRODUCT_UPDATED' | 'EXCHANGE_RATE_CHANGED' | 'MANUAL_RECALCULATION';
+export interface ProductPriceHistory { id: string; productId: string; pricingCurrency: PricingCurrency; inPersonInputPrice: number | string; digikalaInputPrice: number | string; inPersonProfitPercent?: number | string | null; digikalaProfitPercent?: number | string | null; inPersonPriceIrr: number | string; digikalaPriceIrr: number | string; exchangeRateValueSnapshot?: number | string | null; reason: ProductPriceHistoryReason; validFrom: string; validTo?: string | null; changedBy?: { id: string; fullName: string; email: string } | null; note?: string | null; createdAt: string }
+export interface ProductPriceHistoryParams { page?: number; limit?: number; reason?: ProductPriceHistoryReason; dateFrom?: string; dateTo?: string }
+export interface ProductPriceHistoryPage { data: ProductPriceHistory[]; meta: PaginatedMeta }
 
 export interface ProductCatalogListParams {
   page?: number;

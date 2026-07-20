@@ -17,6 +17,7 @@ import { DataGrid, type GridColDef, type GridPaginationModel, type GridRenderCel
 import BlockOutlinedIcon from '@mui/icons-material/BlockOutlined';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import HistoryIcon from '@mui/icons-material/History';
 import { can } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
 import { useDebouncedValue } from '@/features/companies/hooks/useDebouncedValue';
@@ -29,17 +30,20 @@ import {
 } from '../hooks/useProductCatalog';
 import type { ProductCatalogItem } from '../types/productCatalog.types';
 import ProductCatalogFormDialog from './ProductCatalogFormDialog';
+import ProductPriceHistoryDialog from './ProductPriceHistoryDialog';
 
 type ActiveFilter = 'ALL' | 'ACTIVE' | 'INACTIVE';
 
 export default function ProductCatalogTable() {
   const user = useAuthStore((state) => state.user);
   const canManage = can(user, 'product:manage', ['ADMIN']);
+  const canView = can(user, 'product:view');
   const [pagination, setPagination] = useState<GridPaginationModel>({ page: 0, pageSize: 10 });
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
   const [active, setActive] = useState<ActiveFilter>('ALL');
   const [editing, setEditing] = useState<ProductCatalogItem | null | undefined>(undefined);
+  const [historyProduct, setHistoryProduct] = useState<ProductCatalogItem | null>(null);
   const debouncedSearch = useDebouncedValue(search.trim(), 400);
   const debouncedCategory = useDebouncedValue(category.trim(), 400);
   const query = useProductCatalog({
@@ -97,6 +101,7 @@ export default function ProductCatalogTable() {
       renderCell: ({ row }: GridRenderCellParams<ProductCatalogItem>) => (
         <RowActions
           actions={[
+            { key: 'history', label: 'تاریخچه قیمت', icon: <HistoryIcon fontSize="small" />, disabled: !canView, onClick: () => setHistoryProduct(row) },
             {
               key: 'edit',
               label: 'ویرایش',
@@ -116,7 +121,7 @@ export default function ProductCatalogTable() {
         />
       ),
     },
-  ], [canManage, toggleActive, togglePending]);
+  ], [canManage, canView, toggleActive, togglePending]);
 
   return (
     <Box>
@@ -163,6 +168,7 @@ export default function ProductCatalogTable() {
           onClose={() => setEditing(undefined)}
         />
       )}
+      {historyProduct && <ProductPriceHistoryDialog product={historyProduct} onClose={() => setHistoryProduct(null)} />}
     </Box>
   );
 }

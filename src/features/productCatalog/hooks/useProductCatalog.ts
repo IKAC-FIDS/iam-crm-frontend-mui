@@ -3,6 +3,7 @@ import { productCatalogService } from '../services/productCatalog.service';
 import type {
   CreateProductCatalogItemPayload,
   ProductCatalogListParams,
+  ProductPriceHistoryParams,
   UpdateProductCatalogItemPayload,
 } from '../types/productCatalog.types';
 
@@ -10,6 +11,7 @@ export const productCatalogKeys = {
   all: ['product-catalog'] as const,
   list: (params: ProductCatalogListParams) => ['product-catalog', 'list', params] as const,
   detail: (id: string) => ['product-catalog', 'detail', id] as const,
+  history: (id: string, params: ProductPriceHistoryParams) => ['product-catalog', 'detail', id, 'price-history', params] as const,
 };
 
 function useInvalidateProductCatalog() {
@@ -17,7 +19,14 @@ function useInvalidateProductCatalog() {
   return (id?: string) => Promise.all([
     client.invalidateQueries({ queryKey: productCatalogKeys.all }),
     id ? client.invalidateQueries({ queryKey: productCatalogKeys.detail(id) }) : Promise.resolve(),
+    client.invalidateQueries({ queryKey: ['reports', 'product-performance'] }),
+    client.invalidateQueries({ queryKey: ['reports', 'exchange-rate-impact'] }),
+    client.invalidateQueries({ queryKey: ['dashboard-summary'] }),
   ]);
+}
+
+export function useProductPriceHistory(id: string, params: ProductPriceHistoryParams, enabled = true) {
+  return useQuery({ queryKey: productCatalogKeys.history(id, params), queryFn: ({ signal }) => productCatalogService.priceHistory(id, params, signal), enabled: enabled && Boolean(id), placeholderData: keepPreviousData });
 }
 
 export function useProductCatalog(params: ProductCatalogListParams, enabled = true) {

@@ -16,6 +16,9 @@ export const reportQueryKeys = {
   aging: (filters: AdvancedReportFilters) => [...reportQueryKeys.all, 'aging', filters] as const,
   meetingPerformance: (filters: AdvancedReportFilters) => [...reportQueryKeys.all, 'meeting-performance', filters] as const,
   taskPerformance: (filters: AdvancedReportFilters) => [...reportQueryKeys.all, 'task-performance', filters] as const,
+  financialCollections: (filters: AdvancedReportFilters) => [...reportQueryKeys.all, 'financial-collections', filters] as const,
+  productPerformance: (filters: AdvancedReportFilters) => [...reportQueryKeys.all, 'product-performance', filters] as const,
+  exchangeRateImpact: (filters: AdvancedReportFilters) => [...reportQueryKeys.all, 'exchange-rate-impact', filters] as const,
 };
 
 const common = { placeholderData: keepPreviousData } as const;
@@ -46,3 +49,6 @@ export function useForecastReport(filters: AdvancedReportFilters = {}, enabled =
 export function useOpportunityAgingReport(filters: AdvancedReportFilters = {}, enabled = true) { return useQuery({ queryKey: reportQueryKeys.aging(filters), queryFn: ({ signal }) => reportsService.getAgingReport(filters, signal), enabled, placeholderData: keepPreviousData, staleTime: 60_000 }); }
 export function useMeetingPerformanceReport(filters: AdvancedReportFilters = {}, enabled = true) { return useQuery({ queryKey: reportQueryKeys.meetingPerformance(filters), queryFn: ({ signal }) => reportsService.getMeetingPerformance(filters, signal), enabled, staleTime: 60_000 }); }
 export function useTaskPerformanceReport(filters: AdvancedReportFilters = {}, enabled = true) { return useQuery({ queryKey: reportQueryKeys.taskPerformance(filters), queryFn: ({ signal }) => reportsService.getTaskPerformance(filters, signal), enabled, staleTime: 60_000 }); }
+export function useFinancialCollectionsReport(filters: AdvancedReportFilters = {}, enabled = true) { return useQuery({ queryKey: reportQueryKeys.financialCollections(filters), queryFn: ({ signal }) => reportsService.getFinancialCollections(filters, signal), enabled, staleTime: 60_000 }); }
+export function useProductPerformanceReport(filters: AdvancedReportFilters = {}, enabled = true) { return useQuery({ queryKey: reportQueryKeys.productPerformance(filters), queryFn: ({ signal }) => reportsService.getProductPerformance(filters, signal), enabled, staleTime: 60_000 }); }
+export function useExchangeRateImpactReport(filters: AdvancedReportFilters = {}, enabled = true) { return useQuery({ queryKey: reportQueryKeys.exchangeRateImpact(filters), queryFn: ({ signal }) => reportsService.getExchangeRateImpact(filters, signal), enabled, placeholderData: keepPreviousData, staleTime: 60_000 }); }

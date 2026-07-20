@@ -13,14 +13,15 @@ import PipelineByOwnerSection from '../components/PipelineByOwnerSection';
 import PipelineSummarySection from '../components/PipelineSummarySection';
 import ReportFilterPanel from '../components/ReportFilterPanel';
 import StageDurationsSection from '../components/StageDurationsSection';
-import { reportQueryKeys, useActivitiesByUserReport, useActivityReport, useConversionRatesReport, useForecastReport, useMeetingPerformanceReport, useOpportunityAgingReport, usePipelineByOwnerReport, usePipelineSummaryReport, useReportFilterOptions, useStageDurationsReport, useTaskPerformanceReport } from '../hooks/useReports';
+import { ExchangeRateImpactSection, FinancialCollectionsSection, ProductPerformanceSection } from '../components/CommercialReportSections';
+import { reportQueryKeys, useActivitiesByUserReport, useActivityReport, useConversionRatesReport, useExchangeRateImpactReport, useFinancialCollectionsReport, useForecastReport, useMeetingPerformanceReport, useOpportunityAgingReport, usePipelineByOwnerReport, usePipelineSummaryReport, useProductPerformanceReport, useReportFilterOptions, useStageDurationsReport, useTaskPerformanceReport } from '../hooks/useReports';
 import type { ReportFilters } from '../types/report.types';
 import type { CompanyOption } from '@/features/companies/types/company.types';
 import { defaultActivityDateRange, isForbiddenError } from '../utils/reportDisplay';
 
-type ReportTab = 'overview' | 'forecast' | 'aging' | 'meetings' | 'tasks';
-const tabs: Array<{ value: ReportTab; label: string }> = [{ value: 'overview', label: 'نمای کلی' }, { value: 'forecast', label: 'پیش‌بینی فروش' }, { value: 'aging', label: 'Aging فرصت‌ها' }, { value: 'meetings', label: 'جلسات' }, { value: 'tasks', label: 'کارها و SLA' }];
-const arrayKeys: Array<keyof ReportFilters> = ['companyIds', 'userIds', 'teams', 'ownerIds', 'stages', 'priorities', 'industries', 'leadSources', 'activityTypes', 'meetingStatuses', 'meetingModes', 'taskStatuses'];
+type ReportTab = 'overview' | 'forecast' | 'aging' | 'meetings' | 'tasks' | 'financial' | 'products' | 'exchange';
+const tabs: Array<{ value: ReportTab; label: string }> = [{ value: 'overview', label: 'نمای کلی' }, { value: 'forecast', label: 'پیش‌بینی فروش' }, { value: 'aging', label: 'Aging فرصت‌ها' }, { value: 'meetings', label: 'جلسات' }, { value: 'tasks', label: 'کارها و SLA' }, { value: 'financial', label: 'مالی و وصول' }, { value: 'products', label: 'عملکرد محصولات' }, { value: 'exchange', label: 'نرخ ارز و اثر قیمت' }];
+const arrayKeys: Array<keyof ReportFilters> = ['companyIds', 'userIds', 'teams', 'ownerIds', 'stages', 'priorities', 'industries', 'leadSources', 'activityTypes', 'meetingStatuses', 'meetingModes', 'taskStatuses', 'productIds', 'categories', 'salesChannels'];
 function defaults(): ReportFilters { return { ...defaultActivityDateRange(), ownershipScope: 'all' }; }
 function fromUrl(params: URLSearchParams): ReportFilters { const result = defaults(); for (const key of ['startDate', 'endDate', 'ownershipScope'] as const) { const value = params.get(key); if (value) Object.assign(result, { [key]: value }); } for (const key of arrayKeys) { const value = params.get(key); if (value) Object.assign(result, { [key]: value.split(',').filter(Boolean) }); } return result; }
 function setFilterParams(params: URLSearchParams, filters: ReportFilters) { for (const key of ['startDate', 'endDate', 'ownershipScope', ...arrayKeys] as Array<keyof ReportFilters>) { const value = filters[key]; const serialized = Array.isArray(value) ? value.join(',') : value; if (serialized && !(key === 'ownershipScope' && serialized === 'all')) params.set(key, String(serialized)); else params.delete(key); } }
@@ -32,11 +33,13 @@ export default function ReportsPage() {
   const [draft, setDraft] = useState<ReportFilters>(() => fromUrl(params)); const [filters, setFilters] = useState<ReportFilters>(() => fromUrl(params));
   const [selectedCompanies, setSelectedCompanies] = useState<CompanyOption[]>([]);
   const agingPage = Math.max(0, Number(params.get('agingPage') || 1) - 1); const agingLimit = [10, 20, 50, 100].includes(Number(params.get('agingLimit'))) ? Number(params.get('agingLimit')) : 20;
+  const impactPage = Math.max(0, Number(params.get('impactPage') || 1) - 1); const impactLimit = [10, 20, 50, 100].includes(Number(params.get('impactLimit'))) ? Number(params.get('impactLimit')) : 20;
   const options = useReportFilterOptions(hasAccess);
   const overview = tab === 'overview';
   const pipeline = usePipelineSummaryReport(filters, hasAccess && overview); const conversion = useConversionRatesReport(filters, hasAccess && overview); const durations = useStageDurationsReport(filters, hasAccess && overview); const activities = useActivityReport(filters, hasAccess && overview); const activitiesByUser = useActivitiesByUserReport(filters, hasAccess && overview); const pipelineByOwner = usePipelineByOwnerReport(filters, hasAccess && overview);
   const forecast = useForecastReport(filters, hasAccess && tab === 'forecast'); const aging = useOpportunityAgingReport({ ...filters, startDate: undefined, endDate: undefined, page: agingPage + 1, limit: agingLimit }, hasAccess && tab === 'aging'); const meetings = useMeetingPerformanceReport(filters, hasAccess && tab === 'meetings'); const tasks = useTaskPerformanceReport(filters, hasAccess && tab === 'tasks');
-  const allQueries = [pipeline, conversion, durations, activities, activitiesByUser, pipelineByOwner, forecast, aging, meetings, tasks];
+  const financial = useFinancialCollectionsReport(filters, hasAccess && tab === 'financial'); const products = useProductPerformanceReport(filters, hasAccess && tab === 'products'); const exchange = useExchangeRateImpactReport({ ...filters, ownershipScope: undefined, companyIds: undefined, ownerIds: undefined, teams: undefined, page: impactPage + 1, limit: impactLimit }, hasAccess && tab === 'exchange');
+  const allQueries = [pipeline, conversion, durations, activities, activitiesByUser, pipelineByOwner, forecast, aging, meetings, tasks, financial, products, exchange];
   if (!hasAccess) return <Alert severity="warning">شما دسترسی مشاهده گزارش‌ها را ندارید.</Alert>;
   if ([options.error, ...allQueries.map((q) => q.error)].some(isForbiddenError)) return <Alert severity="warning">شما دسترسی مشاهده گزارش‌ها را ندارید.</Alert>;
   const updateParams = (mutate: (next: URLSearchParams) => void) => { const next = new URLSearchParams(params); mutate(next); setParams(next, { replace: true }); };
@@ -50,5 +53,8 @@ export default function ReportsPage() {
       {tab === 'aging' && <AgingSection query={aging} pagination={{ page: agingPage, pageSize: agingLimit }} onPagination={(model) => updateParams((p) => { p.set('agingPage', String(model.page + 1)); p.set('agingLimit', String(model.pageSize)); })} />}
       {tab === 'meetings' && <MeetingPerformanceSection query={meetings} />}
       {tab === 'tasks' && <TaskPerformanceSection query={tasks} />}
+      {tab === 'financial' && <FinancialCollectionsSection query={financial} />}
+      {tab === 'products' && <ProductPerformanceSection query={products} />}
+      {tab === 'exchange' && <ExchangeRateImpactSection query={exchange} pagination={{ page: impactPage, pageSize: impactLimit }} onPagination={(model) => updateParams((p) => { p.set('impactPage', String(model.page + 1)); p.set('impactLimit', String(model.pageSize)); })} />}
     </Stack></Box>;
 }

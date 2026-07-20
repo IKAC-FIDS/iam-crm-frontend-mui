@@ -10,7 +10,7 @@ import type {
   ReportFilterOptions,
   ReportFilters,
   StageDurationReportItem,
-  AdvancedReportFilters, DashboardSummary, ForecastReport, OpportunityAgingReport, MeetingPerformanceReport, TaskPerformanceReport,
+  AdvancedReportFilters, DashboardSummary, ForecastReport, OpportunityAgingReport, MeetingPerformanceReport, TaskPerformanceReport, FinancialCollectionsReport, ProductPerformanceReport, ExchangeRateImpactReport,
 } from '../types/report.types';
 
 function option(value: unknown): ReportFilterOption | null {
@@ -56,6 +56,9 @@ export const reportsService = {
   getAgingReport: async (filters: AdvancedReportFilters = {}, signal?: AbortSignal): Promise<OpportunityAgingReport> => unwrapApiResponse<OpportunityAgingReport>((await axiosInstance.get('/reports/opportunities/aging', { params: picked(filters, ['ownershipScope', 'companyIds', 'ownerIds', 'teams', 'stages', 'priorities', 'industries', 'leadSources', 'page', 'limit']), signal })).data),
   getMeetingPerformance: async (filters: AdvancedReportFilters = {}, signal?: AbortSignal): Promise<MeetingPerformanceReport> => unwrapApiResponse<MeetingPerformanceReport>((await axiosInstance.get('/reports/meetings/performance', { params: picked(filters, ['startDate', 'endDate', 'ownershipScope', 'companyIds', 'userIds', 'teams', 'meetingStatuses', 'meetingModes']), signal })).data),
   getTaskPerformance: async (filters: AdvancedReportFilters = {}, signal?: AbortSignal): Promise<TaskPerformanceReport> => unwrapApiResponse<TaskPerformanceReport>((await axiosInstance.get('/reports/tasks/performance', { params: picked(filters, ['startDate', 'endDate', 'ownershipScope', 'companyIds', 'userIds', 'teams', 'priorities', 'taskStatuses']), signal })).data),
+  getFinancialCollections: async (filters: AdvancedReportFilters = {}, signal?: AbortSignal): Promise<FinancialCollectionsReport> => unwrapApiResponse<FinancialCollectionsReport>((await axiosInstance.get('/reports/financial/collections', { params: picked(filters, ['startDate', 'endDate', 'ownershipScope', 'companyIds', 'ownerIds', 'teams']), signal })).data),
+  getProductPerformance: async (filters: AdvancedReportFilters = {}, signal?: AbortSignal): Promise<ProductPerformanceReport> => unwrapApiResponse<ProductPerformanceReport>((await axiosInstance.get('/reports/products/performance', { params: picked(filters, ['startDate', 'endDate', 'ownershipScope', 'companyIds', 'ownerIds', 'teams', 'productIds', 'categories', 'salesChannels']), signal })).data),
+  getExchangeRateImpact: async (filters: AdvancedReportFilters = {}, signal?: AbortSignal): Promise<ExchangeRateImpactReport> => unwrapApiResponse<ExchangeRateImpactReport>((await axiosInstance.get('/reports/exchange-rates/impact', { params: picked(filters, ['startDate', 'endDate', 'productIds', 'categories', 'page', 'limit']), signal })).data),
   getFilterOptions: async (): Promise<ReportFilterOptions> => {
     const response = await axiosInstance.get<Record<string, unknown> | { data: Record<string, unknown> }>('/reports/filter-options');
     const data = unwrapApiResponse<Record<string, unknown>>(response.data);

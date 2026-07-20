@@ -5,10 +5,12 @@ import type {
   ProductCatalogItem,
   ProductCatalogListParams,
   ProductCatalogPage,
+  ProductPriceHistoryPage,
+  ProductPriceHistoryParams,
   UpdateProductCatalogItemPayload,
 } from '../types/productCatalog.types';
 
-const cleanParams = (value: ProductCatalogListParams) =>
+const cleanParams = <T extends object>(value: T) =>
   Object.fromEntries(Object.entries(value).filter(([, item]) => item !== undefined && item !== ''));
 
 function cleanPayload<T extends CreateProductCatalogItemPayload | UpdateProductCatalogItemPayload>(payload: T): T {
@@ -24,6 +26,8 @@ export const productCatalogService = {
     ),
   get: async (id: string): Promise<ProductCatalogItem> =>
     unwrapApiResponse<ProductCatalogItem>((await axiosInstance.get<unknown>(`/product-catalog/${id}`)).data),
+  priceHistory: async (id: string, query: ProductPriceHistoryParams, signal?: AbortSignal): Promise<ProductPriceHistoryPage> =>
+    unwrapPaginatedApiResponse((await axiosInstance.get<unknown>(`/product-catalog/${id}/price-history`, { params: cleanParams(query), signal })).data),
   create: async (payload: CreateProductCatalogItemPayload): Promise<ProductCatalogItem> =>
     unwrapApiResponse<ProductCatalogItem>(
       (await axiosInstance.post<unknown>('/product-catalog', cleanPayload(payload))).data,

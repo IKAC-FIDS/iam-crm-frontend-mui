@@ -25,7 +25,8 @@ function useInvalidateLineItems(opportunityId: string, companyId?: string) {
     client.invalidateQueries({ queryKey: ['pipeline'] }),
     client.invalidateQueries({ queryKey: ['company-opportunities', companyId] }),
     client.invalidateQueries({ queryKey: ['companies', 'detail', companyId] }),
-    client.invalidateQueries({ queryKey: ['reports'] }),
+    client.invalidateQueries({ queryKey: ['reports', 'product-performance'] }),
+    client.invalidateQueries({ queryKey: ['dashboard-summary'] }),
   ]);
 }
 

@@ -1,5 +1,7 @@
 import type { ProductCatalogItem } from '@/features/productCatalog/types/productCatalog.types';
 
+export type SalesChannel = 'LEGACY_UNKNOWN' | 'IN_PERSON' | 'DIGIKALA' | 'OTHER';
+
 export interface OpportunityLineItem {
   id: string;
   opportunityId: string;
@@ -7,6 +9,9 @@ export interface OpportunityLineItem {
   product?: ProductCatalogItem | null;
   productCodeSnapshot?: string | null;
   productNameSnapshot?: string | null;
+  salesChannel: SalesChannel;
+  catalogUnitPriceIrrSnapshot?: number | string | null;
+  productPriceHistoryId?: string | null;
   description?: string | null;
   quantity: number | string;
   unitPrice: number | string;
@@ -20,6 +25,7 @@ export interface OpportunityLineItem {
 
 export interface CreateOpportunityLineItemPayload {
   productId?: string;
+  salesChannel?: Exclude<SalesChannel, 'LEGACY_UNKNOWN'>;
   description?: string;
   quantity: number | string;
   unitPrice?: number | string;
@@ -29,6 +35,8 @@ export interface CreateOpportunityLineItemPayload {
 }
 
 export interface UpdateOpportunityLineItemPayload {
+  productId?: string | null;
+  salesChannel?: Exclude<SalesChannel, 'LEGACY_UNKNOWN'>;
   description?: string;
   quantity?: number | string;
   unitPrice?: number | string;

@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import {
   Alert,
   Button,
+  Chip,
   Dialog,
   DialogActions,
   DialogContent,
@@ -20,6 +21,7 @@ import { useAuthStore } from '@/store/authStore';
 import { useDeleteOpportunityLineItem, useOpportunityLineItems } from '../hooks/useOpportunityLineItems';
 import type { OpportunityLineItem } from '../types/opportunityLineItem.types';
 import { formatMoney } from '../utils/money';
+import { salesChannelChipColor, salesChannelLabel } from '../utils/salesChannel';
 import OpportunityLineItemFormDialog from './OpportunityLineItemFormDialog';
 
 function itemTitle(item: OpportunityLineItem): string {
@@ -60,9 +62,11 @@ export default function OpportunityLineItemsTab({
   const columns = useMemo<GridColDef<OpportunityLineItem>[]>(() => [
     { field: 'product', headerName: 'محصول / شرح', minWidth: 220, flex: 1, valueGetter: (_value, row) => itemTitle(row) },
     { field: 'quantity', headerName: 'تعداد', minWidth: 100 },
+    { field: 'salesChannel', headerName: 'کانال فروش', minWidth: 170, renderCell: ({ row }) => <Chip size="small" color={salesChannelChipColor(row.salesChannel)} label={salesChannelLabel(row.salesChannel)} /> },
+    { field: 'catalogUnitPriceIrrSnapshot', headerName: 'قیمت کاتالوگ ثبت‌شده', minWidth: 190, valueFormatter: (value) => value == null ? '—' : formatMoney(value, 'IRR') },
     {
       field: 'unitPrice',
-      headerName: 'قیمت واحد',
+      headerName: 'قیمت واقعی/توافقی',
       minWidth: 150,
       valueFormatter: (value, row) => formatMoney(value, row.product?.currency ?? currency),
     },
