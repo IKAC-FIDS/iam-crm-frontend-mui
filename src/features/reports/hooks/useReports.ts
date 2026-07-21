@@ -19,6 +19,9 @@ export const reportQueryKeys = {
   financialCollections: (filters: AdvancedReportFilters) => [...reportQueryKeys.all, 'financial-collections', filters] as const,
   productPerformance: (filters: AdvancedReportFilters) => [...reportQueryKeys.all, 'product-performance', filters] as const,
   exchangeRateImpact: (filters: AdvancedReportFilters) => [...reportQueryKeys.all, 'exchange-rate-impact', filters] as const,
+  dataQuality: (filters: AdvancedReportFilters) => [...reportQueryKeys.all, 'data-quality', filters] as const,
+  dataQualityIssues: (filters: AdvancedReportFilters) => [...reportQueryKeys.all, 'data-quality-issues', filters] as const,
+  periodComparison: (filters: AdvancedReportFilters) => [...reportQueryKeys.all, 'period-comparison', filters] as const,
 };
 
 const common = { placeholderData: keepPreviousData } as const;
@@ -52,3 +55,6 @@ export function useTaskPerformanceReport(filters: AdvancedReportFilters = {}, en
 export function useFinancialCollectionsReport(filters: AdvancedReportFilters = {}, enabled = true) { return useQuery({ queryKey: reportQueryKeys.financialCollections(filters), queryFn: ({ signal }) => reportsService.getFinancialCollections(filters, signal), enabled, staleTime: 60_000 }); }
 export function useProductPerformanceReport(filters: AdvancedReportFilters = {}, enabled = true) { return useQuery({ queryKey: reportQueryKeys.productPerformance(filters), queryFn: ({ signal }) => reportsService.getProductPerformance(filters, signal), enabled, staleTime: 60_000 }); }
 export function useExchangeRateImpactReport(filters: AdvancedReportFilters = {}, enabled = true) { return useQuery({ queryKey: reportQueryKeys.exchangeRateImpact(filters), queryFn: ({ signal }) => reportsService.getExchangeRateImpact(filters, signal), enabled, placeholderData: keepPreviousData, staleTime: 60_000 }); }
+export function useDataQualityReport(filters: AdvancedReportFilters = {}, enabled = true) { return useQuery({ queryKey: reportQueryKeys.dataQuality(filters), queryFn: ({ signal }) => reportsService.getDataQuality(filters, signal), enabled, staleTime: 60_000 }); }
+export function useDataQualityIssues(filters: AdvancedReportFilters & { ruleKey: string }, enabled = true) { return useQuery({ queryKey: reportQueryKeys.dataQualityIssues(filters), queryFn: ({ signal }) => reportsService.getDataQualityIssues(filters, signal), enabled: enabled && Boolean(filters.ruleKey), placeholderData: keepPreviousData, staleTime: 60_000 }); }
+export function usePeriodComparisonReport(filters: AdvancedReportFilters = {}, enabled = true) { return useQuery({ queryKey: reportQueryKeys.periodComparison(filters), queryFn: ({ signal }) => reportsService.getPeriodComparison(filters, signal), enabled, staleTime: 60_000 }); }

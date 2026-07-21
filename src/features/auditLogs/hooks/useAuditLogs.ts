@@ -1,6 +1,3 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { auditLogsService } from '../services/auditLogs.service';
-import type { AuditLogParams } from '../types/auditLog.types';
-
-export const auditLogQueryKeys = { all: ['admin', 'audit-logs'] as const, list: (params: AuditLogParams) => [...auditLogQueryKeys.all, params] as const };
-export function useAuditLogs(params: AuditLogParams, enabled = true) { return useQuery({ queryKey: auditLogQueryKeys.list(params), queryFn: () => auditLogsService.getAuditLogs(params), placeholderData: keepPreviousData, enabled }); }
+import { keepPreviousData,useQuery } from '@tanstack/react-query'; import { auditLogsService } from '../services/auditLogs.service'; import type { AuditLogParams } from '../types/auditLog.types';
+export const auditLogQueryKeys={all:['admin','audit-logs'] as const,list:(p:AuditLogParams)=>[...auditLogQueryKeys.all,'list',p] as const,summary:(p:Partial<AuditLogParams>)=>[...auditLogQueryKeys.all,'summary',p] as const,options:[...(['admin','audit-logs'] as const),'options'] as const,detail:(id:string)=>[...auditLogQueryKeys.all,'detail',id] as const};
+export const useAuditLogs=(p:AuditLogParams,e=true)=>useQuery({queryKey:auditLogQueryKeys.list(p),queryFn:({signal})=>auditLogsService.list(p,signal),placeholderData:keepPreviousData,enabled:e}); export const useAuditSummary=(p:Partial<AuditLogParams>,e=true)=>useQuery({queryKey:auditLogQueryKeys.summary(p),queryFn:({signal})=>auditLogsService.summary(p,signal),enabled:e}); export const useAuditOptions=(e=true)=>useQuery({queryKey:auditLogQueryKeys.options,queryFn:({signal})=>auditLogsService.options(signal),enabled:e,staleTime:300000}); export const useAuditDetail=(id:string,e=true)=>useQuery({queryKey:auditLogQueryKeys.detail(id),queryFn:({signal})=>auditLogsService.detail(id,signal),enabled:e&&Boolean(id)});

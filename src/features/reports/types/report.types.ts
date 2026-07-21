@@ -40,9 +40,27 @@ export interface ReportFilters {
   productIds?: string[];
   categories?: string[];
   salesChannels?: SalesChannel[];
+  entityTypes?: string[];
+  severities?: DataQualitySeverity[];
+  ruleKeys?: string[];
+  comparisonMode?: ComparisonMode;
+  compareStartDate?: string;
+  compareEndDate?: string;
 }
 
-export interface AdvancedReportFilters extends ReportFilters { page?: number; limit?: number }
+export interface AdvancedReportFilters extends ReportFilters { page?: number; limit?: number; ruleKey?: string }
+export type DataQualitySeverity = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+export type ReportingScope = 'ORGANIZATION' | 'GLOBAL_CATALOG';
+export interface DataQualityScore { overall: NumericValue | null; eligibleChecks: number; passedChecks: number; issueOccurrences: number }
+export interface DataQualityRule { ruleKey: string; title: string; description: string; entityType: string; severity: DataQualitySeverity; scope: ReportingScope; fieldNames: string[]; eligibleCount: number; issueCount: number; passRate: NumericValue | null }
+export interface DataQualitySection { score: DataQualityScore; byEntityType: Array<{ entityType: string; eligibleChecks: number; issueOccurrences: number; score: NumericValue | null }>; bySeverity: Array<{ severity: DataQualitySeverity; issueOccurrences: number }>; rules: DataQualityRule[] }
+export interface DataQualityReport { asOf: string; organization: DataQualitySection; globalCatalog?: DataQualitySection | null }
+export interface DataQualityIssue { entityId: string; entityType: string; scope: ReportingScope; title: string; subtitle?: string | null; company?: { id: string; legalName: string; brandName?: string | null } | null; owner?: { id: string; fullName: string } | null; fieldNames: string[]; message: string; routeHint?: string | null; detectedAt: string }
+export interface DataQualityIssuesReport { asOf: string; rule: DataQualityRule; data: DataQualityIssue[]; meta: { total: number; page: number; limit: number; totalPages: number; hasNext: boolean; hasPrevious: boolean } }
+export type ComparisonMode = 'PREVIOUS_PERIOD' | 'PREVIOUS_YEAR' | 'CUSTOM';
+export interface ComparisonMetric { key: string; label: string; valueType: 'COUNT' | 'PERCENT' | 'IRR' | 'DECIMAL' | string; currentValue: NumericValue; comparisonValue: NumericValue; absoluteChange: NumericValue; percentChange: number | null; direction: 'UP' | 'DOWN' | 'UNCHANGED'; polarity: 'HIGHER_IS_BETTER' | 'LOWER_IS_BETTER' | 'NEUTRAL'; isImprovement: boolean | null; dateBasis: string }
+export interface PeriodComparisonReport { currentPeriod: { startDate: string; endDate: string }; comparisonPeriod: { startDate: string; endDate: string; mode: ComparisonMode }; groups: Array<{ key: string; title: string; metrics: ComparisonMetric[] }> }
+export interface PeriodComparisonFilters extends ReportFilters { comparisonMode?: ComparisonMode; compareStartDate?: string; compareEndDate?: string }
 export interface DashboardSummary {
   generatedAt: string; period: { startDate: string; endDate: string };
   current: { activeOpportunities: { count: number; estimatedValueIrr: NumericValue; weightedValueIrr: NumericValue; missingValueCount: number; missingProbabilityCount: number }; tasks: { openCount: number; overdueCount: number; dueTodayCount: number; dueNextSevenDaysCount: number }; meetings: { todayCount: number; upcomingSevenDaysCount: number; pastScheduledCount: number } };
@@ -52,6 +70,9 @@ export interface DashboardSummary {
   finance?: { outstandingAmountIrr: NumericValue; overdueAmountIrr: NumericValue; collectedInPeriodAmountIrr: NumericValue; overduePaymentCount: number };
   catalog?: { activeProductCount: number; usdProductCount: number; irrProductCount: number; currentExchangeRate: NumericValue | null; currentExchangeRateValidFrom: string | null; staleUsdProductCount: number };
   salesChannels?: { wonInPersonAmountIrr: NumericValue; wonDigikalaAmountIrr: NumericValue; wonOtherAmountIrr: NumericValue; wonLegacyUnknownAmountIrr: NumericValue };
+  dataQuality?: { overallScore: NumericValue | null; criticalIssueCount: number; highIssueCount: number; totalIssueOccurrences: number } | null;
+  catalogQuality?: { overallScore: NumericValue | null; criticalIssueCount: number; highIssueCount: number; totalIssueOccurrences: number } | null;
+  periodComparison?: { currentPeriod: { startDate: string; endDate: string }; comparisonPeriod: { startDate: string; endDate: string }; metrics: Array<Pick<ComparisonMetric, 'key' | 'currentValue' | 'comparisonValue' | 'percentChange' | 'direction' | 'polarity' | 'isImprovement'>> };
 }
 export interface DashboardOpportunityAttention { id: string; title: string; expectedCloseDate: string; estimatedValue?: NumericValue | null; probability?: number | null; company?: { legalName: string; brandName?: string | null }; owner?: { fullName: string } | null; stage?: { label: string } }
 export interface DashboardTaskAttention { id: string; title: string; status: string; priority: string; dueAt: string; assignedTo?: { fullName: string } | null; company?: { legalName: string; brandName?: string | null } | null }

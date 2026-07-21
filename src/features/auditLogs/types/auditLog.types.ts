@@ -1,26 +1,7 @@
 import type { PaginatedResult } from '@/features/companies/types/company.types';
-
 export interface AuditActor { id?: string; fullName?: string; email?: string }
-export interface AuditLog {
-  id: string;
-  createdAt?: string | null;
-  timestamp?: string | null;
-  actorId?: string | null;
-  actor?: AuditActor | null;
-  actorName?: string | null;
-  action: string;
-  entityType?: string | null;
-  entityId?: string | null;
-  metadata?: unknown;
-}
-export interface AuditLogParams {
-  page: number;
-  limit: 10 | 20 | 50;
-  actorId?: string;
-  entityType?: string;
-  entityId?: string;
-  action?: string;
-  startDate?: string;
-  endDate?: string;
-}
+export interface AuditLog { id:string; createdAt:string; actor?:AuditActor|null; action:string; entityType:string; entityId?:string|null; request?:{requestId?:string|null;method?:string|null;path?:string|null;ipAddress?:string|null;userAgent?:string|null}; changedFields:string[]; before?:unknown; after?:unknown; metadata?:unknown }
+export interface AuditLogParams { page:number; limit:10|20|50|100; actorId?:string; actorIds?:string[]; entityType?:string; entityTypes?:string[]; entityId?:string; action?:string; actions?:string[]; requestId?:string; ipAddress?:string; requestMethod?:string; requestMethods?:string[]; requestPath?:string; search?:string; startDate?:string; endDate?:string; compact?:boolean }
+export interface AuditSummary { period?:{startDate?:string;endDate?:string}; totalEvents:number; uniqueActors:number; byAction:Array<{action:string;count:number}>; byEntityType:Array<{entityType:string;count:number}>; byActor:Array<{actorId:string|null;actorName:string;count:number}>; trend:Array<{periodStart:string;periodEnd:string;count:number}> }
+export interface AuditFilterOptions { actors:AuditActor[]; entityTypes:string[]; actions:string[]; requestMethods:string[] }
 export type AuditLogResult = PaginatedResult<AuditLog>;

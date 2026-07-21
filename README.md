@@ -4719,6 +4719,65 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * A mojibake scan of `src`, `index.html`, and `README.md` found no issues.
 
 ---
+
+## fix 000094 — کیفیت داده، مقایسه دوره‌ها، ممیزی و خروجی گزارش‌ها
+
+**موارد پیاده‌سازی‌شده:**
+
+* تب‌های «کیفیت داده» و «مقایسه دوره‌ها» بدون حذف تب‌های قبلی اضافه شدند و انتخاب تب و فیلترهای applied در URL حفظ می‌شود.
+* کیفیت داده در دو بخش کاملاً مستقل «کیفیت داده‌های سازمان» و «کیفیت کاتالوگ سراسری» نمایش داده می‌شود و امتیازهای آن‌ها هرگز ترکیب نمی‌شوند. نبود `globalCatalog` خطا نیست و بدون permission پویای `product:view` هیچ داده یا navigation مربوط به کاتالوگ سراسری render نمی‌شود.
+* امتیاز null با پیام «داده کافی برای محاسبه وجود ندارد» نمایش داده می‌شود. خلاصه موجودیت‌ها، شدت‌ها و قوانین از severity و scope واقعی backend استفاده می‌کنند.
+* drill-down قوانین با pagination سمت سرور، scope «سازمانی»/«کاتالوگ سراسری»، فیلد ناقص، توضیح، زمان snapshot و لینک permission-aware پیاده‌سازی شد. `routeHint` فقط پس از permission check استفاده می‌شود و auto-fix اضافه نشده است.
+* برای قانون global پیام صریح tenancy نمایش داده می‌شود و فیلترهای مالکیت، شرکت، مالک و تیم فقط توسط قواعد سازمانی backend اعمال می‌شوند.
+* مقایسه دوره‌ها از بازه‌های resolved backend، حالت‌های `PREVIOUS_PERIOD`، `PREVIOUS_YEAR` و `CUSTOM`، polarity و `isImprovement` استفاده می‌کند. افزایش همه شاخص‌ها مثبت فرض نمی‌شود و percentChange ناموجود با «قابل محاسبه نیست» نمایش داده می‌شود.
+* صفحه موجود Audit Log ارتقا یافت و صفحه موازی ساخته نشد. summary، filter-options، compact list، pagination سمت سرور، جزئیات رویداد و فیلترهای URL-backed به endpointهای fix 000073 متصل شدند.
+* جزئیات ممیزی با React معمولی و JSON امن نمایش داده می‌شود؛ depth اولیه محدود و کلیدهای واضح secret/token/password/cookie به‌صورت defense-in-depth مخفی می‌شوند. changedFields، before، after، metadata و copy امن Request ID/JSON اضافه شدند.
+* service مشترک Blob download با report-key ثابت، filename امن، fallback ثابت، CSV/XLSX، revoke کردن Object URL، جلوگیری از کلیک تکراری و پیام خاص `EXPORT_ROW_LIMIT_EXCEEDED` اضافه شد. خروجی گزارش از فیلترهای applied و خروجی Audit از فیلترهای applied استفاده می‌کند.
+* داشبورد بخش optional «کیفیت داده‌های سازمان»، بخش جداگانه optional «کیفیت کاتالوگ سراسری» و شاخص‌های مقایسه دوره را از همان dashboard-summary نمایش می‌دهد؛ نبود sectionهای backend با صفر اشتباه گرفته نمی‌شود.
+* label navigation صفحه Audit به «رویدادهای ممیزی» تغییر یافت و دسترسی آن فقط با `audit-log:view` کنترل می‌شود.
+
+**endpointهای backend استفاده‌شده:**
+
+* `GET /api/reports/data-quality`
+* `GET /api/reports/data-quality/issues`
+* `GET /api/reports/period-comparison`
+* `GET /api/reports/exports/:reportKey`
+* `GET /api/admin/audit-logs?compact=true`
+* `GET /api/admin/audit-logs/summary`
+* `GET /api/admin/audit-logs/filter-options`
+* `GET /api/admin/audit-logs/:id`
+* `GET /api/admin/audit-logs/export`
+* `GET /api/dashboard/summary`
+
+**فایل‌های مهم تغییرکرده/جدید:**
+
+* `src/features/reports/types/report.types.ts`
+* `src/features/reports/services/reports.service.ts`
+* `src/features/reports/hooks/useReports.ts`
+* `src/features/reports/pages/ReportsPage.tsx`
+* `src/features/reports/components/ReportFilterPanel.tsx`
+* `src/features/reports/components/PhaseThreeReportSections.tsx`
+* `src/features/reports/components/ReportExportButton.tsx`
+* `src/features/reports/services/exportDownload.service.ts`
+* `src/features/auditLogs/types/auditLog.types.ts`
+* `src/features/auditLogs/services/auditLogs.service.ts`
+* `src/features/auditLogs/hooks/useAuditLogs.ts`
+* `src/features/auditLogs/pages/AuditLogsPage.tsx`
+* `src/components/dashboard/MainGrid.tsx`
+* `src/components/dashboard/SideMenu.tsx`
+* `README.md`
+
+**وابستگی‌ها و وضعیت بررسی:**
+
+* قرارداد backend fix `000073` در commit `58e417cf` بررسی و مبنای typeها، فیلترها و endpointها قرار گرفت.
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check و `npm run build`: بدون خطا اجرا شد.
+* تست خودکار اجرا نشد، زیرا `package.json` test runner یا اسکریپت `test` ندارد.
+* بررسی مرورگر، دانلود واقعی فایل، API زنده و permissionهای نشست واقعی اجرا نشد.
+* Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,230.16 kB و gzip آن حدود 644.84 kB است.
+* اسکن mojibake در `src`، `index.html` و `README.md` موردی پیدا نکرد.
+
+---
 **Built with ❤️ for sales team**
 
 ---

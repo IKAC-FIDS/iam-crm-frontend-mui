@@ -87,7 +87,7 @@ const menuItems = [
     path: '/admin/pipeline',
     permissions: ['pipeline:config:manage', 'pipeline:transition:manage'],
   },
-  { group: 'مدیریت', text: 'لاگ تغییرات', icon: <HistoryIcon />, path: '/admin/audit-logs', permission: 'audit-log:view' },
+  { group: 'مدیریت', text: 'رویدادهای ممیزی', icon: <HistoryIcon />, path: '/admin/audit-logs', permission: 'audit-log:view' },
   { group: 'حساب', text: 'امنیت حساب', icon: <KeyIcon />, path: '/account/security' },
 ];
 

@@ -1,18 +1,3 @@
-import axiosInstance from '@/lib/axios';
-import { unwrapPaginatedApiResponse } from '@/lib/apiResponse';
-import type { AuditLog, AuditLogParams, AuditLogResult } from '../types/auditLog.types';
-
-interface Envelope { data?: AuditLog[]; items?: AuditLog[]; meta?: { total?: number; page?: number; limit?: number; totalPages?: number; hasNext?: boolean; hasPrevious?: boolean }; total?: number; page?: number; limit?: number; totalPages?: number }
-const clean = (params: AuditLogParams) => Object.fromEntries(Object.entries(params).filter(([, value]) => value !== undefined && value !== ''));
-
-export const auditLogsService = {
-  getAuditLogs: async (params: AuditLogParams): Promise<AuditLogResult> => {
-    const response = await axiosInstance.get<AuditLog[] | Envelope>('/admin/audit-logs', { params: clean(params) });
-    const result = unwrapPaginatedApiResponse<AuditLog>(response.data);
-    const page = result.meta.page || params.page;
-    const limit = result.meta.limit || params.limit;
-    const total = result.meta.total ?? result.data.length;
-    const totalPages = result.meta.totalPages || Math.max(1, Math.ceil(total / limit));
-    return { data: result.data, meta: { total, page, limit, totalPages, hasNext: result.meta.hasNext ?? page < totalPages, hasPrevious: result.meta.hasPrevious ?? page > 1 } };
-  },
-};
+import axiosInstance from '@/lib/axios'; import { unwrapApiResponse,unwrapPaginatedApiResponse } from '@/lib/apiResponse'; import type { AuditFilterOptions,AuditLog,AuditLogParams,AuditLogResult,AuditSummary } from '../types/auditLog.types';
+const clean=(p:object)=>Object.fromEntries(Object.entries(p).filter(([,v])=>v!==undefined&&v!==''&&(!Array.isArray(v)||v.length)));
+export const auditLogsService={ list:async(params:AuditLogParams,signal?:AbortSignal):Promise<AuditLogResult>=>unwrapPaginatedApiResponse<AuditLog>((await axiosInstance.get('/admin/audit-logs',{params:clean({...params,compact:true}),signal})).data), summary:async(params:Partial<AuditLogParams>,signal?:AbortSignal):Promise<AuditSummary>=>unwrapApiResponse((await axiosInstance.get('/admin/audit-logs/summary',{params:clean(params),signal})).data), options:async(signal?:AbortSignal):Promise<AuditFilterOptions>=>unwrapApiResponse((await axiosInstance.get('/admin/audit-logs/filter-options',{signal})).data), detail:async(id:string,signal?:AbortSignal):Promise<AuditLog>=>unwrapApiResponse((await axiosInstance.get(`/admin/audit-logs/${id}`,{signal})).data) };
