@@ -1,27 +1,28 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { reportsService } from '../services/reports.service';
-import type { AdvancedReportFilters, ReportFilters } from '../types/report.types';
+import type { AdvancedReportFilters, PeriodComparisonFilters, ReportFilters } from '../types/report.types';
+import { comparisonParams, endpointFilterKeys, overviewKeys, selectReportFilters } from '../services/reportParams';
 
 export const reportQueryKeys = {
   all: ['reports'] as const,
   filterOptions: () => [...reportQueryKeys.all, 'filter-options'] as const,
-  pipelineSummary: (filters: ReportFilters) => [...reportQueryKeys.all, 'pipeline-summary', filters] as const,
-  conversionRates: (filters: ReportFilters) => [...reportQueryKeys.all, 'conversion-rates', filters] as const,
-  stageDurations: (filters: ReportFilters) => [...reportQueryKeys.all, 'stage-durations', filters] as const,
-  activities: (filters: ReportFilters) => [...reportQueryKeys.all, 'activities', filters] as const,
-  activitiesByUser: (filters: ReportFilters) => [...reportQueryKeys.all, 'activities-by-user', filters] as const,
-  pipelineByOwner: (filters: ReportFilters) => [...reportQueryKeys.all, 'pipeline-by-owner', filters] as const,
-  dashboard: (filters: AdvancedReportFilters) => ['dashboard-summary', filters] as const,
-  forecast: (filters: AdvancedReportFilters) => [...reportQueryKeys.all, 'forecast', filters] as const,
-  aging: (filters: AdvancedReportFilters) => [...reportQueryKeys.all, 'aging', filters] as const,
-  meetingPerformance: (filters: AdvancedReportFilters) => [...reportQueryKeys.all, 'meeting-performance', filters] as const,
-  taskPerformance: (filters: AdvancedReportFilters) => [...reportQueryKeys.all, 'task-performance', filters] as const,
-  financialCollections: (filters: AdvancedReportFilters) => [...reportQueryKeys.all, 'financial-collections', filters] as const,
-  productPerformance: (filters: AdvancedReportFilters) => [...reportQueryKeys.all, 'product-performance', filters] as const,
-  exchangeRateImpact: (filters: AdvancedReportFilters) => [...reportQueryKeys.all, 'exchange-rate-impact', filters] as const,
-  dataQuality: (filters: AdvancedReportFilters) => [...reportQueryKeys.all, 'data-quality', filters] as const,
-  dataQualityIssues: (filters: AdvancedReportFilters) => [...reportQueryKeys.all, 'data-quality-issues', filters] as const,
-  periodComparison: (filters: AdvancedReportFilters) => [...reportQueryKeys.all, 'period-comparison', filters] as const,
+  pipelineSummary: (f: ReportFilters) => [...reportQueryKeys.all, 'pipeline-summary', selectReportFilters(f, overviewKeys)] as const,
+  conversionRates: (f: ReportFilters) => [...reportQueryKeys.all, 'conversion-rates', selectReportFilters(f, overviewKeys)] as const,
+  stageDurations: (f: ReportFilters) => [...reportQueryKeys.all, 'stage-durations', selectReportFilters(f, overviewKeys)] as const,
+  activities: (f: ReportFilters) => [...reportQueryKeys.all, 'activities', selectReportFilters(f, overviewKeys)] as const,
+  activitiesByUser: (f: ReportFilters) => [...reportQueryKeys.all, 'activities-by-user', selectReportFilters(f, overviewKeys)] as const,
+  pipelineByOwner: (f: ReportFilters) => [...reportQueryKeys.all, 'pipeline-by-owner', selectReportFilters(f, overviewKeys)] as const,
+  dashboard: (f: AdvancedReportFilters) => ['dashboard-summary', selectReportFilters(f, endpointFilterKeys.dashboard)] as const,
+  forecast: (f: AdvancedReportFilters) => [...reportQueryKeys.all, 'forecast', selectReportFilters(f, endpointFilterKeys.forecast)] as const,
+  aging: (f: AdvancedReportFilters) => [...reportQueryKeys.all, 'aging', selectReportFilters(f, endpointFilterKeys.aging)] as const,
+  meetingPerformance: (f: AdvancedReportFilters) => [...reportQueryKeys.all, 'meeting-performance', selectReportFilters(f, endpointFilterKeys.meetings)] as const,
+  taskPerformance: (f: AdvancedReportFilters) => [...reportQueryKeys.all, 'task-performance', selectReportFilters(f, endpointFilterKeys.tasks)] as const,
+  financialCollections: (f: AdvancedReportFilters) => [...reportQueryKeys.all, 'financial-collections', selectReportFilters(f, endpointFilterKeys.financial)] as const,
+  productPerformance: (f: AdvancedReportFilters) => [...reportQueryKeys.all, 'product-performance', selectReportFilters(f, endpointFilterKeys.products)] as const,
+  exchangeRateImpact: (f: AdvancedReportFilters) => [...reportQueryKeys.all, 'exchange-rate-impact', selectReportFilters(f, endpointFilterKeys.exchange)] as const,
+  dataQuality: (f: AdvancedReportFilters) => [...reportQueryKeys.all, 'data-quality', selectReportFilters(f, endpointFilterKeys.dataQuality)] as const,
+  dataQualityIssues: (f: AdvancedReportFilters) => [...reportQueryKeys.all, 'data-quality-issues', selectReportFilters(f, endpointFilterKeys.dataQualityIssues)] as const,
+  periodComparison: (f: PeriodComparisonFilters) => [...reportQueryKeys.all, 'period-comparison', comparisonParams(f)] as const,
 };
 
 const common = { placeholderData: keepPreviousData } as const;
@@ -57,4 +58,4 @@ export function useProductPerformanceReport(filters: AdvancedReportFilters = {},
 export function useExchangeRateImpactReport(filters: AdvancedReportFilters = {}, enabled = true) { return useQuery({ queryKey: reportQueryKeys.exchangeRateImpact(filters), queryFn: ({ signal }) => reportsService.getExchangeRateImpact(filters, signal), enabled, placeholderData: keepPreviousData, staleTime: 60_000 }); }
 export function useDataQualityReport(filters: AdvancedReportFilters = {}, enabled = true) { return useQuery({ queryKey: reportQueryKeys.dataQuality(filters), queryFn: ({ signal }) => reportsService.getDataQuality(filters, signal), enabled, staleTime: 60_000 }); }
 export function useDataQualityIssues(filters: AdvancedReportFilters & { ruleKey: string }, enabled = true) { return useQuery({ queryKey: reportQueryKeys.dataQualityIssues(filters), queryFn: ({ signal }) => reportsService.getDataQualityIssues(filters, signal), enabled: enabled && Boolean(filters.ruleKey), placeholderData: keepPreviousData, staleTime: 60_000 }); }
-export function usePeriodComparisonReport(filters: AdvancedReportFilters = {}, enabled = true) { return useQuery({ queryKey: reportQueryKeys.periodComparison(filters), queryFn: ({ signal }) => reportsService.getPeriodComparison(filters, signal), enabled, staleTime: 60_000 }); }
+export function usePeriodComparisonReport(filters: PeriodComparisonFilters = {}, enabled = true) { return useQuery({ queryKey: reportQueryKeys.periodComparison(filters), queryFn: ({ signal }) => reportsService.getPeriodComparison(filters, signal), enabled, staleTime: 60_000 }); }

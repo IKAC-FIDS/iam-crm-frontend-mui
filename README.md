@@ -4778,6 +4778,39 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * اسکن mojibake در `src`، `index.html` و `README.md` موردی پیدا نکرد.
 
 ---
+
+## fix 000095 — جلوگیری از نشت فیلترهای مقایسه دوره به گزارش‌های دیگر
+
+**موارد پیاده‌سازی‌شده:**
+
+* علت خطای production، قرار گرفتن `comparisonMode` و تاریخ‌های مقایسه در type و state عمومی گزارش‌ها و ارسال آن‌ها به endpointهای strict غیرمقایسه‌ای بود.
+* `ReportFilters` عمومی از `PeriodComparisonFilters` جدا شد؛ مقدارهای پیش‌فرض عمومی دیگر فیلد مقایسه ندارند و state و URL مربوط به مقایسه فقط در تب «مقایسه دوره‌ها» مدیریت می‌شود.
+* برای dashboard و همه endpointهای گزارش، allowlist صریح پارامترها در مرز service تعریف شد؛ در نتیجه هر endpoint فقط فیلترهای پشتیبانی‌شده خودش را دریافت می‌کند.
+* query keyهای React Query نیز با همان allowlist ساخته می‌شوند؛ تغییر فیلتر مقایسه باعث تغییر cache key یا refetch گزارش‌های نامرتبط نمی‌شود.
+* خروجی CSV/XLSX بر اساس `reportKey` allowlist مستقل دارد و فقط `period-comparison` مجاز به ارسال `comparisonMode`، `compareStartDate` و `compareEndDate` است.
+* تاریخ‌های سفارشی مقایسه فقط در حالت `CUSTOM` ارسال می‌شوند و با انتخاب حالت‌های دیگر از URL، درخواست و query key حذف می‌شوند.
+
+**فایل‌های مهم تغییرکرده/جدید:**
+
+* `src/features/reports/types/report.types.ts`
+* `src/features/reports/services/reportParams.ts`
+* `src/features/reports/services/reports.service.ts`
+* `src/features/reports/services/exportDownload.service.ts`
+* `src/features/reports/hooks/useReports.ts`
+* `src/features/reports/components/ReportFilterPanel.tsx`
+* `src/features/reports/pages/ReportsPage.tsx`
+* `README.md`
+
+**وابستگی‌ها و وضعیت بررسی:**
+
+* آخرین fix فرانت `000094` پیش از شروع بررسی شد. این اصلاح به تغییر backend نیاز ندارد و با قرارداد strict موجود سازگار است.
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check و `npm run build`: بدون خطا اجرا شد.
+* تست خودکار اجرا نشد، زیرا `package.json` اسکریپت `test` یا test runner پیکربندی‌شده ندارد.
+* بررسی مرورگر و API زنده انجام نشد.
+* Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,232.21 kB و gzip آن حدود 645.38 kB است.
+
+---
 **Built with ❤️ for sales team**
 
 ---

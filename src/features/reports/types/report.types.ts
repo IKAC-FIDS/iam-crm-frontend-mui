@@ -43,9 +43,6 @@ export interface ReportFilters {
   entityTypes?: string[];
   severities?: DataQualitySeverity[];
   ruleKeys?: string[];
-  comparisonMode?: ComparisonMode;
-  compareStartDate?: string;
-  compareEndDate?: string;
 }
 
 export interface AdvancedReportFilters extends ReportFilters { page?: number; limit?: number; ruleKey?: string }
