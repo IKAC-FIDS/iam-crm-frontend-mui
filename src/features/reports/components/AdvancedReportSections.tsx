@@ -2,6 +2,7 @@ import { Alert, Button, Grid, Paper, Stack, Table, TableBody, TableCell, TableCo
 import { BarChart } from '@mui/x-charts/BarChart';
 import { DataGrid, type GridColDef, type GridPaginationModel } from '@mui/x-data-grid';
 import ReportMetricCard from './ReportMetricCard';
+import { getMetricHelp, type MetricHelpKey } from '../metrics/metricHelpRegistry';
 import type { ForecastReport, MeetingPerformanceReport, OpportunityAgingReport, OpportunityAgingRow, TaskPerformanceReport } from '../types/report.types';
 import { formatCount, formatDurationDays, formatPercent } from '../utils/reportDisplay';
 import { formatIrrPrice } from '@/features/opportunityLineItems/utils/money';
@@ -9,7 +10,8 @@ import { formatJalaliDateTime } from '@/shared/utils/jalaliDate';
 import { meetingModeLabel, meetingStatusLabel } from '@/features/meetings/utils/meetingDisplay';
 
 function State({ loading, error, retry, children }: { loading: boolean; error: boolean; retry: () => void; children: React.ReactNode }) { if (loading) return <Typography>در حال دریافت گزارش...</Typography>; if (error) return <Alert severity="error" action={<Button onClick={retry}>تلاش مجدد</Button>}>دریافت این گزارش انجام نشد.</Alert>; return children; }
-function Cards({ items }: { items: Array<[string, string]> }) { return <Grid container spacing={2}>{items.map(([label, value]) => <Grid key={label} size={{ xs: 12, sm: 6, md: 3 }}><ReportMetricCard label={label} value={value} /></Grid>)}</Grid>; }
+const helpByLabel: Partial<Record<string, MetricHelpKey>> = { 'ارزش وزنی پیش‌بینی': 'report.forecast.weighted', 'متوسط عمر کل فرصت': 'report.aging.averageTotal', 'متوسط حضور در مرحله فعلی': 'report.aging.averageStage', 'نرخ برگزاری': 'report.meetings.executionRate', 'نرخ انجام به‌موقع': 'report.tasks.onTimeRate' };
+function Cards({ items }: { items: Array<[string, string]> }) { return <Grid container spacing={2}>{items.map(([label, value]) => { const helpKey = helpByLabel[label]; return <Grid key={label} size={{ xs: 12, sm: 6, md: 3 }}><ReportMetricCard label={label} value={value} help={helpKey ? getMetricHelp(helpKey) : undefined} /></Grid>; })}</Grid>; }
 function chartNumber(value: number | string) { const result = Number(value); return Number.isFinite(result) && Math.abs(result) <= Number.MAX_SAFE_INTEGER ? result : null; }
 const bucketLabels: Record<string, string> = { DAYS_0_7: '۰ تا ۷ روز', DAYS_8_14: '۸ تا ۱۴ روز', DAYS_15_30: '۱۵ تا ۳۰ روز', DAYS_31_60: '۳۱ تا ۶۰ روز', DAYS_61_PLUS: 'بیش از ۶۰ روز' };
 

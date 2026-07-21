@@ -1,0 +1,72 @@
+import type { MetricHelpContent } from '../components/ReportMetricCard';
+
+const item = (title: string, definition: string, timeScope: string, calculation?: string, includes?: string[], excludes?: string[], interpretation?: string): MetricHelpContent => ({ title, definition, timeScope, calculation, includes, excludes, interpretation });
+const current = 'تصویر لحظه‌ای در زمان تولید خلاصه داشبورد';
+const period = 'بازه عملکردی که backend در پاسخ داشبورد برمی‌گرداند (به‌طور پیش‌فرض ۳۰ روز اخیر)';
+const forecast = 'فرصت‌های فعال با تاریخ مورد انتظار بستن در افق ۹۰ روزه';
+const comparison = (title: string) => item(title, 'مقدار دوره جاری را با دوره مقایسه backend نشان می‌دهد.', 'دوره جاری و دوره مقایسه درج‌شده در پاسخ', 'درصد تغییر نسبت به مقدار دوره مقایسه محاسبه می‌شود.', undefined, undefined, 'جهت و بهبود از polarity و isImprovement backend پیروی می‌کند؛ اگر مقدار قبلی صفر باشد درصد تغییر ممکن است قابل محاسبه نباشد.');
+
+export const metricHelpRegistry = {
+  'dashboard.current.active.count': item('فرصت‌های فعال', 'تعداد فرصت‌های جاری در مرحله‌های غیرنهایی.', current, undefined, ['فرصت‌های غیرآرشیوی در مرحله فعال'], ['فرصت‌های موفق، ازدست‌رفته و آرشیوی'], 'صفر یعنی در لحظه تولید گزارش فرصت فعالی وجود ندارد.'),
+  'dashboard.current.active.estimated': item('ارزش پایپ‌لاین فعال', 'مجموع ارزش برآوردی فرصت‌های فعال به ریال.', current, 'جمع ارزش برآوردی؛ مقدارهای ثبت‌نشده در جمع صفر محسوب و جداگانه شمارش می‌شوند.', ['فرصت‌های فعال'], ['فرصت‌های نهایی و آرشیوی'], 'این مبلغ درآمد قطعی نیست.'),
+  'dashboard.current.active.weighted': item('ارزش وزنی پایپ‌لاین', 'برآورد احتمال‌وزن‌شده ارزش فرصت‌های فعال.', current, 'مجموع ارزش برآوردی × احتمال موفقیت ÷ ۱۰۰؛ احتمال ثبت‌نشده سهم صفر دارد.', ['فرصت‌های فعال'], ['درآمد قطعی یا وصول‌شده'], 'برای برآورد ریسک‌تعدیل‌شده است، نه درآمد تأییدشده.'),
+  'dashboard.current.active.missingValue': item('فرصت‌های فاقد ارزش', 'فرصت‌های فعالی که ارزش برآوردی ندارند.', current, 'شمارش مقدارهای خالی ارزش', ['فرصت‌های فعال با ارزش خالی'], undefined, 'مقدار بیشتر از صفر نیازمند تکمیل داده است.'),
+  'dashboard.current.active.missingProbability': item('فرصت‌های فاقد احتمال موفقیت', 'فرصت‌های فعالی که احتمال موفقیت ندارند.', current, 'شمارش احتمال‌های خالی', ['فرصت‌های فعال با احتمال خالی'], undefined, 'این موارد در ارزش وزنی سهم صفر دارند.'),
+  'dashboard.current.tasks.open': item('کارهای باز', 'کارهایی که هنوز بسته نشده‌اند.', current, 'جمع وضعیت‌های TODO و IN_PROGRESS', ['TODO و IN_PROGRESS'], ['تکمیل‌شده و لغوشده']),
+  'dashboard.current.tasks.overdue': item('کارهای سررسید گذشته', 'کارهای باز با سررسید قبل از زمان جاری.', current, undefined, ['کار باز با dueAt گذشته'], ['کار بسته یا بدون سررسید'], 'مقدار بیشتر از صفر نیازمند اقدام است.'),
+  'dashboard.current.tasks.today': item('کارهای امروز', 'کارهای باز سررسیدشونده در روز جاری سازمان.', 'روز محلی جاری سازمان', undefined, ['کار باز با سررسید امروز']),
+  'dashboard.current.meetings.today': item('جلسات امروز', 'جلساتی که زمان شروع آن‌ها امروز است.', 'روز محلی جاری سازمان', undefined, ['جلسه با startAt امروز']),
+  'dashboard.current.meetings.upcoming': item('جلسات هفت روز آینده', 'جلسات برنامه‌ریزی‌شده پیش رو در هفت روز تقویمی آینده.', 'هفت روز تقویمی آینده', undefined, ['جلسات آینده با وضعیت برنامه‌ریزی‌شده']),
+  'dashboard.current.meetings.pastScheduled': item('جلسات گذشته تعیین‌تکلیف‌نشده', 'جلساتی که زمان پایانشان گذشته اما هنوز برنامه‌ریزی‌شده‌اند.', current, undefined, ['endAt گذشته و وضعیت SCHEDULED'], ['برگزارشده یا لغوشده'], 'مقدار بیشتر از صفر نیازمند تعیین وضعیت است.'),
+  'dashboard.period.opportunities.created': item('فرصت‌های ایجادشده', 'فرصت‌هایی که در دوره ایجاد شده‌اند.', period, 'شمارش createdAt داخل بازه'),
+  'dashboard.period.opportunities.won': item('فرصت‌های موفق', 'فرصت‌هایی که در دوره موفق شده‌اند.', period, 'شمارش wonAt داخل بازه'),
+  'dashboard.period.opportunities.lost': item('فرصت‌های ازدست‌رفته', 'فرصت‌هایی که در دوره ازدست‌رفته‌اند.', period, 'شمارش lostAt داخل بازه'),
+  'dashboard.period.opportunities.wonValue': item('ارزش فرصت‌های موفق', 'مجموع ارزش برآوردی فرصت‌هایی که در دوره موفق شده‌اند.', period, 'جمع estimatedValue فرصت‌های دارای wonAt داخل دوره'),
+  'dashboard.period.opportunities.winRate': item('نرخ برد', 'سهم فرصت‌های موفق از فرصت‌های تعیین‌تکلیف‌شده.', period, 'موفق ÷ (موفق + ازدست‌رفته)', ['فرصت‌های موفق و ازدست‌رفته دوره'], ['فرصت‌های فعال'], 'اگر هیچ فرصت تعیین‌تکلیف‌شده‌ای نباشد نرخ قابل محاسبه نیست.'),
+  'dashboard.period.tasks.completed': item('کارهای تکمیل‌شده', 'کارهایی که در دوره تکمیل شده‌اند.', period, 'شمارش completedAt داخل بازه'),
+  'dashboard.period.tasks.onTimeRate': item('نرخ انجام به‌موقع کارها', 'سهم کارهای دارای سررسید که به‌موقع تکمیل شده‌اند.', period, 'تکمیل در یا پیش از dueAt ÷ (تکمیل به‌موقع + تکمیل با تأخیر)', ['کارهای تکمیل‌شده دارای سررسید'], ['کار تکمیل‌شده بدون سررسید'], 'اگر مخرج صفر باشد نرخ قابل محاسبه نیست.'),
+  'dashboard.period.meetings.completed': item('جلسات برگزارشده', 'جلسات دوره با وضعیت COMPLETED.', period, 'شمارش جلسات برگزارشده'),
+  'dashboard.period.meetings.executionRate': item('نرخ برگزاری جلسات', 'سهم جلسات برگزارشده از جلسات تعیین‌تکلیف‌شده یا گذشته.', period, 'برگزارشده ÷ (برگزارشده + لغوشده + گذشته برنامه‌ریزی‌شده)', undefined, undefined, 'اگر مخرج صفر باشد نرخ قابل محاسبه نیست.'),
+  'dashboard.forecast.count': item('تعداد فرصت‌های Forecast', 'فرصت‌های فعال داخل افق پیش‌بینی.', forecast, 'شمارش expectedCloseDate داخل افق'),
+  'dashboard.forecast.estimated': item('ارزش اسمی Forecast', 'مجموع ارزش برآوردی فرصت‌های داخل افق.', forecast, 'جمع estimatedValue', undefined, undefined, 'مبلغ اسمی است و احتمال موفقیت را اعمال نمی‌کند.'),
+  'dashboard.forecast.weighted': item('ارزش وزنی Forecast', 'ارزش احتمال‌وزن‌شده فرصت‌های داخل افق.', forecast, 'جمع estimatedValue × probability ÷ ۱۰۰', undefined, undefined, 'پیش‌بینی احتمالی است، نه درآمد قطعی.'),
+  'dashboard.forecast.overdue': item('فرصت‌های دارای تاریخ بستن گذشته', 'فرصت‌های فعال با تاریخ مورد انتظار بستن گذشته.', current, undefined, ['فرصت فعال با expectedCloseDate گذشته'], undefined, 'مقدار بیشتر از صفر نیازمند بازبینی است.'),
+  'dashboard.forecast.noDate': item('فرصت‌های بدون تاریخ بستن', 'فرصت‌های فعال فاقد تاریخ مورد انتظار بستن.', current, undefined, ['فرصت فعال با expectedCloseDate خالی'], undefined, 'در forecast زمان‌محور قرار نمی‌گیرند.'),
+  'dashboard.finance.outstanding': item('مانده وصول‌نشده', 'مجموع مانده پرداخت‌های وصول‌نشده.', current, 'جمع مبلغ باقیمانده پرداخت‌ها', ['رکوردهای پرداخت باز']),
+  'dashboard.finance.overdue': item('مطالبات سررسید گذشته', 'مبلغ پرداخت‌های وصول‌نشده با سررسید گذشته.', current, 'جمع مانده پرداخت‌های overdue', undefined, undefined, 'مقدار بیشتر از صفر نیازمند پیگیری وصول است.'),
+  'dashboard.finance.collected': item('وصول‌شده در دوره', 'مبلغ وصول‌شده طی دوره عملکرد.', period, 'جمع پرداخت‌های وصول‌شده در بازه'),
+  'dashboard.finance.overdueCount': item('تعداد مطالبات سررسید گذشته', 'تعداد رکوردهای پرداخت سررسیدگذشته.', current, 'شمارش رکورد پرداخت، نه فرصت یا شرکت', ['پرداخت‌های overdue']),
+  'dashboard.catalog.active': item('محصولات فعال', 'تعداد اقلام فعال کاتالوگ سراسری.', current, 'شمارش محصولات فعال'),
+  'dashboard.catalog.usd': item('محصولات دلاری', 'تعداد محصولات فعال با مبنای قیمت دلار.', current),
+  'dashboard.catalog.irr': item('محصولات ریالی', 'تعداد محصولات فعال با مبنای قیمت ریال.', current),
+  'dashboard.catalog.exchangeRate': item('نرخ فعلی دلار', 'نرخ فعال تبدیل هر یک دلار به ریال.', current, undefined, ['نرخ فعال و تاریخ اعتبار آن'], undefined, 'ناموجود یعنی نرخ فعالی از backend دریافت نشده است.'),
+  'dashboard.catalog.stale': item('محصولات دلاری با نرخ قدیمی', 'محصولات دلاری که قیمتشان با نرخ جاری همگام نیست.', current, 'شمارش محصول USD دارای نرخ قدیمی', undefined, undefined, 'مقدار بیشتر از صفر نیازمند بررسی قیمت است.'),
+  'dashboard.channel.inPerson': item('فروش حضوری', 'ارزش snapshot اقلام فروش حضوری متعلق به فرصت‌های موفق دوره.', period, 'جمع snapshot اقلام WON با کانال IN_PERSON'),
+  'dashboard.channel.digikala': item('فروش دیجی‌کالا', 'ارزش snapshot اقلام دیجی‌کالا متعلق به فرصت‌های موفق دوره.', period, 'جمع snapshot اقلام WON با کانال DIGIKALA'),
+  'dashboard.channel.other': item('فروش سایر', 'ارزش snapshot اقلام سایر کانال‌ها متعلق به فرصت‌های موفق دوره.', period, 'جمع snapshot اقلام WON با کانال OTHER'),
+  'dashboard.channel.legacy': item('فروش با کانال نامشخص قدیمی', 'ارزش snapshot اقلام قدیمی که کانال مشخص ندارند.', period, 'جمع LEGACY_UNKNOWN؛ این مقدار فروش حضوری فرض نمی‌شود.'),
+  'dashboard.quality.organization.score': item('امتیاز کیفیت داده‌های سازمان', 'نسبت بررسی‌های سالم به بررسی‌های واجد شرایط سازمان.', current, 'بررسی سالم ÷ بررسی واجد شرایط', undefined, ['کیفیت کاتالوگ سراسری'], 'نبود بررسی واجد شرایط یعنی امتیاز قابل محاسبه نیست.'),
+  'dashboard.quality.organization.critical': item('موارد بحرانی سازمان', 'تعداد رخدادهای نقص با شدت بحرانی؛ نه تعداد موجودیت یکتا.', current),
+  'dashboard.quality.organization.high': item('موارد با اولویت بالای سازمان', 'تعداد رخدادهای نقص با شدت بالا؛ نه تعداد موجودیت یکتا.', current),
+  'dashboard.quality.organization.total': item('کل موارد نقص سازمان', 'تعداد کل رخدادهای قواعد کیفیت سازمان.', current, 'یک موجودیت می‌تواند چند رخداد داشته باشد.'),
+  'dashboard.quality.catalog.score': item('امتیاز کیفیت کاتالوگ سراسری', 'امتیاز مستقل کیفیت داده مرجع پلتفرم.', current, 'بررسی سالم ÷ بررسی واجد شرایط', undefined, ['داده‌های سازمان'], 'این امتیاز هرگز با امتیاز سازمان ترکیب نمی‌شود.'),
+  'dashboard.quality.catalog.critical': item('موارد بحرانی کاتالوگ', 'رخدادهای بحرانی در کاتالوگ سراسری.', current),
+  'dashboard.quality.catalog.high': item('موارد با اولویت بالای کاتالوگ', 'رخدادهای شدت بالا در کاتالوگ سراسری.', current),
+  'dashboard.quality.catalog.total': item('کل موارد نقص کاتالوگ', 'کل رخدادهای کیفیت کاتالوگ سراسری.', current),
+  'dashboard.comparison.opportunitiesWon': comparison('مقایسه فرصت‌های موفق'),
+  'dashboard.comparison.opportunitiesWonValue': comparison('مقایسه ارزش فرصت‌های موفق'),
+  'dashboard.comparison.activities': comparison('مقایسه فعالیت‌ها'),
+  'dashboard.comparison.tasksCompleted': comparison('مقایسه کارهای تکمیل‌شده'),
+  'dashboard.comparison.taskOnTimeRate': comparison('مقایسه نرخ انجام به‌موقع'),
+  'dashboard.comparison.paymentsCollected': comparison('مقایسه مبلغ وصول‌شده'),
+  'dashboard.notifications.unread': item('اعلان‌های خوانده‌نشده', 'تعداد اعلان‌هایی که کاربر جاری هنوز نخوانده است.', current),
+  'report.forecast.weighted': item('ارزش وزنی پیش‌بینی', 'برآورد احتمال‌وزن‌شده فرصت‌های فعال داخل افق.', 'بازه تاریخ مورد انتظار بستن', 'جمع ارزش × احتمال ÷ ۱۰۰', undefined, undefined, 'درآمد قطعی نیست.'),
+  'report.aging.averageTotal': item('متوسط عمر کل فرصت', 'میانگین روزهای سپری‌شده از ایجاد فرصت‌های فعال.', 'تصویر لحظه‌ای؛ بازه عمومی تاریخ اعمال نمی‌شود.'),
+  'report.aging.averageStage': item('متوسط حضور در مرحله فعلی', 'میانگین روزهای حضور فرصت‌های فعال در مرحله جاری.', 'تصویر لحظه‌ای؛ بازه عمومی تاریخ اعمال نمی‌شود.'),
+  'report.meetings.executionRate': item('نرخ برگزاری جلسات', 'سهم جلسات برگزارشده از جلسات برگزارشده، لغوشده و گذشته برنامه‌ریزی‌شده.', 'بازه بر اساس زمان شروع جلسه', 'برگزارشده ÷ (برگزارشده + لغوشده + گذشته برنامه‌ریزی‌شده)'),
+  'report.tasks.onTimeRate': item('نرخ انجام به‌موقع کارها', 'سهم تکمیل‌های دارای سررسید که دیر نشده‌اند.', 'بازه جریان کارها', 'به‌موقع ÷ (به‌موقع + دیرهنگام)', undefined, ['تکمیل بدون سررسید']),
+  'report.finance.collectionRate': item('نرخ وصول', 'نسبت مبلغ وصول‌شده به مطالبات واجد محاسبه در دوره.', 'بازه گزارش مالی', undefined, undefined, ['مبالغ غیرریالی حذف‌شده از جمع ریالی']),
+} as const satisfies Record<string, MetricHelpContent>;
+
+export type MetricHelpKey = keyof typeof metricHelpRegistry;
+export const getMetricHelp = (key: MetricHelpKey) => metricHelpRegistry[key];

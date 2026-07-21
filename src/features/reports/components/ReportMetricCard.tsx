@@ -1,12 +1,28 @@
-import { Paper, Typography } from '@mui/material';
+import { useId, useRef, useState } from 'react';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { Box, Chip, Divider, IconButton, Paper, Popover, Stack, Tooltip, Typography } from '@mui/material';
 
-export default function ReportMetricCard({ label, value, unavailable = false }: { label: string; value?: string; unavailable?: boolean }) {
-  return (
-    <Paper sx={{ p: 2, height: '100%' }}>
-      <Typography variant="body2" color="text.secondary">{label}</Typography>
-      <Typography variant={unavailable ? 'body1' : 'h4'} color={unavailable ? 'text.secondary' : 'text.primary'} sx={{ mt: 1 }}>
-        {unavailable ? 'داده در دسترس نیست.' : value ?? '—'}
-      </Typography>
-    </Paper>
-  );
+export type MetricCardTone = 'default' | 'success' | 'warning' | 'error' | 'info';
+export interface MetricHelpContent { title: string; definition: string; timeScope?: string; calculation?: string; includes?: string[]; excludes?: string[]; interpretation?: string }
+export interface MetricComparison { previousValue?: string; absoluteChange?: string; percentChange?: string | null; direction?: 'UP' | 'DOWN' | 'UNCHANGED'; isImprovement?: boolean | null }
+export interface ReportMetricCardProps { label: string; value?: string; unavailable?: boolean; unavailableText?: string; help?: MetricHelpContent; contextLabel?: string; secondaryText?: string; tone?: MetricCardTone; statusLabel?: string; comparison?: MetricComparison }
+
+const toneColor = { default: 'divider', success: 'success.main', warning: 'warning.main', error: 'error.main', info: 'info.main' } as const;
+const directionLabel = { UP: 'افزایش', DOWN: 'کاهش', UNCHANGED: 'بدون تغییر' } as const;
+
+export default function ReportMetricCard({ label, value, unavailable = false, unavailableText = 'داده در دسترس نیست.', help, contextLabel, secondaryText, tone = 'default', statusLabel, comparison }: ReportMetricCardProps) {
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null); const buttonRef = useRef<HTMLButtonElement>(null); const id = useId();
+  const close = () => { setAnchor(null); requestAnimationFrame(() => buttonRef.current?.focus()); };
+  const sections = help ? [['بازه محاسبه', help.timeScope], ['نحوه محاسبه', help.calculation], ['شامل', help.includes], ['شامل نمی‌شود', help.excludes], ['نحوه تفسیر', help.interpretation]] as const : [];
+  return <Paper sx={{ p: 2, height: '100%', minWidth: 0, borderTop: 3, borderColor: toneColor[tone] }}>
+    <Stack direction="row" sx={{ alignItems: 'flex-start', justifyContent: 'space-between', gap: 1, minHeight: 32 }}>
+      <Box sx={{ minWidth: 0 }}><Typography variant="body2" color="text.secondary" sx={{ overflowWrap: 'anywhere' }}>{label}</Typography>{contextLabel && <Typography variant="caption" color="text.secondary">{contextLabel}</Typography>}</Box>
+      {help && <Tooltip title="توضیح شاخص"><IconButton ref={buttonRef} size="small" aria-label={`توضیح درباره ${label}`} aria-haspopup="dialog" aria-expanded={Boolean(anchor)} aria-controls={anchor ? id : undefined} onClick={(event) => { event.stopPropagation(); setAnchor(event.currentTarget); }} sx={{ width: 32, height: 32, flex: '0 0 auto' }}><InfoOutlinedIcon sx={{ fontSize: 18 }} /></IconButton></Tooltip>}
+    </Stack>
+    <Typography variant={unavailable ? 'body1' : 'h4'} color={unavailable ? 'text.secondary' : 'text.primary'} sx={{ mt: 1, overflowWrap: 'anywhere' }}>{unavailable ? unavailableText : value ?? '—'}</Typography>
+    {secondaryText && <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>{secondaryText}</Typography>}
+    {statusLabel && <Chip size="small" label={statusLabel} color={tone === 'default' ? 'default' : tone} sx={{ mt: 1 }} />}
+    {comparison && <Stack spacing={0.5} sx={{ mt: 1.5 }}><Typography variant="caption" color="text.secondary">دوره مقایسه: {comparison.previousValue ?? '—'}</Typography><Typography variant="caption" color={comparison.isImprovement === true ? 'success.main' : comparison.isImprovement === false ? 'error.main' : 'text.secondary'}>{comparison.direction ? directionLabel[comparison.direction] : 'تغییر'}{comparison.percentChange === null ? ' · تغییر درصدی قابل محاسبه نیست' : comparison.percentChange ? ` · ${comparison.percentChange}` : ''}</Typography></Stack>}
+    {help && <Popover id={id} open={Boolean(anchor)} anchorEl={anchor} onClose={close} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }} transformOrigin={{ vertical: 'top', horizontal: 'left' }} slotProps={{ paper: { role: 'dialog', 'aria-label': help.title, sx: { width: 'min(380px, calc(100vw - 32px))', maxWidth: 380, p: 2, direction: 'rtl' } } }}><Typography variant="h6">{help.title}</Typography><Typography sx={{ mt: 1, lineHeight: 1.9 }}>{help.definition}</Typography>{sections.some(([, body]) => body && (!Array.isArray(body) || body.length)) && <Divider sx={{ my: 1.5 }} />}{sections.map(([title, body]) => body && (!Array.isArray(body) || body.length) ? <Box key={title} sx={{ mt: 1 }}><Typography variant="subtitle2">{title}</Typography>{Array.isArray(body) ? <Box component="ul" sx={{ my: 0.5, pr: 2 }}>{body.map((item) => <Typography component="li" variant="body2" key={item} sx={{ lineHeight: 1.8 }}>{item}</Typography>)}</Box> : <Typography variant="body2" sx={{ lineHeight: 1.8 }}>{body}</Typography>}</Box> : null)}</Popover>}
+  </Paper>;
 }

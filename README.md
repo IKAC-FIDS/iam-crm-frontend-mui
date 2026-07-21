@@ -4811,6 +4811,39 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,232.21 kB و gzip آن حدود 645.38 kB است.
 
 ---
+## fix 000096 — توضیح قابل‌دسترس شاخص‌های داشبورد و گزارش‌ها
+
+**موارد پیاده‌سازی‌شده:**
+
+* معماری اطلاعات شاخص‌ها با ۵۳ کلید معنایی پایدار داشبورد و registry تایپ‌شده فارسی ایجاد شد؛ عنوان، تعریف، بازه زمانی، روش محاسبه، موارد شامل/مستثنا و نحوه تفسیر از label نمایشی جدا هستند.
+* API مشترک `ReportMetricCard` با help، context، متن ثانویه، tone، status و مقایسه توسعه یافت و call siteهای قدیمی بدون تغییر اجباری سازگار ماندند.
+* هر کارت شاخص داشبورد دارای آیکن اطلاعات، Tooltip «توضیح شاخص» و Popover چندبخشی است. کنترل با tap/click، focus کیبورد، Escape، کلیک بیرون، `aria-label`، `aria-haspopup`، `aria-expanded` و بازگشت focus پشتیبانی می‌شود.
+* کارت‌های نیازمند اقدام فقط هنگام مقدار مثبت tone معنایی و label متنی «نیازمند بررسی/اقدام» می‌گیرند و تفسیر تنها به رنگ وابسته نیست.
+* نرخ برد، نرخ انجام به‌موقع و نرخ برگزاری در صورت نبود مخرج با «داده کافی برای محاسبه وجود ندارد» نمایش داده می‌شوند و صفر واقعی همچنان حفظ می‌شود.
+* نرخ دلار در یک کارت ترکیبی «هر ۱ دلار = ... ریال» با تاریخ اعتبار جلالی نمایش داده می‌شود و کارت جداگانه تاریخ نرخ حذف شد.
+* کارت‌های مقایسه مقدار جاری، مقدار دوره مقایسه، جهت، درصد تغییر یا پیام غیرقابل‌محاسبه‌بودن آن و interpretation مبتنی بر `isImprovement` backend را نمایش می‌دهند.
+* برای شاخص‌های مبهم گزارش‌های پیش‌بینی، Aging، جلسات، کارها و وصول نیز توضیح registry اضافه شد.
+
+**فایل‌های مهم تغییرکرده/جدید:**
+
+* `src/features/reports/components/ReportMetricCard.tsx`
+* `src/features/reports/metrics/metricHelpRegistry.ts`
+* `src/components/dashboard/MainGrid.tsx`
+* `src/features/reports/components/AdvancedReportSections.tsx`
+* `src/features/reports/components/CommercialReportSections.tsx`
+* `README.md`
+
+**وابستگی‌ها و وضعیت بررسی:**
+
+* پیش‌نیاز fix فرانت `000095` در commit `d7005d2` تأیید شد.
+* این fix فقط فرانت است و هیچ تغییر backend، API contract یا migration نیاز ندارد.
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check و `npm run build`: بدون خطا اجرا شد.
+* تست خودکار اجرا نشد، زیرا `package.json` اسکریپت `test` یا test runner پیکربندی‌شده ندارد.
+* رفتار واقعی focus، Tooltip/Popover در مرورگر، RTL موبایل و API زنده به‌صورت دستی بررسی نشد؛ accessibility از روی API و markup کامپوننت و build بررسی شد.
+* Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,255.42 kB و gzip آن حدود 650.35 kB است.
+
+---
 **Built with ❤️ for sales team**
 
 ---
