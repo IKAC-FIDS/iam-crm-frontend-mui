@@ -4844,6 +4844,34 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,255.42 kB و gzip آن حدود 650.35 kB است.
 
 ---
+## fix 000097 — ساده‌سازی توضیح شاخص‌ها و اصلاح کامل RTL
+
+**موارد پیاده‌سازی‌شده:**
+
+* مدل محتوای help از ساختار چندبخشی به قرارداد ساده و تایپ‌شده `title` و `description` تغییر کرد؛ وابستگی به فیلدهای بازه، محاسبه، شامل، مستثنا و تفسیر حذف شد.
+* هر ۵۹ مدخل موجود registry به‌صورت مستقل و با نثر طبیعی، یکپارچه و حرفه‌ای فارسی بازنویسی شد و هیچ کلید معنایی حذف یا تغییر نکرد.
+* عنوان‌های فرم‌مانند «بازه محاسبه»، «نحوه محاسبه»، «شامل»، «شامل نمی‌شود» و «نحوه تفسیر»، فهرست‌ها و Divider داخلی از Popover حذف شدند؛ اکنون فقط عنوان و یک توضیح منسجم نمایش داده می‌شود.
+* Paper، عنوان و متن توضیح به‌صورت صریح دارای جهت RTL و تراز راست هستند. عرض واکنش‌گرا تا ۴۰۰ پیکسل، line-height خوانا، wrapping عادی، `overflowWrap` و رفتار bidi امن برای متن ترکیبی فارسی/انگلیسی اعمال شد.
+* رفتارهای accessibility قبلی شامل label آیکن، Tooltip کوتاه، بازشدن با کلیک/کیبورد، `aria-haspopup`، `aria-expanded`، `aria-controls`، بستن با Escape یا کلیک بیرون و بازگشت focus حفظ شدند.
+* مقدارها، محاسبات، toneها، statusها، مقایسه‌ها، routeها و permissionهای داشبورد و گزارش‌ها تغییری نکردند.
+
+**فایل‌های مهم تغییرکرده:**
+
+* `src/features/reports/components/ReportMetricCard.tsx`
+* `src/features/reports/metrics/metricHelpRegistry.ts`
+* `README.md`
+
+**وابستگی‌ها و وضعیت بررسی:**
+
+* آخرین fix فرانت `000096` در commit `e389868` پیش از تغییر تأیید شد.
+* این اصلاح کاملاً frontend-only است و به تغییر backend، API contract یا migration نیاز ندارد.
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check و `npm run build`: بدون خطا اجرا شد.
+* تست خودکار اجرا نشد، زیرا `package.json` اسکریپت `test` یا test runner پیکربندی‌شده ندارد.
+* آزمون دستی مرورگر، screen reader، focus و چیدمان موبایل اجرا نشد؛ ویژگی‌های RTL و accessibility از روی markup، type check و build بررسی شدند.
+* Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,265.15 kB و gzip آن حدود 652.18 kB است.
+
+---
 **Built with ❤️ for sales team**
 
 ---
