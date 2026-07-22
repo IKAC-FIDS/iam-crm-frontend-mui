@@ -4907,6 +4907,36 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,295.97 kB و gzip آن حدود 657.23 kB است.
 
 ---
+## fix 000099 — اصلاح قطعی RTL و بازنویسی تجاری توضیح شاخص‌ها
+
+**موارد پیاده‌سازی‌شده:**
+
+* یک کامپوننت داخلی مشترک `MetricHelpPopover` ایجاد شد و هر دو مسیر `ReportMetricCard` و `MetricHelpButton` از همان پیاده‌سازی برای Popover استفاده می‌کنند؛ در نتیجه جهت، اندازه، typography و رفتار دسترس‌پذیری دیگر میان کارت‌ها و جدول مقایسه واگرا نمی‌شود.
+* جهت RTL در Paper پورتال و wrapper داخلی به‌صورت صریح با `dir="rtl"` اعمال شد، زبان محتوا `fa` است، عنوان و توضیح راست‌چین هستند و anchor/transform از سمت راست باز می‌شوند. عرض واکنش‌گرا تا ۴۰۰ پیکسل حفظ و `unicodeBidi: plaintext` از پاراگراف کامل حذف شد.
+* همه ۱۳۷ ورودی registry داشبورد و گزارش‌ها بازبینی و متن ۱۰۵ ورودی بازنویسی شد. نام فیلدهای داخلی، اصطلاحات پیاده‌سازی، اشاره به backend، snapshot، وضعیت‌های فنی و واژگان رکورد/رخداد از توضیح قابل‌نمایش حذف و با زبان طبیعی کسب‌وکار CRM جایگزین شدند.
+* توضیح شاخص‌های جاری، دوره‌ای، پیش‌بینی ۹۰روزه، Aging، جلسات، کارها، وصول، محصولات، نرخ ارز، کیفیت داده و مقایسه دوره‌ها از نظر مبنای زمانی، موارد محاسبه‌شده و شیوه تفسیر مرور شد؛ محاسبات و مقادیر نمایشی تغییری نکردند.
+* پیام‌های قابل‌نمایش داشبورد و گزارش‌های تجاری که هنوز نام فیلد یا واژه backend داشتند نیز بازنویسی شدند.
+
+**فایل‌های مهم تغییرکرده:**
+
+* `src/features/reports/components/ReportMetricCard.tsx`
+* `src/features/reports/metrics/metricHelpRegistry.ts`
+* `src/features/reports/components/AdvancedReportSections.tsx`
+* `src/features/reports/components/CommercialReportSections.tsx`
+* `src/components/dashboard/MainGrid.tsx`
+* `README.md`
+
+**وابستگی‌ها و وضعیت بررسی:**
+
+* آخرین fix فرانت پیش‌نیاز، `fix 000098` در commit `0325cdc`، تأیید شد.
+* این fix فقط فرانت است و هیچ تغییر backend، API contract، محاسبه، permission، route، filter، export یا migration نیاز نداشت.
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check و `npm run build`: بدون خطا اجرا شد.
+* تست خودکار اجرا نشد، زیرا `package.json` اسکریپت `test` یا test runner پیکربندی‌شده ندارد.
+* بررسی دستی مرورگر، موبایل و screen reader انجام نشد؛ RTL و دسترس‌پذیری از روی markup، جست‌وجوی منبع، type check و build بررسی شد.
+* Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,298.28 kB و gzip آن حدود 657.47 kB است.
+
+---
 **Built with ❤️ for sales team**
 
 ---
