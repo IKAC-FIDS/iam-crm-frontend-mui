@@ -4872,6 +4872,41 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,265.15 kB و gzip آن حدود 652.18 kB است.
 
 ---
+## fix 000098 — پوشش کامل توضیح شاخص‌های صفحه گزارش‌ها
+
+**موارد پیاده‌سازی‌شده:**
+
+* تمام کارت‌های خلاصه در تب‌های نمای کلی، پیش‌بینی فروش، Aging فرصت‌ها، جلسات، کارها و SLA، مالی و وصول، عملکرد محصولات، نرخ ارز و اثر قیمت و کیفیت داده به توضیح فارسی یکپارچه مجهز شدند. registry گزارش با ۷۸ کلید معنایی جدید به مجموع ۸۴ کلید `report.*` رسید و هیچ کلیدی به label ترجمه‌شده وابسته نیست.
+* مدل تایپ‌شده `ReportMetricItem` و رندرکننده مشترک `ReportMetricCards` اضافه شد؛ هر کارت از `MetricHelpKey` معتبر و `getMetricHelp` قطعی استفاده می‌کند و tupleهای کارت، `helpByLabel` و شرط ویژه label «نرخ وصول» حذف شدند.
+* کارت‌های سفارشی `Paper` در خلاصه کیفیت داده و کارت‌های نوع موجودیت با `ReportMetricCard` استاندارد شدند. امتیاز ناموجود، رخدادهای شدت بحرانی/بالا و جدایی داده سازمان از کاتالوگ سراسری حفظ شد و نمایش کاتالوگ همچنان به مجوز `product:view` وابسته است.
+* جدول مقایسه دوره‌ها بدون تبدیل ردیف‌ها به کارت، یک آیکن Info کنار label هر شاخص دارد. توضیح مشترک بازه‌ها، مبنای تاریخ، تغییر مطلق و درصدی، حالت مبنای صفر و تفسیر مبتنی بر `polarity` و `isImprovement` را روشن می‌کند و در سلول‌های عددی آیکنی افزوده نشده است.
+* Popoverها دارای جهت RTL، تراز راست برای همه Typographyها، عرض واکنش‌گرا تا ۴۰۰ پیکسل و یک عنوان و پاراگراف منسجم هستند. Tooltip «توضیح شاخص»، tap/click، فعال‌سازی کیبورد، Escape، click-away، بازگشت focus و ویژگی‌های `aria-label`، `aria-haspopup`، `aria-expanded` و `aria-controls` حفظ شده‌اند.
+* نرخ‌های بدون مخرج معتبر ناموجود نمایش داده می‌شوند و صفر واقعی حفظ شده است. هشدار متنی و tone فقط برای شاخص‌های نیازمند اقدام مانند موارد معوق، داده ناقص، محصول دلاری با نرخ قدیمی و مشکلات بحرانی/بالای کیفیت داده به کار رفته است.
+
+**فایل‌های مهم تغییرکرده/جدید:**
+
+* `src/features/reports/components/ReportMetricCard.tsx`
+* `src/features/reports/components/ReportMetricCards.tsx`
+* `src/features/reports/metrics/metricHelpRegistry.ts`
+* `src/features/reports/components/AdvancedReportSections.tsx`
+* `src/features/reports/components/CommercialReportSections.tsx`
+* `src/features/reports/components/PhaseThreeReportSections.tsx`
+* `src/features/reports/components/PipelineSummarySection.tsx`
+* `src/features/reports/components/ConversionRatesSection.tsx`
+* `src/features/reports/components/ActivityReportSection.tsx`
+* `README.md`
+
+**وابستگی‌ها و وضعیت بررسی:**
+
+* آخرین fix فرانت پیش‌نیاز، `fix 000097` در commit `761dd40`، تأیید شد.
+* این fix فقط فرانت است و هیچ تغییر backend، API contract، محاسبه گزارش یا migration نیاز نداشت.
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check و `npm run build`: بدون خطا اجرا شد.
+* تست خودکار اجرا نشد، زیرا `package.json` اسکریپت `test` یا test runner پیکربندی‌شده ندارد.
+* بررسی دستی مرورگر، موبایل و API زنده انجام نشد؛ رفتار accessibility و RTL از روی markup، type check و build بررسی شد.
+* Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,295.97 kB و gzip آن حدود 657.23 kB است.
+
+---
 **Built with ❤️ for sales team**
 
 ---

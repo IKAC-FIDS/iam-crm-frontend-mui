@@ -1,6 +1,5 @@
 import {
   Alert,
-  Grid,
   Paper,
   Stack,
   Table,
@@ -14,7 +13,7 @@ import {
 
 import type { ConversionRatesReport } from '../types/report.types';
 import { formatCount, formatPercent, reportDateBasisText } from '../utils/reportDisplay';
-import ReportMetricCard from './ReportMetricCard';
+import ReportMetricCards from './ReportMetricCards';
 
 function fromLabel(item: ConversionRatesReport['stages'][number]) {
   return item.fromLabel || item.fromStage || 'ورودی اولیه';
@@ -52,17 +51,11 @@ export default function ConversionRatesSection({
       <Typography variant="h5">نرخ تبدیل بر اساس قوانین انتقال</Typography>
       <Typography color="text.secondary">انتقال‌های انجام‌شده در بازه انتخابی — {reportDateBasisText(data.period, 'بر اساس تاریخ تغییر مرحله')}. کل فرصت‌ها، فرصت‌های متمایز دارای انتقال واجد شرایط هستند.</Typography>
 
-      <Grid container spacing={2}>
-        {[
-          ['کل فرصت‌ها', formatCount(total)],
-          ['فرصت‌های موفق', formatCount(won)],
-          ['نرخ تبدیل کل', formatPercent(rate)],
-        ].map(([label, value]) => (
-          <Grid key={label} size={{ xs: 12, sm: 4 }}>
-            <ReportMetricCard label={label} value={value} />
-          </Grid>
-        ))}
-      </Grid>
+      <ReportMetricCards columns={3} items={[
+        { key: 'report.conversion.total', label: 'کل فرصت‌ها', value: formatCount(total), contextLabel: 'بازه انتخابی' },
+        { key: 'report.conversion.won', label: 'فرصت‌های موفق', value: formatCount(won) },
+        { key: 'report.conversion.overallRate', label: 'نرخ تبدیل کل', value: formatPercent(rate), unavailable: Number(total) === 0 },
+      ]} />
 
       <TableContainer component={Paper}>
         <Table size="small">
