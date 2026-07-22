@@ -39,6 +39,8 @@ export function isPreviewableImage(mimeType?: string | null): boolean {
 export function getAttachmentEntityLabel(entityType: AttachmentEntityType): string {
   if (entityType === 'OPPORTUNITY') return 'فرصت';
   if (entityType === 'COMMERCIAL_DOCUMENT') return 'سند تجاری';
+  if (entityType === 'COMPANY_LEGAL_DOCUMENT') return 'سند حقوقی شرکت';
+  if (entityType === 'MEETING') return 'جلسه';
   return 'پرداخت';
 }
 

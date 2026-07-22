@@ -4937,6 +4937,38 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,298.28 kB و gzip آن حدود 657.47 kB است.
 
 ---
+## fix 000100 — صورتجلسه و مستندات امن جلسه
+
+**موارد پیاده‌سازی‌شده:**
+
+* نوع `MEETING` به `AttachmentEntityType` و label فارسی «جلسه» افزوده شد و همان attachment service امن موجود برای فهرست، بارگذاری multipart، دانلود blob احرازشده و حذف استفاده می‌شود.
+* بخش مجزای «صورتجلسه و مستندات جلسه» به صفحه جزئیات جلسه اضافه شد. جلسه برنامه‌ریزی‌شده پیام فعال‌شدن بارگذاری پس از برگزاری را نشان می‌دهد، جلسه لغوشده امکان بارگذاری ندارد و جلسه برگزارشده فهرست کامل پیوست‌ها و کنترل بارگذاری را نمایش می‌دهد.
+* `AttachmentsTab` و `AttachmentUploadDialog` با propهای اختیاری `uploadButtonLabel`، `uploadDialogTitle` و `descriptionLabel` توسعه یافتند؛ propهای موجود `title` و `emptyMessage` حفظ شدند و call siteهای فرصت، پرداخت و سند تجاری بدون تغییر رفتار سازگار ماندند.
+* پس از ثبت موفق جلسه به‌عنوان برگزارشده، invalidation موجود queryهای جلسه تا پایان refetch انتظار داده می‌شود؛ بنابراین وضعیت جدید و بخش مستندات بدون reload کامل صفحه ظاهر می‌شوند و dialog بارگذاری به‌صورت خودکار باز نمی‌شود.
+* مجوزهای `meeting:view`، `attachment:view` و `attachment:manage` حفظ شدند. کاربران فاقد مدیریت فقط مشاهده و دانلود دارند و محدودیت وضعیت جلسه همچنان به‌صورت قطعی توسط backend اعمال می‌شود.
+
+**فایل‌های مهم تغییرکرده:**
+
+* `src/features/meetings/pages/MeetingDetailsPage.tsx`
+* `src/features/meetings/components/MeetingStatusActionDialog.tsx`
+* `src/features/attachments/types/attachment.types.ts`
+* `src/features/attachments/utils/attachmentDisplay.ts`
+* `src/features/attachments/hooks/useAttachments.ts`
+* `src/features/attachments/components/AttachmentsTab.tsx`
+* `src/features/attachments/components/AttachmentUploadDialog.tsx`
+* `README.md`
+
+**وابستگی‌ها و وضعیت بررسی:**
+
+* آخرین fix فرانت پیش‌نیاز، `fix 000099` در commit `9f66111`، تأیید شد.
+* این قابلیت به backend `fix 000076` در commit `53932509` وابسته است که پیوست امن جلسه پس از تکمیل را فراهم می‌کند؛ هیچ فایل backend در این fix فرانت تغییر نکرد.
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check و `npm run build`: بدون خطا اجرا شد.
+* تست خودکار اجرا نشد، زیرا `package.json` اسکریپت `test` یا test runner پیکربندی‌شده ندارد.
+* بررسی دستی مرورگر، وضعیت‌های واقعی جلسه و API زنده انجام نشد؛ رفتار از روی type check، build و audit مسیرهای query/service بررسی شد.
+* Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,299.87 kB و gzip آن حدود 657.82 kB است.
+
+---
 **Built with ❤️ for sales team**
 
 ---

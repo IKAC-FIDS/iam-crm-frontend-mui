@@ -11,11 +11,15 @@ export default function AttachmentUploadDialog({
   entityId,
   open,
   onClose,
+  uploadDialogTitle,
+  descriptionLabel,
 }: {
   entityType: AttachmentEntityType;
   entityId: string;
   open: boolean;
   onClose: () => void;
+  uploadDialogTitle?: string;
+  descriptionLabel?: string;
 }) {
   const upload = useUploadAttachment(entityType, entityId);
   const [file, setFile] = useState<File | null>(null);
@@ -35,7 +39,7 @@ export default function AttachmentUploadDialog({
 
   return (
     <Dialog open={open} onClose={() => !upload.isPending && onClose()} fullWidth maxWidth="sm">
-      <DialogTitle>بارگذاری پیوست</DialogTitle>
+      <DialogTitle>{uploadDialogTitle ?? 'بارگذاری پیوست'}</DialogTitle>
       <DialogContent>
         <Stack spacing={2} sx={{ pt: 1 }}>
           {upload.isError && <Alert severity="error">بارگذاری پیوست با خطا مواجه شد.</Alert>}
@@ -50,7 +54,7 @@ export default function AttachmentUploadDialog({
             نوع‌های رایج مجاز: {ALLOWED_ATTACHMENT_MIME_HINT}. حداکثر پیشنهادی: {formatFileSize(MAX_ATTACHMENT_SIZE_BYTES)}.
           </Typography>
           {sizeWarning && <Alert severity="warning">حجم فایل از سقف شناخته‌شده بیشتر است؛ backend نتیجه نهایی را تعیین می‌کند.</Alert>}
-          <TextField label="توضیحات" multiline minRows={2} value={description} onChange={(event) => setDescription(event.target.value)} />
+          <TextField label={descriptionLabel ?? 'توضیحات'} multiline minRows={2} value={description} onChange={(event) => setDescription(event.target.value)} />
         </Stack>
       </DialogContent>
       <DialogActions>

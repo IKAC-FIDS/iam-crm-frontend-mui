@@ -2,6 +2,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tansta
 import { opportunityKeys } from '@/features/opportunities/hooks/useOpportunities';
 import { commercialDocumentKeys } from '@/features/commercialDocuments/hooks/useCommercialDocuments';
 import { paymentKeys } from '@/features/payments/hooks/usePayments';
+import { meetingKeys } from '@/features/meetings/hooks/useMeetings';
 import { attachmentsService } from '../services/attachments.service';
 import type { AttachmentEntityType, FindAttachmentsParams, UploadAttachmentPayload } from '../types/attachment.types';
 
@@ -20,6 +21,7 @@ function useInvalidateAttachments(entityType: AttachmentEntityType, entityId: st
     entityType === 'OPPORTUNITY' ? client.invalidateQueries({ queryKey: opportunityKeys.detail(entityId) }) : Promise.resolve(),
     entityType === 'COMMERCIAL_DOCUMENT' ? client.invalidateQueries({ queryKey: commercialDocumentKeys.all }) : Promise.resolve(),
     entityType === 'PAYMENT' ? client.invalidateQueries({ queryKey: paymentKeys.all }) : Promise.resolve(),
+    entityType === 'MEETING' ? client.invalidateQueries({ queryKey: meetingKeys.detail(entityId) }) : Promise.resolve(),
   ]);
 }
 

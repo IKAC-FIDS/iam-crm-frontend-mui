@@ -35,11 +35,17 @@ export default function AttachmentsTab({
   entityId,
   title,
   emptyMessage,
+  uploadButtonLabel,
+  uploadDialogTitle,
+  descriptionLabel,
 }: {
   entityType: AttachmentEntityType;
   entityId: string;
   title?: string;
   emptyMessage?: string;
+  uploadButtonLabel?: string;
+  uploadDialogTitle?: string;
+  descriptionLabel?: string;
 }) {
   const user = useAuthStore((state) => state.user);
   const canView = can(user, 'attachment:view', ['ADMIN', 'MANAGER', 'REP', 'BOARDS']);
@@ -124,7 +130,7 @@ export default function AttachmentsTab({
     <Stack spacing={2}>
       <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="h6">{title ?? `پیوست‌های ${getAttachmentEntityLabel(entityType)}`}</Typography>
-        {canManage && <Button variant="contained" onClick={() => setUploadOpen(true)}>بارگذاری پیوست</Button>}
+        {canManage && <Button variant="contained" onClick={() => setUploadOpen(true)} disabled={uploadOpen}>{uploadButtonLabel ?? 'بارگذاری پیوست'}</Button>}
       </Stack>
       {query.isError && <Alert severity="error">دریافت پیوست‌ها انجام نشد.</Alert>}
       <Paper>
@@ -143,7 +149,7 @@ export default function AttachmentsTab({
           sx={{ border: 0, minHeight: 340 }}
         />
       </Paper>
-      {uploadOpen && <AttachmentUploadDialog entityType={entityType} entityId={entityId} open onClose={() => setUploadOpen(false)} />}
+      {uploadOpen && <AttachmentUploadDialog entityType={entityType} entityId={entityId} open onClose={() => setUploadOpen(false)} uploadDialogTitle={uploadDialogTitle} descriptionLabel={descriptionLabel} />}
       {deleting && <DeleteAttachmentDialog key={deleting.id} attachment={deleting} entityType={entityType} entityId={entityId} open onClose={() => setDeleting(null)} />}
     </Stack>
   );

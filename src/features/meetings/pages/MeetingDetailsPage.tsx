@@ -8,6 +8,7 @@ import { useMeeting } from '../hooks/useMeetings';
 import { meetingModeLabel, meetingStatusColor, meetingStatusLabel } from '../utils/meetingDisplay';
 import MeetingFormDialog from '../components/MeetingFormDialog';
 import MeetingStatusActionDialog from '../components/MeetingStatusActionDialog';
+import AttachmentsTab from '@/features/attachments/components/AttachmentsTab';
 
 function Field({ label, value }: { label: string; value?: string | null }) {
   return <Grid size={{ xs: 12, sm: 6, md: 4 }}><Typography variant="caption" color="text.secondary">{label}</Typography><Typography sx={{ whiteSpace: 'pre-wrap' }}>{value || '—'}</Typography></Grid>;
@@ -44,6 +45,25 @@ export default function MeetingDetailsPage() {
         {meeting.meetingUrl && <Grid size={{ xs: 12, sm: 6, md: 4 }}><Button component="a" href={meeting.meetingUrl} target="_blank" rel="noopener noreferrer">ورود به جلسه</Button></Grid>}
         <Field label="دستور جلسه" value={meeting.agenda} /><Field label="توضیحات" value={meeting.description} /><Field label="یادداشت نتیجه جلسه" value={meeting.completionNote} /><Field label="دلیل لغو" value={meeting.cancellationReason} /><Field label="ایجاد" value={formatJalaliDateTime(meeting.createdAt)} /><Field label="آخرین بروزرسانی" value={formatJalaliDateTime(meeting.updatedAt)} />
       </Grid>
+    </Paper>
+    <Paper sx={{ p: { xs: 2, sm: 3 }, direction: 'rtl', minWidth: 0 }}>
+      {meeting.status === 'SCHEDULED' && <Stack spacing={2}>
+        <Typography variant="h6">صورتجلسه و مستندات جلسه</Typography>
+        <Alert severity="info">پس از ثبت جلسه به‌عنوان برگزارشده، امکان بارگذاری صورتجلسه و مستندات جلسه فعال می‌شود.</Alert>
+      </Stack>}
+      {meeting.status === 'CANCELLED' && <Stack spacing={2}>
+        <Typography variant="h6">صورتجلسه و مستندات جلسه</Typography>
+        <Alert severity="info">این جلسه لغو شده است و امکان بارگذاری صورتجلسه یا مستندات برای آن وجود ندارد.</Alert>
+      </Stack>}
+      {meeting.status === 'COMPLETED' && <AttachmentsTab
+        entityType="MEETING"
+        entityId={meeting.id}
+        title="صورتجلسه و مستندات جلسه"
+        emptyMessage="هنوز صورتجلسه یا مستندی برای این جلسه ثبت نشده است."
+        uploadButtonLabel="بارگذاری صورتجلسه یا مستند"
+        uploadDialogTitle="بارگذاری صورتجلسه یا مستند جلسه"
+        descriptionLabel="عنوان یا توضیح فایل"
+      />}
     </Paper>
     {edit && <MeetingFormDialog key={meeting.updatedAt} meeting={meeting} open onClose={() => setEdit(false)} />}
     {action && <MeetingStatusActionDialog meeting={meeting} action={action} open onClose={() => setAction(null)} />}
