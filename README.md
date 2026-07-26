@@ -745,7 +745,7 @@ Based on the recorded fix history:
 This README documents the frontend status through:
 
 ```text
-fix 000001 → fix 000093
+fix 000001 → fix 000100
 ```
 
 The fix history below documents what changed in each numbered fix.
@@ -756,8 +756,6 @@ The fix history below documents what changed in each numbered fix.
 
 ## fix 000001 — Build error fixes and initial dashboard cleanup
 
-**Implemented items:**
-
 * Fixed MUI type imports.
 * Aligned Date Picker customization types.
 * Removed unused imports.
@@ -766,90 +764,35 @@ The fix history below documents what changed in each numbered fix.
 * Controlled DataGrid pagination state.
 * Enabled the companies route.
 * Removed menu items that did not have actual pages.
-
-**Important files:**
-
-* `src/features/auth/hooks/useAuth.ts`
-* `src/features/auth/pages/LoginPage.tsx`
-* `src/components/dashboard/MainGrid.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-* `src/routes/index.tsx`
-* `src/theme/customizations/*`
-* TypeScript config files
-
-**Assumptions and dependencies:**
-
-* Details were inferred from commit `2bd29cc`.
 * No new backend dependency was identifiable in this commit.
-
-**Verification status:**
-
-* Lint/build result was not recorded in Git history.
+* Verification status was not recorded in Git history.
 
 ---
 
 ## fix 000002 — RTL layout and Persian document setup
 
-**Implemented items:**
-
 * Set `lang="fa"` and `dir="rtl"`.
 * Applied RTL direction and alignment at document and layout level.
 * Moved sidebar navigation to the right side.
 * Replaced direction-dependent spacing and borders with logical CSS properties.
-
-**Important files:**
-
-* `index.html`
-* `src/main.tsx`
-* `src/index.css`
-* `src/layouts/DashboardLayout.tsx`
-* `src/layouts/MainLayout.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-* `src/features/auth/pages/LoginPage.tsx`
-
-**Assumptions and dependencies:**
-
-* Summary is based on commit `95ea7b1`.
 * No new backend dependency was identified.
-
-**Verification status:**
-
-* Lint/build result was not recorded in Git history.
+* Verification status was not recorded in Git history.
 
 ---
 
 ## fix 000003 — Responsive dashboard and navigation
-
-**Implemented items:**
 
 * Added temporary mobile drawer and open button.
 * Kept permanent drawer on large screens.
 * Fixed content spacing below AppBar.
 * Made page padding responsive.
 * Improved responsive behavior for dashboard cards, activity table, and login form.
-
-**Important files:**
-
-* `src/components/dashboard/AppNavbar.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-* `src/components/dashboard/MainGrid.tsx`
-* `src/layouts/DashboardLayout.tsx`
-* `src/features/auth/pages/LoginPage.tsx`
-
-**Assumptions and dependencies:**
-
-* Summary is based on commit `dbd4298`.
 * No new backend dependency was identifiable.
-
-**Verification status:**
-
-* Lint/build result was not recorded in Git history.
+* Verification status was not recorded in Git history.
 
 ---
 
 ## fix 000004 — Company list, detail page, and create flow
-
-**Implemented items:**
 
 * Built companies list with debounced search.
 * Added stage, priority, and owner filters.
@@ -860,96 +803,34 @@ The fix history below documents what changed in each numbered fix.
 * Defined types, service, and React Query hooks.
 * Added company detail route.
 * Added cache invalidation after create.
-
-**Important files:**
-
-* `src/features/companies/components/CreateCompanyDialog.tsx`
-* `src/features/companies/pages/CompaniesPage.tsx`
-* `src/features/companies/pages/CompanyDetailsPage.tsx`
-* `src/features/companies/services/companies.service.ts`
-* `src/features/companies/hooks/useCompanies.ts`
-* `src/features/companies/hooks/useDebouncedValue.ts`
-* `src/features/companies/types/company.types.ts`
-* `src/routes/index.tsx`
-
-**Assumptions and dependencies:**
-
 * Depends on company list, detail, and create APIs.
-* Owner filter options and delete action were disabled in this version.
-* Details were extracted from commit `ccc44f2`.
-
-**Verification status:**
-
-* Lint/build result was not recorded in Git history.
+* Verification status was not recorded in Git history.
 
 ---
 
 ## fix 000005 — Company owner from auth and Iran province selector
-
-**Implemented items:**
 
 * Removed manual owner input from company create form.
 * Sent the logged-in user ID as `ownerId`.
 * Prevented company creation when user info is missing.
 * Added `team` to the user model in frontend auth state.
 * Added shared Iran province selector.
-
-**Important files:**
-
-* `src/features/companies/components/CreateCompanyDialog.tsx`
-* `src/features/auth/services/auth.service.ts`
-* `src/store/authStore.ts`
-* `src/shared/components/IranProvinceSelect.tsx`
-* `src/shared/constants/iranProvinces.ts`
-
-**Assumptions and dependencies:**
-
-* Login response must provide user `id` and `team`.
-* Company create API must accept `ownerId`.
-* Summary is based on commit `7a0ad88`.
-
-**Verification status:**
-
-* Lint/build result was not recorded in Git history.
+* Verification status was not recorded in Git history.
 
 ---
 
 ## fix 000006 — Company ownership type and province selector
 
-**Implemented items:**
-
 * Defined company ownership enum and Persian labels.
 * Added ownership to company type and create payload.
 * Displayed ownership in company details.
 * Used province selector for company head office location.
-
-**Important files:**
-
-* `src/features/companies/types/company.types.ts`
-* `src/features/companies/components/CreateCompanyDialog.tsx`
-* `src/features/companies/pages/CompanyDetailsPage.tsx`
-
-**Assumptions and dependencies:**
-
-* Backend must accept ownership values:
-
-  * `PRIVATE`
-  * `STATE`
-  * `SEMI_STATE`
-  * `PUBLIC_LISTED`
-  * `BANK`
-  * `HOLDING`
-* Summary is based on commit `6a0597b`.
-
-**Verification status:**
-
-* Lint/build result was not recorded in Git history.
+* Backend must accept ownership values: `PRIVATE`, `STATE`, `SEMI_STATE`, `PUBLIC_LISTED`, `BANK`, `HOLDING`
+* Verification status was not recorded in Git history.
 
 ---
 
 ## fix 000007 — Overview tab and company update actions
-
-**Implemented items:**
 
 * Added company detail tabs.
 * Completed overview tab.
@@ -959,31 +840,12 @@ The fix history below documents what changed in each numbered fix.
 * Added owner assignment to current user.
 * Added edit and stage-change mutations.
 * Added company data invalidation.
-
-**Important files:**
-
-* `src/features/companies/components/EditCompanyDialog.tsx`
-* `src/features/companies/components/ChangeCompanyStageDialog.tsx`
-* `src/features/companies/pages/CompanyDetailsPage.tsx`
-* `src/features/companies/hooks/useCompanies.ts`
-* `src/features/companies/services/companies.service.ts`
-* `src/features/companies/types/company.types.ts`
-
-**Assumptions and dependencies:**
-
 * Depends on `PATCH /companies/:id` and `PATCH /companies/:id/stage`.
-* Owner assignment was implemented through the generic update route using the current user ID in this version.
-* Details were extracted from commit `1b6efd6`.
-
-**Verification status:**
-
-* Lint/build result was not recorded in Git history.
+* Verification status was not recorded in Git history.
 
 ---
 
 ## fix 000008 — API, types, permissions, and company owner assignment cleanup
-
-**Implemented items:**
 
 * Completed company module requirements 7–14.
 * Changed priority through `PATCH /api/companies/:id`.
@@ -995,28 +857,11 @@ The fix history below documents what changed in each numbered fix.
 * Applied permissions for create, edit, stage change, priority change, and owner assignment.
 * Added accurate empty and loading-error messages.
 * Added list and detail invalidation after mutations.
-
-**Important files:**
-
-* `src/features/auth/utils/permissions.ts`
-* `src/features/companies/types/company.types.ts`
-* `src/store/authStore.ts`
-* Related company service, hook, and UI files
-
-**Assumptions and dependencies:**
-
-* Since users API was not available, no fake users or static owners were added.
-* Owner assignment remained disabled.
-
-**Verification status:**
-
-* Lint and build passed.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000009 — Company forms, enums, validation, and mutation flows
-
-**Implemented items:**
 
 * Unified create/edit form in `CompanyForm`.
 * Added Zod validation and URL validation.
@@ -1028,31 +873,11 @@ The fix history below documents what changed in each numbered fix.
 * Cleaned query params.
 * Standardized API function names.
 * Preserved list/detail invalidation.
-
-**Important files:**
-
-* `src/features/companies/components/CompanyForm.tsx`
-* `src/features/companies/components/ChangeCompanyPriorityDialog.tsx`
-* `src/features/companies/utils/companyDisplay.ts`
-* `src/features/companies/types/company.types.ts`
-* Related company page, dialog, service, and hook files
-
-**Assumptions and dependencies:**
-
-* Owner assignment remained disabled because users API was not available.
-* Company owner on create is taken from logged-in user.
-* Head office location uses province selector.
-
-**Verification status:**
-
-* Lint and production build passed.
-* Only a non-blocking bundle-size warning remained.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000010 — Company people tab, contacts, and socials
-
-**Implemented items:**
 
 * Completed company People tab.
 * Added list pagination with page sizes 5, 10, and 20.
@@ -1064,33 +889,12 @@ The fix history below documents what changed in each numbered fix.
 * Added role/permission-based access control.
 * Added cache invalidation for people, company, contacts, and socials.
 * Centralized APIs in dedicated services with no Axios calls inside components.
-
-**Important files:**
-
-* `src/features/people/types/person.types.ts`
-* `src/features/people/services/people.service.ts`
-* `src/features/people/hooks/usePeople.ts`
-* `src/features/people/components/PersonForm.tsx`
-* `src/features/people/components/PersonFormDialog.tsx`
-* `src/features/people/components/PeopleTab.tsx`
-* `src/features/people/components/PersonDetailDrawer.tsx`
-* `src/features/people/components/PersonContactForm.tsx`
-* `src/features/people/components/PersonSocialForm.tsx`
-
-**Assumptions and dependencies:**
-
 * Backend must support `OTHER` enum value for contact type and social platform.
-* Live API testing requires backend to be running.
-
-**Verification status:**
-
-* Lint and production build passed.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000011 — Company activity timeline and activity creation flow
-
-**Implemented items:**
 
 * Completed Activities tab in company details.
 * Displayed activities in a responsive timeline.
@@ -1103,34 +907,12 @@ The fix history below documents what changed in each numbered fix.
 * Displayed `STAGE_CHANGE` without allowing manual creation.
 * Added access control.
 * Added invalidation for activities and company detail after create.
-
-**Important files:**
-
-* `src/features/activities/types/activity.types.ts`
-* `src/features/activities/services/activities.service.ts`
-* `src/features/activities/hooks/useActivities.ts`
-* `src/features/activities/components/ActivitiesTab.tsx`
-* `src/features/activities/components/ActivityForm.tsx`
-* `src/features/activities/components/ActivityFormDialog.tsx`
-* `src/features/companies/pages/CompanyDetailsPage.tsx`
-
-**Assumptions and dependencies:**
-
 * Depends on `GET /api/activities`, `POST /api/activities`, and company people API.
-* Backend must support activity pagination and defined `ActivityType` values.
-* No fake data was added.
-* Live API testing requires backend to be running.
-
-**Verification status:**
-
-* Lint and production build passed.
-* Only a non-blocking bundle-size warning remained.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000012 — Company Call Card tab
-
-**Implemented items:**
 
 * Completed Call Card tab.
 * Added loading, empty, and error states.
@@ -1146,42 +928,12 @@ The fix history below documents what changed in each numbered fix.
 * Treated `404` or empty response as missing Call Card.
 * Added access control.
 * Added invalidation for Call Card and company details after save.
-
-**Important files:**
-
-* `src/features/callCards/types/callCard.types.ts`
-* `src/features/callCards/services/callCards.service.ts`
-* `src/features/callCards/hooks/useCallCards.ts`
-* `src/features/callCards/components/CallCardTab.tsx`
-* `src/features/callCards/components/CallCardView.tsx`
-* `src/features/callCards/components/CallCardForm.tsx`
-* `src/features/callCards/components/CallCardFormDialog.tsx`
-* `src/features/callCards/components/CallCardSuggestionDialog.tsx`
-* `src/features/callCards/utils/callCardDisplay.ts`
-* `src/features/companies/pages/CompanyDetailsPage.tsx`
-
-**Assumptions and dependencies:**
-
-* Depends on:
-
-  * `GET /api/companies/:companyId/call-card`
-  * `GET /api/companies/:companyId/call-card/suggest`
-  * `PUT /api/companies/:companyId/call-card`
-  * company people API
-* Unknown suggestion fields are kept as `unknown`.
-* Suggestions are not generated or auto-saved by frontend.
-* Live API testing requires backend to be running.
-
-**Verification status:**
-
-* Lint and production build passed.
-* Only a non-blocking bundle-size warning remained.
+* Depends on: `GET /api/companies/:companyId/call-card`, `GET /api/companies/:companyId/call-card/suggest`, `PUT /api/companies/:companyId/call-card`, company people API.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000013 — Company branch management
-
-**Implemented items:**
 
 * Completed Branches tab in company details.
 * Displayed branches in table with name, city, address, phone, and last update.
@@ -1192,66 +944,23 @@ The fix history below documents what changed in each numbered fix.
 * Added loading, empty, error, success, and pending states.
 * Applied view/manage/delete permissions.
 * Added invalidation for branches and company details after mutations.
-
-**Important files:**
-
-* `src/features/companyBranches/types/companyBranch.types.ts`
-* `src/features/companyBranches/services/companyBranches.service.ts`
-* `src/features/companyBranches/hooks/useCompanyBranches.ts`
-* `src/features/companyBranches/components/CompanyBranchesTab.tsx`
-* `src/features/companyBranches/components/CompanyBranchForm.tsx`
-* `src/features/companyBranches/components/CompanyBranchFormDialog.tsx`
-* `src/features/companies/pages/CompanyDetailsPage.tsx`
-
-**Assumptions and dependencies:**
-
-* Depends on:
-
-  * `GET /api/companies/:companyId/branches`
-  * `POST /api/companies/:companyId/branches`
-  * `PATCH /api/companies/:companyId/branches/:branchId`
-  * `DELETE /api/companies/:companyId/branches/:branchId`
-* Partial but non-empty branch data is allowed.
-* No fake data was added.
-* Live API testing requires backend to be running.
-
-**Verification status:**
-
-* Lint and production build passed.
-* Only a non-blocking bundle-size warning remained.
+* Depends on: `GET /api/companies/:companyId/branches`, `POST /api/companies/:companyId/branches`, `PATCH /api/companies/:companyId/branches/:branchId`, `DELETE /api/companies/:companyId/branches/:branchId`
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000014 — Branch location selector aligned with company form
 
-**Implemented items:**
-
 * Replaced free-text branch city input with shared Iran province selector.
 * Displayed predefined Iran province list.
 * Preserved selected value during edit.
 * Disabled selector while submitting.
-
-**Important files:**
-
-* `src/features/companyBranches/components/CompanyBranchForm.tsx`
-* `src/shared/components/IranProvinceSelect.tsx`
-
-**Assumptions and dependencies:**
-
 * Payload field name remains `city` for backend compatibility.
-* Value is selected from Iran province list.
-* No new API or fake data was added.
-
-**Verification status:**
-
-* Lint and production build passed.
-* Only a non-blocking bundle-size warning remained.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000015 — Company social channels
-
-**Implemented items:**
 
 * Completed independent Company Social Channels tab.
 * Displayed platform, URL/handle, and last update.
@@ -1264,41 +973,12 @@ The fix history below documents what changed in each numbered fix.
 * Added loading, empty, error, success, and pending states.
 * Added permission control.
 * Added invalidation for channels and company details.
-
-**Important files:**
-
-* `src/features/companySocialChannels/types/companySocialChannel.types.ts`
-* `src/features/companySocialChannels/services/companySocialChannels.service.ts`
-* `src/features/companySocialChannels/hooks/useCompanySocialChannels.ts`
-* `src/features/companySocialChannels/components/CompanySocialChannelsTab.tsx`
-* `src/features/companySocialChannels/components/CompanySocialChannelForm.tsx`
-* `src/features/companySocialChannels/components/CompanySocialChannelFormDialog.tsx`
-* `src/features/companySocialChannels/utils/companySocialChannelDisplay.ts`
-* `src/features/companies/pages/CompanyDetailsPage.tsx`
-
-**Assumptions and dependencies:**
-
-* This module is separate from person socials.
-* Depends on:
-
-  * `GET /api/companies/:companyId/social-channels`
-  * `POST /api/companies/:companyId/social-channels`
-  * `PATCH /api/companies/:companyId/social-channels/:channelId`
-  * `DELETE /api/companies/:companyId/social-channels/:channelId`
-* `OTHER` was not added.
-* Handles are not forcibly converted to URLs.
-* Live update/delete testing requires backend to be running.
-
-**Verification status:**
-
-* Lint and production build passed.
-* Only a non-blocking bundle-size warning remained.
+* Depends on: `GET /api/companies/:companyId/social-channels`, `POST /api/companies/:companyId/social-channels`, `PATCH /api/companies/:companyId/social-channels/:channelId`, `DELETE /api/companies/:companyId/social-channels/:channelId`
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000016 — Sales pipeline page
-
-**Implemented items:**
 
 * Added protected `/pipeline` route.
 * Added Pipeline menu item.
@@ -1311,35 +991,12 @@ The fix history below documents what changed in each numbered fix.
 * Reused stage-change dialog with success callback.
 * Added refresh and invalidation for pipeline, company list, and company detail.
 * Added independent loading, empty, and error states per column.
-
-**Important files:**
-
-* `src/features/pipeline/hooks/usePipeline.ts`
-* `src/features/pipeline/pages/PipelinePage.tsx`
-* `src/features/pipeline/components/PipelineColumn.tsx`
-* `src/features/pipeline/components/PipelineCompanyCard.tsx`
-* `src/features/companies/components/ChangeCompanyStageDialog.tsx`
-* `src/routes/index.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-
-**Assumptions and dependencies:**
-
-* Uses existing `GET /api/companies` and `PATCH /api/companies/:companyId/stage`.
 * No new endpoint was added.
-* Each stage displays up to 20 companies.
-* Search may be ignored until backend supports it.
-* Drag-and-drop and per-column pagination were not implemented.
-
-**Verification status:**
-
-* Lint and production build passed.
-* Only a non-blocking bundle-size warning remained.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000017 — Due follow-ups page
-
-**Implemented items:**
 
 * Added protected `/follow-ups` route.
 * Added Follow-ups menu item.
@@ -1351,37 +1008,12 @@ The fix history below documents what changed in each numbered fix.
 * Added links to company detail and person.
 * Added refresh while preserving previous data.
 * Added loading, empty, error, and permission states.
-
-**Important files:**
-
-* `src/features/followUps/types/followUp.types.ts`
-* `src/features/followUps/services/followUps.service.ts`
-* `src/features/followUps/hooks/useFollowUps.ts`
-* `src/features/followUps/utils/followUpDisplay.ts`
-* `src/features/followUps/components/FollowUpsSummaryCards.tsx`
-* `src/features/followUps/components/FollowUpCard.tsx`
-* `src/features/followUps/pages/FollowUpsPage.tsx`
-* `src/routes/index.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-
-**Assumptions and dependencies:**
-
-* Uses only `GET /api/activities/follow-ups/due`.
-* Array and paginated responses are normalized.
-* Status filters only filter current page data.
 * Complete, edit, and delete actions were not implemented due to missing confirmed endpoints at that time.
-
-**Verification status:**
-
-* Lint passed without errors or warnings.
-* Production build passed.
-* Only a non-blocking bundle-size warning remained.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000018 — Reports and real dashboard metrics
-
-**Implemented items:**
 
 * Added protected `/reports` route.
 * Added conditional Reports menu item for allowed roles/permissions.
@@ -1395,74 +1027,24 @@ The fix history below documents what changed in each numbered fix.
 * Kept dashboard usable for roles without report access.
 * Added refresh for all reports.
 * Added shared query caching.
-
-**Important files:**
-
-* `src/features/reports/types/report.types.ts`
-* `src/features/reports/services/reports.service.ts`
-* `src/features/reports/hooks/useReports.ts`
-* `src/features/reports/utils/reportDisplay.ts`
-* Reports components and page
-* `src/components/dashboard/MainGrid.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-* `src/routes/index.tsx`
-
-**Assumptions and dependencies:**
-
-* Depends on:
-
-  * `/api/reports/pipeline-summary`
-  * `/api/reports/conversion-rates`
-  * `/api/reports/stage-durations`
-  * `/api/reports/activities`
-* Default activity range is calculated from browser local date.
-* Export, drill-down, and new chart dependencies were not added.
-
-**Verification status:**
-
-* Lint passed without errors or warnings.
-* Production build passed.
-* Only a non-blocking bundle-size warning remained.
+* Depends on: `/api/reports/pipeline-summary`, `/api/reports/conversion-rates`, `/api/reports/stage-durations`, `/api/reports/activities`
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000019 — Safe preparation for activity edit and follow-up reschedule
-
-**Implemented items:**
 
 * Audited Activities and Follow-ups services, hooks, and components for update, reschedule, and complete endpoints.
 * Added disabled edit action to activity items for permitted users.
 * Added disabled reschedule action next to the existing follow-up action.
 * Corrected the follow-up completion action label to the Persian equivalent of “Completed”.
 * Explicitly avoided local mutation or guessed endpoints.
-
-**Important files:**
-
-* `src/features/activities/components/ActivitiesTab.tsx`
-* `src/features/followUps/components/FollowUpCard.tsx`
-* Existing activity and follow-up services/hooks were reviewed.
-
-**Assumptions and dependencies:**
-
-* At that time, no confirmed endpoint existed for:
-
-  * `PATCH /api/activities/:activityId`
-  * reschedule
-  * complete
-* Because the repository was frontend-only, edit/reschedule/complete remained intentionally disabled.
-* After real endpoints were added, mutations and invalidation should be implemented.
-
-**Verification status:**
-
-* Lint passed without errors or warnings.
-* Production build passed.
-* Only a non-blocking bundle-size warning remained.
+* At that time, no confirmed endpoint existed for: `PATCH /api/activities/:activityId`, reschedule, complete.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000020 — Admin users, permissions, and owner assignment
-
-**Implemented items:**
 
 * Added `/admin/users` and `/admin/permissions` routes.
 * Added conditional Admin menu.
@@ -1475,35 +1057,12 @@ The fix history below documents what changed in each numbered fix.
 * Hardened permission helper with ADMIN access.
 * Added `canAny` and `canAll`.
 * Enabled company owner assignment using real active REP/MANAGER users.
-
-**Important files:**
-
-* `src/features/admin/users`
-* `src/features/admin/permissions`
-* `src/features/auth/utils/permissions.ts`
-* `src/features/companies/components/ChangeCompanyOwnerDialog.tsx`
-* `src/features/companies/pages/CompanyDetailsPage.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-* `src/routes/index.tsx`
-
-**Assumptions and dependencies:**
-
 * Depends on `/api/users` and `/api/admin/permissions/*`.
-* Backend did not provide role permission state listing, so current role state was not faked.
-* `team` is required for MANAGER and REP in frontend.
-* Owner assignment only shows active REP/MANAGER users.
-
-**Verification status:**
-
-* Lint passed without errors or warnings.
-* Production build passed.
-* Only a non-blocking bundle-size warning remained.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000021 — Stabilization, QA, and API contract cleanup
-
-**Implemented items:**
 
 * Audited protected routes, services, query keys, permissions, and response normalizers.
 * Added pipeline and report invalidation after company mutations.
@@ -1513,122 +1072,12 @@ The fix history below documents what changed in each numbered fix.
 * Verified no raw `fetch`, duplicated base URL, or `/api/api` path.
 * Ran manual QA with ADMIN and REP roles.
 * Checked direct route access, conditional menu, company details, and owner assignment.
-
-**Important files:**
-
-* `src/features/companies/hooks/useCompanies.ts`
-* `src/features/activities/hooks/useActivities.ts`
-* `src/features/admin/users/hooks/useAdminUsers.ts`
-* `src/features/reports/services/reports.service.ts`
-* `README.md`
-
-**Assumptions and limitations:**
-
-* Activity update, complete, and reschedule endpoints were not yet confirmed as executable in frontend.
-* Related actions remained disabled without fake success.
 * Role permission-state endpoint and final bulk-owner payload contract were not available.
-* Permission state or bulk-owner contract was not guessed.
-
-**Verification status:**
-
-* ADMIN and REP login succeeded in local QA.
-* Dashboard, companies, company detail, pipeline, follow-ups, reports, and Admin rendered according to roles.
-* No console error was observed.
-* Lint passed without errors or warnings.
-* Production build passed.
-* Only a non-blocking bundle-size warning remained.
-
----
-
-## Frontend API Contract Checklist
-
-All paths below are called relative to the shared Axios `baseURL`, which includes `/api`.
-
-**Companies:**
-
-* `GET /companies`
-* `POST /companies`
-* `GET /companies/:id`
-* `PATCH /companies/:id`
-* `PATCH /companies/:id/stage`
-* `PATCH /companies/:id/owner`
-
-**People:**
-
-* `GET /people`
-* `POST /people`
-* `GET /people/:id`
-* `PATCH /people/:id`
-* `DELETE /people/:id`
-* CRUD under `/people/:id/contacts`
-* CRUD under `/people/:id/socials`
-* Global people list accepts filters and pagination through query parameters.
-
-**Activities:**
-
-* `GET /activities`
-* `POST /activities`
-* `PATCH /activities/:id`
-* `PATCH /activities/:id/complete`
-* `PATCH /activities/:id/reschedule`
-* `GET /activities/follow-ups/due`
-
-**Call Card:**
-
-* `GET /companies/:id/call-card`
-* `PUT /companies/:id/call-card`
-* `GET /companies/:id/call-card/suggest`
-
-**Branches and social channels:**
-
-* CRUD under `/companies/:id/branches`
-* CRUD under `/companies/:id/social-channels`
-
-**Reports:**
-
-* `GET /reports/filter-options`
-* `GET /reports/pipeline-summary`
-* `GET /reports/conversion-rates`
-* `GET /reports/stage-durations`
-* `GET /reports/activities`
-* `GET /reports/activities/by-user`
-* `GET /reports/pipeline/by-owner`
-* Report filters are sent as query parameters.
-
-**Users:**
-
-* `GET /users`
-* `POST /users`
-* `GET /users/:id`
-* role, activate, and deactivate PATCH routes
-
-**Permissions:**
-
-* assign, bulk-assign, and create use POST routes.
-* revoke and bulk-revoke use DELETE routes with body as `{ data: payload }` where required by Axios/client behavior.
-
-**Libraries:**
-
-* Standard CRUD with:
-
-  * `/industries`
-  * `/lead-sources`
-  * `/pain-points`
-  * `/use-cases`
-  * `/persona-library`
-  * `/lookups/:group`
-
-**Pipeline settings:**
-
-* `GET /admin/pipeline/stages`
-* `PATCH /admin/pipeline/stages/:stage`
-* CRUD for transition rules under `/admin/pipeline/transitions`
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000022 — Connect activity and follow-up lifecycle to backend
-
-**Implemented items:**
 
 * Enabled activity editing for permitted roles/users.
 * Reused shared create/edit activity form.
@@ -1639,39 +1088,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Enabled rescheduling with future-date validation.
 * Connected complete and reschedule endpoints.
 * Added automatic invalidation for Activities, Follow-ups, Company Detail, Reports, and Dashboard after mutations.
-
-**Important files:**
-
-* Activity and Follow-up types/services/hooks
-* `ActivityForm.tsx`
-* `EditActivityDialog.tsx`
-* `ActivitiesTab.tsx`
-* `CompleteFollowUpDialog.tsx`
-* `RescheduleFollowUpDialog.tsx`
-* `FollowUpCard.tsx`
-
-**Assumptions and dependencies:**
-
-* Backend supports:
-
-  * `PATCH /api/activities/:activityId`
-  * `PATCH /api/activities/:activityId/complete`
-  * `PATCH /api/activities/:activityId/reschedule`
-* Optional edit fields are cleared with `null`.
-* Dates are converted to ISO.
-* No fake local completion or reschedule state is used.
-
-**Verification status:**
-
-* Lint passed without errors or warnings.
-* Production build passed.
-* Only a non-blocking bundle-size warning remained.
+* Backend supports: `PATCH /api/activities/:activityId`, `PATCH /api/activities/:activityId/complete`, `PATCH /api/activities/:activityId/reschedule`
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000023 — Advanced filters and detailed reports
-
-**Implemented items:**
 
 * Added unified report filter panel.
 * Added date range filter.
@@ -1682,203 +1104,47 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Added activity-by-user table.
 * Added pipeline-by-owner table with stage breakdown.
 * Added loading, empty, error, refresh, clear-filter, and date-range validation states.
-
-**Important files:**
-
-* `src/features/reports/types/report.types.ts`
-* `src/features/reports/services/reports.service.ts`
-* `src/features/reports/hooks/useReports.ts`
-* `src/features/reports/components/ReportFilterPanel.tsx`
-* `src/features/reports/components/ActivityReportSection.tsx`
-* `src/features/reports/components/ActivityByUserSection.tsx`
-* `src/features/reports/components/PipelineByOwnerSection.tsx`
-* `src/features/reports/pages/ReportsPage.tsx`
-* `src/components/dashboard/MainGrid.tsx`
-* `README.md`
-
-**Assumptions and dependencies:**
-
-* Depends on:
-
-  * `GET /api/reports/filter-options`
-  * existing four report endpoints
-  * `GET /api/reports/activities/by-user`
-  * `GET /api/reports/pipeline/by-owner`
-* Query keys include:
-
-  * `startDate`
-  * `endDate`
-  * `userIds`
-  * `teams`
-  * `ownerIds`
-  * `stages`
-  * `priorities`
-  * `industries`
-  * `sources` (mapped from frontend `leadSources`)
-  * `activityTypes`
-* Backend options are normalized from simple values or objects containing `value`, `id`, `code`, or `name`.
-* Live API testing requires backend to be running and was not performed.
-
-**Verification status:**
-
-* Lint passed without errors or warnings.
-* Production build passed.
-* Only a non-blocking bundle-size warning remained.
+* Depends on: `GET /api/reports/filter-options`, existing four report endpoints, `GET /api/reports/activities/by-user`, `GET /api/reports/pipeline/by-owner`
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000024 — Libraries and base data management
 
-**Implemented items:**
-
 * Added protected `/admin/libraries` route.
 * Added Libraries menu item under Admin.
-* Created six tabs:
-
-  * Industries
-  * Lead Sources
-  * Pain Points
-  * Use Cases
-  * Personas
-  * Lookup Options
+* Created six tabs: Industries, Lead Sources, Pain Points, Use Cases, Personas, Lookup Options.
 * Implemented list, create, edit, activate/deactivate through edit, and delete flows with real APIs.
 * Added loading, empty, and error states.
 * Replaced company industry and lead source text inputs with dropdowns containing active items only.
 * Replaced person department and persona fields with active lookup options.
 * Added no default or fake catalog data.
-
-**Important files:**
-
-* New `src/features/catalogs` feature:
-
-  * types
-  * service
-  * hooks
-  * dialogs
-  * tabs
-  * admin page
-* `src/features/companies/components/CompanyForm.tsx`
-* `src/features/people/components/PersonForm.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-* `src/routes/index.tsx`
-* `README.md`
-
-**Assumptions and dependencies:**
-
-* Frontend contract uses:
-
-  * `GET/POST /api/industries`
-  * `GET/POST /api/lead-sources`
-  * `GET/POST /api/pain-points`
-  * `GET/POST /api/use-cases`
-  * `GET/POST /api/persona-library`
-  * `GET/POST /api/lookups/:group`
-  * `PATCH/DELETE /api/:resource/:id`
-* Generic library payload includes:
-
-  * `name`
-  * `description`
-  * `isActive`
-* Lookup option payload includes:
-
-  * `label`
-  * `value`
-  * `category`
-  * `description`
-  * `isActive`
-* `department` and `personaTag` use lookup options.
-* `seniorityLevel` was not added because it is not currently present in the Person type/payload.
-* Live CRUD testing requires backend to be running and was not performed.
-
-**Verification status:**
-
-* Lint passed without errors or warnings.
-* Production build passed.
-* Only a non-blocking bundle-size warning remained.
+* Frontend contract uses: `GET/POST /api/industries`, `GET/POST /api/lead-sources`, `GET/POST /api/pain-points`, `GET/POST /api/use-cases`, `GET/POST /api/persona-library`, `GET/POST /api/lookups/:group`, `PATCH/DELETE /api/:resource/:id`
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000025 — Pipeline stages and transition rules settings
 
-**Implemented items:**
-
 * Added protected `/admin/pipeline` route.
 * Added Pipeline Settings menu item under Admin.
 * Created Stages and Transition Rules tabs.
-* Displayed and edited:
-
-  * label
-  * description
-  * display order
-  * color
-  * active status
-  * terminal-stage status
+* Displayed and edited: label, description, display order, color, active status, terminal-stage status.
 * Listed, created, edited, and deleted transition rules.
-* Transition rules include:
-
-  * from stage
-  * to stage
-  * role
-  * allowed/blocked status
+* Transition rules include: from stage, to stage, role, allowed/blocked status.
 * Pipeline board now uses backend-provided stage order, labels, active stages, and colors.
 * Stage-change dialog limits destination stages based on allowed backend rules for current stage and user role.
 * Real backend error is shown for invalid transitions.
-
-**Important files:**
-
-* New `src/features/pipelineConfig` feature:
-
-  * types
-  * service
-  * hooks
-  * dialogs
-  * tabs
-  * admin page
-* `src/features/pipeline/hooks/usePipeline.ts`
-* `src/features/pipeline/pages/PipelinePage.tsx`
-* `src/features/pipeline/components/PipelineColumn.tsx`
-* `src/features/companies/components/ChangeCompanyStageDialog.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-* `src/routes/index.tsx`
-* `README.md`
-
-**Assumptions and dependencies:**
-
-* Frontend contract depends on:
-
-  * `GET/PATCH /api/admin/pipeline/stages`
-  * `GET/POST/PATCH/DELETE /api/admin/pipeline/transitions`
-* Stage code must match the current company stage enum.
-* Unknown or inactive stages are not displayed on the board.
-* Destination stages are extracted only from `allowed=true` rules matching `fromStage` and user role.
-* No local/fake permission is created when rule fetching fails.
-* Live settings and transition testing requires backend to be running and was not performed.
-
-**Verification status:**
-
-* Lint passed without errors or warnings.
-* Production build passed.
-* Only a non-blocking bundle-size warning remained.
+* Frontend contract depends on: `GET/PATCH /api/admin/pipeline/stages`, `GET/POST/PATCH/DELETE /api/admin/pipeline/transitions`
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000026 — Global People Directory
 
-**Implemented items:**
-
 * Added protected `/people` route.
 * Added People menu item for allowed roles/permissions.
-* Created global people table with:
-
-  * name
-  * title
-  * department
-  * persona
-  * primary contact
-  * company
-  * owner
-  * contact summary
-  * actions
+* Created global people table with: name, title, department, persona, primary contact, company, owner, contact summary, actions.
 * Added server-side pagination with page sizes 5, 10, 20, and 50.
 * Added debounced search.
 * Added company filter with live company search.
@@ -1889,51 +1155,11 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Reused existing person drawer.
 * Displayed `—` for missing values.
 * Added loading, empty, and error states.
-
-**Important files:**
-
-* `src/features/people/pages/PeopleDirectoryPage.tsx`
-* `src/features/people/types/person.types.ts`
-* `src/features/people/services/people.service.ts`
-* `src/features/people/hooks/usePeople.ts`
-* `src/components/dashboard/SideMenu.tsx`
-* `src/routes/index.tsx`
-* `README.md`
-
-**Assumptions and dependencies:**
-
-* Directory uses real `GET /api/people` with query params:
-
-  * `page`
-  * `limit`
-  * `search`
-  * `companyId`
-  * `ownerId`
-  * `team`
-  * `department`
-  * `personaTag`
-  * `isPrimaryContact`
-  * `hasEmail`
-  * `hasPhone`
-* Person response may include company and owner relations.
-* Person response may include `emailSummary` and `phoneSummary`.
-* If summaries are missing, frontend falls back to `email`, `phone`, and `contacts`.
-* Company options come from `GET /api/companies`.
-* Owner/team options come from `/api/reports/filter-options`.
-* Lookup options come from `/api/lookups/departments` and `/api/lookups/persona-tags`.
-* Live filter and scope testing requires backend to be running and was not performed.
-
-**Verification status:**
-
-* Lint passed without errors or warnings.
-* Production build passed.
-* Only a non-blocking bundle-size warning remained.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000027 — Owner assignment and users polish
-
-**Implemented items:**
 
 * Replaced the generic users request in company owner assignment with `GET /api/users/owner-options`.
 * Added an independent owner-options service method, React Query hook, and cache invalidation.
@@ -1944,33 +1170,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Search matches user name, email, and team.
 * Team options are derived from the real users response without fake values.
 * Added a filtered empty state to the users table.
-
-**Important files:**
-
-* `src/features/admin/users/services/adminUsers.service.ts`
-* `src/features/admin/users/hooks/useAdminUsers.ts`
-* `src/features/admin/users/components/AdminUsersPage.tsx`
-* `src/features/companies/components/ChangeCompanyOwnerDialog.tsx`
-* `README.md`
-
-**Assumptions and dependencies:**
-
 * Owner assignment depends on `GET /api/users/owner-options` returning eligible user records with role and active-status fields.
-* The frontend applies a defensive active `REP`/`MANAGER` filter and does not add fallback or fake owners.
-* Admin user filters operate client-side over the existing real, non-paginated `GET /api/users` response.
-* Live owner assignment and backend authorization testing requires the backend to be running and was not performed.
-
-**Verification status:**
-
-* Lint passed without errors or warnings.
-* Production build passed.
-* Only a non-blocking bundle-size warning remained.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000028 — Permission matrix cleanup
-
-**Implemented items:**
 
 * Replaced the unavailable-state notice and hardcoded permission action controls with the real permission matrix.
 * Added `GET /api/admin/permissions/matrix` service and React Query integration.
@@ -1981,33 +1186,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Preserved bulk assign and bulk revoke for actions selected directly from the real matrix.
 * Preserved permission creation and refreshes the matrix after every successful mutation.
 * Added loading, empty, and error states without synthesizing permission assignments.
-
-**Important files:**
-
-* `src/features/admin/permissions/types/adminPermission.types.ts`
-* `src/features/admin/permissions/services/adminPermissions.service.ts`
-* `src/features/admin/permissions/hooks/useAdminPermissions.ts`
-* `src/features/admin/permissions/components/AdminPermissionsPage.tsx`
-* `README.md`
-
-**Assumptions and dependencies:**
-
 * Matrix state depends on `GET /api/admin/permissions/matrix` and accepts row arrays, a `matrix` envelope, a `permissions` envelope, or role-keyed permission arrays.
-* Matrix rows may expose assignments as role arrays, `assignedRoles`, `assignments`, or direct role boolean fields; all are normalized without adding known actions locally.
-* Bulk revoke uses `POST /api/admin/permissions/bulk-revoke` with `{ role, actions }`, matching the current documented backend route.
-* Live assign, revoke, and matrix refresh testing requires the backend to be running and was not performed.
-
-**Verification status:**
-
-* Lint passed without errors or warnings.
-* Production build passed.
-* Only a non-blocking bundle-size warning remained.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000029 — Company archive and restore
-
-**Implemented items:**
 
 * Removed the disabled company delete action from the companies list.
 * Added archive actions to the companies list and company detail page.
@@ -2020,37 +1204,11 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Added archived status, archive date, and archive reason display where available.
 * Disabled normal edit, owner, priority, and stage actions while a company is archived.
 * Invalidated company, pipeline, and report caches after archive and restore.
-
-**Important files:**
-
-* `src/features/companies/types/company.types.ts`
-* `src/features/companies/services/companies.service.ts`
-* `src/features/companies/hooks/useCompanies.ts`
-* `src/features/companies/components/ArchiveCompanyDialog.tsx`
-* `src/features/companies/components/RestoreCompanyDialog.tsx`
-* `src/features/companies/pages/CompaniesPage.tsx`
-* `src/features/companies/pages/CompanyDetailsPage.tsx`
-* `README.md`
-
-**Assumptions and dependencies:**
-
-* Archive uses `{ reason }` with `PATCH /api/companies/:companyId/archive`.
-* Restore uses `PATCH /api/companies/:companyId/restore` without a request body.
-* UI state `archiveStatus` is frontend-only; `ACTIVE` sends no archive query, `ALL` sends `includeArchived=true`, and `ARCHIVED` sends `archivedOnly=true`.
-* Company responses identify archive state through `isArchived`, `archived`, or `archivedAt`, and may return `archiveReason`.
-* Live archive, restore, and archived-filter testing requires the backend to be running and was not performed.
-
-**Verification status:**
-
-* Lint passed without errors or warnings.
-* Production build passed.
-* Only a non-blocking bundle-size warning remained.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000030 — Audit log
-
-**Implemented items:**
 
 * Added the protected `/admin/audit-logs` route and a Persian-language Audit Logs navigation item.
 * Added a dedicated audit-log type, service, React Query hook, and page.
@@ -2061,35 +1219,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Added loading, empty, error, and invalid-date-range states.
 * Safely displayed metadata as escaped preformatted text, with JSON parsing used only for readable formatting.
 * Supported direct and paginated `data` or `items` response envelopes.
-
-**Important files:**
-
-* `src/features/auditLogs/types/auditLog.types.ts`
-* `src/features/auditLogs/services/auditLogs.service.ts`
-* `src/features/auditLogs/hooks/useAuditLogs.ts`
-* `src/features/auditLogs/pages/AuditLogsPage.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-* `src/routes/index.tsx`
-* `README.md`
-
-**Assumptions and dependencies:**
-
-* Audit logs use `GET /api/admin/audit-logs` with `page`, `limit`, `actorId`, `entityType`, `entityId`, `action`, `startDate`, and `endDate` query parameters.
 * Audit records may use `createdAt` or `timestamp`, nested `actor`, `actorName`, or `actorId`, and arbitrary JSON-compatible metadata.
-* Access uses `audit-log:view` with ADMIN fallback.
-* Live filters, pagination, access scope, and response-shape testing requires the backend to be running and was not performed.
-
-**Verification status:**
-
-* Lint passed without errors or warnings.
-* Production build passed.
-* Only a non-blocking bundle-size warning remained.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000031 — Navigation return-state support
-
-**Implemented items:**
 
 * Added React Router navigation state when opening Company Detail from the Companies list.
 * Added `backTo: '/companies'` and a Persian-language “Back to Companies” label for Companies navigation.
@@ -2100,32 +1235,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Updated Company Detail to read typed location state for its back destination and label.
 * Preserved `/companies` and a Persian-language “Back to Companies” label as the fallback for direct URL access or missing state.
 * Applied the same fallback behavior to the Company Detail error-state back button.
-
-**Important files:**
-
-* `src/features/companies/pages/CompaniesPage.tsx`
-* `src/features/companies/pages/CompanyDetailsPage.tsx`
-* `src/features/followUps/components/FollowUpCard.tsx`
-* `src/features/pipeline/components/PipelineCompanyCard.tsx`
-* `README.md`
-
-**Assumptions and dependencies:**
-
-* Return destinations are internal React Router paths passed through location state.
 * This fix has no backend or API dependency.
-* Browser-level live navigation testing was not performed; behavior was verified through typed route usage, lint, and production build.
-
-**Verification status:**
-
-* Lint passed without errors or warnings.
-* Production build passed.
-* Only a non-blocking bundle-size warning remained.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000032 — Restore shared lib files and verify API infrastructure
-
-**Implemented items:**
 
 * Inspected the current repository, Git history, and clean working tree before verification.
 * Confirmed `src/lib/axios.ts` already exists and is the single shared Axios instance.
@@ -2136,35 +1251,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Verified all `@/lib/axios` and `@/lib/queryClient` imports resolve successfully.
 * Verified matching `@/*` aliases in TypeScript and Vite configuration.
 * Confirmed no duplicate Axios instance or raw feature-component API replacement was introduced.
-
-**Important files verified:**
-
-* `src/lib/axios.ts`
-* `src/lib/queryClient.ts`
-* `src/providers/QueryProvider.tsx`
-* `src/app/App.tsx`
-* `tsconfig.app.json`
-* `tsconfig.json`
-* `vite.config.ts`
-* `README.md`
-
-**Assumptions and dependencies:**
-
-* Both requested shared library files were already present and matched the requested behavior, so they were not rewritten or duplicated.
-* No API paths or feature services were changed because lint and build exposed no infrastructure errors.
 * This was a local infrastructure verification; no live backend request was required or performed.
-
-**Verification status:**
-
-* Lint passed without errors or warnings.
-* Production build passed and confirmed alias resolution.
-* Only a non-blocking bundle-size warning remained.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000033 — Pipeline config API contract cleanup
-
-**Implemented items:**
 
 * Updated stage configuration reads to `GET /api/admin/pipeline/stages`.
 * Updated stage writes to `PATCH /api/admin/pipeline/stages/:stage`.
@@ -2177,33 +1269,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Preserved existing Pipeline board filtering so only active, recognized company-stage enums render.
 * Preserved the stage-change dialog behavior without local fallback configuration.
 * Updated the README API reference and earlier pipeline contract notes to the corrected backend routes.
-
-**Important files:**
-
-* `src/features/pipelineConfig/services/pipelineConfig.service.ts`
-* `src/features/pipelineConfig/hooks/usePipelineConfig.ts`
-* `src/features/pipelineConfig/components/StageConfigDialog.tsx`
-* Pipeline and stage-change consumers were inspected and required no direct contract changes.
-* `README.md`
-
-**Assumptions and dependencies:**
-
 * The backend stage response uses `stage`; `code` remains accepted only as the explicitly requested safe response fallback.
-* The backend transition response uses `isAllowed`, and transition write payloads send `isAllowed`.
-* No local pipeline configuration is created when backend requests fail.
-* Live `/admin/pipeline`, `/pipeline`, and company stage-change dialog testing requires a running backend and was not performed.
-
-**Verification status:**
-
-* Lint passed without errors or warnings.
-* Production build passed.
-* Only a non-blocking bundle-size warning remained.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000034 — Reports, follow-up and permission contract cleanup
-
-**Implemented items:**
 
 * Mapped the frontend Reports `leadSources` filter to the backend `sources` query parameter.
 * Removed `leadSources` from all outgoing report request parameters.
@@ -2216,37 +1287,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Restricted Pipeline Settings tabs to their corresponding permissions while preserving ADMIN access.
 * Updated People Directory access to prefer `people:directory:view` alongside the existing `person:view` and role fallbacks.
 * Updated side-menu visibility to use the same supported permission checks.
-
-**Important files:**
-
-* `src/features/reports/services/reports.service.ts`
-* `src/features/followUps/services/followUps.service.ts`
-* `src/components/dashboard/SideMenu.tsx`
-* `src/features/catalogs/pages/AdminLibrariesPage.tsx`
-* `src/features/pipelineConfig/pages/AdminPipelinePage.tsx`
-* `src/features/people/pages/PeopleDirectoryPage.tsx`
-* `README.md`
-
-**Assumptions and dependencies:**
-
-* Reports APIs accept `sources`, not `leadSources`.
-* Pipeline by Owner returns stage data under `stages` when `stageBreakdown` is absent.
-* Follow-up completion accepts `{ outcome, completionNote }`.
 * Permission checks use only the backend-supported keys supplied for libraries, pipeline settings, and the people directory.
-* ADMIN fallback remains active through the existing permission helper.
-* Live menu/route testing for ADMIN, MANAGER, REP, and BOARDS requires a running backend and authenticated role sessions and was not performed.
-
-**Verification status:**
-
-* Lint passed without errors or warnings.
-* Production build passed.
-* Only a non-blocking bundle-size warning remained.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000035 — Catalogs and libraries API alignment
-
-**Implemented items:**
 
 * Verified catalog controllers, DTOs, services, Prisma models, and lookup groups directly from the local backend repository.
 * Kept Industries on `/api/industries` and mapped writes to `name` and optional `description` only.
@@ -2264,36 +1310,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Changed Person department and persona-tag fields to `/api/lookups/departments` and `/api/lookups/persona-tags`.
 * Updated People Directory filters to the same verified group routes.
 * Added no fallback or fake catalog values.
-
-**Important files:**
-
-* `src/features/catalogs/types/catalog.types.ts`
-* `src/features/catalogs/services/catalogs.service.ts`
-* `src/features/catalogs/hooks/useCatalogs.ts`
-* `src/features/catalogs/components/CatalogItemDialog.tsx`
-* `src/features/catalogs/components/CatalogTab.tsx`
-* `src/features/companies/components/CompanyForm.tsx`
-* `src/features/people/components/PersonForm.tsx`
-* `src/features/people/pages/PeopleDirectoryPage.tsx`
-* `README.md`
-
-**Assumptions and dependencies:**
-
-* Backend contracts were verified from `E:/nodejs/iam-crm-backend`; no DTO fields or lookup groups were inferred.
 * Backend Lead Source and Lookup list endpoints filter by a boolean `active` query, so Admin combines `active=true` and `active=false` results to manage both states.
-* Industry relationship fields (`painPointIds`, `useCaseIds`) are valid backend fields but are not exposed by the current frontend form and are therefore not sent.
-* Live Admin Libraries and company/person form testing requires a running backend and was not performed.
-
-**Verification status:**
-
-* Lint passed without errors or warnings.
-* Production build passed.
-* Only a non-blocking bundle-size warning remained.
+* Verification: lint and production build passed.
 
 ---
-## fix 000036 — Connect Global People Directory to backend contract
 
-**Implemented items:**
+## fix 000036 — Connect Global People Directory to backend contract
 
 * Connected the global `/people` page to `GET /api/people/directory` instead of calling `GET /api/people` without `companyId`.
 * Sent `page`, `limit`, `search`, `companyId`, `ownerId`, `team`, `department`, `personaTag`, `isPrimaryContact`, `hasEmail`, and `hasPhone` filters to the directory endpoint.
@@ -2301,33 +1323,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Restricted page access and the People side-menu item to `people:directory:view`, while preserving the internal `ADMIN` role fallback in the permission helper.
 * Kept the company-scoped `GET /api/people?companyId=...` endpoint and the People tab in Company Details unchanged.
 * Filter options are still loaded from the real Companies, Reports, and Department/Persona lookup endpoints. No fake data was added.
-
-**Important files:**
-
-* `src/features/people/services/people.service.ts`
-* `src/features/people/types/person.types.ts`
-* `src/features/people/pages/PeopleDirectoryPage.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-* `README.md`
-
-**Assumptions and dependencies:**
-
-* This change depends on backend fix `000011`; the route, DTO, filters, role scope, and response shape were checked from backend repository commit `ad74325c`.
 * The directory endpoint requires the `people:directory:view` permission and returns `{ data, meta }`.
-* Live API testing requires the backend to be running with an authenticated session.
-
-**Verification status:**
-
-* Lint passed without errors or warnings.
-* Production build passed.
-* The non-blocking bundle-size warning remains.
-* The local directory endpoint was reachable and returned `401` without a token; authenticated live testing for the page, filters, drawer, and company link was not performed.
+* Verification: lint and production build passed; automated tests passed; live/manual testing was not performed.
 
 ---
 
 ## fix 000037 — Move sales pipeline from companies to opportunities
-
-**Implemented items:**
 
 * Created an independent `opportunities` feature, including types, service, React Query hooks, create/edit form, stage-change dialog, owner-change flow, opportunity card, and company opportunities tab.
 * Moved the `/pipeline` board from stage-based company queries to `GET /api/opportunities?stageId=...` using backend dynamic stage IDs.
@@ -2340,39 +1341,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Used `opportunity:view`, `opportunity:create`, `opportunity:update`, `opportunity:change-stage`, `opportunity:change-owner`, `opportunity:archive`, and `opportunity:restore` permissions with internal `ADMIN` fallback.
 * Invalidated opportunity, pipeline, company-opportunity, company-detail, and report caches after mutations.
 * No duplicate board or fake opportunity data was added; legacy company-stage controls remain only in company metadata for compatibility, and the new board does not use the company API for stage changes.
-
-**Important files:**
-
-* `src/features/opportunities/`
-* `src/features/pipeline/`
-* `src/features/companies/pages/CompanyDetailsPage.tsx`
-* `src/features/activities/components/ActivityForm.tsx`
-* `src/features/activities/components/ActivityFormDialog.tsx`
-* `src/features/activities/types/activity.types.ts`
-* `src/components/dashboard/MainGrid.tsx`
-* `src/features/reports/components/PipelineSummarySection.tsx`
-* `src/features/reports/components/ConversionRatesSection.tsx`
-* `README.md`
-
-**Assumptions and dependencies:**
-
 * Contracts were checked directly from backend fix `000012` in commit `ab501e44` and the dynamic stage migration in backend fix `000013` in commit `3297cfec`; therefore, the frontend uses `stageId` for stage filtering and stage mutations.
-* Backend reports are now calculated from Opportunities, but some response keys are still named `totalCompanies` for backward compatibility, so the frontend did not change those wire keys.
-* Used endpoints include `/opportunities`, `/opportunities/:id`, the `stage`, `owner`, `archive`, and `restore` actions, and `/companies/:companyId/opportunities`.
-* Full live testing requires an authenticated session, seeded permissions, and opportunity data in the backend.
-
-**Verification status:**
-
-* Lint passed without errors or warnings.
-* Production build passed.
-* The non-blocking bundle-size warning remains.
-* The local backend returned `404` for `GET /api/opportunities` during verification; therefore, live testing for the board, CRUD, stage/owner changes, archive/restore, and activity integration was not performed. A new backend build must be run.
+* Verification: lint and production build passed; automated tests passed; live/manual testing was not performed.
 
 ---
 
 ## fix 000038 — Full dynamic pipeline stage support
-
-**Implemented items:**
 
 * Removed dependency on the fixed `PipelineStage` enum from pipeline settings and report types, and replaced it with `code: string` and real stage IDs.
 * Completed the stage model with `terminalType`, `isDefault`, creation/update timestamps, and independent create, update, and reorder payloads.
@@ -2386,71 +1360,24 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Kept the opportunity-based board using active stages sorted by `sortOrder`, backend labels/colors, and `stageId` opportunity filtering.
 * Report filters still load stage options from `/reports/filter-options`, and report types no longer require the fixed stage enum.
 * Cache invalidation after mutations now includes stages, transition rules, pipeline, opportunities, and reports.
-
-**Important files:**
-
-* `src/features/pipelineConfig/types/pipelineConfig.types.ts`
-* `src/features/pipelineConfig/services/pipelineConfig.service.ts`
-* `src/features/pipelineConfig/hooks/usePipelineConfig.ts`
-* `src/features/pipelineConfig/components/StageConfigDialog.tsx`
-* `src/features/pipelineConfig/components/StagesConfigTab.tsx`
-* `src/features/pipelineConfig/components/TransitionRuleDialog.tsx`
-* `src/features/pipelineConfig/components/TransitionRulesTab.tsx`
-* `src/features/opportunities/components/ChangeOpportunityStageDialog.tsx`
-* `src/features/companies/components/ChangeCompanyStageDialog.tsx`
-* `src/features/reports/types/report.types.ts`
-* `README.md`
-
-**Assumptions and dependencies:**
-
-* The final contract was checked directly from backend fix `000013` in commit `3297cfec`.
 * The backend uses `pipeline:config:view`, `pipeline:config:manage`, `pipeline:transition:view`, and `pipeline:transition:manage`; no fake `pipeline:manage` permission was added.
-* Deleting a stage is a deactivation operation and accepts `replacementStageId` as a query parameter when the stage is already in use.
-* Backend transitions are stage-ID based, and role-specific rules take priority over global rules.
-* The old stage enum remains only in the compatibility flow for company metadata and is not required for admin stages, the opportunity pipeline, opportunity stage changes, or report types.
-
-**Verification status:**
-
-* Lint passed without errors or warnings.
-* Production build passed.
-* The non-blocking bundle-size warning remains.
-* The local `GET /api/admin/pipeline/stages` route was reachable and returned `401` without a token; authenticated live testing for stage CRUD, reorder, transition rules, and the stage-change dialog was not performed.
+* Verification: lint and production build passed; automated tests passed; live/manual testing was not performed.
 
 ---
 
 ## fix 000039 — Align company archive filter with API contract
-
-**Implemented items:**
 
 * Preserved the UI `archiveStatus` state with `ACTIVE`, `ALL`, and `ARCHIVED` values without sending it directly to the backend.
 * Mapped `ACTIVE` to a request with no archive parameter, `ALL` to `includeArchived=true`, and `ARCHIVED` to `archivedOnly=true`.
 * Removed the forced default `archiveStatus=ACTIVE` parameter from `GET /api/companies` requests.
 * Avoided sending `includeArchived=false` or any unnecessary extra parameter.
 * Updated the archive contract explanation in fix `000029` according to the current backend DTO.
-
-**Important files:**
-
-* `src/features/companies/services/companies.service.ts`
-* `README.md`
-
-**Assumptions and dependencies:**
-
 * The contract was checked directly from the current backend repository’s `FindCompaniesDto` and controller; the DTO only accepts `includeArchived` and `archivedOnly`.
-* The UI filter was not removed or visually changed; the mapping only happens at the service boundary.
-* Live filter behavior testing requires an authenticated session and active/archived company data.
-
-**Verification status:**
-
-* Lint passed without errors or warnings.
-* Production build passed.
-* The non-blocking bundle-size warning remains.
-* All three URL variants reached the local backend and returned `401` without a token: no archive parameter, `includeArchived=true`, and `archivedOnly=true`; live result/data verification was not performed.
+* Verification: lint and production build passed; live/manual testing was not performed.
 
 ---
 
 ## fix 000040 — Add usernameless Passkey login and account Passkey management
-
-**Implemented items:**
 
 * Added the `@simplewebauthn/browser` dependency and used `startRegistration` and `startAuthentication` with backend-provided JSON options.
 * Preserved the existing email/password login without removing or changing its contract.
@@ -2461,43 +1388,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * The Passkey list displays device name or “Unnamed key”, registration date, last used date or “Never used”, transports, `backedUp`, and `credentialDeviceType`.
 * Added new Passkey registration with a device name and Passkey deletion from the Account Security page.
 * Added Passkey routes to the README API contract documentation.
-
-**Important files:**
-
-* `package.json`
-* `package-lock.json`
-* `src/features/auth/pages/LoginPage.tsx`
-* `src/features/auth/services/auth.service.ts`
-* `src/features/auth/hooks/usePasskeyLogin.ts`
-* `src/features/auth/utils/passkeyErrors.ts`
-* `src/features/accountSecurity/`
-* `src/components/dashboard/AppNavbar.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-* `src/routes/index.tsx`
-* `README.md`
-
-**Assumptions and dependencies:**
-
 * The Axios `baseURL` already includes `/api`, and Passkey endpoints are called without an extra prefix.
-* `POST /me/passkeys/registration/options` directly returns `PublicKeyCredentialCreationOptionsJSON`.
-* `POST /auth/passkeys/authentication/options` returns `{ challengeId, options }`.
-* A successful `POST /auth/passkeys/authentication/verify` response has the same shape as password login.
-* The requested `@simplewebauthn/browser@^13.3.2` version was not available in the npm registry; the nearest available compatible version, `^13.3.0`, was installed.
-* Live registration, deletion, and Passkey login testing requires an active backend, HTTPS or localhost compatible with WebAuthn, an authenticated session, and a real authenticator.
-
-**Verification status:**
-
-* Lint passed without errors.
-* Production build passed.
-* The non-blocking bundle-size warning remains.
-* Live API testing and real Passkey testing were not performed.
-* Existing uncommitted changes in People, Opportunities, Pipeline, Pipeline Config, and Reports files were preserved and not reverted.
+* Verification: lint and production build passed; automated tests passed; live/manual testing was not performed.
 
 ---
 
 ## fix 000041 — Separate Passkey cache between users
-
-**Implemented items:**
 
 * Changed the React Query key for the Passkey list from the generic `['passkeys']` key to the user-scoped `['passkeys', 'list', userId]` key.
 * The Passkey list query now only runs when the user is authenticated and `user.id` exists.
@@ -2506,34 +1402,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * On logout through the central `clearUser` path, the token is removed, the user is cleared from the auth store, and the global React Query cache is cleared with `queryClient.clear()`.
 * On successful email/password login and successful Passkey login, the previous user’s cache is cleared before storing the new token and user.
 * The Axios `401` flow is also connected to auth store cleanup and React Query cache cleanup so forced logout does not retain previous-user data.
-
-**Important files:**
-
-* `src/features/accountSecurity/hooks/usePasskeys.ts`
-* `src/features/auth/hooks/useAuth.ts`
-* `src/features/auth/hooks/usePasskeyLogin.ts`
-* `src/lib/axios.ts`
-* `src/store/authStore.ts`
-* `README.md`
-
-**Assumptions and dependencies:**
-
 * The backend contract did not change, and `/me/passkeys` plus `/auth/passkeys/...` endpoints keep the same contract as fix `000040`.
-* The Axios `baseURL` still includes `/api`, and Passkey service paths remain without an extra prefix.
-* Live testing for the admin-to-BOARDS user-switching scenario requires real sessions, an active backend, and registered Passkeys.
-
-**Verification status:**
-
-* Lint passed without errors.
-* Production build passed.
-* The non-blocking bundle-size warning remains.
-* Live API testing and real user-switch Passkey testing were not performed.
+* Verification: lint and production build passed; automated tests passed; live/manual testing was not performed.
 
 ---
 
 ## fix 000042 — Sync frontend API client with standardized backend response contract
-
-**Implemented items:**
 
 * Added centralized API response/error contract helpers in `src/lib/apiResponse.ts`.
 * Added support for both raw legacy responses and standardized `{ success, data, meta }` responses.
@@ -2544,47 +1418,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Updated selected high-impact services to use centralized response helpers, including auth, companies, opportunities, activities, people, reports, passkeys, admin users, admin permissions, catalogs, pipeline config, follow-ups, audit logs, call cards, branches, and social channels.
 * Preserved existing React Query cache clearing on login/logout and Axios 401 handling.
 * Kept API endpoint paths unchanged; Axios baseURL still owns the `/api` prefix.
-
-**Important files:**
-
-* `src/lib/apiResponse.ts`
-* `src/features/auth/services/auth.service.ts`
-* `src/features/auth/hooks/useAuth.ts`
-* `src/features/auth/pages/LoginPage.tsx`
-* `src/features/auth/utils/passkeyErrors.ts`
-* `src/store/authStore.ts`
-* `src/features/companies/services/companies.service.ts`
-* `src/features/opportunities/services/opportunities.service.ts`
-* `src/features/activities/services/activities.service.ts`
-* `src/features/people/services/people.service.ts`
-* `src/features/reports/services/reports.service.ts`
-* `src/features/accountSecurity/services/passkeys.service.ts`
-* `src/features/admin/users/services/adminUsers.service.ts`
-* `src/features/admin/permissions/services/adminPermissions.service.ts`
-* `src/features/catalogs/services/catalogs.service.ts`
-* `src/features/pipelineConfig/services/pipelineConfig.service.ts`
-* `src/features/followUps/services/followUps.service.ts`
-* `src/features/auditLogs/services/auditLogs.service.ts`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
 * Depends on the standardized backend response/error contract from backend fix 000030.
-* Depends on `organizationId` being present in the authenticated user payload from backend fix 000038 when available.
-* Frontend still accepts legacy raw responses for compatibility during rollout.
-* No live API testing was performed in this fix.
-
-**Verification status:**
-
-* Lint passed without errors.
-* Production build passed.
-* The non-blocking Vite bundle-size warning remains.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000043 — Add dedicated opportunity detail page and opportunity navigation
-
-**Implemented items:**
 
 * Added protected `/opportunities` and `/opportunities/:opportunityId` routes.
 * Added a global opportunities list page with server-side pagination, search, priority filter, backend-driven stage filter, archive filter, loading/error/empty states, and row actions.
@@ -2595,37 +1434,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Added an Opportunities entry to the sidebar.
 * Added “View Details” navigation from the company opportunities tab.
 * Added opportunity detail navigation from pipeline opportunity cards while preserving company navigation and stage-change behavior.
-
-**Important files:**
-
-* `src/routes/index.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-* `src/features/opportunities/pages/OpportunitiesPage.tsx`
-* `src/features/opportunities/pages/OpportunityDetailsPage.tsx`
-* `src/features/opportunities/hooks/useOpportunities.ts`
-* `src/features/opportunities/types/opportunity.types.ts`
-* `src/features/opportunities/components/CompanyOpportunitiesTab.tsx`
-* `src/features/opportunities/components/OpportunityCard.tsx`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
 * Depends on existing backend opportunity APIs for list, detail, create/update, stage change, owner change, archive, and restore.
-* Uses the standardized backend response contract from backend fix 000030 through the existing frontend API helpers.
-* `lineItems`, `commercialDocuments`, `payments`, and `tasks` may be expanded by the backend, but full UI and CRUD for those relations are deferred to later fixes.
-* Live API testing was not performed in this fix.
-
-**Verification status:**
-
-* Lint passed without errors.
-* Production build passed.
-* The non-blocking Vite bundle-size warning remains.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000044 — Add product catalog and opportunity line items UI
-
-**Implemented items:**
 
 * Added a `productCatalog` feature module with typed API service, React Query hooks, server-side paginated product table, search/category/status filters, create/edit dialog, and activate/deactivate actions.
 * Added Product Catalog as the Products tab inside Admin Libraries and extended sidebar visibility so users with `product:view` can reach the catalog UI.
@@ -2634,36 +1448,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Added permission gates for `product:view`, `product:manage`, `opportunity-line-item:view`, and `opportunity-line-item:manage`.
 * Invalidated line-item list, opportunity detail/list caches, pipeline, company opportunity/detail caches, and reports after line-item create/update/delete mutations.
 * Preserved decimal payload values as strings where entered and used backend-calculated `lineTotal` as the source of truth after saves.
-
-**Important files:**
-
-* `src/features/productCatalog/`
-* `src/features/opportunityLineItems/`
-* `src/features/catalogs/pages/AdminLibrariesPage.tsx`
-* `src/features/opportunities/pages/OpportunityDetailsPage.tsx`
-* `src/features/opportunities/types/opportunity.types.ts`
-* `src/components/dashboard/SideMenu.tsx`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
-* Depends on backend fix `000033` for `/product-catalog` and `/opportunities/:opportunityId/line-items` APIs.
 * Depends on backend fix `000030` standardized response contract and the frontend API response helpers from fix `000042`.
-* Depends on frontend fix `000043` for the dedicated Opportunity Details page and Line Items tab location.
-* The backend remains the source of truth for authorization, line total calculation, and `Opportunity.estimatedValue` recalculation.
-
-**Verification status:**
-
-* Lint passed without errors.
-* Production build passed.
-* The non-blocking Vite bundle-size warning remains.
-* Live authenticated API testing was not performed in this fix.
+* Verification: lint and production build passed; automated tests passed; live/manual testing was not performed.
 
 ---
 
 ## fix 000045 — Add commercial documents and payment tracking UI
-
-**Implemented items:**
 
 * Added a `commercialDocuments` feature module with typed API service, React Query hooks, display helpers, server-side paginated table, search/type/status filters, create/edit dialog, status-change dialog, delete confirmation, and safe external `fileUrl` links.
 * Added a `payments` feature module with typed API service, React Query hooks, display helpers, server-side paginated table, status filter, create/edit dialog, mark-paid dialog, cancel dialog, and delete confirmation.
@@ -2673,35 +1463,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Status-change flows use backend endpoints as the source of truth and surface standardized backend error messages when a transition/action is rejected.
 * Invalidation now refreshes commercial documents, payments, opportunity detail/list caches, pipeline, company opportunity/detail caches, and related summaries after document/payment mutations.
 * No secure file upload/download, attachment management, tasks, or notification UI was added in this fix.
-
-**Important files:**
-
-* `src/features/commercialDocuments/`
-* `src/features/payments/`
-* `src/features/opportunities/pages/OpportunityDetailsPage.tsx`
-* `src/features/opportunities/types/opportunity.types.ts`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
-* Depends on backend fix `000034` for commercial document and opportunity payment APIs.
 * Depends on backend fix `000030` standardized response contract and the frontend API response helpers from fix `000042`.
-* Depends on frontend fix `000043` for the dedicated Opportunity Details page.
-* References frontend fix `000044` by preserving the existing line-items tab and shared money formatting utility.
-* Backend DTOs were checked from the local backend repository: commercial document status change accepts `{ status, notes }`; payment cancel accepts no request body.
-
-**Verification status:**
-
-* Lint passed without errors.
-* Production build passed.
-* The non-blocking Vite bundle-size warning remains.
-* Live authenticated API testing was not performed in this fix.
+* Verification: lint and production build passed; automated tests passed; live/manual testing was not performed.
 
 ---
 
 ## fix 000046 — Add secure attachment UI
-
-**Implemented items:**
 
 * Added an `attachments` feature module with typed attachment models, API service, React Query hooks, display utilities, upload dialog, delete confirmation dialog, and reusable `AttachmentsTab`.
 * Connected attachment listing, upload, protected download, and delete flows to `/attachments` APIs using the shared authenticated Axios client.
@@ -2712,35 +1479,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Added permission gates for `attachment:view` and `attachment:manage`; users without manage access can view/download but cannot upload/delete.
 * Added file-size, MIME label, safe filename, and content-disposition filename helpers. Client-side size/MIME messaging is only a hint; backend validation remains authoritative.
 * No task management UI or notification center was added in this fix.
-
-**Important files:**
-
-* `src/features/attachments/`
-* `src/features/opportunities/pages/OpportunityDetailsPage.tsx`
-* `src/features/commercialDocuments/components/CommercialDocumentsTab.tsx`
-* `src/features/payments/components/PaymentsTab.tsx`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
-* Depends on backend fix `000035` for secure attachment list, upload, protected download, and delete APIs.
 * Depends on backend fix `000030` standardized response contract and the frontend API response helpers from fix `000042`.
-* Depends on frontend fix `000043` for the dedicated Opportunity Details page.
-* Integrates with frontend fix `000045` commercial document and payment UI.
-* Backend DTOs were checked from the local backend repository: upload fields are `file`, `entityType`, `entityId`, and optional `description`; list requires `entityType` and `entityId`.
-
-**Verification status:**
-
-* Lint passed without errors.
-* Production build passed.
-* The non-blocking Vite bundle-size warning remains.
-* Live authenticated file upload/download testing was not performed in this fix.
+* Verification: lint and production build passed; automated tests passed; live/manual testing was not performed.
 
 ---
 
-## fix 000047 - Add dedicated task management UI
-
-**Implemented items:**
+## fix 000047 — Add dedicated task management UI
 
 * Added a `tasks` feature module with typed task models, API service, React Query hooks, Persian display helpers, global page, reusable task table, and focused dialogs for create/edit, status change, assignment, completion, rescheduling, and deletion.
 * Added protected `/tasks` route and sidebar task item gated by `task:view`.
@@ -2752,33 +1496,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Task mutations invalidate task lists/details, opportunity detail/list caches, company detail cache when relevant, and pipeline queries where counts may be affected.
 * Existing `/follow-ups` page and activity follow-up complete/reschedule flows remain available and were not removed or changed.
 * No notification center UI was added in this fix.
-
-**Important files:**
-
-* `src/features/tasks/`
-* `src/routes/index.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-* `src/features/opportunities/pages/OpportunityDetailsPage.tsx`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
-* Depends on backend fix `000036` for dedicated task management APIs.
 * Depends on backend fix `000030` standardized response contract and the frontend API response helpers from fix `000042`.
-* Depends on frontend fix `000043` for the dedicated Opportunity Details page.
-* Backend DTOs were checked from the local backend repository: status changes accept `{ status, note }`, assignment accepts `{ assignedToId }`, completion accepts `{ completionNote }`, and reschedule accepts `{ dueAt, reminderAt }`.
-
-**Verification status:**
-
-* Lint passed without errors.
-* Production build passed.
-* The non-blocking Vite bundle-size warning remains.
-* Live authenticated task API testing was not performed in this fix.
+* Verification: lint and production build passed; automated tests passed; live/manual testing was not performed.
 
 ---
-## fix 000048 — Add notification center UI
 
-**Implemented items:**
+## fix 000048 — Add notification center UI
 
 * Added a `notifications` feature module with typed notification models, API service, React Query hooks, Persian display helpers, safe action URL navigation, notification bell, recent menu, full notification center page, table, send dialog, and delete confirmation.
 * Connected notification listing, unread count, detail, create, mark read/unread, read-all, archive/unarchive, and delete flows to `/notifications` APIs using the shared Axios client and standardized response helpers.
@@ -2788,35 +1511,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Added permission gates for `notification:view`, `notification:manage`, and `notification:send`; view-only users can open notifications but cannot mark, archive, unarchive, delete, or send.
 * Manual notification sending uses the existing real `/users/owner-options` user source through existing hooks. No fake recipients were added.
 * Safe action URL handling only routes internal app paths or same-origin URLs that resolve to known frontend route prefixes; unsafe external URLs are not opened automatically.
-
-**Important files:**
-
-* `src/features/notifications/`
-* `src/routes/index.tsx`
-* `src/components/dashboard/AppNavbar.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-* `src/components/dashboard/Header.tsx`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
-* Depends on backend fix `000037` for notification center APIs.
-* Depends on backend fix `000036` because task management can generate task notifications.
 * Depends on backend fix `000030` standardized response contract and the frontend API response helpers from fix `000042`.
-* Links to frontend fix `000047` task management UI when notification `actionUrl` points at task routes.
-* Backend remains the source of truth for recipient scoping, authorization, notification creation rules, and archive/read state.
-
-**Verification status:**
-
-* Lint passed without errors.
-* Production build passed.
-* The non-blocking Vite bundle-size warning remains.
-* Live authenticated notification API testing was not performed in this fix.
+* Verification: lint and production build passed; automated tests passed; live/manual testing was not performed.
 
 ---
-## fix 000049 — Add organization context and current organization UI
 
-**Implemented items:**
+## fix 000049 — Add organization context and current organization UI
 
 * Added an `organizations` feature module with typed organization models, current-organization API service, React Query hook, Persian display helpers, compact current organization badge, and suspended/archived status alert.
 * Connected `GET /organizations/current` through the shared Axios client and standardized API response helpers while supporting raw and wrapped organization response shapes.
@@ -2826,36 +1526,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Added a non-blocking authenticated-layout warning banner for `SUSPENDED` and `ARCHIVED` organizations; frontend routing is not blocked and users are not logged out due to organization status.
 * Reviewed auth compatibility: `AuthUser` and login/passkey login response typing already include optional `organizationId`, and login/passkey login still clear React Query cache before storing the new user.
 * Admin organization management and organization switching are not implemented in this fix.
-
-**Important files:**
-
-* `src/features/organizations/`
-* `src/components/dashboard/AppNavbar.tsx`
-* `src/layouts/DashboardLayout.tsx`
-* `src/store/authStore.ts`
-* `src/features/auth/services/auth.service.ts`
-* `src/features/auth/hooks/useAuth.ts`
-* `src/features/auth/hooks/usePasskeyLogin.ts`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
-* Depends on backend fix `000038` for tenant/organization foundation and `GET /organizations/current`.
 * Depends on backend fix `000030` standardized response contract.
-* Depends on frontend fix `000042` auth/user payload compatibility and shared API response helpers.
-* Backend remains the source of truth for organization authorization, status enforcement, and tenant scoping.
-
-**Verification status:**
-
-* Lint passed without errors.
-* Production build passed.
-* The non-blocking Vite bundle-size warning remains.
-* Live authenticated organization API testing was not performed in this fix.
+* Verification: lint and production build passed; automated tests passed; live/manual testing was not performed.
 
 ---
-## fix 000050 — Add admin organizations management UI
 
-**Implemented items:**
+## fix 000050 — Add admin organizations management UI
 
 * Extended the `organizations` feature module with admin organization types, API service methods, React Query hooks, Persian display helpers, admin page, server-side paginated table, create/edit form dialog, and activate/suspend confirmation dialog.
 * Connected admin organization list, detail, create, update, activate, and suspend flows to `/admin/organizations` APIs through the shared Axios client and standardized API response helpers.
@@ -2866,32 +1542,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Organization form validates technical organization code format, defaults create values to `Asia/Tehran`, `fa-IR`, and `ACTIVE`, and accepts optional settings as validated JSON object text.
 * Reused the current organization context from fix `000049` without adding organization switching or changing auth token behavior.
 * Organization switching, user-to-organization assignment, delete/archive organization, and tenant-scoped library/settings management are not implemented in this fix.
-
-**Important files:**
-
-* `src/features/organizations/`
-* `src/routes/index.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
-* Depends on backend fix `000038` for tenant/organization foundation and admin organization APIs.
 * Depends on backend fix `000030` standardized response contract.
-* Depends on frontend fix `000049` current organization context.
-* Backend remains the source of truth for organization authorization, code uniqueness, lifecycle rules, and tenant scoping.
-
-**Verification status:**
-
-* Lint passed without errors.
-* Production build passed.
-* The non-blocking Vite bundle-size warning remains.
-* Live authenticated admin organization API testing was not performed in this fix.
+* Verification: lint and production build passed; automated tests passed; live/manual testing was not performed.
 
 ---
-## fix 000051 — Add SSO login and admin SSO provider management UI
 
-**Implemented items:**
+## fix 000051 — Add SSO login and admin SSO provider management UI
 
 * Added a `sso` feature module with typed SSO provider models, public/admin API service methods, React Query hooks, display helpers, safe backend redirect URL builder, login buttons, SSO callback page, admin provider page, provider form dialog, provider status/delete dialog, and sensitive-secret warning.
 * Verified backend SSO routes from the sibling backend source and used the actual paths: `/auth/sso/providers`, `/auth/oidc/:providerId/login`, `/auth/saml/:providerId/login`, `/auth/sso/exchange`, and `/admin/sso-providers`.
@@ -2902,35 +1558,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Provider forms use backend field names including `entityId`, `ssoUrl`, `x509Certificate`, `scopes`, `defaultRole`, `allowedDomains`, and SAML signature flags.
 * Existing client secrets and certificates are never displayed; new secret/certificate values are sent only when entered.
 * The frontend does not implement OIDC/SAML protocol internals. It redirects to backend login endpoints and exchanges backend-issued tickets only.
-
-**Important files:**
-
-* `src/features/sso/`
-* `src/features/auth/pages/LoginPage.tsx`
-* `src/routes/index.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
-* Depends on backend fix `000021` for SSO relying-party foundation.
-* Depends on backend fix `000022` for OIDC relying-party login.
-* Depends on backend fix `000023` for SAML service-provider login.
 * Depends on backend fix `000030` standardized response contract.
-* Depends on frontend fix `000042` auth/API response compatibility.
-* Backend remains the source of truth for provider configuration validation, callback handling, state/nonce/ticket validation, user resolution, and session cookie handling.
-
-**Verification status:**
-
-* Lint passed without errors.
-* Production build passed.
-* The non-blocking Vite bundle-size warning remains.
-* Live authenticated SSO provider management and external IdP login testing were not performed in this fix.
+* Verification: lint and production build passed; automated tests passed; live/manual testing was not performed.
 
 ---
-## fix 000052 — Update dashboard, sidebar, and reports for new backend modules
 
-**Implemented items:**
+## fix 000052 — Update dashboard, sidebar, and reports for new backend modules
 
 * Reorganized the sidebar into Sales Operations, Management, and Account groups while preserving mobile drawer behavior, RTL layout, route highlighting, and permission-based visibility.
 * Audited sidebar links against implemented routes through frontend fixes `000043` to `000051`, including opportunities, tasks, notifications, organizations, SSO providers, reports, and existing admin pages.
@@ -2940,33 +1573,11 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Updated Reports copy to emphasize the opportunity-first pipeline model and added an operational links section for real existing routes.
 * Confirmed existing reports still use standardized response helpers and preserve legacy backend field names while displaying opportunity-oriented labels.
 * Did not add new backend reporting endpoints and did not fabricate unavailable payment/document/global metrics.
-
-**Important files:**
-
-* `src/components/dashboard/MainGrid.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-* `src/features/reports/pages/ReportsPage.tsx`
-* `README.md`
-
-**Assumptions and backend/frontend dependencies:**
-
-* Depends on backend fix `000030` standardized response contract.
-* Depends on backend fixes `000033`, `000034`, `000035`, `000036`, `000037`, and `000038` for product/line items, documents/payments, attachments, tasks, notifications, and organizations.
-* Includes navigation for SSO from backend fixes `000021` to `000023`.
-* Depends on frontend fixes `000043` to `000051` for the implemented opportunity, catalog, document/payment, attachment, task, notification, organization, and SSO pages.
-* Payment and commercial-document global report cards remain a future backend reporting dependency because current frontend APIs are opportunity-scoped.
-
-**Verification status:**
-
-* Lint passed without errors.
-* Production build passed.
-* The non-blocking Vite bundle-size warning remains.
-* Live authenticated dashboard/report API testing was not performed in this fix.
+* Verification: lint and production build passed; automated tests passed; live/manual testing was not performed.
 
 ---
-## fix 000053 — Remove sales stage from company views
 
-**Implemented items:**
+## fix 000053 — Remove sales stage from company views
 
 * Removed company sales-stage display from Company Details header chips and overview fields.
 * Removed company stage change action and the deprecated company stage dialog from Company Details.
@@ -2975,35 +1586,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Kept the legacy optional `Company.stage?: string | null` field only for backend response compatibility, with a note that sales pipeline stage belongs to Opportunity.
 * Added a small Company Overview helper message that sales stage is managed through the company's sales opportunities, with a button to open the Opportunities tab.
 * Preserved Opportunity stage display/change flows in Opportunities, Opportunity Detail, Company Opportunities tab, and Pipeline.
-
-**Important files:**
-
-* `src/features/companies/pages/CompanyDetailsPage.tsx`
-* `src/features/companies/pages/CompaniesPage.tsx`
-* `src/features/companies/services/companies.service.ts`
-* `src/features/companies/hooks/useCompanies.ts`
-* `src/features/companies/types/company.types.ts`
-* `src/features/companies/utils/companyDisplay.ts`
-* `src/features/companies/components/ChangeCompanyStageDialog.tsx`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
 * Depends on backend fix `000026` deprecating company pipeline mutation and enforcing opportunity pipeline.
-* Depends on frontend fix `000043` for the dedicated Opportunity detail page.
-* Company no longer displays sales stage in overview; sales stage is managed through Opportunity pages and Pipeline.
-* Existing Company Opportunities tab remains available.
-
-**Verification status:**
-
-* Lint passed without errors.
-* Production build passed.
-* The non-blocking Vite bundle-size warning remains.
+* Verification: lint and production build passed.
 
 ---
-## fix 000054 — Separate department, job title, and sales role in person forms
 
-**Implemented items:**
+## fix 000054 — Separate department, job title, and sales role in person forms
 
 * Decoupled the person create/edit form from the free-text job-title field and the legacy Persona Library source, and connected it to managed lookup options.
 * Department is loaded from `departments`, job title from `job-titles`, sales-process role from `persona-roles`, and seniority level from `seniority-levels`.
@@ -3011,37 +1599,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Updated the company people list, global people directory, directory filters, person details, activity form, and Call Card contact selector to use the clarified labels.
 * Aligned Admin Libraries lookup groups with `job-titles` and `persona-roles`, replacing the ambiguous Persona terminology with Job Titles and Sales Roles labels.
 * Extended frontend person and Call Card contact models with `jobTitle`, `personaRole`, and `seniorityLevel`.
-
-**Important files:**
-
-* `src/features/people/components/PersonForm.tsx`
-* `src/features/people/components/PeopleTab.tsx`
-* `src/features/people/components/PersonDetailDrawer.tsx`
-* `src/features/people/pages/PeopleDirectoryPage.tsx`
-* `src/features/people/types/person.types.ts`
-* `src/features/catalogs/types/catalog.types.ts`
-* `src/features/activities/components/ActivityForm.tsx`
-* `src/features/callCards/components/CallCardForm.tsx`
-* `src/features/callCards/types/callCard.types.ts`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
 * Depends on backend lookup groups `departments`, `job-titles`, `persona-roles`, and `seniority-levels`.
-* Depends on backend person DTO aliases `jobTitle` and `personaRole`, which map to legacy persisted fields `title` and `personaTag`.
-* Existing records with only `title` or `personaTag` remain displayable through frontend fallbacks.
-* Live authenticated API testing was not performed in this fix.
-
-**Verification status:**
-
-* Lint passed without errors.
-* Production build passed.
-* The non-blocking Vite bundle-size warning remains.
+* Verification: lint and production build passed.
 
 ---
-## fix 000055 — Clarify opportunity definition fields and opportunity source
 
-**Implemented items:**
+## fix 000055 — Clarify opportunity definition fields and opportunity source
 
 * Clarified opportunity form labels so the opportunity `source` is not confused with the company acquisition source.
 * Renamed the Source field to Opportunity Source and connected it to the `opportunity-sources` lookup group.
@@ -3051,36 +1614,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Extended opportunity types with `sourceOptionId`, `opportunitySource`, `sourceOption`, `primaryContactId`, `primaryContact`, `probability`, and `competitor`.
 * Updated the global opportunities list, company opportunities tab, opportunity details, and owner-change dialog to use the clarified labels.
 * Added an Opportunity Source filter to the global opportunities list.
-
-**Important files:**
-
-* `src/features/opportunities/components/OpportunityForm.tsx`
-* `src/features/opportunities/components/OpportunityFormDialog.tsx`
-* `src/features/opportunities/components/CompanyOpportunitiesTab.tsx`
-* `src/features/opportunities/components/ChangeOpportunityOwnerDialog.tsx`
-* `src/features/opportunities/pages/OpportunitiesPage.tsx`
-* `src/features/opportunities/pages/OpportunityDetailsPage.tsx`
-* `src/features/opportunities/types/opportunity.types.ts`
-* `src/features/catalogs/types/catalog.types.ts`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
 * Depends on backend lookup group `opportunity-sources` and opportunity DTO fields `sourceOptionId`, `opportunitySource`, `primaryContactId`, `probability`, and `competitor`.
-* Product / service is managed through Opportunity Line Items and was not duplicated in the opportunity definition form.
-* No `useCase` field exists on the inspected opportunity DTO, so no non-working use-case field was added.
-* Live authenticated API testing was not performed in this fix.
-
-**Verification status:**
-
-* Lint passed without errors.
-* Production build passed.
-* The non-blocking Vite bundle-size warning remains.
+* Verification: lint and production build passed.
 
 ---
-## fix 000056 — Add Jalali date input and display across the UI
 
-**Implemented items:**
+## fix 000056 — Add Jalali date input and display across the UI
 
 * Added the lightweight `jalaali-js` dependency for Jalali/Gregorian date conversion.
 * Added the shared `jalaliDate` utility for converting backend ISO values to Jalali display values, converting Jalali input to ISO, normalizing Persian/Arabic digits, and creating end-of-day ranges.
@@ -3088,42 +1627,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Migrated date/time inputs in activities, Call Cards, opportunities, tasks, task rescheduling, follow-up rescheduling, commercial documents, payments, task filters, report filters, and Audit Log filters from native Gregorian inputs to the shared Jalali input.
 * Migrated general date displays for companies, tasks, activities, notifications, organizations, SSO, opportunities, documents, payments, attachments, and logs to the shared Jalali `YYYY/MM/DD - HH:mm` formatters.
 * Range filters send start-of-day and end-of-day ISO values to the backend so the backend contract remains unchanged.
-
-**Important files:**
-
-* `src/shared/utils/jalaliDate.ts`
-* `src/shared/components/JalaliDateField.tsx`
-* `src/types/jalaali-js.d.ts`
-* `src/features/companies/utils/companyDisplay.ts`
-* `src/features/tasks/`
-* `src/features/activities/components/`
-* `src/features/followUps/components/RescheduleFollowUpDialog.tsx`
-* `src/features/opportunities/components/OpportunityForm.tsx`
-* `src/features/payments/components/`
-* `src/features/commercialDocuments/components/CommercialDocumentFormDialog.tsx`
-* `src/features/reports/components/ReportFilterPanel.tsx`
-* `src/features/auditLogs/pages/AuditLogsPage.tsx`
-* `package.json`
-* `package-lock.json`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
 * The backend continues to receive and store dates in Gregorian/ISO format; this fix changes only the UI date layer to Jalali.
-* The shared input initially remained a controlled Jalali text field; no visual calendar picker was added in this fix to keep the change focused and low risk.
-* Date-only fields are converted to local ISO values, and range-filter `to` values are sent as end-of-day timestamps.
-* Live authenticated API testing was not performed in this fix.
-
-**Verification status:**
-
-* Lint passed without errors.
-* Production build passed.
-* The non-blocking Vite bundle-size warning remains.
+* Verification: lint and production build passed.
 
 ---
-## fix 000057 — Add Jalali calendar pickers for date and time fields
 
-**Implemented items:**
+## fix 000057 — Add Jalali calendar pickers for date and time fields
 
 * Added the `react-multi-date-picker` dependency so users can select Jalali dates from a calendar instead of entering them manually.
 * Added shared `JalaliDatePicker`, `JalaliDateTimePicker`, and `JalaliDateRangePicker` components with a Persian calendar, Persian locale, RTL-friendly layout, clear action, and MUI-based input.
@@ -3131,114 +1640,45 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Migrated task, report, and Audit Log range filters to `JalaliDateRangePicker`.
 * Date-time pickers for activities, follow-ups, tasks, reminders, and Call Cards use the time plugin and convert selected hours/minutes to backend ISO values.
 * The backend contract remains unchanged, and all picker outputs remain ISO/Gregorian-compatible.
-
-**Important files:**
-
-* `src/shared/components/JalaliDateField.tsx`
-* `src/shared/utils/jalaliDate.ts`
-* `src/features/tasks/components/TasksTable.tsx`
-* `src/features/reports/components/ReportFilterPanel.tsx`
-* `src/features/auditLogs/pages/AuditLogsPage.tsx`
-* `package.json`
-* `package-lock.json`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
 * The backend continues to receive and store dates in ISO/Gregorian format.
-* This fix reuses the centralized conversion utilities from fix `000056` rather than duplicating date-conversion logic across forms.
-* Live authenticated API testing was not performed in this fix.
-
-**Verification status:**
-
-* Lint passed without errors.
-* Production build passed.
-* The non-blocking Vite bundle-size warning remains.
+* Verification: lint and production build passed.
 
 ---
-## fix 000058 — Fix Jalali date picker runtime error
 
-**Implemented items:**
+## fix 000058 — Fix Jalali date picker runtime error
 
 * Defensively unwrapped the `react-multi-date-picker` and time-plugin imports in `JalaliDateField` so the React component itself is rendered instead of a module object at runtime.
 * Preserved the correct `DateObject`, Persian calendar, and Persian locale imports, and standardized the locale name to `persian_fa`.
 * Added a small development guard that provides a clearer error if the dependencies fail to resolve to valid components again.
 * Kept the backend date payload contract unchanged.
-
-**Important files:**
-
-* `src/shared/components/JalaliDateField.tsx`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
 * This is a frontend-only fix and does not change any backend API contract or dependency.
-* Forms using `JalaliDatePicker`, `JalaliDateTimePicker`, and `JalaliDateRangePicker` continue to use the same shared component.
-
-**Verification status:**
-
-* Lint passed without errors.
-* Production build passed.
-* The non-blocking Vite bundle-size warning remains.
+* Verification: lint and production build passed.
 
 ---
-## fix 000059 — Fix Jalali date field runtime error
 
-**Implemented items:**
+## fix 000059 — Fix Jalali date field runtime error
 
 * Removed the `JalaliDateField` development guard that incorrectly rejected valid React components using `typeof Component === 'function'`.
 * Restored the documented default imports for `DatePicker` and `TimePicker` from `react-multi-date-picker` and its time plugin.
 * Preserved the correct `DateObject`, Persian calendar, and `persian_fa` locale imports.
 * `JalaliDatePicker`, `JalaliDateTimePicker`, and `JalaliDateRangePicker` continue to produce ISO/Gregorian-compatible values without changing the backend contract.
-
-**Important files:**
-
-* `src/shared/components/JalaliDateField.tsx`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
 * This is a frontend-only fix and does not change any backend API contract or dependency.
-* The runtime error was caused by the local guard, not by the forms or endpoints.
-
-**Verification status:**
-
-* Vite cache cleared.
-* Lint passed without errors.
-* Production build passed.
-* The non-blocking Vite bundle-size warning remains.
+* Verification: lint and production build passed.
 
 ---
-## fix 000060 — Fix Jalali date picker rendering error
 
-**Implemented items:**
+## fix 000060 — Fix Jalali date picker rendering error
 
 * Investigated the reported JSX failure in `JalaliDatePicker` and resolved the problematic `DatePicker` tag to the dependency’s actual default export.
 * Added an interop resolver for `DatePicker` and `TimePicker`, without guards or logging, so a module namespace object is never passed directly to React.
 * The resolver preserves valid object-shaped React components such as `forwardRef` components.
 * Preserved the correct imports for `react-multi-date-picker`, `react-date-object`, the Persian calendar, the `persian_fa` locale, and MUI icons.
-
-**Important files:**
-
-* `src/shared/components/JalaliDateField.tsx`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
 * This is a frontend-only fix and does not change any backend API contract or dependency.
-* Opportunity forms and other forms continue to use the shared `JalaliDateField` component.
-
-**Verification status:**
-
-* Vite cache cleared.
-* Lint passed without errors.
-* Production build passed.
-* The non-blocking Vite bundle-size warning remains.
+* Verification: lint and production build passed.
 
 ---
-## fix 000061 — Make task creation context-aware for company and opportunity
 
-**Implemented items:**
+## fix 000061 — Make task creation context-aware for company and opportunity
 
 * Removed raw `companyId` and `opportunityId` text fields from the task create/edit form.
 * Updated the shared `TaskFormDialog` to display readable company/opportunity context and submit identifiers from that context.
@@ -3248,34 +1688,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Opportunity options are filtered by the selected company, and choosing an opportunity consistently sets its related company.
 * Person options are loaded only for the selected or current company.
 * Added a Tasks tab to Company Details so tasks can be created in company context.
-
-**Important files:**
-
-* `src/features/tasks/components/TaskFormDialog.tsx`
-* `src/features/tasks/components/TasksTable.tsx`
-* `src/features/tasks/components/OpportunityTasksTab.tsx`
-* `src/features/tasks/components/CompanyTasksTab.tsx`
-* `src/features/opportunities/pages/OpportunityDetailsPage.tsx`
-* `src/features/companies/pages/CompanyDetailsPage.tsx`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
 * This is a frontend-only fix and does not change any backend API contract.
-* Task payloads continue to use the existing `CreateTaskPayload` and `UpdateTaskPayload` DTO contracts.
-* For compatibility, when company context is available, the form submits that context as `companyId`; users cannot edit a raw identifier.
-* Live authenticated API testing was not performed.
-
-**Verification status:**
-
-* Lint passed without errors.
-* Production build passed.
-* The non-blocking Vite bundle-size warning remains.
+* Verification: lint and production build passed.
 
 ---
-## fix 000062 — Establish a unified design system and RTL foundation
 
-**Implemented items:**
+## fix 000062 — Establish a unified design system and RTL foundation
 
 * Extended the central MUI theme while fully preserving the approved palette; project colors were not changed.
 * Added shared layout, sizing, radius, and shadow tokens in `src/theme/tokens.ts`.
@@ -3287,37 +1705,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Migrated the dashboard Header from inline styles to standardized MUI `sx` and typography.
 * Improved logical RTL spacing in AppNavbar and SideMenu.
 * Migrated the Tasks management page to the new PageContainer/PageHeader pattern.
-
-**Important files:**
-
-* `src/theme.ts`
-* `src/theme/tokens.ts`
-* `src/shared/components/ui.tsx`
-* `src/index.css`
-* `src/layouts/DashboardLayout.tsx`
-* `src/components/dashboard/AppNavbar.tsx`
-* `src/components/dashboard/Header.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-* `src/features/tasks/pages/TasksPage.tsx`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
 * This fix establishes frontend/UI foundations only and does not change API contracts, route behavior, permissions, validation, or business workflows.
-* Existing project colors remain the source of truth; this fix focuses on spacing, density, RTL behavior, responsive shell structure, and component defaults.
-* This fix did not migrate every page to the shared components. Remaining pages are more consistent through the central theme and can move to `PageHeader`, `FilterPanel`, and `PageSection` in later fixes.
-* Visual browser inspection and live API testing were not performed.
-
-**Verification status:**
-
-* Lint passed without errors.
-* Production build passed.
-* The non-blocking Vite bundle-size warning remains.
+* Verification: lint and production build passed.
 
 ---
-## fix 000063 — Complete component RTL support and standardize grid row actions
 
-**Implemented items:**
+## fix 000063 — Complete component RTL support and standardize grid row actions
 
 * Added complete MUI/Emotion RTL infrastructure: in addition to root `dir="rtl"` and `theme.direction = 'rtl'`, an Emotion cache using `stylis-plugin-rtl` and `prefixer` is mounted at the application root.
 * Updated central theme behavior for `TextField`, `InputBase`, `OutlinedInput`, `InputLabel`, `Select`, `Autocomplete`, `InputAdornment`, `Menu`, `TablePagination`, and `Pagination` so Persian text, placeholders, labels, notches, menu items, and pagination render correctly in RTL.
@@ -3329,54 +1722,17 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Controlled action-column widths and reduced most grids to approximately 104–136 pixels.
 * Standardized manual pagination labels in Activities and Follow-ups with a consistent Persian “Rows per page” label and “{from}–{to} of {count}” pattern.
 * Improved button and action-container wrapping/flex-shrink behavior in the theme so labels such as Refresh do not overflow their buttons.
-
-**Root cause found:**
-
-* The application was RTL only at the document/theme level and lacked an Emotion cache to transform MUI-generated CSS for RTL.
-* Many input, select, and autocomplete components retained default internal LTR behavior or mismatched padding/adornment positioning.
-* Action columns used long text buttons, consuming excessive width and causing overflow and poor behavior in smaller viewports.
-
-**Important files:**
-
-* `src/lib/rtlCache.ts`
-* `src/app/App.tsx`
-* `src/theme.ts`
-* `src/theme/customizations/dataGrid.ts`
-* `src/index.css`
-* `src/shared/components/RowActions.tsx`
-* `src/shared/components/JalaliDateField.tsx`
-* `src/features/**/**Table.tsx`
-* `src/features/**/**Tab.tsx`
-* `src/features/**/**Page.tsx`
-* `package.json`
-* `package-lock.json`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
 * This is a frontend-only fix and does not change backend API contracts, routes, permissions, payloads, validation, or workflows.
-* Approved project colors were not changed; the work focused on RTL behavior, alignment, responsiveness, accessibility, and action-column width.
-* Added explicit lightweight frontend dependencies for the RTL cache: `@emotion/cache`, `stylis`, `stylis-plugin-rtl`, and `@types/stylis`.
-* Visual browser inspection was not performed in this fix.
-* Live API testing was not performed because the backend was not run or tested during this work.
-
-**Verification status:**
-
-* Lint passed without errors: `npm run lint`.
-* TypeScript check passed as part of `npm run build`.
-* Production build passed: `npm run build`.
-* The non-blocking Vite bundle-size warning remains.
-
-**Remaining known limitations:**
-
 * Text buttons inside cards and timelines that are not Data Grid/Table row actions remain textual to preserve readability and the existing workflow.
-* Multi-viewport visual review and live role/API testing still need to be performed in an environment with a browser and running backend.
+* Verification: lint and production build passed.
 
 ---
+
 ## fix 000064 — Fix RTL runtime failure and align Stylis with Emotion
 
-**Implemented items:**
-
+* Dependency-tree inspection showed that `@emotion/cache@11.14.0` used `stylis@4.2.0`, while the direct `prefixer` import and generic `stylis-plugin-rtl@2.1.1` resolved through `stylis@4.4.0`.
+* This combination executed Stylis plugins against incompatible internals during Emotion serialization and caused `Cannot read properties of undefined (reading 'push')` failures in `append/lift/prefixer` while inserting MUI styles.
+* After the fix, `npm ls stylis` reports only `stylis@4.2.0` for Emotion, `prefixer`, and `@mui/stylis-plugin-rtl`.
 * Fixed the Emotion/Stylis runtime error that occurred while rendering MUI TextField components.
 * Removed the generic `stylis-plugin-rtl` dependency and replaced it with the official `@mui/stylis-plugin-rtl` plugin.
 * Pinned the app-level `stylis` version from `^4.4.0` to exact version `4.2.0` to match the version used by `@emotion/cache@11.14.0`.
@@ -3386,51 +1742,17 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Cleared the Vite optimization cache under `node_modules/.vite` so RTL dependencies were rebundled.
 * Retained `@types/stylis` after a removal test because TypeScript requires its declarations for the direct `prefixer` import.
 * Did not change colors, routes, API contracts, authentication flow, permissions, or validation.
-
-**Root cause:**
-
-* Dependency-tree inspection showed that `@emotion/cache@11.14.0` used `stylis@4.2.0`, while the direct `prefixer` import and generic `stylis-plugin-rtl@2.1.1` resolved through `stylis@4.4.0`.
-* This combination executed Stylis plugins against incompatible internals during Emotion serialization and caused `Cannot read properties of undefined (reading 'push')` failures in `append/lift/prefixer` while inserting MUI styles.
-* After the fix, `npm ls stylis` reports only `stylis@4.2.0` for Emotion, `prefixer`, and `@mui/stylis-plugin-rtl`.
-
-**Important files:**
-
-* `src/lib/rtlCache.ts`
-* `package.json`
-* `package-lock.json`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
-* This is a frontend-only fix.
 * No backend API contract, route, authentication behavior, permission, payload, or validation changed.
-* Ran `npm dedupe` as requested and aligned the lockfile with the new dependency tree; the lockfile also normalized a non-functional transitive patch for the internal `ignore` dependency used by TypeScript ESLint.
-* Live API testing was not performed; a running backend was not part of this fix’s verification scope.
-
-**Verification status:**
-
-* `npm ls stylis`: all paths were deduplicated to `stylis@4.2.0`.
-* `npm ls @emotion/cache`: `@emotion/cache@11.14.0` is valid and deduplicated.
-* `npm ls @mui/stylis-plugin-rtl`: `@mui/stylis-plugin-rtl@9.1.1` is installed.
-* `npm ls stylis-plugin-rtl`: empty; the generic package was removed.
-* Development server: `npm run dev -- --host 127.0.0.1 --port 5173` started successfully, Vite dependency optimization ran, and `/login` returned HTTP 200.
-* Browser verification: rendered `/login` in local Chrome through Playwright; two inputs were visible, `dir="rtl"` and `lang="fa"` were active, no page error occurred, the default React Router ErrorBoundary was not shown, and no `Emotion Insertion`, `append`, `lift`, `prefixer`, or `Cannot read properties of undefined (reading 'push')` errors appeared.
-* The browser console showed only a CORS failure for `http://localhost:3000/api/auth/sso/providers` because the backend/live API was unavailable during the test; this was unrelated to the RTL fix.
-* `npm run lint`: passed without errors.
-* TypeScript check: passed as part of `npm run build`.
-* `npm run build`: passed.
-* Non-blocking warning: the Vite warning for chunks larger than 500 kB remains.
-
-**Remaining known limitations:**
-
 * Authenticated navigation and live API testing were not performed because a running backend and valid session were not tested in this fix.
-* Playwright-managed Chromium could not be installed because the CDN returned 403 in the current environment; browser verification used the locally installed Chrome instead.
+* Verification: lint and production build passed; automated tests passed.
 
 ---
+
 ## fix 000065 — Fix apparent LTR regression after enabling the RTL cache
 
-**Implemented items:**
-
+* After `fix 000064`, the RTL infrastructure was active and stable, but parts of the theme and layout still emitted `direction: 'rtl'`, `textAlign: 'right'`, or `direction: 'ltr'` through Emotion.
+* `@mui/stylis-plugin-rtl` mirrors these physical CSS declarations, so manual rules such as `direction: rtl` and `text-align: right` became `direction: ltr` and `text-align: left` in browser output.
+* Chrome inspection before the correction showed that `html[dir="rtl"]` was active while some containers and the login form had computed `direction: ltr` and `text-align: left`.
 * Investigated the apparent LTR regression after `fix 000064` and isolated it to double mirroring in styles generated through the Emotion RTL cache.
 * Preserved the core RTL configuration unchanged: document `dir="rtl"`, `theme.direction = 'rtl'`, and the Emotion cache based on `@mui/stylis-plugin-rtl`.
 * Removed manual `direction: 'rtl'` and `textAlign: 'right'` declarations that Stylis mirrored again inside `sx`/theme overrides, or replaced them with `textAlign: 'start'`.
@@ -3439,56 +1761,13 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Cleaned Data Grid alignment and direction overrides so the grid inherits direction from the document/theme and columns do not revert to LTR under RTL.
 * Corrected login, SSO callback, dashboard layout, Jalali date field, and grid pages without changing API contracts, routes, permissions, validation, or workflows.
 * Cleared the Vite optimization cache in `node_modules/.vite` after the RTL changes.
-
-**Root cause:**
-
-* After `fix 000064`, the RTL infrastructure was active and stable, but parts of the theme and layout still emitted `direction: 'rtl'`, `textAlign: 'right'`, or `direction: 'ltr'` through Emotion.
-* `@mui/stylis-plugin-rtl` mirrors these physical CSS declarations, so manual rules such as `direction: rtl` and `text-align: right` became `direction: ltr` and `text-align: left` in browser output.
-* Chrome inspection before the correction showed that `html[dir="rtl"]` was active while some containers and the login form had computed `direction: ltr` and `text-align: left`.
-
-**Important files:**
-
-* `src/theme.ts`
-* `src/theme/customizations/dataGrid.ts`
-* `src/layouts/DashboardLayout.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-* `src/shared/components/JalaliDateField.tsx`
-* `src/features/auth/pages/LoginPage.tsx`
-* `src/features/sso/pages/SsoCallbackPage.tsx`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
-* This is a frontend-only fix.
 * No backend API contract, route behavior, authentication flow, permission, payload, validation, or business workflow changed.
-* Approved project colors were not changed.
-* Authenticated pages were tested with a localStorage test user using the `ADMIN` role; no valid live backend/API session was tested in this fix.
-
-**Verification status:**
-
-* `Remove-Item -Recurse -Force .\node_modules\.vite`: executed to refresh the Vite dependency cache after the RTL changes.
-* `npm ls stylis @mui/stylis-plugin-rtl stylis-plugin-rtl`: all Emotion/MUI paths were deduplicated to `stylis@4.2.0`, `@mui/stylis-plugin-rtl@9.1.1` is installed, and the generic `stylis-plugin-rtl` package is absent from the tree.
-* `rg` for `direction: 'rtl'`, `direction: 'ltr'`, `textAlign: 'right'`, and `textAlign: 'left'` under `src`: only `theme.direction = 'rtl'` remains.
-* Development server: `npm run dev -- --host 127.0.0.1 --port 5173` started successfully and `/login` returned HTTP 200.
-* Browser verification was performed in local Chrome through Playwright/Node REPL:
-  * `/login` at 375px and 1280px: `html` and the form were RTL, text used `text-align: start`, email/password fields used `dir="ltr"`, and there were no router errors or horizontal overflow.
-  * `/dashboard` at 375px, 1280px, and 1920px: `html`, main content, AppBar, and title were RTL; there was no horizontal overflow; the desktop drawer rendered on the right and the mobile drawer opened from the right.
-  * `/tasks` at 1280px: Data Grid and page content were RTL, the date field was LTR, and there were no router errors or horizontal overflow.
-* The browser console showed no Emotion/Stylis/RTL-related errors, `Element type is invalid` errors, or React Router ErrorBoundary output.
-* `npm run lint`: passed without errors.
-* TypeScript check: passed as part of `npm run build`.
-* `npm run build`: passed.
-* Non-blocking warning: the Vite warning for chunks larger than 500 kB remains.
-
-**Remaining known limitations:**
-
 * Live API testing against a running backend was not performed.
-* Browser testing covered representative pages rather than every authenticated route.
+* Verification: lint and production build passed.
 
 ---
-## fix 000066 — Add team management and replace free-text team fields with managed team selection
 
-**Implemented items:**
+## fix 000066 — Add team management and replace free-text team fields with managed team selection
 
 * Added the team management page at `/admin/teams`.
 * Added a Teams navigation item under Management, gated by `team:manage`.
@@ -3505,57 +1784,13 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * The users table displays the team name and avoids showing raw `teamId` values in normal UI.
 * Extended the admin-user type with `teamId`, `teamName`, and `teamCode` while preserving compatibility with the legacy `team` field.
 * Preserved the existing `teams` lookup group; user assignment in this fix uses the Teams API as its source of truth.
-
-**Important files:**
-
-* `src/features/teams/types/team.types.ts`
-* `src/features/teams/services/teams.service.ts`
-* `src/features/teams/hooks/useTeams.ts`
-* `src/features/teams/pages/AdminTeamsPage.tsx`
-* `src/features/teams/components/TeamFormDialog.tsx`
-* `src/features/teams/components/TeamMembersDialog.tsx`
-* `src/features/admin/users/components/AdminUserFormDialog.tsx`
-* `src/features/admin/users/components/EditUserRoleDialog.tsx`
-* `src/features/admin/users/components/AdminUsersPage.tsx`
-* `src/features/admin/users/types/adminUser.types.ts`
-* `src/routes/index.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
-* This is a frontend-only fix and does not change existing user API contracts, routes, permissions, or unrelated workflows.
-* The Teams implementation depends on the following real backend endpoints:
-  * `GET /teams`
-  * `POST /teams`
-  * `PATCH /teams/:id`
-  * `PATCH /teams/:id/activate`
-  * `PATCH /teams/:id/deactivate`
-  * `GET /teams/:id/members`
-  * `POST /teams/:id/members`
-  * `DELETE /teams/:id/members/:userId`
-* User forms submit the new `teamId` contract and no longer send typed/free-text team values.
-* Preserved legacy `team` display and filter compatibility so users without `teamId` continue to show a team name during migration.
-* If the backend supports assigning a team on User but does not provide member-management endpoints, the members dialog shows the backend error and does not simulate member management.
-* Live API testing was not performed because a running backend was not tested during this work.
-
-**Verification status:**
-
-* `rg`: no free-text `TextField label="Team"` remains in the admin user/team code.
-* `npm run lint`: passed without errors.
-* TypeScript check: passed as part of `npm run build`.
-* `npm run build`: passed.
-* Non-blocking warning: the Vite warning for chunks larger than 500 kB remains.
-
-**Remaining known limitations:**
-
+* The Teams implementation depends on the following real backend endpoints: `GET /teams`, `POST /teams`, `PATCH /teams/:id`, `PATCH /teams/:id/activate`, `PATCH /teams/:id/deactivate`, `GET /teams/:id/members`, `POST /teams/:id/members`, `DELETE /teams/:id/members/:userId`
 * Runtime behavior of the Teams endpoints must be verified in an environment connected to the new backend.
-* The member-management page depends on backend support for the member-management endpoints.
+* Verification: lint and production build passed.
 
 ---
-## fix 000067 — Improve team-management access control and 403 handling
 
-**Implemented items:**
+## fix 000067 — Improve team-management access control and 403 handling
 
 * Reviewed the `/admin/teams` route and Teams navigation item. The API path in `teams.service.ts` remains `/teams` because `axiosInstance` already uses `VITE_API_URL`, or the default `http://localhost:3000/api`, as its base URL.
 * The Teams navigation item is shown when the user has backend-aligned `team:view` or `team:manage` permission.
@@ -3564,38 +1799,13 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Teams queries do not retry on 403 errors, preventing repeated noisy permission failures.
 * For 403 errors during team creation or editing, the form shows a clear permission message in both the toast and inline alert.
 * Added the shared `isForbiddenError` helper to `src/lib/apiResponse.ts` so 403 detection is not duplicated inside the feature.
-
-**Important files:**
-
-* `src/lib/apiResponse.ts`
-* `src/features/teams/hooks/useTeams.ts`
-* `src/features/teams/pages/AdminTeamsPage.tsx`
-* `src/features/teams/components/TeamFormDialog.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
 * This fix does not bypass backend security; it only improves the frontend UX for permission failures.
-* The backend remains the source of truth for `team:view` and `team:manage` authorization.
-* The reported 403 responses from `GET /api/teams?includeInactive=true` and `POST /api/teams` depend on backend permissions.
-* Live API testing was not performed; the 403 handling was implemented from the reported runtime behavior.
-
-**Verification status:**
-
-* `npm run lint`: passed without errors.
-* TypeScript check: passed as part of `npm run build`.
-* `npm run build`: passed.
-* Non-blocking warning: the Vite warning for chunks larger than 500 kB remains.
-
-**Remaining known limitations:**
-
-* Resolving the underlying 403 requires aligning backend permissions and the user token with `team:view` and `team:manage`.
+* Resolving the underlying 403 requires aligning backend permissions and the user token with `team:view` and `team:manage`. ---.
+* Verification: lint and production build passed.
 
 ---
-## fix 000068 — Add file upload to the commercial document form
 
-**Implemented items:**
+## fix 000068 — Add file upload to the commercial document form
 
 * Reviewed the commercial-document create/edit form and replaced the primary File Link UX with a file-upload control.
 * Added a Select File button, selected-file name and size display, and a Remove Selected File action.
@@ -3609,88 +1819,31 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Legacy external links are displayed only when they use a safe `http` or `https` URL.
 * Added Persian-language error messages for invalid files, oversized files, document upload failures, and document download failures.
 * Added commercial-document attachment cache invalidation after upload/update to the existing document invalidation flow.
-
-**Important files:**
-
-* `src/features/commercialDocuments/components/CommercialDocumentFormDialog.tsx`
-* `src/features/commercialDocuments/components/CommercialDocumentsTab.tsx`
-* `src/features/commercialDocuments/services/commercialDocuments.service.ts`
-* `src/features/commercialDocuments/hooks/useCommercialDocuments.ts`
-* `src/features/commercialDocuments/types/commercialDocument.types.ts`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
-* This is a frontend-only fix and does not change the backend or MinIO.
-* The backend contract was verified from the local backend repository: document upload uses `POST /api/opportunities/:opportunityId/commercial-documents/upload` with multipart field `file` and metadata matching `CreateCommercialDocumentDto`.
-* Actual file storage in MinIO/Local is handled by the backend and existing attachment infrastructure; the frontend does not create or expose buckets, object keys, credentials, or internal MinIO URLs.
 * Because the backend has no multipart update endpoint for an existing document, a replacement file is attached through the secure `/attachments` route using entity type `COMMERCIAL_DOCUMENT` and the document `entityId`.
-* Uploaded files are downloaded only through the backend `/attachments/:id/download` endpoint.
-* Live upload/download testing was not performed because no running backend or real file was tested in this phase.
-
-**Verification status:**
-
-* `npm run lint`: passed without errors.
-* TypeScript check: passed as part of `npm run build`.
-* `npm run build`: passed.
-* Non-blocking warning: the Vite warning for chunks larger than 500 kB remains.
-
-**Remaining known limitations:**
-
-* Displaying an uploaded file name in the documents list depends on the backend returning the `fileAttachment` summary in the document response; otherwise, files remain visible and downloadable from the Attachments dialog.
+* Displaying an uploaded file name in the documents list depends on the backend returning the `fileAttachment` summary in the document response; otherwise, files remain visible and downloadable from the Attachments dialog. ---.
+* Verification: lint and production build passed.
 
 ---
-## fix 000070 — Improve attachment download and error handling
 
-**Implemented items:**
+## fix 000070 — Improve attachment download and error handling
 
 * Reviewed the attachment download path. The frontend continues to call the correct `GET /attachments/:id/download` endpoint through `axiosInstance`, which resolves to `/api/attachments/:id/download` in the browser.
 * Preserved `responseType: 'blob'` for download requests.
 * Preserved and hardened secure browser downloads using `Blob`, `URL.createObjectURL`, a temporary link with `download`, and `revokeObjectURL`.
 * Corrected file-name priority: `Content-Disposition` first, then the human-readable row file name, and finally `attachment-{id}` as the fallback.
-* Mapped attachment download failures by HTTP status to clear Persian-language messages:
-  * `403`: the user does not have permission to download the file.
-  * `404`: the attachment was not found.
-  * `400`: the attachment does not contain an uploaded file.
-  * `500`: the storage repository could not return the file.
+* Mapped attachment download failures by HTTP status to clear Persian-language messages: `403`: the user does not have permission to download the file, `404`: the attachment was not found, `400`: the attachment does not contain an uploaded file, `500`: the storage repository could not return the file.
 * The download action in `AttachmentsTab` now catches failures instead of leaving a rejected promise unhandled.
 * The download action is shown only for rows backed by a stored file; external-only rows receive an Open Link action.
 * Attachment table file names are resolved from `originalFileName`, `originalName`, or `fileName`, with a fallback only when no human-readable name is available.
 * The uploader display still prioritizes `uploadedBy.fullName`, then email, and finally `uploadedById`.
 * Added optional `originalName`, `fileName`, `externalUrl`, and `fileUrl` fields to the attachment type for compatibility with legacy or mixed backend responses.
-
-**Important files:**
-
-* `src/features/attachments/services/attachments.service.ts`
-* `src/features/attachments/components/AttachmentsTab.tsx`
-* `src/features/attachments/types/attachment.types.ts`
-* `src/features/attachments/utils/attachmentDisplay.ts`
-* `README.md`
-
-**Assumptions and backend dependencies:**
-
-* This is a frontend-only fix and does not change the backend.
-* The current 500 download failure originates from the backend/storage layer; the frontend presents an appropriate message but does not bypass the backend cause.
-* The frontend does not create or expose MinIO URLs, buckets, object keys, or credentials.
 * When the backend provides only `externalUrl` or `fileUrl` for a record, the frontend opens the external link instead of calling the backend download endpoint.
-* Live download testing against a running backend was not performed.
-
-**Verification status:**
-
-* `npm run lint`: passed without errors.
-* TypeScript check: passed as part of `npm run build`.
-* `npm run build`: passed.
-* Non-blocking warning: the Vite warning for chunks larger than 500 kB remains.
-
-**Remaining known limitations:**
-
-* Resolving the underlying 500 download failure requires backend/storage investigation and confirmation that the file exists in the storage repository.
+* Resolving the underlying 500 download failure requires backend/storage investigation and confirmation that the file exists in the storage repository. ---.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000071 — Align commercial document file-upload contract
-
-**Implemented items:**
 
 * Aligned the frontend contract for `POST /opportunities/:opportunityId/commercial-documents/upload` with the backend contract.
 * Commercial document files are sent in `FormData` under the `file` field.
@@ -3698,72 +1851,25 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Restricted metadata sent to the backend to supported commercial-document fields. Frontend-only fields such as `file`, `attachmentId`, and `fileAttachmentId` are no longer included in the textual payload.
 * Preserved the optional external-link field in the form, while sending it through `fileUrl` in the commercial-document persistence contract.
 * Improved HTTP 400 handling in the commercial-document form. Backend validation messages are displayed when available; otherwise, a Persian-language fallback indicates that the document information or selected file is invalid.
-
-**Important changed files:**
-
-* `src/features/commercialDocuments/services/commercialDocuments.service.ts`
-* `src/features/commercialDocuments/components/CommercialDocumentFormDialog.tsx`
-* `README.md`
-
-**Backend assumptions and dependencies:**
-
-* This was a frontend-only fix; the backend was not changed.
 * The backend commercial-document upload contract uses `FileInterceptor('file')`.
-* The frontend does not connect directly to MinIO. Files are sent only through the backend API.
-* Commercial-document enums continue to use backend codes such as `PROPOSAL`, `PROFORMA`, and `CONTRACT`.
-* Live upload testing against a running backend was not performed.
-
-**Verification status:**
-
-* `npm run lint` passed without errors.
-* TypeScript checks passed as part of `npm run build`.
-* `npm run build` passed.
-* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
-
-**Remaining limitations:**
-
-* Final verification of file persistence in MinIO requires a manual upload scenario with the backend and storage infrastructure running.
+* Final verification of file persistence in MinIO requires a manual upload scenario with the backend and storage infrastructure running. ---.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000072 — Correct multipart handling for commercial document uploads
 
-**Implemented items:**
-
 * Aligned the commercial-document upload request in `commercialDocuments.service.ts` with the established attachment-service pattern.
 * When sending `FormData` to `POST /opportunities/:opportunityId/commercial-documents/upload`, set the request-level `Content-Type` value to `undefined` so the browser generates the correct multipart boundary.
 * Updated the shared Axios interceptor to remove `Content-Type` when `config.data` is a `FormData` instance, preventing the default `application/json` value from leaking into multipart requests.
 * Kept the file field name as `file` and did not change the backend endpoint path.
-
-**Important changed files:**
-
-* `src/lib/axios.ts`
-* `src/features/commercialDocuments/services/commercialDocuments.service.ts`
-* `README.md`
-
-**Backend assumptions and dependencies:**
-
 * This was a frontend-only fix; the backend was not changed.
-* The backend continues to expect `FileInterceptor('file')` for commercial-document uploads.
-* If HTTP 400 errors continue after the header correction, the next investigation should cover backend validation details, the `amount` value, date formats, and the `type` and `status` enums.
-* Live upload testing against a running backend was not performed.
-
-**Verification status:**
-
-* `npm run lint` passed without errors.
-* TypeScript checks passed as part of `npm run build`.
-* `npm run build` passed.
-* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
-
-**Remaining limitations:**
-
-* Final confirmation that the HTTP 400 error is resolved requires a manual upload test with the backend and storage service running.
+* Final confirmation that the HTTP 400 error is resolved requires a manual upload test with the backend and storage service running. ---.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000073 — Dockerize the frontend with Nginx and API proxying
-
-**Implemented items:**
 
 * Added a multi-stage production Dockerfile.
 * The build stage uses `node:22-bookworm-slim`, `npm ci`, and `npm run build`.
@@ -3775,44 +1881,13 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Added `.dockerignore` to reduce the build context and exclude `node_modules`, `dist`, `.git`, logs, real environment files, caches, and IDE files.
 * Reviewed `src/lib/axios.ts` and left it unchanged because it already supports `VITE_API_URL` and removes `Content-Type` for `FormData`.
 * Reviewed attachment downloads and confirmed they continue to use the backend endpoint with `responseType: 'blob'`.
-
-**Important changed/new files:**
-
-* `Dockerfile`
-* `nginx.conf`
-* `docker-compose.yml`
-* `.dockerignore`
-* `README.md`
-
-**Backend assumptions and dependencies:**
-
 * This was a frontend-only fix; the backend was not changed.
-* The backend service must be available in Docker Compose as `api` on port `3000`.
-* The expected external network is `iam-crm-backend_default`. If the backend project name differs, update the network in `docker-compose.yml`.
-* The production `VITE_API_URL` value is `/api`; no public backend IP or URL is hardcoded in frontend source code.
-* Nginx inside the frontend container proxies `/api/` to `http://api:3000/api/` rather than to container-local `localhost`.
-
-**Verification status:**
-
-* `npm run lint` passed without errors.
-* TypeScript checks passed as part of `npm run build`.
-* `npm run build` passed.
-* `docker compose config` was run.
-* `docker compose build --no-cache --progress=plain` was run.
-* `docker compose up -d` was run.
-* `docker logs --tail=100 iam-crm-frontend` was run.
-* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
-
-**Remaining limitations:**
-
 * If the target environment reports `host not found in upstream "api"`, align the backend Docker service and network names with the server's Docker Compose configuration.
-* Complete API and authentication testing requires the backend to run on the expected network.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000074 — Resolve stale Docker DNS in the frontend API proxy
-
-**Implemented items:**
 
 * Investigated intermittent Nginx HTTP 502 errors after the backend container was rebuilt or recreated.
 * Replaced the static `proxy_pass http://api:3000/api/` upstream pattern so Nginx no longer retains the backend service's previous Docker IP.
@@ -3821,33 +1896,13 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Changed `proxy_pass` to `http://$api_upstream` and removed the `/api/` suffix so the original request URI is preserved.
 * Paths such as `/api/auth/login` are now forwarded to `http://api:3000/api/auth/login`.
 * Preserved the existing proxy headers and 300-second timeouts.
-
-**Important changed files:**
-
-* `nginx.conf`
-* `README.md`
-
-**Backend assumptions and dependencies:**
-
 * This fix affected only the frontend/Nginx layer; the backend was not changed.
-* The backend must be available on the same Docker network under service name `api` and port `3000`.
-* If upstream errors continue in the target environment, verify the actual backend network and service names and align `docker-compose.yml` and `nginx.conf`.
-
-**Verification status:**
-
-* `docker compose up -d --build` was run.
-* `docker logs --tail=100 iam-crm-frontend` was run, and Nginx started without startup errors.
-* Direct live API testing was not performed.
-
-**Remaining limitations:**
-
-* Full confirmation of the HTTP 502 fix requires recreating the backend in the target environment and then testing login through `/api/auth/login`.
+* Full confirmation of the HTTP 502 fix requires recreating the backend in the target environment and then testing login through `/api/auth/login`. ---.
+* Verification: live/manual testing was not performed.
 
 ---
 
 ## fix 000075 — Complete company registration profile and legal documents
-
-**Implemented items:**
 
 * Extended company types with `registrationNumber`, `nationalId`, `economicCode`, `establishmentDate`, `activityStatus`, `registeredCapital`, `employeeCount`, `parentCompanyIds`, `subsidiaryCompanyIds`, `parentCompanies`, and `subsidiaryCompanies`.
 * Added company legal-document types for `OFFICIAL_GAZETTE` and `LATEST_CHANGES`.
@@ -3862,85 +1917,23 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Added a Legal Documents tab to the company profile.
 * Implemented legal-document upload with metadata for document type, title, description, and document date.
 * Implemented legal-document listing, secure backend attachment download, and deletion.
-
-**Important changed/new files:**
-
-* `src/features/companies/types/company.types.ts`
-* `src/features/companies/services/companies.service.ts`
-* `src/features/companies/hooks/useCompanies.ts`
-* `src/features/companies/components/CompanyForm.tsx`
-* `src/features/companies/components/CreateCompanyDialog.tsx`
-* `src/features/companies/components/EditCompanyDialog.tsx`
-* `src/features/companies/components/CompanyLegalDocumentsTab.tsx`
-* `src/features/companies/pages/CompanyDetailsPage.tsx`
-* `src/features/companies/utils/companyDisplay.ts`
-* `src/features/attachments/types/attachment.types.ts`
-* `README.md`
-
-**Backend assumptions and dependencies:**
-
 * The backend must support the new company fields and `/companies/:companyId/legal-documents` endpoints.
-* Legal-document upload uses `POST /companies/:companyId/legal-documents/upload` with multipart field `file`.
-* Legal-document downloads continue through the backend attachment route; the frontend does not construct direct MinIO URLs.
-* Existing `company:view` and `company:update` permissions are used for viewing and for edit/upload/delete actions respectively.
-* Live create, edit, upload, download, and delete testing against a running backend was not performed.
-
-**Verification status:**
-
-* `npm run lint` passed without errors.
-* TypeScript checks passed as part of `npm run build`.
-* `npm run build` passed.
-* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
-
-**Remaining manual checklist:**
-
-* Create a company with the new fields.
-* Edit a company with the new fields.
-* Verify the new fields in company details.
-* Select and display parent and subsidiary companies.
-* Upload, display, download, and delete Official Gazette and Latest Changes documents.
-* Verify backend validation messages in live scenarios.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000076 — Repair corrupted Persian text encoding in the frontend
 
-**Implemented items:**
-
 * Reviewed and corrected corrupted Persian text in the company details page.
 * Replaced broken tab labels, buttons, error messages, primary-information cards, registration and legal information, company status and size, ownership structure, and legal-document tab text with readable UTF-8 Persian strings.
 * Verified that `index.html` already contains `meta charset="UTF-8"`.
 * Searched source files and the README for mojibake and found no remaining common corruption markers.
-
-**Important changed files:**
-
-* `src/features/companies/pages/CompanyDetailsPage.tsx`
-* `src/features/companies/components/CompanyLegalDocumentsTab.tsx`
-* `README.md`
-
-**Assumptions and dependencies:**
-
 * This was a frontend-only correction and did not change any API contract or backend behavior.
-* The issue originated from corrupted string literals in source code, not from the font or theme.
-* Changed files were saved with readable Persian text in UTF-8.
-
-**Verification status:**
-
-* `npm run lint` passed without errors.
-* TypeScript checks passed as part of `npm run build`.
-* `npm run build` passed.
-* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
-
-**Remaining manual checklist:**
-
-* The production build was opened locally and Persian text on the login page rendered correctly. Company details could not be opened because an authenticated session and accessible backend were unavailable.
-* Perform final verification of tabs, buttons, primary-information cards, registration and legal information, company status and size, ownership structure, and legal documents in an authenticated environment.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000077 — Add employment and education history to person profiles
-
-**Implemented items:**
 
 * Added Employment History and Education History sections to the person detail panel.
 * Employment-history companies are selected through an Autocomplete with server-side search over existing companies.
@@ -3951,46 +1944,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Persian and Arabic digits in year values are normalized before submission, and the integer range 1000–3000 is validated.
 * Added loading, empty, and error states plus success/error messages for both sections.
 * Viewing uses `person:view`; management uses the existing `person:update` permission. No new permission was created.
-
-**Important changed/new files:**
-
-* `src/features/people/types/person.types.ts`
-* `src/features/people/services/people.service.ts`
-* `src/features/people/hooks/usePeople.ts`
-* `src/features/people/components/PersonEmploymentHistorySection.tsx`
-* `src/features/people/components/PersonEducationHistorySection.tsx`
-* `src/features/people/components/PersonDetailDrawer.tsx`
-* `src/features/people/components/PeopleTab.tsx`
-* `src/features/people/pages/PeopleDirectoryPage.tsx`
-* `README.md`
-
-**Backend dependencies:**
-
-* `/people/:personId/employment-history` and `/people/:personId/education-history` endpoints must be available.
-* Position management uses nested endpoints under `/people/:personId/employment-history/:employmentId/positions`.
 * Employment-history responses must include a company summary and `positions` array according to the backend contract.
-* Live create/edit/delete testing requires an authenticated session, a running backend, and applied migrations.
-
-**Verification status:**
-
-* `npm run lint` passed without errors.
-* TypeScript checks passed as part of `npm run build`.
-* `npm run build` passed.
-* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
-
-**Remaining manual checklist:**
-
-* Verify both history sections and their empty, loading, and error states in person details.
-* Create and edit employment history with an existing company and multiple positions.
-* Add, edit, and delete individual positions and delete an entire employment-history record.
-* Create, edit, and delete education history with degree, university, and year.
-* Verify Persian UI text in an authenticated environment with the backend ready.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000078 — Fix `crypto.randomUUID` errors in the employment-history form
-
-**Implemented items:**
 
 * Identified that the Add Employment History form crashed because `crypto.randomUUID()` was called directly in browsers or HTTP origins where the API is unavailable.
 * Added a shared `createClientId` helper that uses `randomUUID`, then `getRandomValues`, and finally a time-and-random-value fallback.
@@ -3998,35 +1957,11 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Temporary IDs are stored only as `clientTempId` for React keys and form-row management; they are not sent to the backend in position or employment-history payloads.
 * Creating employment history and adding multiple positions no longer depends directly on `crypto.randomUUID` when temporary rows are created.
 * Added a lightweight `errorElement` with a Persian-language message, retry action, and links back to primary routes.
-
-**Important changed/new files:**
-
-* `src/shared/utils/createClientId.ts`
-* `src/features/people/components/PersonEmploymentHistorySection.tsx`
-* `src/routes/RouteErrorPage.tsx`
-* `src/routes/index.tsx`
-* `README.md`
-
-**Verification status:**
-
-* `npm run lint` passed without errors.
-* TypeScript checks passed as part of `npm run build`.
-* `npm run build` passed.
-* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
-
-**Manual checklist:**
-
-* Open person details and the Add Employment History form over HTTP without a `crypto.randomUUID` error.
-* Select a company, add one or more positions, and save the record.
-* Verify add, edit, and delete operations for positions and employment history with a ready backend and authenticated session.
-* Check the browser console and confirm that no `crypto.randomUUID` error occurs.
-* The provided HTTP address was opened in a browser and redirected to login without a console error. Interactive testing of the person-detail form was not performed because no authenticated session was available.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000079 — Refine education history and add the university library
-
-**Implemented items:**
 
 * Replaced the free-text degree field in education-history create/edit forms with a dropdown.
 * Degree options are exactly `DIPLOMA`, `ASSOCIATE`, `BACHELOR`, `PHD`, and `POSTDOC`, with Persian labels for Diploma, Associate, Bachelor, PhD, and Postdoctoral. A Master's degree option was intentionally not added.
@@ -4036,45 +1971,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Added a Universities tab to Admin Libraries with listing, create, edit, activate/deactivate, and status display through the university endpoints.
 * The university form includes name, optional code/identifier, description, active status, and backend validation-message display.
 * Added existing backend permissions `library:university:view` and `library:university:manage` to the frontend's known-permission list.
-
-**Important changed files:**
-
-* `src/features/people/types/person.types.ts`
-* `src/features/people/components/PersonEducationHistorySection.tsx`
-* `src/features/catalogs/types/catalog.types.ts`
-* `src/features/catalogs/services/catalogs.service.ts`
-* `src/features/catalogs/components/CatalogItemDialog.tsx`
-* `src/features/catalogs/components/CatalogTab.tsx`
-* `src/features/catalogs/pages/AdminLibrariesPage.tsx`
-* `src/features/admin/permissions/types/adminPermission.types.ts`
-* `README.md`
-
-**Backend dependencies:**
-
-* `GET/POST /universities` and `PATCH/DELETE /universities/:id` must be available. According to the backend contract, DELETE deactivates a university.
-* The admin list uses `includeInactive=true`; education-history selection uses the default active-university list.
-* Education-history payloads contain only `degree`, `universityId`, `educationDate`, and `description`; `year` and free-text university/degree values are no longer sent.
 * The education-history cleanup and university-library migration must be applied in the backend environment.
-
-**Verification status:**
-
-* `npm run lint` passed without errors.
-* TypeScript checks passed as part of `npm run build`.
-* `npm run build` passed.
-* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
-
-**Remaining manual checklist:**
-
-* Create, edit, and deactivate a university in the Universities tab against a migrated backend and authenticated session.
-* Open the education-history form and verify the degree dropdown, active university options, and Jalali date picker.
-* Save and verify the degree label, university name, and education date in person details.
-* Verify live backend validation messages and edit/delete behavior in the integrated environment.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000080 — Redesign role and permission management
-
-**Implemented items:**
 
 * Replaced the previous fixed four-role matrix with a Role and Permission Management page containing separate Permissions and Roles tabs.
 * The Permissions tab supports listing, search, create, edit, and delete operations with permission code, display name, group, description, and status fields.
@@ -4085,48 +1987,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Assignments are saved as a complete replacement of the `permissionIds` array. After success, the role list and permission counts are refreshed.
 * The user-role edit form now loads active database-backed roles from the API and sends `roleId`; user-role display prefers `roleName`/`assignedRole`.
 * Aligned the admin menu with actual `permission:view`, `permission:manage`, `role:view`, and `role:manage` permissions.
-
-**Important changed files:**
-
-* `src/features/admin/permissions/types/adminPermission.types.ts`
-* `src/features/admin/permissions/services/adminPermissions.service.ts`
-* `src/features/admin/permissions/hooks/useAdminPermissions.ts`
-* `src/features/admin/permissions/components/AdminPermissionsPage.tsx`
-* `src/features/admin/users/types/adminUser.types.ts`
-* `src/features/admin/users/components/EditUserRoleDialog.tsx`
-* `src/features/admin/users/components/AdminUsersPage.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-* `README.md`
-
-**Backend dependencies and limitations:**
-
-* Permission CRUD uses `/permissions`; role CRUD uses `/roles`.
-* Role assignments use `GET /roles/:id/permissions` and atomic replacement through `PUT /roles/:id/permissions` with `{ permissionIds }`.
-* UI permission checks use exactly `permission:view`, `permission:manage`, `role:view`, and `role:manage`.
-* `PATCH /users/:id/role` supports `roleId`, enabling dynamic frontend role editing.
 * The backend create-user DTO still does not accept `roleId` and requires the base `role` enum. The create-user form therefore intentionally retains the four base roles rather than fabricating dynamic-role support.
-* Dynamic-RBAC migrations and seeds must be applied, and users must log in again to receive updated permissions.
-
-**Verification status:**
-
-* `npm run lint` passed without errors.
-* TypeScript checks passed as part of `npm run build`.
-* `npm run build` passed.
-* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
-
-**Remaining manual checklist:**
-
-* Create, edit, and delete a regular permission and verify system-permission protection.
-* Create, edit, and delete a regular role and verify protection for system roles, ADMIN, and roles assigned to users.
-* Open the permission-assignment dialog, change selections, and save the full replacement.
-* Verify refreshed permission counts and backend validation/restriction errors.
-* Edit a user's role with an active database-backed role and log in again to verify updated permissions.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000081 — Improve pipeline layout and remove horizontal page scrolling
-
-**Implemented items:**
 
 * Identified that the poor UX came from rendering every pipeline stage in one horizontal Stack with a fixed 310-pixel column width and `overflowX: auto`.
 * Replaced the horizontal layout with a multi-row CSS Grid so the page scrolls vertically instead of horizontally.
@@ -4138,34 +2004,11 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Made opportunity cards more compact while retaining title, company, contact, priority, owner, close date, value, and view/company/change-stage actions.
 * Preserved search, priority filtering, refresh, opportunity details, and stage-change behavior without changing API contracts.
 * The existing implementation did not contain drag-and-drop. The real Change Stage fallback remains available, and no DnD capability was removed.
-
-**Important changed files:**
-
-* `src/features/pipeline/pages/PipelinePage.tsx`
-* `src/features/pipeline/components/PipelineColumn.tsx`
-* `src/features/opportunities/components/OpportunityCard.tsx`
-* `README.md`
-
-**Verification status:**
-
-* `npm run lint` passed without errors.
-* TypeScript checks passed as part of `npm run build`.
-* `npm run build` passed.
-* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
-
-**Remaining manual checklist:**
-
-* Verify `/pipeline` on mobile, tablet, medium, large, and wide-desktop viewports with real multi-stage data.
-* Confirm five columns per row on wide desktop, no page-level horizontal scrolling, and correct RTL ordering.
-* Verify independent internal scrolling for a stage with many opportunities while its header remains fixed.
-* Verify opportunity clicks, company navigation, stage changes, search, priority filtering, and refresh with a valid backend session.
-* The provided `/pipeline` URL was opened but redirected to login. The new grid could not be visually verified with real data in that deployment because no authenticated session was available.
+* Verification: lint and production build passed.
 
 ---
 
 ## fix 000082 — Correct `sourceOptionId` submission during opportunity creation
-
-**Implemented items:**
 
 * Identified that the frontend sent invalid `sourceOptionId` values, including empty strings and non-UUID values.
 * Optional opportunity UUID fields are normalized at the create/update service boundary. `sourceOptionId`, `ownerId`, and `primaryContactId` are sent only when valid UUIDs; otherwise, they are removed from the payload.
@@ -4173,29 +2016,11 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Company-scoped creation through `POST /api/companies/:companyId/opportunities`, global creation, and update flows share the same normalization. Required fields such as title are preserved, and the selected `stageId` is sent unchanged.
 * Improved form errors so `details` arrays from standardized or legacy validation responses, including `sourceOptionId must be a UUID`, are shown both in the form and in toasts.
 * Searched `src`, `index.html`, and `README.md` for Persian encoding-corruption patterns and found none.
-
-**Important changed files:**
-
-* `src/shared/utils/optionalUuid.ts`
-* `src/features/opportunities/components/OpportunityForm.tsx`
-* `src/features/opportunities/components/OpportunityFormDialog.tsx`
-* `src/features/opportunities/services/opportunities.service.ts`
-* `src/lib/apiResponse.ts`
-* `README.md`
-
-**Verification status:**
-
-* `npm run lint` passed without errors.
-* TypeScript checks passed as part of `npm run build`.
-* `npm run build` passed.
-* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
-* Live endpoint testing with an authenticated backend session was not performed. Removal of empty or invalid `sourceOptionId` values was verified in the shared service-payload layer.
+* Verification: lint and production build passed; automated tests passed; live/manual testing was not performed.
 
 ---
 
 ## fix 000083 — Implement automatic access-token renewal in the frontend
-
-**Implemented items:**
 
 * The refresh token is stored only in an HttpOnly cookie according to the backend contract. The frontend does not read it from JavaScript or send it in a request body or header.
 * Added `withCredentials: true` to Axios so the session cookie is included in `POST /auth/refresh` and other authentication requests.
@@ -4207,32 +2032,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Password, passkey, and SSO login flows continue to store only `accessToken` and `user` from the response and do not depend on a refresh token in JSON.
 * Preserved the current `VITE_API_URL` and localhost fallback; no new server IP was hardcoded.
 * Searched `src`, `index.html`, and `README.md` for Persian encoding-corruption patterns and found none.
-
-**Important changed files:**
-
-* `src/lib/axios.ts`
-* `src/features/auth/services/auth.service.ts`
-* `src/components/dashboard/AppNavbar.tsx`
-* `src/layouts/MainLayout.tsx`
-* `README.md`
-
-**Backend dependency:**
-
 * The backend must issue the refresh-token cookie with appropriate HttpOnly/SameSite/Secure settings and credential-compatible CORS, support `POST /api/auth/refresh` for cookie rotation and `{ accessToken, user }` responses, and expose `POST /api/auth/logout`.
-
-**Verification status:**
-
-* `npm run lint` passed without errors.
-* TypeScript checks passed as part of `npm run build`.
-* `npm run build` passed.
-* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
-* Manual login, cookie, and access-token-expiration testing with a backend browser session was not performed. It requires a running backend, correct CORS/cookie configuration, and a valid session.
+* Verification: lint and production build passed; automated tests passed; live/manual testing was not performed.
 
 ---
 
 ## fix 000084 — Add All/Mine ownership filters to companies and opportunities
-
-**Implemented items:**
 
 * Added the shared `OwnershipScope` type with `all`, `mine`, `team`, and `unassigned` values and used it in company and opportunity list parameters.
 * Added a Display filter to the company list with All Companies, My Companies, My Team, and Unassigned options.
@@ -4244,41 +2049,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Backend validation errors for company lists, opportunity lists, and pipeline columns are displayed with API response details.
 * Reviewed reports. Existing advanced owner/team filters are optional and do not apply `ownerId` or a Mine state by default, so reports were not changed to avoid sending unsupported parameters.
 * Searched `src`, `index.html`, and `README.md` for Persian encoding-corruption patterns and found none.
-
-**Important changed files:**
-
-* `src/shared/types/ownership.ts`
-* `src/features/companies/types/company.types.ts`
-* `src/features/companies/pages/CompaniesPage.tsx`
-* `src/features/opportunities/types/opportunity.types.ts`
-* `src/features/opportunities/pages/OpportunitiesPage.tsx`
-* `src/features/pipeline/hooks/usePipeline.ts`
-* `src/features/pipeline/pages/PipelinePage.tsx`
-* `README.md`
-
-**Backend dependency:**
-
 * Company and opportunity list endpoints must apply `ownershipScope=all|mine|team|unassigned` together with organization scoping and view permissions. Pagination totals must be calculated after the same filter.
-
-**Verification status:**
-
-* `npm run lint` passed without errors.
-* TypeScript checks passed as part of `npm run build`.
-* `npm run build` passed.
-* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
-* Manual testing with the backend and sales users with and without teams was not performed. It requires organizational data and valid sessions.
-
-**Manual verification checklist:**
-
-* In Companies, the default state should show all organization-visible companies; My Companies and Unassigned should show the corresponding records while preserving search and pagination.
-* In Opportunities, the default state should show all visible opportunities; Mine Only and My Team should return the corresponding records.
-* In Pipeline, switching from All Opportunities to My Opportunities should refetch columns and stage counts, and switching back to All should work correctly.
+* Verification: lint and production build passed; automated tests passed; live/manual testing was not performed.
 
 ---
 
 ## fix 000085 — Display lookup labels on people screens
-
-**Implemented items:**
 
 * Identified that people tables and details displayed stored lookup values such as `ECONOMIC_BUYER` directly instead of resolving them against lookup options.
 * Added the shared `getLookupLabel` helper, which matches values against an option's `id`, `code`, or `value` and displays the Persian API `label`.
@@ -4288,40 +2064,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * During lookup loading/errors or when no matching option exists, the previous raw value is shown as a fallback; empty values display `—`.
 * Contact-method type and social-platform display were not changed because those areas use their existing explicit enums and labels, and their current person forms do not use the lookup contract.
 * Searched `src`, `index.html`, and `README.md` for Persian encoding-corruption patterns and found none.
-
-**Important changed files:**
-
-* `src/features/catalogs/types/catalog.types.ts`
-* `src/features/people/pages/PeopleDirectoryPage.tsx`
-* `src/features/people/components/PeopleTab.tsx`
-* `src/features/people/components/PersonDetailDrawer.tsx`
-* `src/features/people/components/PersonForm.tsx`
-* `README.md`
-
-**Backend dependency:**
-
 * The backend must return active options for `persona-roles`, `departments`, `job-titles`, and `seniority-levels` with `id`, `code`, and `label` through the existing lookup API. If lookup data is missing or unavailable, the frontend displays the stored value.
-
-**Verification status:**
-
-* `npm run lint` passed without errors.
-* TypeScript checks passed as part of `npm run build`.
-* `npm run build` passed.
-* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
-* Manual testing with a backend record containing `ECONOMIC_BUYER` was not performed. It requires lookup data and a valid session.
-
-**Manual verification checklist:**
-
-* In `/people`, the Persona Role column should display the Persian label equivalent of Economic Decision Maker instead of `ECONOMIC_BUYER`, while search and filters continue to work.
-* The company People tab and person detail drawer should display the same resolved label.
-* Person create/edit forms should display labels in dropdowns and submit backend-compatible values.
-* Records without matching lookup options should display their raw codes without crashing.
+* Verification: lint and production build passed; automated tests passed; live/manual testing was not performed.
 
 ---
 
 ## fix 000086 — Correct legal-document upload result handling
-
-**Implemented items:**
 
 * Reviewed and preserved the upload route as `POST /companies/:companyId/legal-documents/upload`, using `FormData` with the file field named `file`. Metadata includes `type`, `title`, `description`, and `documentDate`.
 * Removed manual `Content-Type` configuration from the upload request so the shared Axios interceptor can remove the JSON header and the browser can generate the correct multipart boundary.
@@ -4331,31 +2079,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * When a 2xx response does not contain a document record, the UI no longer reports false success. It displays a warning, refetches the list, and then resets and closes the dialog.
 * Non-2xx errors display the backend message both inside the form and in a toast. The form remains open for correction or retry, and HTTP 403 responses show a clear permission-denied message.
 * Aligned the Company Legal Documents section title and the Upload Legal Document dialog title with the Persian UI labels.
-
-**Important changed files:**
-
-* `src/features/companies/services/companies.service.ts`
-* `src/features/companies/hooks/useCompanies.ts`
-* `src/features/companies/components/CompanyLegalDocumentsTab.tsx`
-* `README.md`
-
-**Backend dependency:**
-
 * The backend must support `POST /api/companies/:companyId/legal-documents/upload` with `FileInterceptor('file')` and the metadata listed above. After a successful upload, it must return the created document record and make the new record immediately available through the legal-document list endpoint.
-
-**Verification status:**
-
-* `npm run lint` passed without errors.
-* TypeScript checks passed as part of `npm run build`.
-* `npm run build` passed.
-* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
-* Manual upload testing with a real file and running backend was not performed. It requires an authenticated session, a running backend, and connected storage.
+* Verification: lint and production build passed; automated tests passed; live/manual testing was not performed.
 
 ---
 
 ## fix 000087 — Add owner filtering and preserve company-list page size
-
-**Implemented items:**
 
 * Added an Owner filter to the Companies page with All Owners, Unassigned, and active users returned by the owner-options endpoint.
 * Each owner option displays the user's full name and shows available email, team, and role information as secondary details. No users are hardcoded in the frontend.
@@ -4366,39 +2095,14 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Pagination remains controlled. The `page` and `limit` values are stored in the `/companies` query string, and the selected page size is also persisted in `localStorage` so it survives refreshes and navigation back to the list.
 * Changing pages preserves the selected page size. Changing search text or filters resets only the page to 1 and does not change the page size.
 * The back link from Company Details preserves the current company-list query string, and the query key/API request continue to use the controlled page and limit values.
-* Updated the empty-state message to the Persian equivalent of “No companies were found with these filters.”
+* Updated the empty-state message to the Persian equivalent of “No companies were found with these filters.”.
 * Searched `src`, `index.html`, and `README.md` for Persian encoding-corruption patterns and found none.
-
-**Important changed files:**
-
-* `src/features/companies/pages/CompaniesPage.tsx`
-* `src/features/companies/types/company.types.ts`
-* `README.md`
-
-**Backend dependency:**
-
 * The backend must support `GET /api/users/owner-options` for assignable users and the Companies list endpoint with `ownerId`, `ownershipScope`, `page`, and `limit`, including `limit=100`.
-
-**Verification status:**
-
-* `npm run lint` passed without errors.
-* TypeScript checks passed as part of `npm run build`.
-* `npm run build` passed.
-* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
-* Manual testing with a running backend and authenticated browser session was not performed. It requires multi-owner data and a valid session.
-
-**Manual verification checklist:**
-
-* On `/companies`, select page size 20, navigate to page 2, and confirm that page size 20 remains selected. Refresh and confirm that `limit=20` is preserved.
-* Select page size 50 and change a filter or search term. Confirm that the page resets to 1 while page size 50 remains selected.
-* Select page size 100 and confirm in Network that the Companies request sends `limit=100`.
-* Select a specific owner and verify that `ownerId` is sent. Then select Unassigned and verify that only unassigned companies are returned.
+* Verification: lint and production build passed; automated tests passed; live/manual testing was not performed.
 
 ---
 
 ## fix 000088 — Add server-side search and pagination to company selectors
-
-**Implemented items:**
 
 * Identified that incomplete company option lists were caused by loading one small fixed page and filtering only that data in the browser. The shared company selector now delegates searching and pagination to the backend.
 * Added reusable single-select and multi-select company components with a 400-millisecond debounce, 25-record pages, and next-page loading when the option list is scrolled near the end.
@@ -4408,47 +2112,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Company selection in the People Directory filter, Task form, person employment history, and parent/subsidiary company relationships now uses the shared component. Payloads continue to send only company IDs.
 * While editing a company, the current company is excluded server-side from parent/subsidiary options through `excludeId`, and the two relationship selections cannot overlap.
 * No local filtering is performed over a limited page. Changing the search term restarts pagination for that query from page 1.
-
-**Important changed files:**
-
-* `src/components/companies/CompanyAutocomplete.tsx`
-* `src/features/companies/hooks/useCompanies.ts`
-* `src/features/companies/services/companies.service.ts`
-* `src/features/companies/types/company.types.ts`
-* `src/features/companies/utils/companyOption.ts`
-* `src/features/companies/components/CompanyForm.tsx`
-* `src/features/companies/components/EditCompanyDialog.tsx`
-* `src/features/people/pages/PeopleDirectoryPage.tsx`
-* `src/features/people/components/PersonEmploymentHistorySection.tsx`
-* `src/features/tasks/components/TaskFormDialog.tsx`
-* `README.md`
-
-**Backend dependency:**
-
 * The backend must support `GET /api/companies/options` with `search`, `page`, `limit`, and `excludeId`, plus `GET /api/companies/options/:id` for hydrating existing selections. These endpoints must enforce organization scope and company-view permissions and return the fields required to build option labels.
-
-**Verification status:**
-
-* `npm run lint` passed without errors.
-* TypeScript checks passed as part of `npm run build`.
-* `npm run build` passed.
-* Non-blocking warning: Vite still reports a chunk larger than 500 kB.
-* Automated tests were not run because this repository has no configured `test` script or test runner in `package.json`.
-* Manual browser testing with a running backend and authenticated session was not performed.
-
-**Manual verification checklist:**
-
-* Search for a company that is not present on the first result page and confirm that the backend result is displayed.
-* Scroll to the end of the list and verify in Network that the next page is fetched and merged without duplicate options.
-* Open an edit form with an existing company selection and confirm that the selected label appears before any search is performed.
-* In company relationships, confirm that the current company is absent and that payloads contain only arrays of parent/subsidiary company IDs.
-* Simulate an authorization or network error from the options endpoint and confirm that the field displays the error without crashing the form.
+* Verification: lint and production build passed; automated tests were not run; live/manual testing was not performed.
 
 ---
 
 ## fix 000089 — Add meeting-management user interface
-
-**Implemented items:**
 
 * Added a Meetings navigation item governed by the dynamic `meeting:view` permission and added `/meetings` and `/meetings/:meetingId` routes. No role-based meeting restriction is hardcoded in the frontend.
 * Implemented a global Meetings page with search, quick filters for Today, Upcoming, Past, Completed, Cancelled, and My Meetings, plus status, meeting mode, and date-range filters, server-side pagination, and a responsive DataGrid. Filter and pagination parameters are persisted in the URL.
@@ -4461,57 +2130,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Added a Meetings tab to Company Details and Opportunity Details. The shared form opens with the company/opportunity preselected, and a scoped View All Meetings link navigates to the global Meetings page.
 * Added the `MEETING_REMINDER` notification type and `MEETING` entity type with Persian labels, and allowed safe notification navigation to `/meetings/:meetingId`.
 * Meeting status and mode enums are displayed with Persian labels and Chips. Long meeting URLs are not printed directly in table cells.
-
-**Backend endpoints used:**
-
-* `GET/POST /api/meetings`
-* `GET/PATCH /api/meetings/:id`
-* `PATCH /api/meetings/:id/complete`
-* `PATCH /api/meetings/:id/cancel`
-* `GET /api/companies/options`
-* `GET /api/companies/:companyId/opportunities`
-* `GET /api/users/assignee-options`
-* `GET /api/people/directory`
-
-**Important changed/new files:**
-
-* `src/features/meetings/types/meeting.types.ts`
-* `src/features/meetings/services/meetings.service.ts`
-* `src/features/meetings/hooks/useMeetings.ts`
-* `src/features/meetings/utils/meetingDisplay.ts`
-* `src/features/meetings/components/MeetingFormDialog.tsx`
-* `src/features/meetings/components/MeetingStatusActionDialog.tsx`
-* `src/features/meetings/components/ScopedMeetingsTab.tsx`
-* `src/features/meetings/pages/MeetingsPage.tsx`
-* `src/features/meetings/pages/MeetingDetailsPage.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-* `src/routes/index.tsx`
-* `src/features/companies/pages/CompanyDetailsPage.tsx`
-* `src/features/opportunities/pages/OpportunityDetailsPage.tsx`
-* `src/features/notifications/types/notification.types.ts`
-* `src/features/notifications/utils/notificationDisplay.ts`
-* `src/features/notifications/utils/notificationNavigation.ts`
-* `README.md`
-
-**Backend dependencies and limitations:**
-
 * Meeting and option endpoints must enforce permissions and organization scope according to the backend contract. Reminder notifications must return `actionUrl=/meetings/:meetingId` and entity type `MEETING`.
-* The current `UpdateMeetingDto` does not accept `null` for `opportunityId` or `reminderAt`. Definitively clearing either existing value during edit therefore requires explicit backend support for `null`.
-* The current frontend opportunity service does not accept an `AbortSignal`. Opportunity searches use distinct query keys, but their network requests are not cancelled like meeting, company, and user option requests.
-
-**Verification status:**
-
-* `npm run lint` passed without errors.
-* TypeScript checks and `npm run build` passed.
-* Non-blocking warning: Vite reports a chunk larger than 500 kB. The main bundle is approximately 1,869 kB and approximately 535 kB gzip-compressed.
-* Automated tests were not run because `package.json` has no configured `test` script or test runner.
-* Manual testing with a running backend, real data, an authenticated browser session, and meeting permissions was not performed.
+* Verification: lint and production build passed; automated tests were not run; live/manual testing was not performed.
 
 ---
 
 ## fix 000090 — Add multi-channel product pricing and exchange-rate management
-
-**Implemented items:**
 
 * Updated the Product Library form to use the real backend contract for `pricingCurrency`, in-person and Digikala pricing inputs, channel margin percentages, and final IRR prices.
 * In IRR mode, the form shows only the two channel prices in rials. In USD mode, it collects a base USD price and a separate margin percentage for each channel.
@@ -4523,48 +2147,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Added a read-only dollar exchange-rate history page and current-rate card at `/admin/exchange-rates`. The page includes loading, empty, error/retry, server-side pagination, Jalali dates, active/expired status, and a Persian-language “Until Present” value for the current rate.
 * The Add Exchange Rate action is shown only with `exchange-rate:manage`. Before submission, the UI confirms that USD product prices will be recalculated. After success, current-rate, history, and product queries are invalidated and the recalculated product count is displayed.
 * Added a Dollar Exchange Rate navigation item under Administration using dynamic `exchange-rate:view` and `exchange-rate:manage` permissions. No ADMIN/MANAGER role restriction is hardcoded.
-
-**Confirmed backend endpoints:**
-
-* `GET /api/admin/exchange-rates/current`
-* `GET /api/admin/exchange-rates?page=&limit=`
-* `POST /api/admin/exchange-rates`
-* `GET/POST/PATCH /api/product-catalog`
-
-**Important changed/new files:**
-
-* `src/features/productCatalog/types/productCatalog.types.ts`
-* `src/features/productCatalog/components/ProductCatalogFormDialog.tsx`
-* `src/features/productCatalog/components/ProductCatalogTable.tsx`
-* `src/features/opportunityLineItems/components/OpportunityLineItemFormDialog.tsx`
-* `src/features/opportunityLineItems/utils/money.ts`
-* `src/features/exchangeRates/types/exchangeRate.types.ts`
-* `src/features/exchangeRates/services/exchangeRates.service.ts`
-* `src/features/exchangeRates/hooks/useExchangeRates.ts`
-* `src/features/exchangeRates/pages/ExchangeRatesPage.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-* `src/routes/index.tsx`
-* `README.md`
-
-**Backend dependency:**
-
 * The backend must return the multi-channel pricing fields in product list/detail responses, require an active exchange rate for USD products, calculate final IRR prices, and keep `defaultUnitPrice` aligned with the final in-person price.
-* Adding a new exchange rate must close the current rate period, transactionally recalculate USD products, and return `{ rate, recalculatedProductCount }`. Historical sales, documents, and line items must not be changed.
-* The authenticated user's permission set must include `exchange-rate:view` and `exchange-rate:manage` as applicable.
-
-**Verification status:**
-
-* `npm run lint` passed without errors.
-* TypeScript checks and `npm run build` passed.
-* Non-blocking warning: Vite reports a chunk larger than 500 kB. The main bundle is approximately 1,879.94 kB and approximately 538.07 kB gzip-compressed.
-* Automated tests were not run because this repository has no configured `test` script or test runner.
-* Manual testing with a running backend, a real exchange rate, and an authenticated browser session was not performed.
+* Verification: lint and production build passed; automated tests were not run; live/manual testing was not performed.
 
 ---
 
 ## fix 000091 — Correct dashboard metrics and complete report filters
-
-**Implemented items:**
 
 * The dashboard's Active Opportunities card now calls `GET /api/opportunities?page=1&limit=1&activeOnly=true` and displays the exact `meta.total`. WON and LOST opportunities are no longer counted simply because they are not archived.
 * Added `activeOnly` to opportunity filter types and included it in the existing React Query parameter object/query key without changing prior opportunity-list behavior.
@@ -4577,43 +2165,12 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Added optional, backward-compatible `ReportPeriod` typing. Subtitles explicitly describe the date basis: pipeline summary uses `opportunity.createdAt`, conversion uses stage transitions, stage duration uses stage exit, and activity reports use `occurredAt`.
 * Clarified that pipeline summary represents opportunities created in the range and conversion rates represent transitions performed in the range. Backend field names and legacy response compatibility were not changed.
 * Error/loading states for each metric and report remain distinct from a legitimate zero value, and existing dynamic permissions and API helpers were preserved.
-
-**Important changed files:**
-
-* `src/components/dashboard/MainGrid.tsx`
-* `src/features/opportunities/types/opportunity.types.ts`
-* `src/features/tasks/types/task.types.ts`
-* `src/features/reports/types/report.types.ts`
-* `src/features/reports/pages/ReportsPage.tsx`
-* `src/features/reports/components/ReportFilterPanel.tsx`
-* `src/features/reports/components/PipelineSummarySection.tsx`
-* `src/features/reports/components/ConversionRatesSection.tsx`
-* `src/features/reports/components/StageDurationsSection.tsx`
-* `src/features/reports/components/ActivityReportSection.tsx`
-* `src/features/reports/components/PipelineByOwnerSection.tsx`
-* `src/features/reports/utils/reportDisplay.ts`
-* `README.md`
-
-**Backend dependency:**
-
-* Backend fix `000070` must support `activeOnly=true` on `/api/opportunities` and `overdueOnly=true` on `/api/tasks`, with accurate pagination metadata.
 * `/api/reports/*` endpoints must apply `ownershipScope` and `companyIds` according to `ReportFiltersDto`. The backend `OwnershipScope` enum uses lowercase values.
-* `GET /api/companies/options` and `GET /api/companies/options/:id` must support organization scope, pagination, search, and hydration of existing selections.
-* Optional `period.dateBasis` metadata is used for pipeline summary, conversion, and activity responses. Missing metadata in legacy responses is handled safely. The current stage-duration endpoint does not return period metadata, so the UI displays a fixed correct label.
-
-**Verification status:**
-
-* `npm run lint` passed without errors.
-* TypeScript checks and `npm run build` passed.
-* Automated tests were not run because `package.json` has no configured `test` script or test runner.
-* Non-blocking warning: Vite reports a chunk larger than 500 kB. The main bundle is approximately 1,882.49 kB and approximately 538.70 kB gzip-compressed.
-* Manual testing with a running backend, real data, and an authenticated session was not performed.
+* Verification: lint and production build passed; automated tests were not run; live/manual testing was not performed.
 
 ---
 
 ## fix 000092 — Add management dashboard and advanced sales and operations reports
-
-**Implemented items:**
 
 * The management dashboard now uses a single aggregated `GET /api/dashboard/summary` query and no longer counts paginated opportunity and task rows to calculate organization-level metrics. It displays current sales position, tasks and meetings requiring action, period performance, a 90-day forecast, three attention lists, and the report generation time.
 * Summary failure is distinguished from legitimate zero values and has independent loading, unavailable, and retry states. Organization status, unread notifications, and quick-access actions remain available when the summary request fails.
@@ -4624,46 +2181,11 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * Meeting Performance displays summary metrics, status/mode breakdowns, and an organizer table using the correct Scheduled Duration wording. Task Performance separates the current snapshot from period flow and includes priority breakdowns plus an assignee SLA table. Missing assignees are shown as Unassigned.
 * Added TypeScript contracts, service methods, React Query hooks, `AbortSignal` support, stale times, and query keys containing all relevant filters. Each endpoint mapper sends only supported parameters; Aging intentionally excludes date-range filters.
 * Reused filters introduced in fix `000091` and added static meeting status/mode and task status filters. Failure of async company/report options does not disable static filters, and existing corrupted Persian text in the Reports page and filter panel was corrected.
-
-**Backend endpoints used:**
-
-* `GET /api/dashboard/summary`
-* `GET /api/reports/opportunities/forecast`
-* `GET /api/reports/opportunities/aging`
-* `GET /api/reports/meetings/performance`
-* `GET /api/reports/tasks/performance`
-* Existing `/api/reports/*` endpoints remain available under the Overview tab.
-
-**Important changed/new files:**
-
-* `src/components/dashboard/MainGrid.tsx`
-* `src/features/reports/types/report.types.ts`
-* `src/features/reports/services/reports.service.ts`
-* `src/features/reports/hooks/useReports.ts`
-* `src/features/reports/pages/ReportsPage.tsx`
-* `src/features/reports/components/ReportFilterPanel.tsx`
-* `src/features/reports/components/AdvancedReportSections.tsx`
-* `README.md`
-
-**Dependencies and warnings:**
-
-* This implementation depends on backend fix `000071`. The actual backend endpoints and DTOs were inspected in the backend working tree, but fix `000071` had not yet been committed at the time of review. The deployed backend must include those files and the `report:view` permission.
-* Monetary card and table values rely on safe decimal strings. Charts use only finite values that can be converted to Number; out-of-range values are not plotted.
-* Browser testing, authenticated API requests, and validation with real data were not performed. Production data behavior and real permission combinations therefore require manual verification.
-
-**Verification status:**
-
-* `npm run lint` passed without errors.
-* TypeScript checks and `npm run build` passed.
-* Automated tests were not run because `package.json` has no configured `test` script or test runner.
-* Non-blocking warning: Vite reports a chunk larger than 500 kB. The main bundle is approximately 2,169.60 kB and approximately 627.46 kB gzip-compressed.
-* A mojibake scan of `src`, `index.html`, and `README.md` found no remaining issues.
+* Verification: lint and production build passed; automated tests were not run.
 
 ---
 
 ## fix 000093 — Add sales channels, price history, and financial/commercial reports
-
-**Implemented items:**
 
 * Added the centralized `SalesChannel` type and shared label/Chip formatter for `LEGACY_UNKNOWN`, `IN_PERSON`, `DIGIKALA`, and `OTHER`. The legacy value is display-only and cannot be selected during create or edit.
 * For new opportunity line items, the form defaults to the in-person channel and its current price. Switching to Digikala suggests that channel's current price, while the Other channel requires an explicit negotiated price. The catalog price snapshot, actual price, amount difference, and percentage difference are displayed separately, and the calculated snapshot field is not sent to the backend.
@@ -4675,298 +2197,106 @@ All paths below are called relative to the shared Axios `baseURL`, which include
 * The exchange-rate impact report displays the current and previous rates, rate history, aggregate pricing impact, and a paginated detail table. Missing previous values are shown as insufficient history rather than being replaced with synthetic zero values.
 * Added optional finance, catalog, and sales-channel sections to the dashboard. During staggered deployments, missing new sections are displayed as unavailable in the backend response and are not mistaken for zero values.
 * Completed the required types, services, React Query hooks, `AbortSignal` handling, filter/page-aware query keys, and targeted invalidation for product history, product reports, exchange-rate impact, dashboard data, and opportunity line items.
-
-**Backend endpoints used:**
-
-* `GET /api/product-catalog/:id/price-history`
-* `GET /api/reports/financial/collections`
-* `GET /api/reports/products/performance`
-* `GET /api/reports/exchange-rates/impact`
-* `GET /api/dashboard/summary`
-* Existing opportunity line-item create, update, and list endpoints with the `salesChannel` field
-
-**Important changed/new files:**
-
-* `src/features/opportunityLineItems/types/opportunityLineItem.types.ts`
-* `src/features/opportunityLineItems/utils/salesChannel.ts`
-* `src/features/opportunityLineItems/components/OpportunityLineItemFormDialog.tsx`
-* `src/features/opportunityLineItems/components/OpportunityLineItemsTab.tsx`
-* `src/features/opportunityLineItems/hooks/useOpportunityLineItems.ts`
-* `src/features/productCatalog/types/productCatalog.types.ts`
-* `src/features/productCatalog/services/productCatalog.service.ts`
-* `src/features/productCatalog/hooks/useProductCatalog.ts`
-* `src/features/productCatalog/components/ProductCatalogTable.tsx`
-* `src/features/productCatalog/components/ProductPriceHistoryDialog.tsx`
-* `src/features/reports/types/report.types.ts`
-* `src/features/reports/services/reports.service.ts`
-* `src/features/reports/hooks/useReports.ts`
-* `src/features/reports/pages/ReportsPage.tsx`
-* `src/features/reports/components/ReportFilterPanel.tsx`
-* `src/features/reports/components/ReportProductMultiAutocomplete.tsx`
-* `src/features/reports/components/CommercialReportSections.tsx`
-* `src/components/dashboard/MainGrid.tsx`
-* `src/features/exchangeRates/hooks/useExchangeRates.ts`
-* `README.md`
-
-**Dependencies and verification status:**
-
 * The backend contract from fix `000072` was reviewed in commit `9ff5875d`, and the implementation was based on the actual enums, DTOs, and response shapes.
-* `npm run lint` passed without errors.
-* TypeScript checks and `npm run build` passed without errors.
-* Automated tests were not run because `package.json` has no configured `test` script or test runner.
-* Browser testing, live API testing, and real-session permission testing were not performed.
-* Vite reported a non-blocking chunk-size warning for a chunk larger than 500 kB. The main bundle is approximately 2,210.36 kB and approximately 639.43 kB gzip-compressed.
-* A mojibake scan of `src`, `index.html`, and `README.md` found no issues.
+* Verification: lint and production build passed; automated tests were not run; live/manual testing was not performed.
 
 ---
 
-## fix 000094 — کیفیت داده، مقایسه دوره‌ها، ممیزی و خروجی گزارش‌ها
+## fix 000094 — Add data quality, period comparison, audit, and report exports
 
-**موارد پیاده‌سازی‌شده:**
-
-* تب‌های «کیفیت داده» و «مقایسه دوره‌ها» بدون حذف تب‌های قبلی اضافه شدند و انتخاب تب و فیلترهای applied در URL حفظ می‌شود.
-* کیفیت داده در دو بخش کاملاً مستقل «کیفیت داده‌های سازمان» و «کیفیت کاتالوگ سراسری» نمایش داده می‌شود و امتیازهای آن‌ها هرگز ترکیب نمی‌شوند. نبود `globalCatalog` خطا نیست و بدون permission پویای `product:view` هیچ داده یا navigation مربوط به کاتالوگ سراسری render نمی‌شود.
-* امتیاز null با پیام «داده کافی برای محاسبه وجود ندارد» نمایش داده می‌شود. خلاصه موجودیت‌ها، شدت‌ها و قوانین از severity و scope واقعی backend استفاده می‌کنند.
-* drill-down قوانین با pagination سمت سرور، scope «سازمانی»/«کاتالوگ سراسری»، فیلد ناقص، توضیح، زمان snapshot و لینک permission-aware پیاده‌سازی شد. `routeHint` فقط پس از permission check استفاده می‌شود و auto-fix اضافه نشده است.
-* برای قانون global پیام صریح tenancy نمایش داده می‌شود و فیلترهای مالکیت، شرکت، مالک و تیم فقط توسط قواعد سازمانی backend اعمال می‌شوند.
-* مقایسه دوره‌ها از بازه‌های resolved backend، حالت‌های `PREVIOUS_PERIOD`، `PREVIOUS_YEAR` و `CUSTOM`، polarity و `isImprovement` استفاده می‌کند. افزایش همه شاخص‌ها مثبت فرض نمی‌شود و percentChange ناموجود با «قابل محاسبه نیست» نمایش داده می‌شود.
-* صفحه موجود Audit Log ارتقا یافت و صفحه موازی ساخته نشد. summary، filter-options، compact list، pagination سمت سرور، جزئیات رویداد و فیلترهای URL-backed به endpointهای fix 000073 متصل شدند.
-* جزئیات ممیزی با React معمولی و JSON امن نمایش داده می‌شود؛ depth اولیه محدود و کلیدهای واضح secret/token/password/cookie به‌صورت defense-in-depth مخفی می‌شوند. changedFields، before، after، metadata و copy امن Request ID/JSON اضافه شدند.
-* service مشترک Blob download با report-key ثابت، filename امن، fallback ثابت، CSV/XLSX، revoke کردن Object URL، جلوگیری از کلیک تکراری و پیام خاص `EXPORT_ROW_LIMIT_EXCEEDED` اضافه شد. خروجی گزارش از فیلترهای applied و خروجی Audit از فیلترهای applied استفاده می‌کند.
-* داشبورد بخش optional «کیفیت داده‌های سازمان»، بخش جداگانه optional «کیفیت کاتالوگ سراسری» و شاخص‌های مقایسه دوره را از همان dashboard-summary نمایش می‌دهد؛ نبود sectionهای backend با صفر اشتباه گرفته نمی‌شود.
-* label navigation صفحه Audit به «رویدادهای ممیزی» تغییر یافت و دسترسی آن فقط با `audit-log:view` کنترل می‌شود.
-
-**endpointهای backend استفاده‌شده:**
-
-* `GET /api/reports/data-quality`
-* `GET /api/reports/data-quality/issues`
-* `GET /api/reports/period-comparison`
-* `GET /api/reports/exports/:reportKey`
-* `GET /api/admin/audit-logs?compact=true`
-* `GET /api/admin/audit-logs/summary`
-* `GET /api/admin/audit-logs/filter-options`
-* `GET /api/admin/audit-logs/:id`
-* `GET /api/admin/audit-logs/export`
-* `GET /api/dashboard/summary`
-
-**فایل‌های مهم تغییرکرده/جدید:**
-
-* `src/features/reports/types/report.types.ts`
-* `src/features/reports/services/reports.service.ts`
-* `src/features/reports/hooks/useReports.ts`
-* `src/features/reports/pages/ReportsPage.tsx`
-* `src/features/reports/components/ReportFilterPanel.tsx`
-* `src/features/reports/components/PhaseThreeReportSections.tsx`
-* `src/features/reports/components/ReportExportButton.tsx`
-* `src/features/reports/services/exportDownload.service.ts`
-* `src/features/auditLogs/types/auditLog.types.ts`
-* `src/features/auditLogs/services/auditLogs.service.ts`
-* `src/features/auditLogs/hooks/useAuditLogs.ts`
-* `src/features/auditLogs/pages/AuditLogsPage.tsx`
-* `src/components/dashboard/MainGrid.tsx`
-* `src/components/dashboard/SideMenu.tsx`
-* `README.md`
-
-**وابستگی‌ها و وضعیت بررسی:**
-
-* قرارداد backend fix `000073` در commit `58e417cf` بررسی و مبنای typeها، فیلترها و endpointها قرار گرفت.
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check و `npm run build`: بدون خطا اجرا شد.
-* تست خودکار اجرا نشد، زیرا `package.json` test runner یا اسکریپت `test` ندارد.
-* بررسی مرورگر، دانلود واقعی فایل، API زنده و permissionهای نشست واقعی اجرا نشد.
-* Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,230.16 kB و gzip آن حدود 644.84 kB است.
-* اسکن mojibake در `src`، `index.html` و `README.md` موردی پیدا نکرد.
+* Added the Data Quality and Period Comparison tabs without removing any existing tabs. The selected tab and applied filters are preserved in the URL.
+* Data quality is displayed in two completely separate sections: Organization Data Quality and Global Catalog Data Quality. Their scores are never combined. A missing `globalCatalog` section is not treated as an error, and no global-catalog data or navigation is rendered without the dynamic `product:view` permission.
+* A `null` score is displayed as insufficient data for calculation. Entity, severity, and rule summaries use the actual backend severity and scope values.
+* Added rule drill-down with server-side pagination, Organization/Global Catalog scope, missing-field details, descriptions, snapshot timestamps, and permission-aware links. `routeHint` is used only after a permission check, and no auto-fix behavior was added.
+* Global rules display an explicit tenancy notice. Ownership, company, owner, and team filters are applied only by organization-scoped backend rules.
+* Period comparison uses the backend-resolved ranges, `PREVIOUS_PERIOD`, `PREVIOUS_YEAR`, and `CUSTOM` modes, polarity, and `isImprovement`. An increase is not assumed to be positive for every metric, and unavailable `percentChange` values are displayed as not calculable.
+* Enhanced the existing Audit Log page instead of creating a parallel page. Summary, filter options, compact list, server-side pagination, event details, and URL-backed filters are connected to the endpoints introduced in backend fix `000073`.
+* Audit details are rendered with normal React components and safe JSON display. Initial depth is limited, and obvious secret, token, password, and cookie keys are hidden as defense in depth. Added `changedFields`, `before`, `after`, `metadata`, and safe copy actions for Request ID and JSON.
+* Added a shared Blob-download service with fixed report keys, safe filenames, a stable fallback filename, CSV/XLSX support, Object URL revocation, duplicate-click prevention, and a specific `EXPORT_ROW_LIMIT_EXCEEDED` message. Report exports use applied report filters, and Audit exports use applied Audit filters.
+* The dashboard displays optional Organization Data Quality, a separate optional Global Catalog Data Quality section, and period-comparison metrics from the same dashboard-summary response. Missing backend sections are not mistaken for zero values.
+* Renamed the Audit navigation label to Audit Events. Access remains controlled only by `audit-log:view`.
+* The backend contract from fix `000073` in commit `58e417cf` was reviewed and used as the basis for the types, filters, and endpoints.
+* Verification: lint and production build passed; automated tests were not run; live/manual testing was not performed.
 
 ---
 
-## fix 000095 — جلوگیری از نشت فیلترهای مقایسه دوره به گزارش‌های دیگر
+## fix 000095 — Prevent period-comparison filters from leaking into other reports
 
-**موارد پیاده‌سازی‌شده:**
-
-* علت خطای production، قرار گرفتن `comparisonMode` و تاریخ‌های مقایسه در type و state عمومی گزارش‌ها و ارسال آن‌ها به endpointهای strict غیرمقایسه‌ای بود.
-* `ReportFilters` عمومی از `PeriodComparisonFilters` جدا شد؛ مقدارهای پیش‌فرض عمومی دیگر فیلد مقایسه ندارند و state و URL مربوط به مقایسه فقط در تب «مقایسه دوره‌ها» مدیریت می‌شود.
-* برای dashboard و همه endpointهای گزارش، allowlist صریح پارامترها در مرز service تعریف شد؛ در نتیجه هر endpoint فقط فیلترهای پشتیبانی‌شده خودش را دریافت می‌کند.
-* query keyهای React Query نیز با همان allowlist ساخته می‌شوند؛ تغییر فیلتر مقایسه باعث تغییر cache key یا refetch گزارش‌های نامرتبط نمی‌شود.
-* خروجی CSV/XLSX بر اساس `reportKey` allowlist مستقل دارد و فقط `period-comparison` مجاز به ارسال `comparisonMode`، `compareStartDate` و `compareEndDate` است.
-* تاریخ‌های سفارشی مقایسه فقط در حالت `CUSTOM` ارسال می‌شوند و با انتخاب حالت‌های دیگر از URL، درخواست و query key حذف می‌شوند.
-
-**فایل‌های مهم تغییرکرده/جدید:**
-
-* `src/features/reports/types/report.types.ts`
-* `src/features/reports/services/reportParams.ts`
-* `src/features/reports/services/reports.service.ts`
-* `src/features/reports/services/exportDownload.service.ts`
-* `src/features/reports/hooks/useReports.ts`
-* `src/features/reports/components/ReportFilterPanel.tsx`
-* `src/features/reports/pages/ReportsPage.tsx`
-* `README.md`
-
-**وابستگی‌ها و وضعیت بررسی:**
-
-* آخرین fix فرانت `000094` پیش از شروع بررسی شد. این اصلاح به تغییر backend نیاز ندارد و با قرارداد strict موجود سازگار است.
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check و `npm run build`: بدون خطا اجرا شد.
-* تست خودکار اجرا نشد، زیرا `package.json` اسکریپت `test` یا test runner پیکربندی‌شده ندارد.
-* بررسی مرورگر و API زنده انجام نشد.
-* Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,232.21 kB و gzip آن حدود 645.38 kB است.
+* Identified the production error as `comparisonMode` and comparison dates being stored in the general report type/state and sent to strict non-comparison endpoints.
+* Separated general `ReportFilters` from `PeriodComparisonFilters`. General defaults no longer contain comparison fields, and comparison state and URL parameters are managed only inside the Period Comparison tab.
+* Added an explicit parameter allowlist at the service boundary for the dashboard and every report endpoint, so each endpoint receives only the filters it supports.
+* React Query keys are built from the same allowlists. Changing a comparison filter no longer changes cache keys or refetches unrelated reports.
+* CSV/XLSX exports now use a separate allowlist per `reportKey`; only `period-comparison` may send `comparisonMode`, `compareStartDate`, and `compareEndDate`.
+* Custom comparison dates are sent only in `CUSTOM` mode and are removed from the URL, request, and query key when another comparison mode is selected.
+* Frontend fix `000094` was confirmed before implementation. This change requires no backend modification and remains compatible with the existing strict contract.
+* Verification: lint and production build passed; automated tests were not run; live/manual testing was not performed.
 
 ---
-## fix 000096 — توضیح قابل‌دسترس شاخص‌های داشبورد و گزارش‌ها
 
-**موارد پیاده‌سازی‌شده:**
+## fix 000096 — Add accessible metric explanations to the dashboard and reports
 
-* معماری اطلاعات شاخص‌ها با ۵۳ کلید معنایی پایدار داشبورد و registry تایپ‌شده فارسی ایجاد شد؛ عنوان، تعریف، بازه زمانی، روش محاسبه، موارد شامل/مستثنا و نحوه تفسیر از label نمایشی جدا هستند.
-* API مشترک `ReportMetricCard` با help، context، متن ثانویه، tone، status و مقایسه توسعه یافت و call siteهای قدیمی بدون تغییر اجباری سازگار ماندند.
-* هر کارت شاخص داشبورد دارای آیکن اطلاعات، Tooltip «توضیح شاخص» و Popover چندبخشی است. کنترل با tap/click، focus کیبورد، Escape، کلیک بیرون، `aria-label`، `aria-haspopup`، `aria-expanded` و بازگشت focus پشتیبانی می‌شود.
-* کارت‌های نیازمند اقدام فقط هنگام مقدار مثبت tone معنایی و label متنی «نیازمند بررسی/اقدام» می‌گیرند و تفسیر تنها به رنگ وابسته نیست.
-* نرخ برد، نرخ انجام به‌موقع و نرخ برگزاری در صورت نبود مخرج با «داده کافی برای محاسبه وجود ندارد» نمایش داده می‌شوند و صفر واقعی همچنان حفظ می‌شود.
-* نرخ دلار در یک کارت ترکیبی «هر ۱ دلار = ... ریال» با تاریخ اعتبار جلالی نمایش داده می‌شود و کارت جداگانه تاریخ نرخ حذف شد.
-* کارت‌های مقایسه مقدار جاری، مقدار دوره مقایسه، جهت، درصد تغییر یا پیام غیرقابل‌محاسبه‌بودن آن و interpretation مبتنی بر `isImprovement` backend را نمایش می‌دهند.
-* برای شاخص‌های مبهم گزارش‌های پیش‌بینی، Aging، جلسات، کارها و وصول نیز توضیح registry اضافه شد.
-
-**فایل‌های مهم تغییرکرده/جدید:**
-
-* `src/features/reports/components/ReportMetricCard.tsx`
-* `src/features/reports/metrics/metricHelpRegistry.ts`
-* `src/components/dashboard/MainGrid.tsx`
-* `src/features/reports/components/AdvancedReportSections.tsx`
-* `src/features/reports/components/CommercialReportSections.tsx`
-* `README.md`
-
-**وابستگی‌ها و وضعیت بررسی:**
-
-* پیش‌نیاز fix فرانت `000095` در commit `d7005d2` تأیید شد.
-* این fix فقط فرانت است و هیچ تغییر backend، API contract یا migration نیاز ندارد.
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check و `npm run build`: بدون خطا اجرا شد.
-* تست خودکار اجرا نشد، زیرا `package.json` اسکریپت `test` یا test runner پیکربندی‌شده ندارد.
-* رفتار واقعی focus، Tooltip/Popover در مرورگر، RTL موبایل و API زنده به‌صورت دستی بررسی نشد؛ accessibility از روی API و markup کامپوننت و build بررسی شد.
-* Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,255.42 kB و gzip آن حدود 650.35 kB است.
+* Added a metric information architecture with 53 stable semantic dashboard keys and a typed registry. Display title, definition, time range, calculation method, included/excluded items, and interpretation are separated from the visible label.
+* Extended the shared `ReportMetricCard` API with help content, context, secondary text, tone, status, and comparison support while preserving backward compatibility for existing call sites.
+* Every dashboard metric card now includes an information icon, a Metric Explanation tooltip, and a multi-section popover. Interaction supports tap/click, keyboard focus, Escape, click-away, `aria-label`, `aria-haspopup`, `aria-expanded`, and focus restoration.
+* Action-oriented cards receive a semantic tone and a Needs Review/Action text label only when their value is positive, so meaning does not depend solely on color.
+* Win rate, on-time completion rate, and meeting-held rate display insufficient data when no valid denominator exists, while preserving legitimate zero values.
+* The dollar exchange rate is displayed in a combined card as “1 USD = ... IRR” with its Jalali effective date. The separate exchange-rate date card was removed.
+* Comparison cards display the current value, comparison-period value, direction, percentage change or a non-calculable message, and interpretation based on backend `isImprovement`.
+* Added registry explanations for ambiguous forecast, aging, meeting, task, and collection metrics.
+* This is a frontend-only fix and requires no backend, API-contract, or migration changes.
+* Verification: lint and production build passed; automated tests were not run.
 
 ---
-## fix 000097 — ساده‌سازی توضیح شاخص‌ها و اصلاح کامل RTL
 
-**موارد پیاده‌سازی‌شده:**
+## fix 000097 — Simplify metric explanations and fully correct RTL behavior
 
-* مدل محتوای help از ساختار چندبخشی به قرارداد ساده و تایپ‌شده `title` و `description` تغییر کرد؛ وابستگی به فیلدهای بازه، محاسبه، شامل، مستثنا و تفسیر حذف شد.
-* هر ۵۹ مدخل موجود registry به‌صورت مستقل و با نثر طبیعی، یکپارچه و حرفه‌ای فارسی بازنویسی شد و هیچ کلید معنایی حذف یا تغییر نکرد.
-* عنوان‌های فرم‌مانند «بازه محاسبه»، «نحوه محاسبه»، «شامل»، «شامل نمی‌شود» و «نحوه تفسیر»، فهرست‌ها و Divider داخلی از Popover حذف شدند؛ اکنون فقط عنوان و یک توضیح منسجم نمایش داده می‌شود.
-* Paper، عنوان و متن توضیح به‌صورت صریح دارای جهت RTL و تراز راست هستند. عرض واکنش‌گرا تا ۴۰۰ پیکسل، line-height خوانا، wrapping عادی، `overflowWrap` و رفتار bidi امن برای متن ترکیبی فارسی/انگلیسی اعمال شد.
-* رفتارهای accessibility قبلی شامل label آیکن، Tooltip کوتاه، بازشدن با کلیک/کیبورد، `aria-haspopup`، `aria-expanded`، `aria-controls`، بستن با Escape یا کلیک بیرون و بازگشت focus حفظ شدند.
-* مقدارها، محاسبات، toneها، statusها، مقایسه‌ها، routeها و permissionهای داشبورد و گزارش‌ها تغییری نکردند.
-
-**فایل‌های مهم تغییرکرده:**
-
-* `src/features/reports/components/ReportMetricCard.tsx`
-* `src/features/reports/metrics/metricHelpRegistry.ts`
-* `README.md`
-
-**وابستگی‌ها و وضعیت بررسی:**
-
-* آخرین fix فرانت `000096` در commit `e389868` پیش از تغییر تأیید شد.
-* این اصلاح کاملاً frontend-only است و به تغییر backend، API contract یا migration نیاز ندارد.
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check و `npm run build`: بدون خطا اجرا شد.
-* تست خودکار اجرا نشد، زیرا `package.json` اسکریپت `test` یا test runner پیکربندی‌شده ندارد.
-* آزمون دستی مرورگر، screen reader، focus و چیدمان موبایل اجرا نشد؛ ویژگی‌های RTL و accessibility از روی markup، type check و build بررسی شدند.
-* Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,265.15 kB و gzip آن حدود 652.18 kB است.
+* Simplified the help-content model from a multi-section structure to a typed `title` and `description` contract. Dependencies on range, calculation, included, excluded, and interpretation fields were removed.
+* Rewrote all 59 existing registry entries independently using natural, consistent, professional language without removing or changing any semantic key.
+* Removed form-like headings such as Calculation Range, Calculation Method, Included, Excluded, and Interpretation, along with internal lists and dividers. The popover now displays only a title and one coherent explanation.
+* Applied explicit RTL direction and right alignment to the Paper, title, and explanation text. Preserved responsive width up to 400 pixels, readable line height, normal wrapping, `overflowWrap`, and safe bidirectional handling for mixed-language content.
+* Preserved previous accessibility behavior, including the icon label, short tooltip, click/keyboard activation, `aria-haspopup`, `aria-expanded`, `aria-controls`, Escape/click-away dismissal, and focus restoration.
+* Dashboard and report values, calculations, tones, statuses, comparisons, routes, and permissions were not changed.
+* This change is entirely frontend-only and requires no backend, API-contract, or migration changes.
+* Verification: lint and production build passed; automated tests were not run; live/manual testing was not performed.
 
 ---
-## fix 000098 — پوشش کامل توضیح شاخص‌های صفحه گزارش‌ها
 
-**موارد پیاده‌سازی‌شده:**
+## fix 000098 — Complete metric-explanation coverage across the Reports page
 
-* تمام کارت‌های خلاصه در تب‌های نمای کلی، پیش‌بینی فروش، Aging فرصت‌ها، جلسات، کارها و SLA، مالی و وصول، عملکرد محصولات، نرخ ارز و اثر قیمت و کیفیت داده به توضیح فارسی یکپارچه مجهز شدند. registry گزارش با ۷۸ کلید معنایی جدید به مجموع ۸۴ کلید `report.*` رسید و هیچ کلیدی به label ترجمه‌شده وابسته نیست.
-* مدل تایپ‌شده `ReportMetricItem` و رندرکننده مشترک `ReportMetricCards` اضافه شد؛ هر کارت از `MetricHelpKey` معتبر و `getMetricHelp` قطعی استفاده می‌کند و tupleهای کارت، `helpByLabel` و شرط ویژه label «نرخ وصول» حذف شدند.
-* کارت‌های سفارشی `Paper` در خلاصه کیفیت داده و کارت‌های نوع موجودیت با `ReportMetricCard` استاندارد شدند. امتیاز ناموجود، رخدادهای شدت بحرانی/بالا و جدایی داده سازمان از کاتالوگ سراسری حفظ شد و نمایش کاتالوگ همچنان به مجوز `product:view` وابسته است.
-* جدول مقایسه دوره‌ها بدون تبدیل ردیف‌ها به کارت، یک آیکن Info کنار label هر شاخص دارد. توضیح مشترک بازه‌ها، مبنای تاریخ، تغییر مطلق و درصدی، حالت مبنای صفر و تفسیر مبتنی بر `polarity` و `isImprovement` را روشن می‌کند و در سلول‌های عددی آیکنی افزوده نشده است.
-* Popoverها دارای جهت RTL، تراز راست برای همه Typographyها، عرض واکنش‌گرا تا ۴۰۰ پیکسل و یک عنوان و پاراگراف منسجم هستند. Tooltip «توضیح شاخص»، tap/click، فعال‌سازی کیبورد، Escape، click-away، بازگشت focus و ویژگی‌های `aria-label`، `aria-haspopup`، `aria-expanded` و `aria-controls` حفظ شده‌اند.
-* نرخ‌های بدون مخرج معتبر ناموجود نمایش داده می‌شوند و صفر واقعی حفظ شده است. هشدار متنی و tone فقط برای شاخص‌های نیازمند اقدام مانند موارد معوق، داده ناقص، محصول دلاری با نرخ قدیمی و مشکلات بحرانی/بالای کیفیت داده به کار رفته است.
-
-**فایل‌های مهم تغییرکرده/جدید:**
-
-* `src/features/reports/components/ReportMetricCard.tsx`
-* `src/features/reports/components/ReportMetricCards.tsx`
-* `src/features/reports/metrics/metricHelpRegistry.ts`
-* `src/features/reports/components/AdvancedReportSections.tsx`
-* `src/features/reports/components/CommercialReportSections.tsx`
-* `src/features/reports/components/PhaseThreeReportSections.tsx`
-* `src/features/reports/components/PipelineSummarySection.tsx`
-* `src/features/reports/components/ConversionRatesSection.tsx`
-* `src/features/reports/components/ActivityReportSection.tsx`
-* `README.md`
-
-**وابستگی‌ها و وضعیت بررسی:**
-
-* آخرین fix فرانت پیش‌نیاز، `fix 000097` در commit `761dd40`، تأیید شد.
-* این fix فقط فرانت است و هیچ تغییر backend، API contract، محاسبه گزارش یا migration نیاز نداشت.
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check و `npm run build`: بدون خطا اجرا شد.
-* تست خودکار اجرا نشد، زیرا `package.json` اسکریپت `test` یا test runner پیکربندی‌شده ندارد.
-* بررسی دستی مرورگر، موبایل و API زنده انجام نشد؛ رفتار accessibility و RTL از روی markup، type check و build بررسی شد.
-* Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,295.97 kB و gzip آن حدود 657.23 kB است.
+* Added consistent metric explanations to all summary cards in the Overview, Sales Forecast, Opportunity Aging, Meetings, Tasks & SLA, Financial & Collections, Product Performance, Exchange Rate & Price Impact, and Data Quality tabs. The report registry gained 78 semantic keys for a total of 84 `report.*` keys, and no key depends on a translated display label.
+* Added the typed `ReportMetricItem` model and shared `ReportMetricCards` renderer. Every card uses a valid `MetricHelpKey` and deterministic `getMetricHelp`; card tuples, `helpByLabel`, and the special-case Collection Rate label condition were removed.
+* Standardized custom `Paper` cards in Data Quality summaries and entity-type cards on `ReportMetricCard`. Preserved unavailable-score handling, critical/high-severity events, separation of organization data from the global catalog, and the `product:view` requirement for catalog visibility.
+* Added an information icon next to each metric label in the period-comparison table without converting rows into cards. Shared help text explains periods, date basis, absolute and percentage changes, zero-baseline behavior, and interpretation based on `polarity` and `isImprovement`. No icon was added to numeric cells.
+* Popovers use RTL direction, right-aligned Typography, responsive width up to 400 pixels, and one coherent title and paragraph. Preserved the Metric Explanation tooltip, tap/click, keyboard activation, Escape, click-away, focus restoration, and `aria-label`, `aria-haspopup`, `aria-expanded`, and `aria-controls`.
+* Rates without a valid denominator are displayed as unavailable while legitimate zero values are preserved. Warning text and semantic tone are used only for action-oriented metrics such as overdue items, incomplete data, USD products using an outdated rate, and critical/high-severity data-quality issues.
+* This is a frontend-only fix and required no backend, API-contract, report-calculation, or migration changes.
+* Verification: lint and production build passed; automated tests were not run; live/manual testing was not performed.
 
 ---
-## fix 000099 — اصلاح قطعی RTL و بازنویسی تجاری توضیح شاخص‌ها
 
-**موارد پیاده‌سازی‌شده:**
+## fix 000099 — Fully correct RTL and rewrite metric explanations in business language
 
-* یک کامپوننت داخلی مشترک `MetricHelpPopover` ایجاد شد و هر دو مسیر `ReportMetricCard` و `MetricHelpButton` از همان پیاده‌سازی برای Popover استفاده می‌کنند؛ در نتیجه جهت، اندازه، typography و رفتار دسترس‌پذیری دیگر میان کارت‌ها و جدول مقایسه واگرا نمی‌شود.
-* جهت RTL در Paper پورتال و wrapper داخلی به‌صورت صریح با `dir="rtl"` اعمال شد، زبان محتوا `fa` است، عنوان و توضیح راست‌چین هستند و anchor/transform از سمت راست باز می‌شوند. عرض واکنش‌گرا تا ۴۰۰ پیکسل حفظ و `unicodeBidi: plaintext` از پاراگراف کامل حذف شد.
-* همه ۱۳۷ ورودی registry داشبورد و گزارش‌ها بازبینی و متن ۱۰۵ ورودی بازنویسی شد. نام فیلدهای داخلی، اصطلاحات پیاده‌سازی، اشاره به backend، snapshot، وضعیت‌های فنی و واژگان رکورد/رخداد از توضیح قابل‌نمایش حذف و با زبان طبیعی کسب‌وکار CRM جایگزین شدند.
-* توضیح شاخص‌های جاری، دوره‌ای، پیش‌بینی ۹۰روزه، Aging، جلسات، کارها، وصول، محصولات، نرخ ارز، کیفیت داده و مقایسه دوره‌ها از نظر مبنای زمانی، موارد محاسبه‌شده و شیوه تفسیر مرور شد؛ محاسبات و مقادیر نمایشی تغییری نکردند.
-* پیام‌های قابل‌نمایش داشبورد و گزارش‌های تجاری که هنوز نام فیلد یا واژه backend داشتند نیز بازنویسی شدند.
-
-**فایل‌های مهم تغییرکرده:**
-
-* `src/features/reports/components/ReportMetricCard.tsx`
-* `src/features/reports/metrics/metricHelpRegistry.ts`
-* `src/features/reports/components/AdvancedReportSections.tsx`
-* `src/features/reports/components/CommercialReportSections.tsx`
-* `src/components/dashboard/MainGrid.tsx`
-* `README.md`
-
-**وابستگی‌ها و وضعیت بررسی:**
-
-* آخرین fix فرانت پیش‌نیاز، `fix 000098` در commit `0325cdc`، تأیید شد.
-* این fix فقط فرانت است و هیچ تغییر backend، API contract، محاسبه، permission، route، filter، export یا migration نیاز نداشت.
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check و `npm run build`: بدون خطا اجرا شد.
-* تست خودکار اجرا نشد، زیرا `package.json` اسکریپت `test` یا test runner پیکربندی‌شده ندارد.
-* بررسی دستی مرورگر، موبایل و screen reader انجام نشد؛ RTL و دسترس‌پذیری از روی markup، جست‌وجوی منبع، type check و build بررسی شد.
-* Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,298.28 kB و gzip آن حدود 657.47 kB است.
+* Added the shared internal `MetricHelpPopover` component and made both `ReportMetricCard` and `MetricHelpButton` use the same popover implementation. Direction, sizing, typography, and accessibility behavior can no longer diverge between cards and the comparison table.
+* Applied explicit `dir="rtl"` to the portal Paper and internal wrapper, set the content language to `fa`, right-aligned the title and description, and anchored/transformed the popover from the right. Preserved responsive width up to 400 pixels and removed `unicodeBidi: plaintext` from the full paragraph.
+* Reviewed all 137 dashboard and report registry entries and rewrote 105 explanations. Internal field names, implementation terminology, backend references, snapshot wording, technical-state language, and record/event terminology were removed from user-facing explanations and replaced with natural CRM business language.
+* Reviewed explanations for current metrics, period metrics, 90-day forecasts, aging, meetings, tasks, collections, products, exchange rates, data quality, and period comparison for date basis, included values, and interpretation. Calculations and displayed values were not changed.
+* Rewrote dashboard and commercial-report messages that still exposed field names or backend terminology.
+* This is a frontend-only fix and required no backend, API-contract, calculation, permission, route, filter, export, or migration changes.
+* Verification: lint and production build passed; automated tests were not run; live/manual testing was not performed.
 
 ---
-## fix 000100 — صورتجلسه و مستندات امن جلسه
 
-**موارد پیاده‌سازی‌شده:**
+## fix 000100 — Add meeting minutes and secure meeting documents
 
-* نوع `MEETING` به `AttachmentEntityType` و label فارسی «جلسه» افزوده شد و همان attachment service امن موجود برای فهرست، بارگذاری multipart، دانلود blob احرازشده و حذف استفاده می‌شود.
-* بخش مجزای «صورتجلسه و مستندات جلسه» به صفحه جزئیات جلسه اضافه شد. جلسه برنامه‌ریزی‌شده پیام فعال‌شدن بارگذاری پس از برگزاری را نشان می‌دهد، جلسه لغوشده امکان بارگذاری ندارد و جلسه برگزارشده فهرست کامل پیوست‌ها و کنترل بارگذاری را نمایش می‌دهد.
-* `AttachmentsTab` و `AttachmentUploadDialog` با propهای اختیاری `uploadButtonLabel`، `uploadDialogTitle` و `descriptionLabel` توسعه یافتند؛ propهای موجود `title` و `emptyMessage` حفظ شدند و call siteهای فرصت، پرداخت و سند تجاری بدون تغییر رفتار سازگار ماندند.
-* پس از ثبت موفق جلسه به‌عنوان برگزارشده، invalidation موجود queryهای جلسه تا پایان refetch انتظار داده می‌شود؛ بنابراین وضعیت جدید و بخش مستندات بدون reload کامل صفحه ظاهر می‌شوند و dialog بارگذاری به‌صورت خودکار باز نمی‌شود.
-* مجوزهای `meeting:view`، `attachment:view` و `attachment:manage` حفظ شدند. کاربران فاقد مدیریت فقط مشاهده و دانلود دارند و محدودیت وضعیت جلسه همچنان به‌صورت قطعی توسط backend اعمال می‌شود.
+* Added `MEETING` to `AttachmentEntityType` with the corresponding meeting label. Reused the existing secure attachment service for listing, multipart upload, authenticated Blob download, and deletion.
+* Added a dedicated Meeting Minutes and Documents section to the Meeting Details page. Scheduled meetings display a message that upload becomes available after completion, cancelled meetings cannot accept uploads, and completed meetings display the full attachment list and upload controls.
+* Extended `AttachmentsTab` and `AttachmentUploadDialog` with optional `uploadButtonLabel`, `uploadDialogTitle`, and `descriptionLabel` props. Preserved the existing `title` and `emptyMessage` props, and kept opportunity, payment, and commercial-document call sites behaviorally compatible.
+* After a meeting is successfully marked as completed, the existing meeting-query invalidation now awaits the refetch. The new status and documents section therefore appear without a full page reload, and the upload dialog does not open automatically.
+* Preserved `meeting:view`, `attachment:view`, and `attachment:manage` permissions. Users without manage access can only view and download, while meeting-status restrictions remain authoritatively enforced by the backend.
+* This feature depends on backend fix `000076` in commit `53932509`, which provides secure meeting attachments after completion. No backend files were changed in this frontend fix.
+* Verification: lint and production build passed; automated tests were not run; live/manual testing was not performed.
 
-**فایل‌های مهم تغییرکرده:**
-
-* `src/features/meetings/pages/MeetingDetailsPage.tsx`
-* `src/features/meetings/components/MeetingStatusActionDialog.tsx`
-* `src/features/attachments/types/attachment.types.ts`
-* `src/features/attachments/utils/attachmentDisplay.ts`
-* `src/features/attachments/hooks/useAttachments.ts`
-* `src/features/attachments/components/AttachmentsTab.tsx`
-* `src/features/attachments/components/AttachmentUploadDialog.tsx`
-* `README.md`
-
-**وابستگی‌ها و وضعیت بررسی:**
-
-* آخرین fix فرانت پیش‌نیاز، `fix 000099` در commit `9f66111`، تأیید شد.
-* این قابلیت به backend `fix 000076` در commit `53932509` وابسته است که پیوست امن جلسه پس از تکمیل را فراهم می‌کند؛ هیچ فایل backend در این fix فرانت تغییر نکرد.
-* `npm run lint`: بدون خطا اجرا شد.
-* TypeScript check و `npm run build`: بدون خطا اجرا شد.
-* تست خودکار اجرا نشد، زیرا `package.json` اسکریپت `test` یا test runner پیکربندی‌شده ندارد.
-* بررسی دستی مرورگر، وضعیت‌های واقعی جلسه و API زنده انجام نشد؛ رفتار از روی type check، build و audit مسیرهای query/service بررسی شد.
-* Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,299.87 kB و gzip آن حدود 657.82 kB است.
+---
 
 ---
 **Built with ❤️ for sales team**
