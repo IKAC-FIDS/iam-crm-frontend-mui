@@ -2298,6 +2298,34 @@ The fix history below documents what changed in each numbered fix.
 
 ---
 
+## fix 000101 — عملیات مستقیم جلسات و دسترسی به مستندات از فهرست
+
+* ستون عملیات صفحه سراسری جلسات از دکمه متنی به `RowActions` مشترک و کنترل‌های فقط‌آیکن تبدیل شد؛ Tooltip و `aria-label` فارسی، توقف انتشار رویداد، وضعیت غیرفعال و منوی عملیات بیشتر از همان الگوی استاندارد DataGrid استفاده می‌کنند.
+* عملیات پایدار مشاهده، ویرایش، ثبت به‌عنوان برگزارشده، لغو و «صورتجلسه و مستندات» به هر ردیف اضافه شد. مشاهده و عملیات اصلی به‌صورت inline و عملیات اضافی در منوی overflow همراه آیکن نمایش داده می‌شوند؛ ستون عملیات ۱۴۸ پیکسل، وسط‌چین و فاقد sort/filter/column-menu است.
+* برای جلسه برنامه‌ریزی‌شده، مشاهده همیشه در دسترس است و ویرایش، تکمیل و لغو فقط با permissionهای `meeting:update`، `meeting:complete` و `meeting:cancel` ظاهر می‌شوند. جلسه برگزارشده فقط مشاهده و مستندات را با `attachment:view` ارائه می‌کند و جلسه لغوشده هیچ transition یا ویرایش جدیدی ندارد.
+* تکمیل و لغو مستقیم از فهرست، `MeetingStatusActionDialog` موجود را با ورودی یادداشت/دلیل، نمایش خطای backend، loading، toast موفقیت و invalidation فعلی جلسات، داشبورد و اعلان‌ها بازاستفاده می‌کند؛ تغییر وضعیت بدون تأیید انجام نمی‌شود.
+* ویرایش مستقیم، `MeetingFormDialog` موجود را برای همان ردیف باز می‌کند و پس از موفقیت از invalidation فعلی React Query برای تازه‌سازی فهرست استفاده می‌شود.
+* کامپوننت واکنش‌گرای `MeetingAttachmentsDialog` اضافه شد که عنوان جلسه را نمایش می‌دهد و `AttachmentsTab` موجود را با `entityType="MEETING"` بازاستفاده می‌کند. فهرست، دانلود، upload، delete، pagination و دانلود امن دوباره پیاده‌سازی نشده‌اند.
+* دسترسی مشاهده/دانلود مستندات با `attachment:view` و upload/delete با `attachment:manage` داخل زیرساخت مشترک کنترل می‌شود. اقدام مستندات فقط برای جلسه برگزارشده نمایش داده می‌شود و بخش موجود در صفحه جزئیات جلسه بدون تغییر باقی ماند.
+
+**فایل‌های مهم تغییرکرده/جدید:**
+
+* `src/features/meetings/pages/MeetingsPage.tsx`
+* `src/features/meetings/components/MeetingAttachmentsDialog.tsx`
+* `README.md`
+
+**وابستگی‌ها و وضعیت بررسی:**
+
+* آخرین پیاده‌سازی مستندات جلسه در commit تاریخی با برچسب `fix 0000100` تأیید شد و شماره یا تاریخچه آن بازنویسی نشد.
+* این fix به backend fix `000076` و قرارداد امن پیوست‌های جلسه موجود وابسته است؛ هیچ فایل backend، API contract یا migration تغییر نکرد.
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check و `npm run build`: بدون خطا اجرا شد.
+* تست خودکار اجرا نشد، زیرا `package.json` اسکریپت `test` یا test runner پیکربندی‌شده ندارد.
+* تست دستی مرورگر، permission نشست واقعی، transition وضعیت و upload/download واقعی انجام نشد.
+* Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,302.43 kB و gzip آن حدود 658.34 kB است.
+
+---
+
 ---
 **Built with ❤️ for sales team**
 
