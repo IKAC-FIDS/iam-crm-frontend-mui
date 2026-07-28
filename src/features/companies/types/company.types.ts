@@ -128,6 +128,7 @@ export interface Company {
   owner?: CompanyOwner | null;
   headOfficeCity?: string | null;
   website?: string | null;
+  centralPhone?: string | null;
   source?: string | null;
   registrationNumber?: string | null;
   nationalId?: string | null;
@@ -164,6 +165,7 @@ export type CompanyListItem = Pick<
   | 'priority'
   | 'owner'
   | 'headOfficeCity'
+  | 'centralPhone'
   | 'updatedAt'
   | 'isArchived'
   | 'archived'
@@ -171,7 +173,7 @@ export type CompanyListItem = Pick<
   | 'archiveReason'
 >;
 
-export type UpdateCompanyPayload = Partial<CreateCompanyPayload>;
+export type UpdateCompanyPayload = Omit<Partial<CreateCompanyPayload>, 'centralPhone'> & { centralPhone?: string | null };
 
 export interface ChangeCompanyOwnerPayload {
   newOwnerId: string;
@@ -187,6 +189,7 @@ export interface CreateCompanyPayload {
   priority?: CompanyPriority;
   headOfficeCity?: string;
   website?: string;
+  centralPhone?: string;
   source?: string;
   ownerId?: string;
   registrationNumber?: string;

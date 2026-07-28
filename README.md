@@ -2356,6 +2356,37 @@ The fix history below documents what changed in each numbered fix.
 * Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,303.32 kB و gzip آن حدود 658.40 kB است.
 
 ---
+## fix 000103 — افزودن شماره تماس شرکت
+
+* فیلد اختیاری `centralPhone` به مدل کامل شرکت، آیتم فهرست و payload ایجاد اضافه شد. payload ویرایش به‌صورت صریح `string | null` را پشتیبانی می‌کند تا پاک‌کردن شماره با `null` به backend ارسال شود.
+* فیلد «شماره تماس شرکت» در بخش اطلاعات پایه CompanyForm و نزدیک وب‌سایت/دفتر مرکزی اضافه شد. ورودی LTR با `inputMode="tel"`، autocomplete تلفن، محدودیت طول و helper متن «شماره دفتر مرکزی یا شماره عمومی شرکت» دارد و پس از خطای backend داخل فرم حفظ می‌شود.
+* helper محدود به تلفن شرکت، ارقام فارسی و عربی را به انگلیسی تبدیل و فاصله، خط تیره و پرانتز را حذف می‌کند، بدون استفاده از `Number`/`parseInt` یا حذف صفر ابتدایی. علامت مثبت فقط در ابتدای شماره پذیرفته می‌شود و ورودی نامعتبر پیام «شماره تماس واردشده معتبر نیست.» نشان می‌دهد.
+* در ایجاد شرکت، شماره خالی حذف می‌شود و شماره پرشده به شکل canonical ارسال می‌گردد. در ویرایش، مقدار موجود بارگذاری و مقدار جدید normalized ارسال می‌شود؛ پاک‌کردن شماره موجود صریحاً `centralPhone: null` می‌فرستد و شماره قبلی را بازنمی‌گرداند.
+* صفحه جزئیات شرکت، شماره را زیر «اطلاعات اصلی» به‌صورت LTR و لینک دسترس‌پذیر `tel:` نمایش می‌دهد. مقدار خالی «—» است و لینک نامعتبر یا خالی ساخته نمی‌شود.
+* فهرست شرکت‌ها ستون compact «شماره تماس» با عرض حداقل ۱۵۰ پیکسل و لینک تماس اضافه کرد. pagination و search همچنان server-side هستند و placeholder جستجو به «نام شرکت، برند، صنعت یا شماره تماس» تغییر یافت.
+* خطاهای اعتبارسنجی backend در هر دو دیالوگ ایجاد و ویرایش با `getApiErrorMessage` نمایش داده می‌شوند. فرم‌های تماس اشخاص و تلفن شعب تغییر نکردند.
+
+**فایل‌های مهم تغییرکرده/جدید:**
+
+* `src/features/companies/types/company.types.ts`
+* `src/features/companies/utils/companyPhone.ts`
+* `src/features/companies/components/CompanyForm.tsx`
+* `src/features/companies/components/EditCompanyDialog.tsx`
+* `src/features/companies/pages/CompanyDetailsPage.tsx`
+* `src/features/companies/pages/CompaniesPage.tsx`
+* `README.md`
+
+**وابستگی‌ها و وضعیت بررسی:**
+
+* آخرین fix فرانت `000102` در commit `86feb6c` پیش از تغییر تأیید شد.
+* این تغییر به backend fix `000078` برای ذخیره، اعتبارسنجی، پاک‌کردن و جستجوی `centralPhone` وابسته است؛ هیچ فایل backend یا migration در این مخزن تغییر نکرد.
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check و `npm run build`: بدون خطا اجرا شد.
+* تست خودکار اجرا نشد، زیرا `package.json` اسکریپت `test` یا test runner پیکربندی‌شده ندارد.
+* تست دستی مرورگر و API زنده برای create/edit/clear/search و لینک تماس انجام نشد.
+* Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,305.21 kB و gzip آن حدود 658.92 kB است.
+
+---
 
 ---
 **Built with ❤️ for sales team**

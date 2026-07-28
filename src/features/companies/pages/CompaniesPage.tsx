@@ -37,6 +37,7 @@ import ArchiveCompanyDialog from '../components/ArchiveCompanyDialog';
 import RestoreCompanyDialog from '../components/RestoreCompanyDialog';
 import { useCompanies } from '../hooks/useCompanies';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
+import { getCompanyPhoneHref } from '../utils/companyPhone';
 import {
   COMPANY_PAGE_SIZES,
   COMPANY_PRIORITY_OPTIONS,
@@ -161,6 +162,7 @@ export default function CompaniesPage() {
         renderCell: ({ row }: GridRenderCellParams<CompanyListItem>) => displayValue(row.owner?.fullName),
       },
       { field: 'headOfficeCity', headerName: 'شهر دفتر مرکزی', minWidth: 150 },
+      { field: 'centralPhone', headerName: 'شماره تماس', minWidth: 150, renderCell: ({ value }: GridRenderCellParams<CompanyListItem, string | null>) => { const href = getCompanyPhoneHref(value); return href ? <Box component="a" href={href} aria-label={`تماس با شماره شرکت ${value}`} dir="ltr" sx={{ color: 'primary.main', textDecoration: 'none' }} onClick={(event) => event.stopPropagation()}>{value}</Box> : <Box dir="ltr">{value || '—'}</Box>; } },
       { field: 'archiveState', headerName: 'وضعیت', minWidth: 110, valueGetter: (_value, row) => isCompanyArchived(row) ? 'بایگانی‌شده' : 'فعال' },
       {
         field: 'updatedAt',
@@ -228,7 +230,7 @@ export default function CompaniesPage() {
               setSearch(event.target.value);
               resetToFirstPage();
             }}
-            placeholder="نام حقوقی، برند یا صنعت"
+            placeholder="نام شرکت، برند، صنعت یا شماره تماس"
           />
 
           <FormControl fullWidth>

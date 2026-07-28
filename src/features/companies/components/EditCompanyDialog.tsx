@@ -1,7 +1,7 @@
-import axios from 'axios';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogTitle } from '@mui/material';
 import CompanyForm from './CompanyForm';
+import { getApiErrorMessage } from '@/lib/apiResponse';
 import { useUpdateCompany } from '../hooks/useCompanies';
 import type {
   Company,
@@ -13,10 +13,6 @@ interface EditCompanyDialogProps {
   company: Company;
   open: boolean;
   onClose: () => void;
-}
-
-interface ApiErrorBody {
-  message?: string;
 }
 
 export default function EditCompanyDialog({ company, open, onClose }: EditCompanyDialogProps) {
@@ -40,9 +36,7 @@ export default function EditCompanyDialog({ company, open, onClose }: EditCompan
     }
   };
 
-  const apiMessage = axios.isAxiosError<ApiErrorBody>(updateCompany.error)
-    ? updateCompany.error.response?.data?.message
-    : undefined;
+  const apiMessage = updateCompany.error ? getApiErrorMessage(updateCompany.error, 'خطا در بروزرسانی اطلاعات شرکت.') : undefined;
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">

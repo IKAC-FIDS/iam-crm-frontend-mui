@@ -41,6 +41,7 @@ import {
   getOwnershipLabel,
   getPriorityLabel,
 } from '../utils/companyDisplay';
+import { getCompanyPhoneHref } from '../utils/companyPhone';
 
 const detailTabs = [
   { label: 'اطلاعات اصلی', value: 'overview' },
@@ -213,6 +214,7 @@ export default function CompanyDetailsPage() {
               <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="تیم مالک" value={getTeamName(company.owner?.team)} /></Grid>
               <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="شهر / استان" value={company.headOfficeCity} /></Grid>
               <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="وب‌سایت" value={company.website} /></Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}><Box><Typography variant="body2" color="text.secondary">شماره تماس شرکت</Typography>{getCompanyPhoneHref(company.centralPhone) ? <Typography component="a" href={getCompanyPhoneHref(company.centralPhone)} aria-label={`تماس با شماره شرکت ${company.centralPhone}`} dir="ltr" sx={{ display: 'block', mt: 0.5, color: 'primary.main', textDecoration: 'none', textAlign: 'left' }}>{company.centralPhone}</Typography> : <Typography sx={{ mt: 0.5 }}>—</Typography>}</Box></Grid>
               <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="منبع" value={company.source} /></Grid>
               <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="تاریخ ایجاد" value={formatDateTime(company.createdAt)} /></Grid>
               <Grid size={{ xs: 12, sm: 6, md: 4 }}><DetailItem label="آخرین بروزرسانی" value={formatDateTime(company.updatedAt)} /></Grid>

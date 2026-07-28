@@ -18,6 +18,7 @@ import JalaliDateField from '@/shared/components/JalaliDateField';
 import { useCatalog } from '@/features/catalogs/hooks/useCatalogs';
 import { getCatalogItemLabel, isCatalogItemActive } from '@/features/catalogs/types/catalog.types';
 import { CompanyMultiAutocomplete } from '@/components/companies/CompanyAutocomplete';
+import { isValidCompanyPhone, normalizeCompanyPhone } from '../utils/companyPhone';
 import {
   COMPANY_ACTIVITY_STATUSES,
   COMPANY_ACTIVITY_STATUS_OPTIONS,
@@ -86,6 +87,7 @@ const companyFormSchema = z.object({
     .url('آدرس وب‌سایت معتبر نیست')
     .optional()
     .or(z.literal('')),
+  centralPhone: z.string().trim().max(32, 'شماره تماس واردشده معتبر نیست.').optional().or(z.literal('')).refine((value) => !value || isValidCompanyPhone(value), 'شماره تماس واردشده معتبر نیست.'),
   source: z.string().trim().optional().or(z.literal('')),
   registrationNumber: z.string().trim().optional().or(z.literal('')),
   nationalId: z.string().trim().optional().or(z.literal('')),
@@ -137,6 +139,7 @@ function getDefaultValues(initialValues?: Partial<Company>): CompanyFormData {
     priority: priority ?? '',
     headOfficeCity: initialValues?.headOfficeCity ?? '',
     website: initialValues?.website ?? '',
+    centralPhone: initialValues?.centralPhone ?? '',
     source: initialValues?.source ?? '',
     registrationNumber: initialValues?.registrationNumber ?? '',
     nationalId: initialValues?.nationalId ?? '',
@@ -190,6 +193,7 @@ export default function CompanyForm({
   const submit = (data: CompanyFormData) => {
     const normalizedCapital = normalizedDigits(data.registeredCapital ?? '');
     const normalizedEmployeeCount = normalizedDigits(data.employeeCount ?? '');
+    const normalizedPhone = data.centralPhone?.trim() ? normalizeCompanyPhone(data.centralPhone) : '';
     const values: CreateCompanyPayload | UpdateCompanyPayload = {
       legalName: data.legalName.trim(),
       brandName: optionalValue(data.brandName),
@@ -198,6 +202,7 @@ export default function CompanyForm({
       priority: data.priority || undefined,
       headOfficeCity: optionalValue(data.headOfficeCity),
       website: optionalValue(data.website),
+      centralPhone: normalizedPhone || (mode === 'edit' && initialValues?.centralPhone ? null : undefined),
       source: optionalValue(data.source),
       registrationNumber: optionalValue(normalizedDigits(data.registrationNumber ?? '')),
       nationalId: optionalValue(normalizedDigits(data.nationalId ?? '')),
@@ -284,6 +289,16 @@ export default function CompanyForm({
         )}
       />
       <TextField label="وب‌سایت" error={Boolean(errors.website)} helperText={errors.website?.message} {...register('website')} />
+      <TextField
+        label="شماره تماس شرکت"
+        inputMode="tel"
+        autoComplete="tel"
+        dir="ltr"
+        slotProps={{ htmlInput: { maxLength: 32, style: { textAlign: 'left' } } }}
+        error={Boolean(errors.centralPhone)}
+        helperText={errors.centralPhone?.message ?? 'شماره دفتر مرکزی یا شماره عمومی شرکت'}
+        {...register('centralPhone')}
+      />
       <Controller
         name="source"
         control={control}
