@@ -1,7 +1,7 @@
 ﻿import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import { Alert, Box, Chip, MenuItem, Paper, Stack, TextField } from '@mui/material';
+import { Alert, Box, Chip, MenuItem, Paper, Stack, TextField, Tooltip } from '@mui/material';
 import { DataGrid, type GridColDef, type GridPaginationModel, type GridRenderCellParams } from '@mui/x-data-grid';
 import ArchiveOutlinedIcon from '@mui/icons-material/ArchiveOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlineOutlined';
@@ -26,6 +26,8 @@ import {
   getNotificationPriorityLabel,
   getNotificationStatusLabel,
   getNotificationTypeLabel,
+  getNotificationDisplayBody,
+  getNotificationOrganizationTimeZone,
   isArchived,
   isUnread,
   notificationEntityTypeOptions,
@@ -101,9 +103,9 @@ export default function NotificationsTable({ canManage }: { canManage: boolean }
       minWidth: 240,
       flex: 1,
       renderCell: ({ row }) => (
-        <Box>
+        <Box sx={{ minWidth: 0, width: '100%' }}>
           <Box component="span" sx={{ fontWeight: isUnread(row) ? 700 : 500 }}>{row.title}</Box>
-          {row.body && <Box sx={{ color: 'text.secondary', fontSize: 12, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{row.body}</Box>}
+          {getNotificationDisplayBody(row) && <Tooltip title={getNotificationDisplayBody(row)!}><Box sx={{ color: 'text.secondary', fontSize: 12, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{getNotificationDisplayBody(row)}</Box></Tooltip>}
         </Box>
       ),
     },
@@ -126,7 +128,7 @@ export default function NotificationsTable({ canManage }: { canManage: boolean }
       ),
     },
     { field: 'actor', headerName: 'فرستنده', minWidth: 150, valueGetter: (_value, row) => row.actor?.fullName || row.actor?.email || '—' },
-    { field: 'createdAt', headerName: 'زمان', minWidth: 170, valueFormatter: formatNotificationDate },
+    { field: 'createdAt', headerName: 'زمان', minWidth: 170, renderCell: ({ row }) => formatNotificationDate(row.createdAt, getNotificationOrganizationTimeZone(row)) },
     {
       field: 'actions',
       headerName: 'عملیات',

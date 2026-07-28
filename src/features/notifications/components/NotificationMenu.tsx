@@ -24,6 +24,8 @@ import {
   formatNotificationDate,
   getNotificationPriorityColor,
   getNotificationPriorityLabel,
+  getNotificationDisplayBody,
+  getNotificationOrganizationTimeZone,
   isUnread,
 } from '../utils/notificationDisplay';
 import { navigateToNotificationTarget } from '../utils/notificationNavigation';
@@ -122,13 +124,14 @@ export default function NotificationMenu({
               }
               secondary={
                 <Stack spacing={1} sx={{ mt: 0.5 }}>
-                  {notification.body && (
+                  {getNotificationDisplayBody(notification) && (
                     <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'normal' }}>
-                      {notification.body}
+                      {getNotificationDisplayBody(notification)}
                     </Typography>
                   )}
+                  {notification.type === 'MEETING_REMINDER' && <Typography variant="caption" color="text.secondary">زمان براساس منطقه زمانی دستگاه شما نمایش داده شده است.</Typography>}
                   <Typography variant="caption" color="text.secondary">
-                    {formatNotificationDate(notification.createdAt)}
+                    {formatNotificationDate(notification.createdAt, getNotificationOrganizationTimeZone(notification))}
                   </Typography>
                   <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
                     <Button size="small" onClick={() => handleOpen(notification)}>مشاهده</Button>

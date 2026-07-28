@@ -2325,6 +2325,37 @@ The fix history below documents what changed in each numbered fix.
 * Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,302.43 kB و gzip آن حدود 658.34 kB است.
 
 ---
+## fix 000102 — نمایش یکپارچه تاریخ جلالی با منطقه زمانی کاربر در اعلان‌ها
+
+* utility مشترک `timeZone.ts` اضافه شد و timezone مؤثر را به‌ترتیب از timezone ترجیحی معتبر، timezone مرورگر، timezone سازمان در metadata و در نهایت `Asia/Tehran` انتخاب می‌کند. نام‌های IANA با `Intl.DateTimeFormat` اعتبارسنجی می‌شوند و هیچ offset عددی یا افزودن دستی ساعت استفاده نشده است.
+* formatterهای `formatUserJalaliDate`، `formatUserJalaliDateTime` و `formatUserTime` با locale فارسی، تقویم جلالی، timezone صریح، تاریخ/زمان دورقمی و ساعت ۲۴ ساعته اضافه شدند. APIهای قدیمی `formatJalaliDate` و `formatJalaliDateTime` برای سازگاری حفظ و به مسیر جدید متصل شدند.
+* type و validation زمان اجرای metadata یادآوری جلسه برای عنوان، شروع، پایان، زمان یادآوری و timezone سازمان اضافه شد؛ metadata نامعتبر باعث crash یا نمایش داده خام نمی‌شود.
+* helper واحد `getNotificationDisplayBody` برای NotificationMenu و NotificationsTable اضافه شد. یادآوری‌های جدید از metadata به متن طبیعی جلالی تبدیل می‌شوند و اعلان‌های قدیمی دارای تاریخ ISO نیز فقط برای نوع `MEETING_REMINDER` به زمان محلی کاربر تبدیل می‌شوند.
+* اگر تاریخ قدیمی یادآوری نامعتبر باشد، ISO خام نمایش داده نمی‌شود و پیام معنادار «جلسه ... به‌زودی برگزار می‌شود» جایگزین می‌گردد. متن اعلان‌های غیرجلسه‌ای بدون تغییر باقی می‌ماند.
+* NotificationMenu و NotificationsTable اکنون متن یکسانی نمایش می‌دهند. زمان جلسه در body و زمان ایجاد اعلان در caption/ستون مستقل باقی مانده‌اند و هر دو از timezone مؤثر یکسان استفاده می‌کنند؛ منو نیز توضیح کوتاه timezone دستگاه را نشان می‌دهد.
+* مسیرهای نمایش مشترک تاریخ در جلسات، کارها، فرصت‌ها، فعالیت‌ها، پرداخت‌ها، اسناد تجاری، پیوست‌ها، گزارش‌ها، داشبورد و رویدادهای ممیزی بررسی شدند و مصرف‌کنندگان formatter مشترک بدون تغییر timestampهای UTC به پیاده‌سازی جدید منتقل شدند. `toISOString()`های باقی‌مانده مربوط به payload، فیلتر، input یا نام فایل هستند و در UI نمایش داده نمی‌شوند.
+
+**فایل‌های مهم تغییرکرده/جدید:**
+
+* `src/shared/utils/timeZone.ts`
+* `src/shared/utils/jalaliDate.ts`
+* `src/features/notifications/types/notification.types.ts`
+* `src/features/notifications/utils/notificationDisplay.ts`
+* `src/features/notifications/components/NotificationMenu.tsx`
+* `src/features/notifications/components/NotificationsTable.tsx`
+* `README.md`
+
+**وابستگی‌ها و وضعیت بررسی:**
+
+* آخرین fix فرانت `000101` در commit `9a1ea94` پیش از تغییر تأیید شد.
+* این fix به backend fix `000077` برای metadata استاندارد یادآوری جلسه وابسته است؛ سازگاری اعلان‌های تاریخی در فرانت حفظ شده و هیچ فایل backend یا migration تغییر نکرد.
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check و `npm run build`: بدون خطا اجرا شد.
+* تست خودکار اجرا نشد، زیرا `package.json` اسکریپت `test` یا test runner پیکربندی‌شده ندارد.
+* تست دستی مرورگر، تغییر timezone واقعی دستگاه و بررسی API زنده انجام نشد.
+* Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,303.32 kB و gzip آن حدود 658.40 kB است.
+
+---
 
 ---
 **Built with ❤️ for sales team**

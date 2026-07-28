@@ -1,10 +1,11 @@
 import type { ChipProps } from '@mui/material/Chip';
-import { formatJalaliDateTime } from '@/shared/utils/jalaliDate';
+import { formatUserJalaliDate, formatUserJalaliDateTime, formatUserTime } from '@/shared/utils/jalaliDate';
 import type {
   Notification,
   NotificationEntityType,
   NotificationPriority,
   NotificationType,
+  MeetingReminderMetadata,
 } from '../types/notification.types';
 
 export const notificationTypeOptions: { value: NotificationType; label: string }[] = [
@@ -72,6 +73,39 @@ export function getNotificationStatusLabel(notification: Notification): string {
   return isUnread(notification) ? 'خوانده‌نشده' : 'خوانده‌شده';
 }
 
-export function formatNotificationDate(value?: string | null): string {
-  return formatJalaliDateTime(value);
+export function formatNotificationDate(value?: string | null, organizationTimeZone?: string): string {
+  return formatUserJalaliDateTime(value, { organizationTimeZone });
+}
+
+function stringValue(value: unknown): string | undefined { return typeof value === 'string' && value.trim() ? value.trim() : undefined; }
+function validInstant(value?: string): value is string { return Boolean(value && !Number.isNaN(new Date(value).getTime())); }
+export function getMeetingReminderMetadata(value: unknown): MeetingReminderMetadata | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  const source = value as Record<string, unknown>;
+  const metadata: MeetingReminderMetadata = {
+    meetingTitle: stringValue(source.meetingTitle), meetingStartAt: stringValue(source.meetingStartAt), meetingEndAt: stringValue(source.meetingEndAt),
+    reminderAt: source.reminderAt === null ? null : stringValue(source.reminderAt), organizationTimeZone: stringValue(source.organizationTimeZone),
+  };
+  return Object.values(metadata).some((item) => item !== undefined) ? metadata : null;
+}
+export function getNotificationOrganizationTimeZone(notification: Notification): string | undefined { return getMeetingReminderMetadata(notification.metadata)?.organizationTimeZone; }
+
+const historicalIsoPattern = /\d{4}-\d{2}-\d{2}T[^\s،]+Z?/i;
+function reminderTitle(notification: Notification, metadata: MeetingReminderMetadata | null): string {
+  return metadata?.meetingTitle || notification.body?.match(/جلسه\s*[«"]([^»"]+)[»"]/)?.[1] || notification.title.replace(/^یادآوری\s*(?:جلسه)?[:：\s-]*/u, '').trim() || 'جلسه';
+}
+function reminderSentence(title: string, instant?: string, organizationTimeZone?: string): string {
+  if (!validInstant(instant)) return `جلسه «${title}» به‌زودی برگزار می‌شود.`;
+  const options = { organizationTimeZone };
+  return `جلسه «${title}» در ${formatUserJalaliDate(instant, options)} ساعت ${formatUserTime(instant, options)} برگزار می‌شود.`;
+}
+export function getNotificationDisplayBody(notification: Notification): string | null {
+  if (notification.type !== 'MEETING_REMINDER') return notification.body ?? null;
+  const metadata = getMeetingReminderMetadata(notification.metadata);
+  const title = reminderTitle(notification, metadata);
+  if (validInstant(metadata?.meetingStartAt)) return reminderSentence(title, metadata.meetingStartAt, metadata.organizationTimeZone);
+  const historical = notification.body?.match(historicalIsoPattern)?.[0];
+  if (validInstant(historical)) return reminderSentence(title, historical, metadata?.organizationTimeZone);
+  if (historical || notification.body?.includes('T') && notification.body?.includes('Z')) return reminderSentence(title);
+  return notification.body?.trim() || reminderSentence(title);
 }

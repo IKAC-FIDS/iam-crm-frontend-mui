@@ -41,6 +41,14 @@ export interface NotificationUserSummary {
   team?: string | null;
 }
 
+export interface MeetingReminderMetadata {
+  meetingTitle?: string;
+  meetingStartAt?: string;
+  meetingEndAt?: string;
+  reminderAt?: string | null;
+  organizationTimeZone?: string;
+}
+
 export interface Notification {
   id: string;
   recipientId: string;

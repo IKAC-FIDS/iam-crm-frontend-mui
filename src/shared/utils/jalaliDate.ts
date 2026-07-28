@@ -1,4 +1,5 @@
-import { isValidJalaaliDate, toGregorian, toJalaali } from 'jalaali-js';
+import { isValidJalaaliDate, toGregorian } from 'jalaali-js';
+import { getEffectiveTimeZone, type EffectiveTimeZoneOptions } from './timeZone';
 
 export const EMPTY_DATE_LABEL = '—';
 
@@ -24,17 +25,35 @@ function toDate(value?: string | null): Date | null {
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
-export function formatJalaliDate(value?: string | null): string {
+const displayLocale = 'fa-IR-u-ca-persian-nu-latn';
+function displayParts(value: string | null | undefined, options: EffectiveTimeZoneOptions, includeDate: boolean, includeTime: boolean): string {
   const date = toDate(value);
   if (!date) return EMPTY_DATE_LABEL;
-  const { jy, jm, jd } = toJalaali(date.getFullYear(), date.getMonth() + 1, date.getDate());
-  return `${jy}/${pad(jm)}/${pad(jd)}`;
+  try {
+    const parts = new Intl.DateTimeFormat(displayLocale, {
+      calendar: 'persian', timeZone: getEffectiveTimeZone(options), hourCycle: 'h23',
+      ...(includeDate ? { year: 'numeric', month: '2-digit', day: '2-digit' } as const : {}),
+      ...(includeTime ? { hour: '2-digit', minute: '2-digit' } as const : {}),
+    }).formatToParts(date);
+    const part = (type: Intl.DateTimeFormatPartTypes) => parts.find((item) => item.type === type)?.value;
+    const dateText = includeDate ? `${part('year')}/${part('month')}/${part('day')}` : '';
+    const timeText = includeTime ? `${part('hour')}:${part('minute')}` : '';
+    return [dateText, timeText].filter(Boolean).join(' - ') || EMPTY_DATE_LABEL;
+  } catch {
+    return EMPTY_DATE_LABEL;
+  }
+}
+
+export function formatUserJalaliDate(value?: string | null, options: EffectiveTimeZoneOptions = {}): string { return displayParts(value, options, true, false); }
+export function formatUserJalaliDateTime(value?: string | null, options: EffectiveTimeZoneOptions = {}): string { return displayParts(value, options, true, true); }
+export function formatUserTime(value?: string | null, options: EffectiveTimeZoneOptions = {}): string { return displayParts(value, options, false, true); }
+
+export function formatJalaliDate(value?: string | null): string {
+  return formatUserJalaliDate(value);
 }
 
 export function formatJalaliDateTime(value?: string | null): string {
-  const date = toDate(value);
-  if (!date) return EMPTY_DATE_LABEL;
-  return `${formatJalaliDate(value)} - ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  return formatUserJalaliDateTime(value);
 }
 
 export function toJalaliInputValue(value?: string | null, includeTime = false): string {
