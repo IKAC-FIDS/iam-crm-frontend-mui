@@ -5,20 +5,22 @@ import type { CreateActivityPayload, GetActivitiesParams, UpdateActivityPayload 
 
 export const activityQueryKeys = {
   all: ['activities'] as const,
-  lists: (companyId: string) => [...activityQueryKeys.all, companyId] as const,
-  list: (params: GetActivitiesParams) => [
-    ...activityQueryKeys.lists(params.companyId),
-    { page: params.page, limit: params.limit },
-  ] as const,
+  lists: () => [...activityQueryKeys.all, 'list'] as const,
+  list: (params: GetActivitiesParams) => [...activityQueryKeys.lists(), params] as const,
+  latest: ['dashboard', 'latest-activities'] as const,
 };
 
-export function useActivities(params: GetActivitiesParams) {
+export function useActivities(params: GetActivitiesParams, enabled = true) {
   return useQuery({
     queryKey: activityQueryKeys.list(params),
-    queryFn: () => activitiesService.getActivitiesByCompany(params),
+    queryFn: ({ signal }) => activitiesService.getActivities(params, signal),
     placeholderData: keepPreviousData,
-    enabled: Boolean(params.companyId),
+    enabled,
   });
+}
+
+export function useLatestActivities(enabled = true) {
+  return useQuery({ queryKey: activityQueryKeys.latest, queryFn: ({ signal }) => activitiesService.getLatestActivities(signal), enabled, staleTime: 60_000 });
 }
 
 export function useCreateActivity(companyId: string) {
@@ -27,10 +29,11 @@ export function useCreateActivity(companyId: string) {
   return useMutation({
     mutationFn: (payload: CreateActivityPayload) => activitiesService.createActivity(payload),
     onSuccess: () => Promise.all([
-      queryClient.invalidateQueries({ queryKey: activityQueryKeys.lists(companyId) }),
+      queryClient.invalidateQueries({ queryKey: activityQueryKeys.lists() }),
       queryClient.invalidateQueries({ queryKey: companyQueryKeys.detail(companyId) }),
       queryClient.invalidateQueries({ queryKey: ['follow-ups', 'due'] }),
       queryClient.invalidateQueries({ queryKey: ['reports'] }),
+      queryClient.invalidateQueries({ queryKey: activityQueryKeys.latest }),
     ]),
   });
 }
@@ -40,7 +43,7 @@ export function useUpdateActivity(companyId: string, activityId: string) {
   return useMutation({
     mutationFn: (payload: UpdateActivityPayload) => activitiesService.updateActivity(activityId, payload),
     onSuccess: () => Promise.all([
-      queryClient.invalidateQueries({ queryKey: activityQueryKeys.lists(companyId) }),
+      queryClient.invalidateQueries({ queryKey: activityQueryKeys.lists() }),
       queryClient.invalidateQueries({ queryKey: ['follow-ups', 'due'] }),
       queryClient.invalidateQueries({ queryKey: companyQueryKeys.detail(companyId) }),
       queryClient.invalidateQueries({ queryKey: ['reports'] }),

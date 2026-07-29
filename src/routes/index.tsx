@@ -28,6 +28,7 @@ import AdminSsoProvidersPage from '@/features/sso/pages/AdminSsoProvidersPage';
 import AdminTeamsPage from '@/features/teams/pages/AdminTeamsPage';
 import ExchangeRatesPage from '@/features/exchangeRates/pages/ExchangeRatesPage';
 import RouteErrorPage from './RouteErrorPage';
+import ActivitiesPage from '@/features/activities/pages/ActivitiesPage';
 
 export const router = createBrowserRouter([
   {
@@ -43,6 +44,7 @@ export const router = createBrowserRouter([
           { path: 'companies', element: <CompaniesPage /> },
           { path: 'companies/:companyId', element: <CompanyDetailsPage /> },
           { path: 'people', element: <PeopleDirectoryPage /> },
+          { path: 'activities', element: <ActivitiesPage /> },
           { path: 'opportunities', element: <OpportunitiesPage /> },
           { path: 'opportunities/:opportunityId', element: <OpportunityDetailsPage /> },
           { path: 'tasks', element: <TasksPage /> },

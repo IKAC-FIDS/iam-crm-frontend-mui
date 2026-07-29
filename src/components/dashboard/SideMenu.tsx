@@ -56,6 +56,7 @@ const menuItems = [
   { group: 'عملیات فروش', text: 'پیگیری‌ها', icon: <NotificationsActiveIcon />, path: '/follow-ups' },
   { group: 'عملیات فروش', text: 'اعلان‌ها', icon: <NotificationsIcon />, path: '/notifications', permission: 'notification:view', fallbackRoles: ['ADMIN'] },
   { group: 'عملیات فروش', text: 'افراد', icon: <PeopleIcon />, path: '/people', peopleOnly: true },
+  { group: 'عملیات فروش', text: 'فعالیت‌ها', icon: <HistoryIcon />, path: '/activities', permission: 'activity:view', fallbackRoles: ['ADMIN', 'MANAGER', 'REP'] },
   { group: 'عملیات فروش', text: 'گزارش‌ها', icon: <AssessmentIcon />, path: '/reports', reportOnly: true },
   { group: 'مدیریت', text: 'کاربران', icon: <PeopleIcon />, path: '/admin/users', permission: 'user:manage' },
   { group: 'مدیریت', text: 'تیم‌ها', icon: <GroupsIcon />, path: '/admin/teams', permissions: ['team:view', 'team:manage'] },

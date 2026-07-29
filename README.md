@@ -2388,6 +2388,40 @@ The fix history below documents what changed in each numbered fix.
 
 ---
 
+## fix 000104 — افزودن مرکز فعالیت‌ها و آخرین فعالیت‌های داشبورد
+
+* مسیر جدید `/activities` و گزینه «فعالیت‌ها» با آیکن History مستقیماً زیر «افراد» در منوی کناری اضافه شد و نمایش آن به مجوز پویا `activity:view` وابسته است.
+* مرکز فعالیت‌ها از `GET /api/activities` با pagination کاملاً server-side استفاده می‌کند و ستون‌های نوع، عنوان، شخص، شرکت، ایجادکننده، وضعیت، تاریخ فعالیت، تاریخ ایجاد و عملیات را نمایش می‌دهد.
+* جستجوی server-side برای عنوان، شخص، شرکت و توضیحات و فیلترهای نوع فعالیت، وضعیت، مالک، شرکت، شخص، بازه تاریخ جلالی، «فعالیت‌های من» و تیم با نام پارامترهای backend پیاده‌سازی شدند. تغییر صفحه یا اندازه صفحه موجب فیلتر client-side نمی‌شود.
+* وضعیت loading با Skeleton، حالت خالی با پیام «هیچ فعالیتی ثبت نشده است.» و خطای شبکه/API با پیام قابل مشاهده و دکمه «تلاش مجدد» از یکدیگر تفکیک شدند.
+* کارت «آخرین فعالیت‌ها» با درخواست مستقل `GET /api/dashboard/latest-activities` حداکثر ۱۰ فعالیت اخیر، آیکن، عنوان، شخص، شرکت، ایجادکننده و تاریخ فعالیت را نشان می‌دهد و پیوند «مشاهده همه فعالیت‌ها» به مرکز فعالیت‌ها دارد. این widget نیز فقط با `activity:view` نمایش داده می‌شود و شکست آن سایر بخش‌های داشبورد را مختل نمی‌کند.
+* timeline فعلی اشخاص/شرکت‌ها و طراحی سایر بخش‌های داشبورد تغییر نکردند.
+
+**فایل‌های مهم تغییرکرده/جدید:**
+
+* `src/features/activities/pages/ActivitiesPage.tsx`
+* `src/features/activities/components/LatestActivitiesWidget.tsx`
+* `src/features/activities/types/activity.types.ts`
+* `src/features/activities/services/activities.service.ts`
+* `src/features/activities/hooks/useActivities.ts`
+* `src/components/dashboard/SideMenu.tsx`
+* `src/components/dashboard/MainGrid.tsx`
+* `src/routes/index.tsx`
+* `README.md`
+
+**وابستگی‌ها و وضعیت بررسی:**
+
+* آخرین fix فرانت `000103` در commit `d8c2616` و ثبت آن در README پیش از تغییر تأیید شد؛ شماره این تغییر `fix 000104` است.
+* این تغییر به backend fix `000079` و قراردادهای واقعی `GET /api/activities` و `GET /api/dashboard/latest-activities` وابسته است؛ هیچ فایل backend در این مخزن تغییر نکرد.
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check و `npm run build`: بدون خطا اجرا شد.
+* تست خودکار اجرا نشد، زیرا `package.json` اسکریپت `test` یا test runner پیکربندی‌شده ندارد.
+* تست دستی مرورگر، navigation و API زنده انجام نشد.
+* فرمان درخواستی `grep` روی محیط PowerShell موجود نبود؛ بررسی معادل encoding با `rg` اجرا شد و متن خراب جدیدی در فایل‌های تغییرکرده یافت نشد.
+* Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,316.65 kB و gzip آن حدود 662.21 kB است.
+
+---
+
 ---
 **Built with ❤️ for sales team**
 

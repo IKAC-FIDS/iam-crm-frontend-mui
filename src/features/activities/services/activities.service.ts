@@ -5,6 +5,7 @@ import type {
   Activity,
   CreateActivityPayload,
   GetActivitiesParams,
+  LatestActivity,
   UpdateActivityPayload,
 } from '../types/activity.types';
 
@@ -65,13 +66,29 @@ function normalizeActivities(
 }
 
 export const activitiesService = {
-  getActivitiesByCompany: async (
+  getActivities: async (
     params: GetActivitiesParams,
+    signal?: AbortSignal,
   ): Promise<PaginatedResult<Activity>> => {
     const response = await axiosInstance.get<Activity[] | ActivitiesEnvelope>('/activities', {
       params,
+      signal,
     });
     return normalizeActivities(unwrapPaginatedApiResponse<Activity>(response.data), params);
+  },
+
+  getActivitiesByCompany: async (
+    params: GetActivitiesParams,
+  ): Promise<PaginatedResult<Activity>> => {
+    return activitiesService.getActivities(params);
+  },
+
+  getLatestActivities: async (signal?: AbortSignal): Promise<LatestActivity[]> => {
+    const response = await axiosInstance.get<LatestActivity[] | { data: LatestActivity[] }>(
+      '/dashboard/latest-activities',
+      { signal },
+    );
+    return unwrapApiResponse<LatestActivity[]>(response.data);
   },
 
   createActivity: async (payload: CreateActivityPayload): Promise<Activity> => {

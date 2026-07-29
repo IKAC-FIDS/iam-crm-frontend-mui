@@ -30,6 +30,14 @@ export interface ActivityUser {
   team?: string;
 }
 
+export interface ActivityCompany {
+  id: string;
+  legalName: string;
+  brandName?: string | null;
+}
+
+export type ActivityStatus = 'RECORDED' | 'COMPLETED';
+
 export interface Activity {
   id: string;
   companyId: string;
@@ -45,6 +53,14 @@ export interface Activity {
   updatedAt?: string;
   person?: ActivityPerson | null;
   user?: ActivityUser | null;
+  title?: string | null;
+  description?: string | null;
+  status?: ActivityStatus;
+  activityDate?: string | null;
+  completedAt?: string | null;
+  company?: ActivityCompany | null;
+  owner?: ActivityUser | null;
+  createdBy?: ActivityUser | null;
 }
 
 export interface CreateActivityPayload {
@@ -68,9 +84,33 @@ export interface UpdateActivityPayload {
 }
 
 export interface GetActivitiesParams {
-  companyId: string;
+  companyId?: string;
   page: number;
-  limit: 5 | 10 | 20;
+  limit: 5 | 10 | 20 | 50 | 100;
+  search?: string;
+  activityType?: ActivityType;
+  status?: ActivityStatus;
+  ownerId?: string;
+  createdById?: string;
+  personId?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  ownershipScope?: 'all' | 'mine' | 'team' | 'unassigned';
+  team?: string;
+  mine?: boolean;
+  unassigned?: boolean;
+  sortBy?: 'activityDate' | 'createdAt';
+  sortOrder?: 'asc' | 'desc';
+}
+
+export interface LatestActivity {
+  id: string;
+  type: ActivityType;
+  title: string;
+  activityDate: string | null;
+  person?: ActivityPerson | null;
+  company?: ActivityCompany | null;
+  createdBy?: ActivityUser | null;
 }
 
 export function getActivityTypeLabel(type: ActivityType): string {
