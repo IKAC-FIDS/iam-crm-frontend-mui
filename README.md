@@ -2422,6 +2422,36 @@ The fix history below documents what changed in each numbered fix.
 
 ---
 
+## fix 000105 — تبدیل آخرین فعالیت‌های داشبورد به فید فشرده فارسی
+
+* widget «آخرین فعالیت‌ها» بدون تغییر dashboard یا endpoint موجود، از ردیف کشیده قبلی به feed فشرده سه‌بخشی آیکن، محتوای اصلی و زمان تبدیل شد. عرض محتوای feed محدود و فاصله‌های افقی زائد حذف شده‌اند؛ Divider ظریف، ارتفاع ردیف کنترل‌شده و ترتیب طبیعی RTL خوانایی سریع را بهتر می‌کنند.
+* ساختار محتوایی هر ردیف اکنون عنوان معنادار یا نوع فارسی فعالیت، شرکت و شخص بدون separator خالی، تغییر مرحله فارسی و ثبت‌کننده واقعی از فیلد `createdBy` با قالب «توسط {نام}» را جداگانه نمایش می‌دهد. مالک شرکت به‌اشتباه به‌عنوان اجراکننده استفاده نمی‌شود.
+* resolver متمرکز نمایش فعالیت اضافه شد. `CALL` با «تماس تلفنی» و سایر typeهای واقعی API با label فارسی نمایش داده می‌شوند؛ مقدار ناشناخته به «فعالیت» fallback می‌کند و enum خام underscoreدار به کاربر نشان داده نمی‌شود.
+* transitionهای `OLD -> NEW` موجود در payload بدون تغییر API استخراج می‌شوند و کدهای pipeline پیش‌فرض با همان labelهای فارسی backend seed نمایش داده می‌شوند؛ در صورت نبود نگاشت معتبر، label امن «مرحله نامشخص» جایگزین enum خام می‌شود.
+* formatter مشترک تاریخ جلالی با استفاده از همان timezone resolver پروژه توسعه یافت: فعالیت روز جاری به‌شکل «امروز، ساعت»، روز قبل به‌شکل «دیروز، ساعت» و تاریخ‌های قدیمی با روز، نام ماه و سال فارسی نشان داده می‌شوند. تاریخ خالی یا نامعتبر کاملاً حذف می‌شود و `Invalid Date` نمایش داده نمی‌شود.
+* icon container از رنگ‌های theme-aware استفاده می‌کند. در موبایل زمان زیر محتوا قرار می‌گیرد و در tablet/desktop ستون فشرده خودش را دارد؛ feed horizontal scroll ایجاد نمی‌کند. لینک شرکت فقط با شناسه معتبر ساخته می‌شود و برای شخص، چون route جزئیات مستقل در پروژه وجود ندارد، متن ساده باقی مانده است.
+* Skeletonهای فشرده هم‌شکل feed، empty state کوچک، خطای inline با retry و footer جداشده «مشاهده همه فعالیت‌ها» حفظ شدند. تعداد داده همچنان حداکثر ۱۰ ردیف و مجوز نمایش همچنان `activity:view` است.
+
+**فایل‌های مهم تغییرکرده/جدید:**
+
+* `src/features/activities/components/LatestActivitiesWidget.tsx`
+* `src/features/activities/utils/activityDisplay.ts`
+* `src/features/activities/types/activity.types.ts`
+* `src/shared/utils/jalaliDate.ts`
+* `README.md`
+
+**وابستگی‌ها و وضعیت بررسی:**
+
+* آخرین fix فرانت `000104` در commit `a18f761` و README پیش از تغییر تأیید شد؛ شماره این تغییر `fix 000105` است.
+* endpoint و قرارداد موجود `GET /api/dashboard/latest-activities` بدون تغییر استفاده می‌شود. نمایش transition به `title` فعلی backend با قالب `OLD -> NEW` و نمایش ثبت‌کننده به `createdBy` وابسته است؛ backend، Prisma schema و migration تغییر نکردند.
+* `npm run lint`: بدون خطا اجرا شد.
+* TypeScript check و `npm run build`: بدون خطا اجرا شد.
+* تست خودکار اجرا نشد، زیرا `package.json` اسکریپت `test` یا test runner پیکربندی‌شده ندارد؛ نتیجه تستی ساخته یا ادعا نشده است.
+* تست دستی مرورگر/API زنده و بررسی بصری در اندازه‌های واقعی viewport انجام نشد.
+* Vite هشدار غیرمسدودکننده chunk بزرگ‌تر از 500 kB داد؛ bundle اصلی حدود 2,321.15 kB و gzip آن حدود 663.86 kB است.
+
+---
+
 ---
 **Built with ❤️ for sales team**
 

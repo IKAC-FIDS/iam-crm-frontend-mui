@@ -1,5 +1,7 @@
+import { getActivityTypeLabel as resolveActivityTypeLabel } from '../utils/activityDisplay';
+
 export const ACTIVITY_TYPE_OPTIONS = [
-  { value: 'CALL', label: 'تماس' },
+  { value: 'CALL', label: 'تماس تلفنی' },
   { value: 'EMAIL', label: 'ایمیل' },
   { value: 'LINKEDIN_MESSAGE', label: 'پیام لینکدین' },
   { value: 'LINKEDIN_ENGAGEMENT', label: 'تعامل لینکدین' },
@@ -114,5 +116,5 @@ export interface LatestActivity {
 }
 
 export function getActivityTypeLabel(type: ActivityType): string {
-  return ACTIVITY_TYPE_OPTIONS.find((option) => option.value === type)?.label ?? type;
+  return resolveActivityTypeLabel(type);
 }

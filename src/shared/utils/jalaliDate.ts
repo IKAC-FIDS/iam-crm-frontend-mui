@@ -56,6 +56,47 @@ export function formatJalaliDateTime(value?: string | null): string {
   return formatUserJalaliDateTime(value);
 }
 
+function dateKey(date: Date, timeZone: string): string {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(date);
+}
+
+export function formatRelativeJalaliDateTime(
+  value?: string | null,
+  options: EffectiveTimeZoneOptions = {},
+  now = new Date(),
+): string | undefined {
+  const date = toDate(value);
+  if (!date) return undefined;
+  try {
+    const timeZone = getEffectiveTimeZone(options);
+    const time = new Intl.DateTimeFormat('fa-IR', {
+      timeZone,
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h23',
+    }).format(date);
+    const todayKey = dateKey(now, timeZone);
+    const yesterdayKey = dateKey(new Date(now.getTime() - 86_400_000), timeZone);
+    const valueKey = dateKey(date, timeZone);
+    if (valueKey === todayKey) return `امروز، ${time}`;
+    if (valueKey === yesterdayKey) return `دیروز، ${time}`;
+    const day = new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
+      timeZone,
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    }).format(date);
+    return `${day}، ${time}`;
+  } catch {
+    return undefined;
+  }
+}
+
 export function toJalaliInputValue(value?: string | null, includeTime = false): string {
   const date = toDate(value);
   if (!date) return '';
