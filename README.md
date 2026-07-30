@@ -2487,6 +2487,43 @@ The fix history below documents what changed in each numbered fix.
 
 ---
 
+## fix 000107 — Central Route Registry and Permission Route Guard
+
+* Replaced the manually duplicated router, sidebar menu, and breadcrumb maps with one typed Route Registry. Stable route IDs, parent relationships, paths/index routes, explicit access policies, lazy page loaders, menu labels/icons/order, breadcrumb labels, titles, dynamic detail routes, and 403/404 routes now share one authoritative definition.
+* The React Router configuration is generated from the registry while preserving the existing URLs, dashboard/auth layouts, dynamic company/opportunity/meeting parameters, direct navigation, query strings, route error element, login redirect, and Nginx SPA fallback behavior.
+* Added an explicit route policy model for public, authenticated, any-permission, and all-permission access. Invalid or empty protected policies fail closed. The evaluator reuses the existing backend-provided `permissions` array and the existing `can`, `canAny`, and `canAll` semantics; no permission identifier or RBAC behavior was invented.
+* Added a hydration-aware route guard. Protected content is not mounted while persisted authentication is restoring, unauthenticated users follow the existing login redirect, and authenticated unauthorized users retain their session and receive the standard Persian RTL 403 experience directly at the originally requested URL. Invalid policies fail closed in the same way, while 404 remains a separate outcome.
+* The desktop and mobile sidebar now derive from registry menu metadata and the same access evaluator used by the guard. Existing groups, Persian labels, icons, order, active-state behavior, RTL drawer placement, and hidden detail routes are preserved; hiding a menu item is no longer the only route-access control.
+* Breadcrumbs now derive from registry hierarchy, use React Router links instead of full-page anchors, expose an accessible Persian navigation label, and support static, nested administration, and dynamic detail routes without exposing unauthorized route metadata.
+* All page and layout modules are route-level lazy imports behind the shared MUI loading fallback. Menu and breadcrumb derivation use metadata only and do not load page components. The measured Production build produced separate chunks for Dashboard, Reports, Companies, Company Details, Opportunities, Meetings, administration pages, 403, 404, and other routed modules.
+* Route/menu compatibility fallbacks for `ADMIN`, `MANAGER`, `REP`, and `BOARDS` are now declared centrally in route policies. The verified global `ADMIN` compatibility in `can()` remains unchanged. Missing and explicitly empty permission arrays fail closed unless one of these explicit route-policy fallbacks applies; this legacy compatibility is transitional and should be removed after backend permission coverage is guaranteed. Feature-level button/form/mutation/table-action checks and role-sensitive team-membership or pipeline-transition rules remain deferred because they are business-action authorization outside this route-focused fix.
+* Added registry validation for empty or duplicate IDs, self/missing/circular parents, invalid policies, invalid index/menu definitions, conflicting loaded paths, and unknown redirect targets. Added focused registry, policy, missing/empty permission, guard, lazy loading, menu, breadcrumb, 403 URL-preservation, 404, session-retention, and direct-navigation tests, and expanded local-only Playwright coverage for authorized/forbidden lazy routes and browser refresh.
+* This fix requires frontend fix `000106` at commit `744eb9d` and the existing backend RBAC contract already consumed by login and refresh (`role` plus `permissions`). It has no backend, database, Prisma, migration, API DTO, response-envelope, token, cookie, tenant, or Production-data change.
+
+**Important changed and new files:**
+
+* `src/routes/routeRegistry.ts`, `src/routes/routeRegistry.types.ts`, `src/routes/routeAccess.ts`, `src/routes/routeNavigation.ts`
+* `src/routes/RouteAccessGuard.tsx`, `src/routes/RegistryRouteElement.tsx`, `src/routes/RouteLoadingFallback.tsx`
+* `src/routes/ForbiddenContent.tsx`, `src/routes/ForbiddenPage.tsx`, `src/routes/NotFoundPage.tsx`, `src/routes/index.tsx`, `src/routes/ProtectedRoute.tsx`
+* `src/components/dashboard/SideMenu.tsx`, `src/components/dashboard/Header.tsx`
+* Route, guard, navigation, breadcrumb, forbidden-page, lazy-route, SideMenu, and Header test files under `src/routes` and `src/components/dashboard`
+* `e2e/smoke.spec.ts`, `playwright.config.ts`, `README.md`
+
+**Verification, compatibility, and warnings:**
+
+* `npm ci`: passed; 440 packages installed from `package-lock.json`. npm reported four existing high-severity dependency advisories; no audit remediation or dependency upgrade was applied.
+* `npm run typecheck`: passed with no TypeScript errors.
+* `npm run test`: passed; 19 test files and 50 tests, with zero failures or skipped tests.
+* `npm run test:coverage`: passed; 19 test files and 50 tests. Statements 6.79% (487/7164), branches 4.68% (328/7000), functions 4.03% (130/3220), and lines 8.04% (419/5208). No blocking threshold was added.
+* `npm run lint`: passed with zero errors and zero warnings.
+* `npm run build`: passed in 1.12 seconds. The main JavaScript entry is 399.81 kB (126.60 kB gzip), compared with the reliable fix 000106 build evidence of 2,321.15 kB (663.86 kB gzip). Lazy route chunks, including a separate Forbidden page wrapper, are present; no chunk-over-500-kB or ineffective-dynamic-import warning remains.
+* `npx playwright install chromium`: passed. `npm run test:e2e`: passed with 14 tests across desktop Chromium and Pixel 7 projects. Tests used only `127.0.0.1`; screenshots, video, and traces remain failure-only.
+* Vite/Emotion emits a non-blocking development-only warning about MUI's `:first-child` SSR safety while rendering the Activities page; no matching selector exists in application source and Production build is unaffected.
+* Production bundle isolation is preserved: test utilities, MSW handlers, Vitest, Playwright, synthetic tokens, and fixtures are not imported from Production entrypoints. Generated `dist`, coverage, and Playwright artifacts remain ignored and uncommitted.
+* Deployment requires only rebuilding/recreating the frontend. Rollback is a fast-forward-safe revert to the prior frontend commit or recorded frontend image; backend and database rollback are not applicable. No Production deployment or live API/browser verification was performed.
+
+---
+
 ---
 **Built with ❤️ for sales team**
 

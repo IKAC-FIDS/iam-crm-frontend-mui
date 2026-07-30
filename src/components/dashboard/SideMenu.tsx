@@ -9,28 +9,9 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListSubheader from '@mui/material/ListSubheader';
 import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
-import AssessmentIcon from '@mui/icons-material/Assessment';
-import AssignmentIcon from '@mui/icons-material/Assignment';
-import BusinessIcon from '@mui/icons-material/Business';
-import CorporateFareIcon from '@mui/icons-material/CorporateFare';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import GroupsIcon from '@mui/icons-material/Groups';
-import HistoryIcon from '@mui/icons-material/History';
-import KeyIcon from '@mui/icons-material/Key';
-import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
-import LoginIcon from '@mui/icons-material/Login';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
-import PeopleIcon from '@mui/icons-material/People';
-import SecurityIcon from '@mui/icons-material/Security';
-import ViewKanbanIcon from '@mui/icons-material/ViewKanban';
-import WorkIcon from '@mui/icons-material/Work';
-import EventIcon from '@mui/icons-material/Event';
-import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
-
-import { can, canAny } from '@/features/auth/utils/permissions';
 import { useAuthStore } from '@/store/authStore';
 import { appTokens } from '@/theme/tokens';
+import { getVisibleMenuRoutes, isMenuRouteActive } from '@/routes/routeNavigation';
 
 const drawerWidth = appTokens.layout.drawerWidth;
 const rtlDrawerAnchor = 'left';
@@ -46,52 +27,6 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
   },
 }));
 
-const menuItems = [
-  { group: 'عملیات فروش', text: 'داشبورد', icon: <DashboardIcon />, path: '/dashboard' },
-  { group: 'عملیات فروش', text: 'شرکت‌ها', icon: <BusinessIcon />, path: '/companies' },
-  { group: 'عملیات فروش', text: 'فرصت‌ها', icon: <WorkIcon />, path: '/opportunities', permission: 'opportunity:view', fallbackRoles: ['ADMIN', 'MANAGER', 'REP', 'BOARDS'] },
-  { group: 'عملیات فروش', text: 'پایپ‌لاین', icon: <ViewKanbanIcon />, path: '/pipeline' },
-  { group: 'عملیات فروش', text: 'کارها', icon: <AssignmentIcon />, path: '/tasks', permission: 'task:view', fallbackRoles: ['ADMIN', 'MANAGER', 'REP', 'BOARDS'] },
-  { group: 'عملیات فروش', text: 'جلسات', icon: <EventIcon />, path: '/meetings', permission: 'meeting:view', fallbackRoles: [] },
-  { group: 'عملیات فروش', text: 'پیگیری‌ها', icon: <NotificationsActiveIcon />, path: '/follow-ups' },
-  { group: 'عملیات فروش', text: 'اعلان‌ها', icon: <NotificationsIcon />, path: '/notifications', permission: 'notification:view', fallbackRoles: ['ADMIN'] },
-  { group: 'عملیات فروش', text: 'افراد', icon: <PeopleIcon />, path: '/people', peopleOnly: true },
-  { group: 'عملیات فروش', text: 'فعالیت‌ها', icon: <HistoryIcon />, path: '/activities', permission: 'activity:view', fallbackRoles: ['ADMIN', 'MANAGER', 'REP'] },
-  { group: 'عملیات فروش', text: 'گزارش‌ها', icon: <AssessmentIcon />, path: '/reports', reportOnly: true },
-  { group: 'مدیریت', text: 'کاربران', icon: <PeopleIcon />, path: '/admin/users', permission: 'user:manage' },
-  { group: 'مدیریت', text: 'تیم‌ها', icon: <GroupsIcon />, path: '/admin/teams', permissions: ['team:view', 'team:manage'] },
-  { group: 'مدیریت', text: 'نرخ دلار', icon: <CurrencyExchangeIcon />, path: '/admin/exchange-rates', permissions: ['exchange-rate:view', 'exchange-rate:manage'] },
-  { group: 'مدیریت', text: 'سازمان‌ها', icon: <CorporateFareIcon />, path: '/admin/organizations', permission: 'organization:manage' },
-  { group: 'مدیریت', text: 'ورود سازمانی', icon: <LoginIcon />, path: '/admin/sso-providers', permissions: ['sso-provider:view', 'sso-provider:manage'] },
-  { group: 'مدیریت', text: 'نقش‌ها و مجوزها', icon: <SecurityIcon />, path: '/admin/permissions', permissions: ['permission:view', 'permission:manage', 'role:view', 'role:manage'] },
-  {
-    group: 'مدیریت',
-    text: 'کتابخانه‌ها',
-    icon: <LibraryBooksIcon />,
-    path: '/admin/libraries',
-    permissions: [
-      'library:industry:manage',
-      'library:pain-point:manage',
-      'library:use-case:manage',
-      'library:persona:manage',
-      'library:lead-source:manage',
-      'lookup:manage',
-      'library:university:manage',
-      'product:view',
-      'product:manage',
-    ],
-  },
-  {
-    group: 'مدیریت',
-    text: 'تنظیمات پایپ‌لاین',
-    icon: <ViewKanbanIcon />,
-    path: '/admin/pipeline',
-    permissions: ['pipeline:config:manage', 'pipeline:transition:manage'],
-  },
-  { group: 'مدیریت', text: 'رویدادهای ممیزی', icon: <HistoryIcon />, path: '/admin/audit-logs', permission: 'audit-log:view' },
-  { group: 'حساب', text: 'امنیت حساب', icon: <KeyIcon />, path: '/account/security' },
-];
-
 interface SideMenuProps {
   mobileOpen: boolean;
   onClose: () => void;
@@ -101,20 +36,8 @@ export default function SideMenu({ mobileOpen, onClose }: SideMenuProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const user = useAuthStore((state) => state.user);
-  const canViewReports = can(user, 'report:view', ['ADMIN', 'MANAGER', 'BOARDS']);
-  const canViewPeople = can(user, 'people:directory:view');
-
-  const visibleMenuItems = menuItems.filter(
-    (item) =>
-      (!item.reportOnly || canViewReports) &&
-      (!item.peopleOnly || canViewPeople) &&
-      (!item.permission || can(user, item.permission, item.fallbackRoles ?? ['ADMIN'])) &&
-      (!item.permissions || canAny(user, item.permissions, ['ADMIN']))
-  );
-  const groups = Array.from(new Set(visibleMenuItems.map((item) => item.group)));
-
-  const isSelected = (path: string) =>
-    location.pathname === path || (path !== '/dashboard' && location.pathname.startsWith(`${path}/`));
+  const visibleMenuItems = getVisibleMenuRoutes(user);
+  const groups = Array.from(new Set(visibleMenuItems.map((item) => item.menu!.group)));
 
   const menuContent = (
     <>
@@ -131,12 +54,13 @@ export default function SideMenu({ mobileOpen, onClose }: SideMenuProps) {
             }
           >
             {index > 0 && <Divider sx={{ mx: 2, mb: 1 }} />}
-            {visibleMenuItems.filter((item) => item.group === group).map((item) => (
-              <ListItem key={item.text} disablePadding>
+            {visibleMenuItems.filter((item) => item.menu!.group === group).map((item) => {
+              const Icon = item.menu!.icon;
+              return <ListItem key={item.id} disablePadding>
                 <ListItemButton
-                  selected={isSelected(item.path)}
+                  selected={isMenuRouteActive(item.fullPath, location.pathname)}
                   onClick={() => {
-                    navigate(item.path);
+                    navigate(item.fullPath);
                     onClose();
                   }}
                   sx={{
@@ -152,11 +76,11 @@ export default function SideMenu({ mobileOpen, onClose }: SideMenuProps) {
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: 40, color: 'inherit' }}>{item.icon}</ListItemIcon>
-                  <ListItemText primary={item.text} />
+                  <ListItemIcon sx={{ minWidth: 40, color: 'inherit' }}><Icon /></ListItemIcon>
+                  <ListItemText primary={item.menu!.label} />
                 </ListItemButton>
-              </ListItem>
-            ))}
+              </ListItem>;
+            })}
           </List>
         ))}
       </List>

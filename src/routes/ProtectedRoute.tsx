@@ -1,13 +1,6 @@
-import { Navigate, Outlet } from 'react-router-dom';
-import { useAuthStore } from '@/store/authStore';
+import { Outlet } from 'react-router-dom';
+import { RouteAccessGuard } from './RouteAccessGuard';
 
 export function ProtectedRoute() {
-  const { user } = useAuthStore();
-  const token = localStorage.getItem('accessToken');
-
-  if (!token || !user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return <Outlet />;
+  return <RouteAccessGuard policy={{ type: 'authenticated' }}><Outlet /></RouteAccessGuard>;
 }
