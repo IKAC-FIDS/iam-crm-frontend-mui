@@ -2452,6 +2452,41 @@ The fix history below documents what changed in each numbered fix.
 
 ---
 
+## fix 000106 — Frontend Test Stack and CI Baseline
+
+* Established the first repository-wide frontend test baseline with Vitest 4, jsdom, React Testing Library, jest-dom, user-event, MSW 2, Playwright, and V8 coverage. All additions are development dependencies and no Production application behavior was intentionally changed.
+* Vitest reuses the real Vite configuration and aliases, runs React tests in jsdom, initializes deterministic browser storage, resets authentication state, timers, handlers, and Query caches between tests, and fails on unexpected network requests. Coverage has no blocking threshold while the historical baseline is low.
+* Added a shared render utility with the real MUI theme, RTL Emotion cache, `MemoryRouter`, a fresh retry-disabled React Query client, and configurable authenticated or unauthenticated Zustand sessions. Deterministic synthetic Tenant A and Tenant B fixtures contain no customer data or real credentials.
+* Added test-only MSW Node handlers for the inspected `/auth/sso/providers`, `/auth/login`, `/auth/refresh`, `/dashboard/latest-activities`, and `/organizations/current` contracts using the current response envelope and synthetic Request IDs. MSW is never registered by the application entry point.
+* Added focused unit and integration coverage for login rendering, validation, submission and duplicate-submit prevention; session persistence and clearing; authenticated route protection and unauthenticated redirect; permission visibility and safe unknown permissions; activity localization; dashboard widget loading, success, empty, error and retry states; standardized API envelope and Request ID extraction; Jalali date determinism; and organization-aware query-key/cache partitioning across two synthetic organizations.
+* Added local-only Playwright smoke coverage for Persian RTL login and keyboard focus, protected-route redirect, a permitted synthetic dashboard session, and safe feature-disabled/HTTP 403 handling on desktop Chromium and a Pixel 7 viewport. Playwright starts only a local Vite server, points API calls to a loopback-only address, and retains screenshots, traces, and video only on failure.
+* Added `.github/workflows/frontend-ci.yml` with Node.js 22, `npm ci`, typecheck, coverage, lint, Production build, local Chromium smoke tests, and failure-only sanitized artifact upload with three-day retention. No secrets, real sessions, or remote environments are required.
+* Production TypeScript explicitly excludes test sources. The actual Production build output was scanned for MSW, Vitest, Playwright, synthetic tokens, fixture organization IDs, and test Request IDs; no test-only marker was found.
+* The measured initial coverage baseline from `npm run test:coverage` is: statements 5.18% (362/6979), branches 3.19% (219/6864), functions 3.05% (96/3139), and lines 6.30% (319/5059). Threshold enforcement and broader historical coverage are deferred.
+* There is no mandatory backend dependency. Full real-backend tenant-switch E2E, tenant-switch cancellation/invalidation, permission refresh, feature-entitlement refresh, suspended-tenant behavior, quota handling, and session-loading behavior are deferred because the inspected frontend has no tenant-switch or feature-entitlement contract/abstraction; no contract was invented.
+
+**Important changed and new files:**
+
+* `package.json`, `package-lock.json`, `vitest.config.ts`, `playwright.config.ts`, `tsconfig.app.json`, `tsconfig.test.json`, `eslint.config.js`, `.gitignore`
+* `.github/workflows/frontend-ci.yml`, `e2e/smoke.spec.ts`
+* `src/test/bootstrap.ts`, `src/test/setup.ts`, `src/test/render.tsx`, `src/test/fixtures.ts`, `src/test/msw/handlers.ts`, `src/test/msw/server.ts`
+* `src/lib/apiResponse.ts` and colocated `*.test.ts` / `*.test.tsx` baseline files for auth, routing, permissions, organization queries, activities, dashboard, API responses, and dates
+* `README.md`
+
+**Verification, warnings, deployment, and rollback:**
+
+* `npm run typecheck`: passed with no TypeScript errors.
+* `npm run test`: passed; 12 test files and 30 tests, with no skipped tests.
+* `npm run test:coverage`: passed; 12 test files and 30 tests, with the exact baseline recorded above.
+* `npm run lint`: passed with no errors. Generated coverage output was subsequently excluded from ESLint input; generated coverage and browser artifacts are ignored by Git.
+* `npm run build`: passed. Vite reported a non-blocking chunk-size warning; the main JavaScript bundle was 2,321.15 kB (663.86 kB gzip).
+* `npm run test:e2e`: passed; 8 tests across desktop and mobile Chromium. Browser binaries were installed locally with `npx playwright install chromium`.
+* `npm audit --omit=dev` reported two high-severity React Router advisories whose automated fix requires a breaking dependency change. No forced or unrelated runtime upgrade was made in this fix. The dependency install also reported four high-severity advisories across the full dependency tree.
+* Production deployment was not performed. This is a test/CI-only change; rollback is the revert of this single fix commit plus a clean dependency install from the previous `package-lock.json`. Backend and database rollback are not applicable.
+* Live API, real session, real tenant, staging, Production, and manual browser checks were not performed. Automated tests use only deterministic local fixtures.
+
+---
+
 ---
 **Built with ❤️ for sales team**
 

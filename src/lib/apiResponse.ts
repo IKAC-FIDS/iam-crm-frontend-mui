@@ -193,6 +193,14 @@ export function getApiErrorCode(error: unknown): string | undefined {
   return typeof code === 'string' && code.trim() ? code : undefined;
 }
 
+export function getApiRequestId(error: unknown): string | undefined {
+  if (!axios.isAxiosError<unknown>(error)) return undefined;
+  const body = error.response?.data;
+  if (!isRecord(body)) return undefined;
+  const requestId = body.requestId;
+  return typeof requestId === 'string' && requestId.trim() ? requestId : undefined;
+}
+
 export function isForbiddenError(error: unknown): boolean {
   return axios.isAxiosError(error) && error.response?.status === 403;
 }
