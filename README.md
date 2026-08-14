@@ -2609,6 +2609,33 @@ The fix history below documents what changed in each numbered fix.
 
 ---
 
+## Fix 000109 — Add Platform Plan, Subscription and Quota Administration UI
+
+* Performed contract-first discovery against frontend baseline `d08faa6a5799b33d5cbebb3db11e86eee49936d0`, backend baseline `13097af1bdc9ed1d67974e4c2e90a92a45ccead2`, and canonical OpenAPI SHA-256 `e669b1b76105e3b5af5c5471abceb2cfb3f90c64ce84cfa9aed04921271c49f7`.
+* Platform Plan, feature, quota, organization subscription, quota-override, and entitlement-override UI remains deliberately blocked. Every requested success response is still an `additionalProperties: true` generic object, so Orval cannot provide safe response models. The public auth contract also contains no reliable `platformAdmin` or `platformRole` signal, while backend source protects every operation with `PlatformAdminGuard` backed by persisted `PlatformAuthority.role === PLATFORM_ADMIN`. No tenant role, legacy `ADMIN`, permission, email, or organization field was used as a substitute.
+* The blocked operations are `GET/POST /api/admin/plans`, `PATCH /api/admin/plans/{id}`, `PUT /api/admin/plans/{id}/features/{feature}`, `GET /api/admin/plans/{planId}/quotas`, `PUT /api/admin/plans/{planId}/quotas/{metric}`, `GET /api/admin/organizations/{organizationId}/subscription`, `POST /api/admin/organizations/{organizationId}/subscriptions`, `PATCH /api/admin/subscriptions/{id}`, `PATCH /api/admin/subscriptions/{id}/status`, `GET /api/admin/organizations/{organizationId}/quotas`, `PUT/DELETE /api/admin/organizations/{organizationId}/quotas/{metric}`, `GET /api/admin/organizations/{organizationId}/entitlements`, and `PUT/DELETE /api/admin/organizations/{organizationId}/entitlements/{feature}`. The existing `PLATFORM_CONTRACT_REQUIRED` parity classification remains accurate; no shell page was falsely marked as supported.
+* Kept Platform Plan and organization administration routes/navigation fail-closed. Added regression assertions that `admin-plans` is not registered or exposed from tenant role names, preserving Fix `000108-B` permission semantics and preventing accidental reintroduction of the removed ADMIN bypass.
+* Completed the independent tenant-facing terminology correction on `/account/usage`: `LEGACY_COMPATIBILITY` now displays as «بدون محدودیت». Quota cards now present «مصرف فعلی» and «سقف» separately, use «بدون محدودیت» for null limits, and preserve BigInt-safe Persian formatting for values beyond JavaScript's safe integer range.
+* Added a rendered-page test for the real metrics response, new localization, absence of «سازگاری قدیمی», null/unlimited limits, and a 21-digit decimal value without precision truncation. No generated file, canonical OpenAPI file, capability manifest, API transport, backend, or database file changed.
+
+**Changed files:**
+
+* `src/features/quota/pages/CurrentQuotaPage.tsx`
+* `src/features/quota/pages/CurrentQuotaPage.test.tsx`
+* `src/routes/routeRegistry.test.ts`, `src/routes/routeNavigation.test.ts`
+* `README.md`
+
+**Verification and warnings:**
+
+* `npm run api:contract:validate` and `npm run api:client:drift`: passed; generated output remains deterministic/current and passed its security scan.
+* `npm run api:parity:report` and `npm run api:parity:check`: passed for all 323 operations. Totals remain 240 full UI, 38 generic-response blocked, 29 platform-contract required, 7 service-only, 5 intentionally no UI, 3 infrastructure, and 1 deprecated.
+* `npm run typecheck`: passed. `npm test`: passed; 26 test files and 72 tests. `npm run test:coverage`: passed with 8.47% statements, 5.58% branches, 4.96% functions, and 10.17% lines.
+* `npm run lint`: passed with zero errors and warnings. `npm run build`: passed in 1.35 seconds; the main entry is 400.42 kB (126.87 kB gzip) and DataGrid is 424.67 kB (126.23 kB gzip), with no chunk-over-500-kB warning.
+* `npm run test:e2e`: passed; all 14 desktop/mobile Chromium tests succeeded. Existing non-blocking Vite development warnings about MUI `:first-child` SSR safety and `NO_COLOR`/`FORCE_COLOR` were observed; Production build succeeded.
+* Backend follow-up requires typed success schemas for all listed operations plus a trustworthy public platform-authority signal before any Platform Administration route, navigation, read, or mutation UI can be implemented safely.
+
+---
+
 ---
 **Built with ❤️ for sales team**
 

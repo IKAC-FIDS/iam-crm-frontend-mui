@@ -35,6 +35,7 @@ describe('route registry', () => {
     expect(policies.pipeline).toMatchObject({ type: 'permissions', permissions: ['opportunity:view'] });
     expect(policies['admin-users']).toMatchObject({ type: 'permissions', permissions: ['user:view'] });
     expect(routeRegistry.some((route) => route.id === 'admin-organizations')).toBe(false);
+    expect(routeRegistry.some((route) => route.id === 'admin-plans')).toBe(false);
     expect(routeRegistry.some((route) => route.id === 'admin-sso-providers')).toBe(false);
   });
 

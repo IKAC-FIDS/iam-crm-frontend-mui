@@ -22,6 +22,7 @@ describe('registry navigation derivation', () => {
     const routes = getVisibleMenuRoutes(testUser({ role: 'ADMIN', permissions: [] }));
     expect(routes.map((route) => route.id)).not.toContain('admin-users');
     expect(routes.map((route) => route.id)).not.toContain('admin-organizations');
+    expect(routes.map((route) => route.id)).not.toContain('admin-plans');
     expect(routes.map((route) => route.id)).not.toContain('admin-sso-providers');
   });
 

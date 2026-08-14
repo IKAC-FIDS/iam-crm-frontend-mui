@@ -22,7 +22,7 @@ const stateLabels: Record<string, string> = {
   UNLIMITED: 'نامحدود',
   DISABLED: 'غیرفعال',
   UNCONFIGURED: 'تعریف‌نشده',
-  LEGACY_COMPATIBILITY: 'سازگاری قدیمی',
+  LEGACY_COMPATIBILITY: 'بدون محدودیت',
   INACTIVE_ORGANIZATION: 'سازمان غیرفعال',
   INACTIVE_SUBSCRIPTION: 'اشتراک غیرفعال',
 };
@@ -54,9 +54,10 @@ function QuotaCard({ item }: { item: QuotaSummaryMetric }) {
           <Typography variant="h6">{metricLabels[item.metric ?? ''] ?? item.metric ?? 'سهمیه'}</Typography>
           <Chip size="small" label={stateLabels[item.state ?? ''] ?? item.state ?? 'نامشخص'} />
         </Stack>
-        <Typography variant="h5" dir="ltr" sx={{ textAlign: 'right' }}>
-          {formatInteger(item.current)} / {unlimited ? 'نامحدود' : formatInteger(item.hardLimit)}
-        </Typography>
+        <Stack spacing={0.5}>
+          <Typography variant="body1">مصرف فعلی: <span dir="ltr">{formatInteger(item.current)}</span></Typography>
+          <Typography variant="body1">سقف: <span dir="ltr">{unlimited ? 'بدون محدودیت' : formatInteger(item.hardLimit)}</span></Typography>
+        </Stack>
         {percentage !== null && <LinearProgress variant="determinate" value={percentage} aria-label={`درصد مصرف ${metricLabels[item.metric ?? ''] ?? item.metric}`} />}
         {item.softLimit && <Typography variant="body2" color="text.secondary">حد هشدار: {formatInteger(item.softLimit)}</Typography>}
       </Stack>
