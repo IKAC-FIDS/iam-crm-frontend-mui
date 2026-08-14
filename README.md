@@ -2524,6 +2524,37 @@ The fix history below documents what changed in each numbered fix.
 
 ---
 
+## fix 000108 — Generated API Client Foundation
+
+* Added a deterministic OpenAPI client workflow based on pinned Orval `8.24.0` and Redocly CLI `2.46.1`. The reviewed backend contract is committed at `contracts/backend/openapi.json`; it is OpenAPI `3.0.0`, identifies `IAM CRM API` version `0.1.0`, and has SHA-256 `b84ca61d0e7aff8d69cc1ff61590f6fa50fd67621873b40fcd34d742a8ac8055`.
+* The dependency floor is backend fix `000094`; this baseline was sourced from backend commit `d02b29f8e50a9d3922caefd13e51ddc86aa011a5` after fix `000095-B` supplied typed company/task response contracts. No runtime Swagger or Production endpoint is used.
+* Generated Companies/Tasks endpoint functions, request/response models, enums, shared success/error envelopes, pagination metadata, and nullable/optional contracts live only under `src/api/generated`. All 145 generated files contain explicit `AUTO-GENERATED` and `DO NOT EDIT MANUALLY` notices.
+* Added `src/api/generatedApiMutator.ts` as the sole runtime bridge to the existing Axios instance. Existing `VITE_API_URL`, credentials, Bearer-token and single-flight refresh interceptors, timeout, cancellation, response error helpers, and server-generated request correlation remain authoritative. Tenant isolation continues through the authenticated backend/JWT context; no tenant header or second Axios/auth client was introduced.
+* Bounded phase-1 migration covers `GET /api/companies`, `GET /api/tasks`, and `DELETE /api/tasks/{id}`. Existing React Query keys, retries, invalidation, feature view models, and user-visible behavior remain owned by the repository. Company/task create/update and all other services remain manual for later reviewed phases.
+* The OpenAPI query schemas do not yet describe existing company `priority` and task `status`/`priority` compatibility filters. The services deliberately continue forwarding those parameters through the shared Axios options to avoid a filtering regression; backend contract documentation is deferred before removing this compatibility shim.
+* Added explicit contract sync/SHA/validation and generate/check/drift scripts. Sync requires an operator-supplied local path, clean checking regenerates into an ignored sibling directory without resetting Git, byte-compares output, and scans for embedded URLs, credentials, concrete tenant UUIDs, missing generated notices, and secret-like assigned values.
+* CI now validates the committed contract and performs deterministic generated-client drift/security checks before the existing typecheck, coverage, lint, build, and local Playwright gates. Full architecture, generator alternatives, update commands, troubleshooting, phased migration, and frontend-only rollback are documented in `docs/generated-api-client-000108.md`.
+
+**Important changed and new files:**
+
+* `contracts/backend/openapi.json`, `orval.config.ts`, `redocly.yaml`, `package.json`, `package-lock.json`
+* `src/api/generated/**`, `src/api/generatedApiMutator.ts`, `src/api/generatedClient.integration.test.ts`
+* `src/features/companies/services/companies.service.ts`, `src/features/tasks/services/tasks.service.ts`
+* `tools/api-contract.mjs`, `tools/api-contract-lib.mjs`, `tools/api-client-check.mjs`, `tools/api-client-lib.mjs`, and their tests
+* `.github/workflows/frontend-ci.yml`, `vitest.config.ts`, `.gitignore`, `docs/generated-api-client-000108.md`, `README.md`
+
+**Verification, compatibility, and warnings:**
+
+* `npm ci`: passed; 526 packages installed from `package-lock.json`. npm reported five high-severity dependency advisories; no audit remediation or dependency upgrade was applied.
+* `npm run api:contract:validate`: passed with Redocly and repository-specific metadata/operation/schema gates. `npm run api:client:generate` and `npm run api:client:clean-check`: passed; regeneration was byte-equivalent and the generated-output security scan passed.
+* `npm run typecheck`: passed with no TypeScript errors. `npm run test`: passed; 22 test files and 60 tests, with zero failures or skipped tests.
+* `npm run test:coverage`: passed; statements 7.92% (576/7267), branches 4.90% (343/6995), functions 4.41% (144/3262), and lines 9.49% (504/5309). No blocking threshold was added.
+* `npm run lint`: passed with zero errors and zero warnings. `npm run build`: passed in 1.28 seconds. The main JavaScript entry remained 399.81 kB (126.60 kB gzip), and no chunk-over-500-kB warning was emitted.
+* `npx playwright install chromium`: passed. The first cold-start E2E execution produced three desktop timeout failures while the equivalent mobile scenarios passed; an unchanged full rerun passed all 14 tests across desktop Chromium and Pixel 7 in 51.4 seconds. The existing development-only MUI/Emotion `:first-child` warning remains non-blocking.
+* No generated `dist`, coverage, Playwright, temporary comparison, environment, credential, or local-machine artifact is committed. No backend, database, Prisma, migration, API runtime, Production, or Staging change was made. Rollback is the prior frontend commit/image only.
+
+---
+
 ---
 **Built with ❤️ for sales team**
 

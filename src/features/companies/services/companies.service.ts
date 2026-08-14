@@ -1,5 +1,7 @@
 import axiosInstance from '@/lib/axios';
 import { unwrapApiResponse, unwrapPaginatedApiResponse } from '@/lib/apiResponse';
+import { companiesGet } from '@/api/generated/endpoints';
+import type { CompaniesGetParams, CompanyListItem as ApiCompanyListItem } from '@/api/generated/models';
 import type {
   GetCompaniesParams,
   PaginatedResult,
@@ -16,27 +18,6 @@ import type {
   GetCompanyOptionsParams,
 } from '../types/company.types';
 
-interface CompaniesApiMeta {
-  page?: number;
-  limit?: number;
-  total?: number;
-  totalPages?: number;
-  hasNext?: boolean;
-  hasPrevious?: boolean;
-}
-
-interface CompaniesApiEnvelope {
-  data?: CompanyListItem[];
-  items?: CompanyListItem[];
-  meta?: CompaniesApiMeta;
-  page?: number;
-  limit?: number;
-  total?: number;
-  totalPages?: number;
-}
-
-type CompaniesApiResponse = CompanyListItem[] | CompaniesApiEnvelope;
-
 function isCompanyLegalDocument(value: unknown): value is CompanyLegalDocument {
   return typeof value === 'object' && value !== null && typeof (value as { id?: unknown }).id === 'string';
 }
@@ -50,58 +31,47 @@ function uploadedLegalDocument(payload: unknown): CompanyLegalDocument | null {
   return isCompanyLegalDocument(candidate) ? candidate : null;
 }
 
-function normalizeCompaniesResponse(
-  payload: CompaniesApiResponse,
-  params: GetCompaniesParams,
-): PaginatedResult<CompanyListItem> {
-  if (Array.isArray(payload)) {
-    return {
-      data: payload,
-      meta: {
-        page: params.page,
-        limit: params.limit,
-        total: payload.length,
-        totalPages: Math.max(1, Math.ceil(payload.length / params.limit)),
-        hasNext: false,
-        hasPrevious: params.page > 1,
-      },
-    };
-  }
-
-  const items = payload.data ?? payload.items ?? [];
-  const page = payload.meta?.page ?? payload.page ?? params.page;
-  const limit = payload.meta?.limit ?? payload.limit ?? params.limit;
-  const total = payload.meta?.total ?? payload.total ?? items.length;
-
-  return {
-    data: items,
-    meta: {
-      page,
-      limit,
-      total,
-      totalPages:
-        payload.meta?.totalPages ??
-        payload.totalPages ??
-        Math.max(1, Math.ceil(total / limit)),
-      hasNext: payload.meta?.hasNext ?? page * limit < total,
-      hasPrevious: payload.meta?.hasPrevious ?? page > 1,
-    },
-  };
-}
-
-function cleanRequestParams(params: GetCompaniesParams): Record<string, string | number | boolean> {
+function cleanRequestParams(params: GetCompaniesParams): { generated: CompaniesGetParams; transport: Record<string, string | number> } {
   const result = Object.fromEntries(
     Object.entries(params).filter(
       ([, value]) => value !== undefined && value !== '',
     ),
-  ) as Record<string, string | number | boolean>;
+  ) as Record<string, string | number>;
 
   delete result.archiveStatus;
 
-  if (params.archiveStatus === 'ALL') result.includeArchived = true;
-  if (params.archiveStatus === 'ARCHIVED') result.archivedOnly = true;
+  if (params.archiveStatus === 'ALL') result.includeArchived = 'true';
+  if (params.archiveStatus === 'ARCHIVED') result.archivedOnly = 'true';
 
-  return result;
+  return {
+    generated: {
+      ownershipScope: params.ownershipScope,
+      search: params.search,
+      ownerId: params.ownerId,
+      page: params.page,
+      limit: params.limit,
+      includeArchived: params.archiveStatus === 'ALL' ? 'true' : undefined,
+      archivedOnly: params.archiveStatus === 'ARCHIVED' ? 'true' : undefined,
+    },
+    transport: result,
+  };
+}
+
+function toCompanyListItem(company: ApiCompanyListItem): CompanyListItem {
+  return {
+    id: company.id,
+    legalName: company.legalName,
+    brandName: company.brandName,
+    industry: company.industry,
+    priority: company.priority,
+    owner: company.owner ? { ...company.owner, team: company.owner.team ?? undefined } : null,
+    headOfficeCity: company.headOfficeCity,
+    centralPhone: company.centralPhone,
+    updatedAt: company.updatedAt,
+    isArchived: Boolean(company.archivedAt),
+    archivedAt: company.archivedAt,
+    archiveReason: company.archiveReason,
+  };
 }
 
 export const companiesService = {
@@ -121,11 +91,9 @@ export const companiesService = {
   getCompanies: async (
     params: GetCompaniesParams,
   ): Promise<PaginatedResult<CompanyListItem>> => {
-    const response = await axiosInstance.get<CompaniesApiResponse>('/companies', {
-      params: cleanRequestParams(params),
-    });
-
-    return normalizeCompaniesResponse(unwrapPaginatedApiResponse<CompanyListItem>(response.data), params);
+    const query = cleanRequestParams(params);
+    const response = await companiesGet(query.generated, { params: query.transport });
+    return { data: response.data.map(toCompanyListItem), meta: response.meta };
   },
 
   getCompanyById: async (companyId: string): Promise<Company> => {

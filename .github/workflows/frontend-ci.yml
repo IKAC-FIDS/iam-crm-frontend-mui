@@ -19,6 +19,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm run api:contract:validate
+      - run: npm run api:client:clean-check
       - run: npm run typecheck
       - run: npm run test:coverage
       - run: npm run lint
