@@ -17,9 +17,9 @@ import { canOpenSocialHandle, formatSocialHandle, getCompanySocialPlatformLabel 
 
 export default function CompanySocialChannelsTab({ companyId }: { companyId: string }) {
   const user = useAuthStore((state) => state.user);
-  const canView = can(user, 'social-channel:view', ['ADMIN', 'MANAGER', 'REP']);
-  const canManage = can(user, 'social-channel:manage', ['ADMIN', 'MANAGER', 'REP']);
-  const canDelete = can(user, 'social-channel:delete', ['ADMIN', 'MANAGER']);
+  const canView = can(user, 'company:view');
+  const canManage = can(user, 'social-channel:manage');
+  const canDelete = canManage;
   const channelsQuery = useCompanySocialChannels(companyId);
   const deleteChannel = useDeleteCompanySocialChannel(companyId);
   const [mode, setMode] = useState<'create' | 'edit'>('create');

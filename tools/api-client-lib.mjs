@@ -21,7 +21,8 @@ export async function compareGeneratedTrees(committedRoot, checkRoot) {
       readFile(path.join(committedRoot, file)),
       readFile(path.join(checkRoot, file)),
     ]);
-    if (!committed.equals(regenerated)) throw new Error(`Generated API drift detected: ${file}`);
+    const normalizeText = (value) => value.toString('utf8').replaceAll('\r\n', '\n');
+    if (normalizeText(committed) !== normalizeText(regenerated)) throw new Error(`Generated API drift detected: ${file}`);
   }
 }
 

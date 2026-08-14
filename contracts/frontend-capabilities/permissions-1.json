@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/api/permissions",
+      "operationId": "permissionsGet",
+      "tag": "Permissions",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/admin/permissions/services/adminPermissions.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/permissions",
+      "operationId": "permissionsPost",
+      "tag": "Permissions",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/admin/permissions/services/adminPermissions.service.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/permissions/{id}",
+      "operationId": "permissionsDelete",
+      "tag": "Permissions",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/admin/permissions/services/adminPermissions.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/permissions/{id}",
+      "operationId": "permissionsGet1",
+      "tag": "Permissions",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/admin/permissions/services/adminPermissions.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/permissions/{id}",
+      "operationId": "permissionsPatch",
+      "tag": "Permissions",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/admin/permissions/services/adminPermissions.service.ts"
+      ]
+    }
+  ]
+}

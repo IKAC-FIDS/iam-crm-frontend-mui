@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "PATCH",
+      "path": "/api/admin/organizations/{id}/activate",
+      "operationId": "adminOrganizationsActivatePatch",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/admin/organizations/{id}/archive",
+      "operationId": "adminOrganizationsArchivePatch",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/organizations/{id}/onboarding",
+      "operationId": "adminOrganizationsOnboardingGet",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/organizations/{id}/provision",
+      "operationId": "adminOrganizationsProvisionPost",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/admin/organizations/{id}/resume",
+      "operationId": "adminOrganizationsResumePatch",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/admin/organizations/{id}/suspend",
+      "operationId": "adminOrganizationsSuspendPatch",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/organizations/{organizationId}/entitlements",
+      "operationId": "adminOrganizationsEntitlementsGet",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/admin/organizations/{organizationId}/entitlements/{feature}",
+      "operationId": "adminOrganizationsEntitlementsDelete",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/organizations/{organizationId}/entitlements/{feature}",
+      "operationId": "adminOrganizationsEntitlementsPut",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/organizations/{organizationId}/quotas",
+      "operationId": "adminOrganizationsQuotasGet",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/admin/organizations/{organizationId}/quotas/{metric}",
+      "operationId": "adminOrganizationsQuotasDelete",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/organizations/{organizationId}/quotas/{metric}",
+      "operationId": "adminOrganizationsQuotasPut",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    }
+  ]
+}

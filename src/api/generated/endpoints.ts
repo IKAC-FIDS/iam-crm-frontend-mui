@@ -48,6 +48,7 @@ import type {
   CreateCompanyOpportunityDto,
   CreateCompanySocialChannelDto,
   CreateTaskDto,
+  QuotaCurrentGet200,
   RescheduleTaskDto,
   TasksAssignPatch200,
   TasksCompletePatch200,
@@ -486,6 +487,18 @@ export const companiesOptionsGet2 = (
 /**
  * Tenant-scoped operations derive Organization from trusted TenantContext; clients cannot override it.
  */
+export const quotaCurrentGet = (
+
+ options?: SecondParameter<typeof generatedApiMutator<QuotaCurrentGet200>>,) => {
+      return generatedApiMutator<QuotaCurrentGet200>(
+      {url: `/api/quota/current`, method: 'GET'
+    },
+      options);
+    }
+
+/**
+ * Tenant-scoped operations derive Organization from trusted TenantContext; clients cannot override it.
+ */
 export const tasksGet = (
     params?: TasksGetParams,
  options?: SecondParameter<typeof generatedApiMutator<TasksGet200>>,) => {
@@ -639,6 +652,7 @@ export type CompaniesStagePatchResult = NonNullable<Awaited<ReturnType<typeof co
 export type CompaniesBulkOwnerPatchResult = NonNullable<Awaited<ReturnType<typeof companiesBulkOwnerPatch>>>
 export type CompaniesOptionsGetResult = NonNullable<Awaited<ReturnType<typeof companiesOptionsGet>>>
 export type CompaniesOptionsGet2Result = NonNullable<Awaited<ReturnType<typeof companiesOptionsGet2>>>
+export type QuotaCurrentGetResult = NonNullable<Awaited<ReturnType<typeof quotaCurrentGet>>>
 export type TasksGetResult = NonNullable<Awaited<ReturnType<typeof tasksGet>>>
 export type TasksPostResult = NonNullable<Awaited<ReturnType<typeof tasksPost>>>
 export type TasksDeleteResult = NonNullable<Awaited<ReturnType<typeof tasksDelete>>>

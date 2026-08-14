@@ -40,6 +40,6 @@ if (command === 'sync') {
     openapi: document.openapi,
     title: document.info?.title,
     version: document.info?.version,
-    sha256: createHash('sha256').update(raw).digest('hex'),
+    sha256: createHash('sha256').update(raw.toString('utf8').replaceAll('\r\n', '\n')).digest('hex'),
   }, null, 2));
 }

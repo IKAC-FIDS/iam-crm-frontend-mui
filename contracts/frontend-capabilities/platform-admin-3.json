@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/api/admin/organizations/{organizationId}/subscription",
+      "operationId": "adminOrganizationsSubscriptionGet",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/organizations/{organizationId}/subscriptions",
+      "operationId": "adminOrganizationsSubscriptionsPost",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/permissions",
+      "operationId": "adminPermissionsGet",
+      "tag": "Platform Admin",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/admin/permissions/{action}",
+      "operationId": "adminPermissionsDelete",
+      "tag": "Platform Admin",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/permissions/assign",
+      "operationId": "adminPermissionsAssignPost",
+      "tag": "Platform Admin",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/permissions/bulk-assign",
+      "operationId": "adminPermissionsBulkAssignPost",
+      "tag": "Platform Admin",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/permissions/bulk-revoke",
+      "operationId": "adminPermissionsBulkRevokePost",
+      "tag": "Platform Admin",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/permissions/create",
+      "operationId": "adminPermissionsCreatePost",
+      "tag": "Platform Admin",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/permissions/matrix",
+      "operationId": "adminPermissionsMatrixGet",
+      "tag": "Platform Admin",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/admin/permissions/revoke",
+      "operationId": "adminPermissionsRevokeDelete",
+      "tag": "Platform Admin",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/permissions/roles/{role}",
+      "operationId": "adminPermissionsRolesGet",
+      "tag": "Platform Admin",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/permissions/roles/{role}/with-details",
+      "operationId": "adminPermissionsRolesWithDetailsGet",
+      "tag": "Platform Admin",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": []
+    }
+  ]
+}

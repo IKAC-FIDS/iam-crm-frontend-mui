@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/api/reports/activities",
+      "operationId": "reportsActivitiesGet",
+      "tag": "Reports",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/reports/services/exportDownload.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/reports/activities/by-user",
+      "operationId": "reportsActivitiesByUserGet",
+      "tag": "Reports",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/reports/services/exportDownload.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/reports/conversion-rates",
+      "operationId": "reportsConversionRatesGet",
+      "tag": "Reports",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/reports/services/exportDownload.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/reports/data-quality",
+      "operationId": "reportsDataQualityGet",
+      "tag": "Reports",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/reports/services/exportDownload.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/reports/data-quality/issues",
+      "operationId": "reportsDataQualityIssuesGet",
+      "tag": "Reports",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/reports/services/exportDownload.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/reports/exchange-rates/impact",
+      "operationId": "reportsExchangeRatesImpactGet",
+      "tag": "Reports",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/reports/services/exportDownload.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/reports/exports/{reportKey}",
+      "operationId": "reportsExportsGet",
+      "tag": "Reports",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/reports/services/exportDownload.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/reports/filter-options",
+      "operationId": "reportsFilterOptionsGet",
+      "tag": "Reports",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/reports/services/exportDownload.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/reports/financial/collections",
+      "operationId": "reportsFinancialCollectionsGet",
+      "tag": "Reports",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/reports/services/exportDownload.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/reports/meetings/performance",
+      "operationId": "reportsMeetingsPerformanceGet",
+      "tag": "Reports",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/reports/services/exportDownload.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/reports/opportunities/aging",
+      "operationId": "reportsOpportunitiesAgingGet",
+      "tag": "Reports",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/reports/services/exportDownload.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/reports/opportunities/forecast",
+      "operationId": "reportsOpportunitiesForecastGet",
+      "tag": "Reports",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/reports/services/exportDownload.service.ts"
+      ]
+    }
+  ]
+}

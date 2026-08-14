@@ -8,7 +8,6 @@ export type RouteAccessPolicy =
       type: 'permissions';
       mode: 'any' | 'all';
       permissions: readonly string[];
-      fallbackRoles?: readonly string[];
     };
 
 export interface RouteMenuMetadata {

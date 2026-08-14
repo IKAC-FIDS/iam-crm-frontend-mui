@@ -29,6 +29,15 @@ describe('route registry', () => {
     ]));
   });
 
+  it('uses explicit read permissions for core entity routes', () => {
+    const policies = Object.fromEntries(routeRegistry.map((route) => [route.id, route.access]));
+    expect(policies.companies).toMatchObject({ type: 'permissions', permissions: ['company:view'] });
+    expect(policies.pipeline).toMatchObject({ type: 'permissions', permissions: ['opportunity:view'] });
+    expect(policies['admin-users']).toMatchObject({ type: 'permissions', permissions: ['user:view'] });
+    expect(routeRegistry.some((route) => route.id === 'admin-organizations')).toBe(false);
+    expect(routeRegistry.some((route) => route.id === 'admin-sso-providers')).toBe(false);
+  });
+
   it('rejects empty identities and self-parent relationships', () => {
     const invalid = [
       { id: '', path: '/empty', access: { type: 'public' as const } },

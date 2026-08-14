@@ -2555,6 +2555,35 @@ The fix history below documents what changed in each numbered fix.
 
 ---
 
+## fix 000108-B — Close Frontend/Backend Capability and Authorization Gaps
+
+* Audited all 323 operations in the canonical backend OpenAPI contract and added the complete, reviewable capability matrix in `docs/frontend-backend-parity-000108-B.md`. The audited frontend baseline is `d11dd0f79a889f0583b4c90226be011ab8b653d4`, the inspected backend baseline is `d02b29f8e50a9d3922caefd13e51ddc86aa011a5`, and the normalized OpenAPI SHA-256 is `b84ca61d0e7aff8d69cc1ff61590f6fa50fd67621873b40fcd34d742a8ac8055`.
+* Removed the incorrect unconditional tenant `ADMIN` authorization shortcut. Route/menu access and reviewed mutation controls now follow effective backend permissions, including corrected read policies for companies, pipeline, follow-ups, users, teams, libraries, exchange rates, and pipeline configuration, plus exact create/update/activate/deactivate/manage permissions for reviewed actions.
+* Platform authority is no longer inferred from `organization:manage` or a tenant role. Platform organization administration is fail-closed because the public auth response has no reliable `PlatformAuthority` signal. SSO administration is also fail-closed because `GET /api/entitlements/current` has an insufficient generic response contract and backend SSO requires both permission and the SSO feature entitlement.
+* Expanded the persisted authenticated-user contract with the backend-returned team, organization, and role identifiers/codes/names. Login, refresh, passkey, and SSO flows now share one authenticated-session updater; a change in effective user/tenant clears the TanStack Query cache, while a same-tenant token refresh preserves it. Persisted legacy auth state migrates safely and missing permissions fail closed.
+* Added the typed tenant-facing current quota capability at `/account/usage`, backed by generated `GET /api/quota/current`. The Persian RTL page handles loading, retry, malformed/unavailable data, unlimited and configured limits, and decimal integer strings without unsafe JavaScript-number conversion.
+* Added deterministic `api:parity:report` and `api:parity:check` commands plus a human-reviewable manifest covering every contract operation. CI now rejects unclassified backend operations and missing declared frontend bindings. Generated output and contract comparisons normalize line endings to avoid the observed Windows CRLF-only baseline drift without a repository-wide generated-file rewrite.
+* Final classifications are: 240 `FULL_UI_SUPPORT`, 38 `BLOCKED_BY_GENERIC_OPENAPI_RESPONSE`, 29 `PLATFORM_CONTRACT_REQUIRED`, 7 `SERVICE_ONLY_NO_UI`, 5 `INTENTIONALLY_NO_UI`, 3 `NOT_USER_FACING`, and 1 `DEPRECATED_BACKEND_ENDPOINT`. Organization settings/branding/domains, tenant RBAC, sessions, tenant switching, SAM import, and current entitlements remain deliberately unimplemented where their success responses are generic; platform lifecycle/plans/subscriptions/quotas/audit remain blocked by the missing public Platform Admin authority contract.
+
+**Important changed and new files:**
+
+* `src/features/auth/**`, `src/store/authStore.ts`, `src/lib/axios.ts`, `src/routes/**`
+* `src/features/admin/users/components/AdminUsersPage.tsx`, `src/features/companyBranches/components/CompanyBranchesTab.tsx`, `src/features/companySocialChannels/components/CompanySocialChannelsTab.tsx`, `src/features/pipelineConfig/**`
+* `src/features/quota/**`, `src/api/generated/**`, `orval.config.ts`
+* `contracts/frontend-capabilities/**`, `tools/api-parity*.mjs`, `tools/api-client-lib.mjs`, `tools/api-contract.mjs`
+* `.github/workflows/frontend-ci.yml`, `docs/frontend-backend-parity-000108-B.md`, `package.json`, `README.md`
+
+**Verification, compatibility, and warnings:**
+
+* `npm run api:contract:validate`, `npm run api:client:generate`, and `npm run api:client:drift`: passed. Regeneration was deterministic/current and the generated security scan passed.
+* `npm run api:parity:report` and `npm run api:parity:check`: passed for all 323 operations with no unclassified or stale binding.
+* `npm run typecheck`: passed. `npm test`: passed; 25 test files and 70 tests, with zero failures.
+* `npm run lint`: passed with zero errors and zero warnings. `npm run build`: passed in 1.21 seconds; the main entry is 400.42 kB (126.84 kB gzip) and DataGrid is 424.67 kB (126.23 kB gzip). No chunk-over-500-kB warning was emitted.
+* Coverage and Playwright E2E were not rerun for this fix because they are not part of the requested Fix108-B quality-gate command list; the repository test suite and all explicitly required gates were run. No browser, live API, Production, or deployment verification was performed.
+* Backend follow-up is required for typed success responses listed in the parity document, a trustworthy public Platform Admin authority signal, typed current-entitlement semantics, and authorized tenant-switch candidates. No backend/database change, migration, push, merge, tag, release, or deployment is part of this frontend fix.
+
+---
+
 ---
 **Built with ❤️ for sales team**
 

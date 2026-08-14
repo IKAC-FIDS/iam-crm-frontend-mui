@@ -3,14 +3,12 @@ import { toast } from 'sonner';
 import { Box, Button, Card, CardContent, CircularProgress, Stack, Typography } from '@mui/material';
 import { Link as RouterLink, useNavigate, useSearchParams } from 'react-router-dom';
 import { getApiErrorMessage } from '@/lib/apiResponse';
-import { queryClient } from '@/lib/queryClient';
-import { useAuthStore } from '@/store/authStore';
+import { applyAuthenticatedSession } from '@/features/auth/utils/authSession';
 import { ssoService } from '../services/sso.service';
 
 export default function SsoCallbackPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const setUser = useAuthStore((state) => state.setUser);
   const [errorMessage, setErrorMessage] = useState('');
   const ticket = useMemo(() => searchParams.get('ticket')?.trim() ?? '', [searchParams]);
   const providerError = searchParams.get('error') || searchParams.get('message');
@@ -28,9 +26,7 @@ export default function SsoCallbackPage() {
       try {
         const response = await ssoService.exchangeTicket({ ticket });
         if (cancelled) return;
-        queryClient.clear();
-        localStorage.setItem('accessToken', response.accessToken);
-        setUser(response.user);
+        applyAuthenticatedSession(response);
         window.history.replaceState(null, '', '/auth/sso/callback');
         toast.success('ورود سازمانی موفق!');
         navigate('/dashboard', { replace: true });
@@ -45,7 +41,7 @@ export default function SsoCallbackPage() {
     return () => {
       cancelled = true;
     };
-  }, [callbackErrorMessage, navigate, setUser, ticket]);
+  }, [callbackErrorMessage, navigate, ticket]);
 
   const visibleError = callbackErrorMessage || errorMessage;
 

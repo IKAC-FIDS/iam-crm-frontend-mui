@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "PATCH",
+      "path": "/api/admin/sso-providers/{id}/disable",
+      "operationId": "adminSsoProvidersDisablePatch",
+      "tag": "Platform Admin",
+      "status": "SERVICE_ONLY_NO_UI",
+      "responseTyped": false,
+      "authorization": "PERMISSION:sso-provider:view/manage + FEATURE:SSO",
+      "bindings": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/sso-providers/{id}/test-connection",
+      "operationId": "adminSsoProvidersTestConnectionPost",
+      "tag": "Platform Admin",
+      "status": "SERVICE_ONLY_NO_UI",
+      "responseTyped": false,
+      "authorization": "PERMISSION:sso-provider:view/manage + FEATURE:SSO",
+      "bindings": []
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/admin/subscriptions/{id}",
+      "operationId": "adminSubscriptionsPatch",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/admin/subscriptions/{id}/status",
+      "operationId": "adminSubscriptionsStatusPatch",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    }
+  ]
+}

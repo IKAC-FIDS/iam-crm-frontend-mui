@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/api/admin/users/{id}/passkeys",
+      "operationId": "adminUsersPasskeysGet",
+      "tag": "Passkeys",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/admin/users/{id}/passkeys/{passkeyId}",
+      "operationId": "adminUsersPasskeysDelete",
+      "tag": "Passkeys",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/passkeys/authentication/options",
+      "operationId": "authPasskeysAuthenticationOptionsPost",
+      "tag": "Passkeys",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "PUBLIC_OR_AUTHENTICATED_AUTH_FLOW",
+      "bindings": [
+        "src/features/auth/services/auth.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/passkeys/authentication/verify",
+      "operationId": "authPasskeysAuthenticationVerifyPost",
+      "tag": "Passkeys",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "PUBLIC_OR_AUTHENTICATED_AUTH_FLOW",
+      "bindings": [
+        "src/features/auth/services/auth.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/me/passkeys",
+      "operationId": "mePasskeysGet",
+      "tag": "Passkeys",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "PUBLIC_OR_AUTHENTICATED_AUTH_FLOW",
+      "bindings": [
+        "src/features/accountSecurity/services/passkeys.service.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/me/passkeys/{id}",
+      "operationId": "mePasskeysDelete",
+      "tag": "Passkeys",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "PUBLIC_OR_AUTHENTICATED_AUTH_FLOW",
+      "bindings": [
+        "src/features/accountSecurity/services/passkeys.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/me/passkeys/registration/options",
+      "operationId": "mePasskeysRegistrationOptionsPost",
+      "tag": "Passkeys",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "PUBLIC_OR_AUTHENTICATED_AUTH_FLOW",
+      "bindings": [
+        "src/features/accountSecurity/services/passkeys.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/me/passkeys/registration/verify",
+      "operationId": "mePasskeysRegistrationVerifyPost",
+      "tag": "Passkeys",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "PUBLIC_OR_AUTHENTICATED_AUTH_FLOW",
+      "bindings": [
+        "src/features/accountSecurity/services/passkeys.service.ts"
+      ]
+    }
+  ]
+}

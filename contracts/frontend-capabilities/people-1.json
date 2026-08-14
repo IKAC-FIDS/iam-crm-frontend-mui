@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/api/people",
+      "operationId": "peopleGet",
+      "tag": "People",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/people/services/people.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/people",
+      "operationId": "peoplePost",
+      "tag": "People",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/people/services/people.service.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/people/{id}",
+      "operationId": "peopleDelete",
+      "tag": "People",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/people/services/people.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/people/{id}",
+      "operationId": "peopleGet1",
+      "tag": "People",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/people/services/people.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/people/{id}",
+      "operationId": "peoplePatch",
+      "tag": "People",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/people/services/people.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/people/{personId}/contacts",
+      "operationId": "peopleContactsGet",
+      "tag": "People",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/people/services/people.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/people/{personId}/contacts",
+      "operationId": "peopleContactsPost",
+      "tag": "People",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/people/services/people.service.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/people/{personId}/contacts/{id}",
+      "operationId": "peopleContactsDelete",
+      "tag": "People",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/people/services/people.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/people/{personId}/contacts/{id}",
+      "operationId": "peopleContactsGet2",
+      "tag": "People",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/people/services/people.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/people/{personId}/contacts/{id}",
+      "operationId": "peopleContactsPatch",
+      "tag": "People",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/people/services/people.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/people/{personId}/education-history",
+      "operationId": "peopleEducationHistoryGet",
+      "tag": "People",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/people/services/people.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/people/{personId}/education-history",
+      "operationId": "peopleEducationHistoryPost",
+      "tag": "People",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/people/services/people.service.ts"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/api/dashboard/latest-activities",
+      "operationId": "dashboardLatestActivitiesGet",
+      "tag": "Dashboard",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/reports/services/exportDownload.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/dashboard/summary",
+      "operationId": "dashboardSummaryGet",
+      "tag": "Dashboard",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/reports/services/exportDownload.service.ts"
+      ]
+    }
+  ]
+}

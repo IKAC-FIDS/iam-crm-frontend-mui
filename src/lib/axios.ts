@@ -5,6 +5,7 @@
 import axios, { AxiosHeaders, type InternalAxiosRequestConfig } from 'axios';
 import { unwrapApiResponse, type ApiWrappedResponse } from '@/lib/apiResponse';
 import { useAuthStore, type AuthUser } from '@/store/authStore';
+import { applyAuthenticatedSession } from '@/features/auth/utils/authSession';
 
 const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -39,8 +40,7 @@ function refreshSession(): Promise<RefreshResponse> {
         if (!session.accessToken || !session.user) {
           throw new Error('Invalid refresh response');
         }
-        localStorage.setItem('accessToken', session.accessToken);
-        useAuthStore.getState().setUser(session.user);
+        applyAuthenticatedSession(session);
         return session;
       })
       .catch((error: unknown) => {

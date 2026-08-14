@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/api/organization/branding",
+      "operationId": "organizationBrandingGet",
+      "tag": "Organization",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "PERMISSION:organization:view/manage",
+      "bindings": []
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/organization/branding",
+      "operationId": "organizationBrandingPatch",
+      "tag": "Organization",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "PERMISSION:organization:view/manage",
+      "bindings": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/organization/domains",
+      "operationId": "organizationDomainsGet",
+      "tag": "Organization",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "PERMISSION:organization:view/manage",
+      "bindings": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/organization/domains",
+      "operationId": "organizationDomainsPost",
+      "tag": "Organization",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "PERMISSION:organization:view/manage",
+      "bindings": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/organization/domains/{id}",
+      "operationId": "organizationDomainsGet2",
+      "tag": "Organization",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "PERMISSION:organization:view/manage",
+      "bindings": []
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/organization/domains/{id}",
+      "operationId": "organizationDomainsPatch",
+      "tag": "Organization",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "PERMISSION:organization:view/manage",
+      "bindings": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/organization/domains/{id}/verify",
+      "operationId": "organizationDomainsVerifyPost",
+      "tag": "Organization",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "PERMISSION:organization:view/manage",
+      "bindings": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/organization/settings",
+      "operationId": "organizationSettingsGet",
+      "tag": "Organization",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "PERMISSION:organization:view/manage",
+      "bindings": []
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/organization/settings",
+      "operationId": "organizationSettingsPatch",
+      "tag": "Organization",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "PERMISSION:organization:view/manage",
+      "bindings": []
+    }
+  ]
+}

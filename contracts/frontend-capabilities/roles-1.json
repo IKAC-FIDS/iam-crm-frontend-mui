@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/api/roles",
+      "operationId": "rolesGet",
+      "tag": "Roles",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/admin/permissions/services/adminPermissions.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/roles",
+      "operationId": "rolesPost",
+      "tag": "Roles",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/admin/permissions/services/adminPermissions.service.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/roles/{id}",
+      "operationId": "rolesDelete",
+      "tag": "Roles",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/admin/permissions/services/adminPermissions.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/roles/{id}",
+      "operationId": "rolesGet1",
+      "tag": "Roles",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/admin/permissions/services/adminPermissions.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/roles/{id}",
+      "operationId": "rolesPatch",
+      "tag": "Roles",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/admin/permissions/services/adminPermissions.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/roles/{id}/permissions",
+      "operationId": "rolesPermissionsGet",
+      "tag": "Roles",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/admin/permissions/services/adminPermissions.service.ts"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/api/roles/{id}/permissions",
+      "operationId": "rolesPermissionsPut",
+      "tag": "Roles",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/admin/permissions/services/adminPermissions.service.ts"
+      ]
+    }
+  ]
+}

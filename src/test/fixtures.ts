@@ -27,8 +27,14 @@ export function testUser(overrides: Partial<AuthUser> = {}): AuthUser {
     email: 'user@example.test',
     role: 'REP',
     team: 'تیم آزمایشی',
+    teamId: null,
+    teamCode: null,
+    teamName: 'تیم آزمایشی',
     permissions: [],
     organizationId: tenantA.id,
+    roleId: null,
+    roleCode: 'REP',
+    roleName: 'کارشناس فروش',
     ...overrides,
   };
 }

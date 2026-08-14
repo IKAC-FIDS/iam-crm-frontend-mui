@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/api/users",
+      "operationId": "usersGet",
+      "tag": "Users",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/admin/users/services/adminUsers.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/users",
+      "operationId": "usersPost",
+      "tag": "Users",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/admin/users/services/adminUsers.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/users/{id}",
+      "operationId": "usersGet1",
+      "tag": "Users",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/admin/users/services/adminUsers.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/users/{id}/activate",
+      "operationId": "usersActivatePatch",
+      "tag": "Users",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/admin/users/services/adminUsers.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/users/{id}/deactivate",
+      "operationId": "usersDeactivatePatch",
+      "tag": "Users",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/admin/users/services/adminUsers.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/users/{id}/role",
+      "operationId": "usersRolePatch",
+      "tag": "Users",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/admin/users/services/adminUsers.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/users/assignee-options",
+      "operationId": "usersAssigneeOptionsGet",
+      "tag": "Users",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/admin/users/services/adminUsers.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/users/owner-options",
+      "operationId": "usersOwnerOptionsGet",
+      "tag": "Users",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/admin/users/services/adminUsers.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/users/owner-options/v2",
+      "operationId": "usersOwnerOptionsV2Get",
+      "tag": "Users",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": []
+    }
+  ]
+}

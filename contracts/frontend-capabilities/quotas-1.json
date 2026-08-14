@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/api/quota/current",
+      "operationId": "quotaCurrentGet",
+      "tag": "Quotas",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": true,
+      "authorization": "AUTHENTICATED_TENANT",
+      "bindings": [
+        "src/features/quota/services/quota.service.ts"
+      ]
+    }
+  ]
+}

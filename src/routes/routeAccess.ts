@@ -20,6 +20,6 @@ export function canAccessRoute(user: AuthUser | null | undefined, policy: RouteA
   if (!user) return false;
   if (policy.type === 'authenticated') return true;
   return policy.mode === 'all'
-    ? canAll(user, policy.permissions, policy.fallbackRoles)
-    : canAny(user, policy.permissions, policy.fallbackRoles);
+    ? canAll(user, policy.permissions)
+    : canAny(user, policy.permissions);
 }

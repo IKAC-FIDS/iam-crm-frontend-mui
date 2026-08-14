@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "PATCH",
+      "path": "/api/opportunities/{opportunityId}/commercial-documents/{documentId}",
+      "operationId": "opportunitiesCommercialDocumentsPatch",
+      "tag": "Opportunities",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/opportunities/services/opportunities.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/opportunities/{opportunityId}/commercial-documents/{documentId}/status",
+      "operationId": "opportunitiesCommercialDocumentsStatusPatch",
+      "tag": "Opportunities",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/opportunities/services/opportunities.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/opportunities/{opportunityId}/commercial-documents/upload",
+      "operationId": "opportunitiesCommercialDocumentsUploadPost",
+      "tag": "Opportunities",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/opportunities/services/opportunities.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/opportunities/{opportunityId}/line-items",
+      "operationId": "opportunitiesLineItemsGet",
+      "tag": "Opportunities",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/opportunities/services/opportunities.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/opportunities/{opportunityId}/line-items",
+      "operationId": "opportunitiesLineItemsPost",
+      "tag": "Opportunities",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/opportunities/services/opportunities.service.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/opportunities/{opportunityId}/line-items/{lineItemId}",
+      "operationId": "opportunitiesLineItemsDelete",
+      "tag": "Opportunities",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/opportunities/services/opportunities.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/opportunities/{opportunityId}/line-items/{lineItemId}",
+      "operationId": "opportunitiesLineItemsGet2",
+      "tag": "Opportunities",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/opportunities/services/opportunities.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/opportunities/{opportunityId}/line-items/{lineItemId}",
+      "operationId": "opportunitiesLineItemsPatch",
+      "tag": "Opportunities",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/opportunities/services/opportunities.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/opportunities/{opportunityId}/payments",
+      "operationId": "opportunitiesPaymentsGet",
+      "tag": "Opportunities",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/opportunities/services/opportunities.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/opportunities/{opportunityId}/payments",
+      "operationId": "opportunitiesPaymentsPost",
+      "tag": "Opportunities",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/opportunities/services/opportunities.service.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/opportunities/{opportunityId}/payments/{paymentId}",
+      "operationId": "opportunitiesPaymentsDelete",
+      "tag": "Opportunities",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/opportunities/services/opportunities.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/opportunities/{opportunityId}/payments/{paymentId}",
+      "operationId": "opportunitiesPaymentsGet2",
+      "tag": "Opportunities",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/opportunities/services/opportunities.service.ts"
+      ]
+    }
+  ]
+}

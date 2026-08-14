@@ -12,13 +12,13 @@ describe('route access policy', () => {
     expect(canAccessRoute(user, { type: 'permissions', mode: 'all', permissions: ['activity:view', 'meeting:view'] })).toBe(false);
   });
 
-  it('keeps documented role compatibility centralized and denies unknown roles', () => {
+  it('does not treat role names as permission substitutes', () => {
     const policy = { type: 'permissions', mode: 'any', permissions: ['activity:view'], fallbackRoles: ['MANAGER'] } as const;
-    expect(canAccessRoute(testUser({ role: 'MANAGER', permissions: [] }), policy)).toBe(true);
+    expect(canAccessRoute(testUser({ role: 'MANAGER', permissions: [] }), policy)).toBe(false);
     expect(canAccessRoute(testUser({ role: 'UNKNOWN', permissions: [] }), policy)).toBe(false);
   });
 
-  it('fails closed for absent or empty user permissions unless an explicit compatibility role applies', () => {
+  it('fails closed for absent or empty user permissions even with legacy fallback metadata', () => {
     const protectedPolicy = { type: 'permissions', mode: 'any', permissions: ['activity:view'] } as const;
     const legacyViewer = { ...testUser({ role: 'VIEWER' }), permissions: undefined } as unknown as ReturnType<typeof testUser>;
     expect(canAccessRoute(legacyViewer, protectedPolicy)).toBe(false);
@@ -26,7 +26,7 @@ describe('route access policy', () => {
 
     const compatibilityPolicy = { ...protectedPolicy, fallbackRoles: ['MANAGER'] } as const;
     const legacyManager = { ...testUser({ role: 'MANAGER' }), permissions: undefined } as unknown as ReturnType<typeof testUser>;
-    expect(canAccessRoute(legacyManager, compatibilityPolicy)).toBe(true);
+    expect(canAccessRoute(legacyManager, compatibilityPolicy)).toBe(false);
   });
 
   it('fails closed for missing, empty, or malformed permission policies', () => {

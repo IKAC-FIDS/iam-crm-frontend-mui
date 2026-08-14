@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/api/tasks",
+      "operationId": "tasksGet",
+      "tag": "Tasks",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": true,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/tasks/services/tasks.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/tasks",
+      "operationId": "tasksPost",
+      "tag": "Tasks",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": true,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/tasks/services/tasks.service.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/tasks/{id}",
+      "operationId": "tasksDelete",
+      "tag": "Tasks",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": true,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/tasks/services/tasks.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/tasks/{id}",
+      "operationId": "tasksGet1",
+      "tag": "Tasks",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": true,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/tasks/services/tasks.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/tasks/{id}",
+      "operationId": "tasksPatch",
+      "tag": "Tasks",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": true,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/tasks/services/tasks.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/tasks/{id}/assign",
+      "operationId": "tasksAssignPatch",
+      "tag": "Tasks",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/tasks/services/tasks.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/tasks/{id}/complete",
+      "operationId": "tasksCompletePatch",
+      "tag": "Tasks",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/tasks/services/tasks.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/tasks/{id}/reschedule",
+      "operationId": "tasksReschedulePatch",
+      "tag": "Tasks",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/tasks/services/tasks.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/tasks/{id}/status",
+      "operationId": "tasksStatusPatch",
+      "tag": "Tasks",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/tasks/services/tasks.service.ts"
+      ]
+    }
+  ]
+}

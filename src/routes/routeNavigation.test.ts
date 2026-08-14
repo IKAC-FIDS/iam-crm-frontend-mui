@@ -14,8 +14,15 @@ describe('registry navigation derivation', () => {
   it('derives static, nested and dynamic breadcrumbs from registry parents', () => {
     const user = testUser({ role: 'VIEWER', permissions: ['opportunity:view'] });
     expect(getRouteBreadcrumbs('/opportunities/abc', user).map((item) => item.label)).toEqual(['خانه', 'فرصت‌ها', 'جزئیات فرصت']);
-    expect(getRouteBreadcrumbs('/admin/users', testUser({ permissions: ['user:manage'] })).map((item) => item.label)).toEqual(['خانه', 'مدیریت', 'کاربران']);
+    expect(getRouteBreadcrumbs('/admin/users', testUser({ permissions: ['user:view'] })).map((item) => item.label)).toEqual(['خانه', 'مدیریت', 'کاربران']);
     expect(getRouteBreadcrumbs('/activities', testUser({ role: 'VIEWER', permissions: [] }))).toEqual([]);
+  });
+
+  it('does not expose tenant or platform administration from role names alone', () => {
+    const routes = getVisibleMenuRoutes(testUser({ role: 'ADMIN', permissions: [] }));
+    expect(routes.map((route) => route.id)).not.toContain('admin-users');
+    expect(routes.map((route) => route.id)).not.toContain('admin-organizations');
+    expect(routes.map((route) => route.id)).not.toContain('admin-sso-providers');
   });
 
   it('marks list routes active for detail URLs without selecting dashboard broadly', () => {

@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/api/notifications",
+      "operationId": "notificationsGet",
+      "tag": "Notifications",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/notifications/services/notifications.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/notifications",
+      "operationId": "notificationsPost",
+      "tag": "Notifications",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/notifications/services/notifications.service.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/notifications/{id}",
+      "operationId": "notificationsDelete",
+      "tag": "Notifications",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/notifications/services/notifications.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/notifications/{id}",
+      "operationId": "notificationsGet1",
+      "tag": "Notifications",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/notifications/services/notifications.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/notifications/{id}/archive",
+      "operationId": "notificationsArchivePatch",
+      "tag": "Notifications",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/notifications/services/notifications.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/notifications/{id}/read",
+      "operationId": "notificationsReadPatch",
+      "tag": "Notifications",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/notifications/services/notifications.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/notifications/{id}/unarchive",
+      "operationId": "notificationsUnarchivePatch",
+      "tag": "Notifications",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/notifications/services/notifications.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/notifications/{id}/unread",
+      "operationId": "notificationsUnreadPatch",
+      "tag": "Notifications",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/notifications/services/notifications.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/notifications/read-all",
+      "operationId": "notificationsReadAllPatch",
+      "tag": "Notifications",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/notifications/services/notifications.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/notifications/unread-count",
+      "operationId": "notificationsUnreadCountGet",
+      "tag": "Notifications",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/notifications/services/notifications.service.ts"
+      ]
+    }
+  ]
+}

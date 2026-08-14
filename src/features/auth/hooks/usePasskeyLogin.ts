@@ -5,13 +5,10 @@ import { toast } from 'sonner';
 
 import { authService } from '../services/auth.service';
 import { passkeyErrorMessage } from '../utils/passkeyErrors';
-import { useAuthStore } from '@/store/authStore';
-import { queryClient } from '@/lib/queryClient';
+import { applyAuthenticatedSession } from '../utils/authSession';
 
 export function usePasskeyLogin() {
   const navigate = useNavigate();
-  const { setUser } = useAuthStore();
-
   const mutation = useMutation({
     mutationFn: async () => {
       if (!browserSupportsWebAuthn()) {
@@ -30,9 +27,7 @@ export function usePasskeyLogin() {
       });
     },
     onSuccess: (response) => {
-      queryClient.clear();
-      localStorage.setItem('accessToken', response.accessToken);
-      setUser(response.user);
+      applyAuthenticatedSession(response);
       toast.success('ورود موفق!');
       navigate('/dashboard');
     },

@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/api/product-catalog",
+      "operationId": "productCatalogGet",
+      "tag": "Products",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/productCatalog/services/productCatalog.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/product-catalog",
+      "operationId": "productCatalogPost",
+      "tag": "Products",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/productCatalog/services/productCatalog.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/product-catalog/{id}",
+      "operationId": "productCatalogGet1",
+      "tag": "Products",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/productCatalog/services/productCatalog.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/product-catalog/{id}",
+      "operationId": "productCatalogPatch",
+      "tag": "Products",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/productCatalog/services/productCatalog.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/product-catalog/{id}/activate",
+      "operationId": "productCatalogActivatePatch",
+      "tag": "Products",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/productCatalog/services/productCatalog.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/product-catalog/{id}/deactivate",
+      "operationId": "productCatalogDeactivatePatch",
+      "tag": "Products",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/productCatalog/services/productCatalog.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/product-catalog/{id}/price-history",
+      "operationId": "productCatalogPriceHistoryGet",
+      "tag": "Products",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/productCatalog/services/productCatalog.service.ts"
+      ]
+    }
+  ]
+}

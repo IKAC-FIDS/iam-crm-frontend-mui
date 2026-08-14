@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/api/admin/pipeline/stages",
+      "operationId": "adminPipelineStagesGet",
+      "tag": "Platform Admin",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/pipelineConfig/services/pipelineConfig.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/pipeline/stages",
+      "operationId": "adminPipelineStagesPost",
+      "tag": "Platform Admin",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/pipelineConfig/services/pipelineConfig.service.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/admin/pipeline/stages/{id}",
+      "operationId": "adminPipelineStagesDelete",
+      "tag": "Platform Admin",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/pipelineConfig/services/pipelineConfig.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/pipeline/stages/{id}",
+      "operationId": "adminPipelineStagesGet3",
+      "tag": "Platform Admin",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/pipelineConfig/services/pipelineConfig.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/admin/pipeline/stages/{id}",
+      "operationId": "adminPipelineStagesPatch",
+      "tag": "Platform Admin",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/pipelineConfig/services/pipelineConfig.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/admin/pipeline/stages/reorder",
+      "operationId": "adminPipelineStagesReorderPatch",
+      "tag": "Platform Admin",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/pipelineConfig/services/pipelineConfig.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/pipeline/transitions",
+      "operationId": "adminPipelineTransitionsGet",
+      "tag": "Platform Admin",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/pipelineConfig/services/pipelineConfig.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/pipeline/transitions",
+      "operationId": "adminPipelineTransitionsPost",
+      "tag": "Platform Admin",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/pipelineConfig/services/pipelineConfig.service.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/admin/pipeline/transitions/{id}",
+      "operationId": "adminPipelineTransitionsDelete",
+      "tag": "Platform Admin",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/pipelineConfig/services/pipelineConfig.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/admin/pipeline/transitions/{id}",
+      "operationId": "adminPipelineTransitionsPatch",
+      "tag": "Platform Admin",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/pipelineConfig/services/pipelineConfig.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/plans",
+      "operationId": "adminPlansGet",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/plans",
+      "operationId": "adminPlansPost",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    }
+  ]
+}

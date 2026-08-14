@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "POST",
+      "path": "/api/import/sam",
+      "operationId": "importSamPost",
+      "tag": "Import",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "PERMISSION:import:sam",
+      "bindings": []
+    }
+  ]
+}

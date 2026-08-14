@@ -19,6 +19,8 @@
     "api:client:check": "npm run api:contract:validate && npm run api:client:clean-check && npm run typecheck && npm run build",
     "api:client:clean-check": "node tools/api-client-check.mjs",
     "api:client:drift": "node tools/api-client-check.mjs",
+    "api:parity:report": "node tools/api-parity.mjs report",
+    "api:parity:check": "node tools/api-parity.mjs check",
     "test:ci": "npm run typecheck && npm run test && npm run lint && npm run build",
     "preview": "vite preview"
   },

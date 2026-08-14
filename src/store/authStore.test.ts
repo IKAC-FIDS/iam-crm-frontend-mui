@@ -1,22 +1,25 @@
 import { describe, expect, it } from 'vitest';
-import { queryClient } from '@/lib/queryClient';
-import { testUser } from '@/test/fixtures';
-import { useAuthStore } from './authStore';
+import { migratePersistedAuthState, normalizeAuthUser } from './authStore';
 
-describe('authStore session state', () => {
-  it('stores an authenticated session user', () => {
-    const user = testUser();
-    useAuthStore.getState().setUser(user);
-    expect(useAuthStore.getState().user).toEqual(user);
+describe('persisted auth compatibility', () => {
+  it('migrates an old user without granting missing permissions', () => {
+    const state = migratePersistedAuthState({
+      user: { id: 'u-1', fullName: 'کاربر قدیمی', email: 'old@example.test', role: 'ADMIN', team: null },
+    });
+    expect(state.user).toMatchObject({
+      permissions: [],
+      teamId: null,
+      teamCode: null,
+      teamName: null,
+      organizationId: null,
+      roleId: null,
+      roleCode: 'ADMIN',
+      roleName: 'ADMIN',
+    });
   });
 
-  it('clears token, user, and shared query cache on session clear or refresh failure', () => {
-    localStorage.setItem('accessToken', 'expired-token');
-    useAuthStore.getState().setUser(testUser());
-    queryClient.setQueryData(['sensitive'], { secret: 'synthetic' });
-    useAuthStore.getState().clearUser();
-    expect(localStorage.getItem('accessToken')).toBeNull();
-    expect(useAuthStore.getState().user).toBeNull();
-    expect(queryClient.getQueryData(['sensitive'])).toBeUndefined();
+  it('rejects malformed persisted users safely', () => {
+    expect(normalizeAuthUser({ role: 'ADMIN', permissions: ['company:view'] })).toBeNull();
+    expect(migratePersistedAuthState(null)).toEqual({ user: null });
   });
 });

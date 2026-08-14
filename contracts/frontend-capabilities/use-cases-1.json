@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/api/use-cases",
+      "operationId": "useCasesGet",
+      "tag": "Use-cases",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/catalogs/services/catalogs.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/use-cases",
+      "operationId": "useCasesPost",
+      "tag": "Use-cases",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/catalogs/services/catalogs.service.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/use-cases/{id}",
+      "operationId": "useCasesDelete",
+      "tag": "Use-cases",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/catalogs/services/catalogs.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/use-cases/{id}",
+      "operationId": "useCasesGet1",
+      "tag": "Use-cases",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/catalogs/services/catalogs.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/use-cases/{id}",
+      "operationId": "useCasesPatch",
+      "tag": "Use-cases",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/catalogs/services/catalogs.service.ts"
+      ]
+    }
+  ]
+}

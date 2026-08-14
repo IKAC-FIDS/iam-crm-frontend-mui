@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "PATCH",
+      "path": "/api/companies/{id}/owner",
+      "operationId": "companiesOwnerPatch",
+      "tag": "Companies",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/companies/services/companies.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/companies/{id}/restore",
+      "operationId": "companiesRestorePatch",
+      "tag": "Companies",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/companies/services/companies.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/companies/{id}/stage",
+      "operationId": "companiesStagePatch",
+      "tag": "Companies",
+      "status": "DEPRECATED_BACKEND_ENDPOINT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": []
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/companies/bulk/owner",
+      "operationId": "companiesBulkOwnerPatch",
+      "tag": "Companies",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/companies/services/companies.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/companies/options",
+      "operationId": "companiesOptionsGet",
+      "tag": "Companies",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/companies/services/companies.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/companies/options/{id}",
+      "operationId": "companiesOptionsGet2",
+      "tag": "Companies",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/companies/services/companies.service.ts"
+      ]
+    }
+  ]
+}

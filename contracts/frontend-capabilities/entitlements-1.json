@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/api/entitlements/current",
+      "operationId": "entitlementsCurrentGet",
+      "tag": "Entitlements",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "AUTHENTICATED_TENANT",
+      "bindings": []
+    }
+  ]
+}

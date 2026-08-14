@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/api/ready",
+      "operationId": "readyGet",
+      "tag": "Ready",
+      "status": "NOT_USER_FACING",
+      "responseTyped": false,
+      "authorization": "PUBLIC_INFRASTRUCTURE",
+      "bindings": []
+    }
+  ]
+}

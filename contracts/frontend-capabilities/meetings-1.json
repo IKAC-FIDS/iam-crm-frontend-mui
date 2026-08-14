@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/api/meetings",
+      "operationId": "meetingsGet",
+      "tag": "Meetings",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/meetings/services/meetings.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/meetings",
+      "operationId": "meetingsPost",
+      "tag": "Meetings",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/meetings/services/meetings.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/meetings/{id}",
+      "operationId": "meetingsGet1",
+      "tag": "Meetings",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/meetings/services/meetings.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/meetings/{id}",
+      "operationId": "meetingsPatch",
+      "tag": "Meetings",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/meetings/services/meetings.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/meetings/{id}/cancel",
+      "operationId": "meetingsCancelPatch",
+      "tag": "Meetings",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/meetings/services/meetings.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/meetings/{id}/complete",
+      "operationId": "meetingsCompletePatch",
+      "tag": "Meetings",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/meetings/services/meetings.service.ts"
+      ]
+    }
+  ]
+}

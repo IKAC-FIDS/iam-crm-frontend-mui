@@ -1,4 +1,5 @@
 import type { PaginatedResult } from '@/lib/apiResponse';
+import type { AuthUser } from '@/store/authStore';
 
 export const ssoProviderTypes = ['OIDC', 'SAML'] as const;
 export type SsoProviderType = (typeof ssoProviderTypes)[number];
@@ -84,15 +85,8 @@ export interface SsoExchangeRequest {
 
 export interface SsoExchangeResponse {
   accessToken: string;
-  user: {
-    id: string;
-    fullName: string;
-    email: string;
-    role: string;
-    team: string | null;
-    permissions: string[];
-    organizationId?: string | null;
-  };
+  accessTokenExpiresIn?: string;
+  user: AuthUser;
 }
 
 export interface FindSsoProvidersParams {

@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "DELETE",
+      "path": "/api/people/{personId}/education-history/{educationId}",
+      "operationId": "peopleEducationHistoryDelete",
+      "tag": "People",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/people/services/people.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/people/{personId}/education-history/{educationId}",
+      "operationId": "peopleEducationHistoryPatch",
+      "tag": "People",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/people/services/people.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/people/{personId}/employment-history",
+      "operationId": "peopleEmploymentHistoryGet",
+      "tag": "People",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/people/services/people.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/people/{personId}/employment-history",
+      "operationId": "peopleEmploymentHistoryPost",
+      "tag": "People",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/people/services/people.service.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/people/{personId}/employment-history/{employmentId}",
+      "operationId": "peopleEmploymentHistoryDelete",
+      "tag": "People",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/people/services/people.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/people/{personId}/employment-history/{employmentId}",
+      "operationId": "peopleEmploymentHistoryPatch",
+      "tag": "People",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/people/services/people.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/people/{personId}/employment-history/{employmentId}/positions",
+      "operationId": "peopleEmploymentHistoryPositionsPost",
+      "tag": "People",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/people/services/people.service.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/people/{personId}/employment-history/{employmentId}/positions/{positionId}",
+      "operationId": "peopleEmploymentHistoryPositionsDelete",
+      "tag": "People",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/people/services/people.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/people/{personId}/employment-history/{employmentId}/positions/{positionId}",
+      "operationId": "peopleEmploymentHistoryPositionsPatch",
+      "tag": "People",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/people/services/people.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/people/{personId}/socials",
+      "operationId": "peopleSocialsGet",
+      "tag": "People",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/people/services/people.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/people/{personId}/socials",
+      "operationId": "peopleSocialsPost",
+      "tag": "People",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/people/services/people.service.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/people/{personId}/socials/{id}",
+      "operationId": "peopleSocialsDelete",
+      "tag": "People",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/people/services/people.service.ts"
+      ]
+    }
+  ]
+}

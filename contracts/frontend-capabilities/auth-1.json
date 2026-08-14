@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "POST",
+      "path": "/api/auth/account/change-password",
+      "operationId": "authAccountChangePasswordPost",
+      "tag": "Auth",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "PUBLIC_OR_AUTHENTICATED_AUTH_FLOW",
+      "bindings": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/account/logout-other-sessions",
+      "operationId": "authAccountLogoutOtherSessionsPost",
+      "tag": "Auth",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "PUBLIC_OR_AUTHENTICATED_AUTH_FLOW",
+      "bindings": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/account/security",
+      "operationId": "authAccountSecurityGet",
+      "tag": "Auth",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "PUBLIC_OR_AUTHENTICATED_AUTH_FLOW",
+      "bindings": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "operationId": "authLoginPost",
+      "tag": "Auth",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "PUBLIC_OR_AUTHENTICATED_AUTH_FLOW",
+      "bindings": [
+        "src/features/auth/services/auth.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "operationId": "authLogoutPost",
+      "tag": "Auth",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "PUBLIC_OR_AUTHENTICATED_AUTH_FLOW",
+      "bindings": [
+        "src/features/auth/services/auth.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout-all",
+      "operationId": "authLogoutAllPost",
+      "tag": "Auth",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "PUBLIC_OR_AUTHENTICATED_AUTH_FLOW",
+      "bindings": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "operationId": "authRefreshPost",
+      "tag": "Auth",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "PUBLIC_OR_AUTHENTICATED_AUTH_FLOW",
+      "bindings": [
+        "src/features/auth/services/auth.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/sessions",
+      "operationId": "authSessionsGet",
+      "tag": "Auth",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "PUBLIC_OR_AUTHENTICATED_AUTH_FLOW",
+      "bindings": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/auth/sessions/{sessionId}",
+      "operationId": "authSessionsDelete",
+      "tag": "Auth",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "PUBLIC_OR_AUTHENTICATED_AUTH_FLOW",
+      "bindings": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/switch-tenant",
+      "operationId": "authSwitchTenantPost",
+      "tag": "Auth",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "PUBLIC_OR_AUTHENTICATED_AUTH_FLOW",
+      "bindings": []
+    }
+  ]
+}

@@ -30,9 +30,9 @@ function display(value?: string | null): string {
 
 export default function CompanyBranchesTab({ companyId }: { companyId: string }) {
   const user = useAuthStore((state) => state.user);
-  const canView = can(user, 'branch:view', ['ADMIN', 'MANAGER', 'REP']);
-  const canManage = can(user, 'branch:manage', ['ADMIN', 'MANAGER', 'REP']);
-  const canDelete = can(user, 'branch:delete', ['ADMIN', 'MANAGER']);
+  const canView = can(user, 'company:view');
+  const canManage = can(user, 'branch:manage');
+  const canDelete = canManage;
   const branchesQuery = useCompanyBranches(companyId);
   const deleteBranch = useDeleteCompanyBranch(companyId);
   const [formOpen, setFormOpen] = useState(false);

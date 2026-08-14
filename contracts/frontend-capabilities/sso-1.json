@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/api/auth/oidc/{providerId}/callback",
+      "operationId": "authOidcCallbackGet",
+      "tag": "SSO",
+      "status": "INTENTIONALLY_NO_UI",
+      "responseTyped": false,
+      "authorization": "PUBLIC_OR_AUTHENTICATED_AUTH_FLOW",
+      "bindings": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/oidc/{providerId}/login",
+      "operationId": "authOidcLoginGet",
+      "tag": "SSO",
+      "status": "INTENTIONALLY_NO_UI",
+      "responseTyped": false,
+      "authorization": "PUBLIC_OR_AUTHENTICATED_AUTH_FLOW",
+      "bindings": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/saml/{providerId}/acs",
+      "operationId": "authSamlAcsPost",
+      "tag": "SSO",
+      "status": "INTENTIONALLY_NO_UI",
+      "responseTyped": false,
+      "authorization": "PUBLIC_OR_AUTHENTICATED_AUTH_FLOW",
+      "bindings": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/saml/{providerId}/login",
+      "operationId": "authSamlLoginGet",
+      "tag": "SSO",
+      "status": "INTENTIONALLY_NO_UI",
+      "responseTyped": false,
+      "authorization": "PUBLIC_OR_AUTHENTICATED_AUTH_FLOW",
+      "bindings": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/saml/{providerId}/metadata",
+      "operationId": "authSamlMetadataGet",
+      "tag": "SSO",
+      "status": "INTENTIONALLY_NO_UI",
+      "responseTyped": false,
+      "authorization": "PUBLIC_OR_AUTHENTICATED_AUTH_FLOW",
+      "bindings": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/sso/exchange",
+      "operationId": "authSsoExchangePost",
+      "tag": "SSO",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "PUBLIC_OR_AUTHENTICATED_AUTH_FLOW",
+      "bindings": [
+        "src/features/sso/services/sso.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/sso/providers",
+      "operationId": "authSsoProvidersGet",
+      "tag": "SSO",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "PUBLIC_OR_AUTHENTICATED_AUTH_FLOW",
+      "bindings": [
+        "src/features/sso/services/sso.service.ts"
+      ]
+    }
+  ]
+}

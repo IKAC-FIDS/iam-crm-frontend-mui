@@ -8,6 +8,7 @@ import type {
   AuthenticationResponseJSON,
   PublicKeyCredentialRequestOptionsJSON,
 } from '@simplewebauthn/browser';
+import type { AuthUser } from '@/store/authStore';
 
 export interface LoginRequest {
   email: string;
@@ -16,15 +17,8 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   accessToken: string;
-  user: {
-    id: string;
-    fullName: string;
-    email: string;
-    role: string;
-    team: string | null;
-    permissions: string[];
-    organizationId?: string | null;
-  };
+  accessTokenExpiresIn?: string;
+  user: AuthUser;
 }
 
 export interface PasskeyAuthenticationOptionsResponse {

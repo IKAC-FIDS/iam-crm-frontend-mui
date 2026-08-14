@@ -9,10 +9,17 @@ describe('permission utilities', () => {
     expect(can(user, 'unknown:permission')).toBe(false);
   });
 
-  it('supports any/all checks and existing ADMIN behavior', () => {
+  it('matches backend any/all permission semantics', () => {
     const user = testUser({ permissions: ['activity:view', 'company:view'] });
     expect(canAny(user, ['missing', 'company:view'])).toBe(true);
     expect(canAll(user, ['activity:view', 'company:view'])).toBe(true);
-    expect(can(testUser({ role: 'ADMIN' }), 'unknown:permission')).toBe(true);
+    expect(canAll(user, ['activity:view', 'missing'])).toBe(false);
+    expect(canAny(user, ['missing-a', 'missing-b'])).toBe(false);
+  });
+
+  it('does not grant an unconditional shortcut to ADMIN or legacy fallback roles', () => {
+    expect(can(testUser({ role: 'ADMIN', permissions: [] }), 'company:view')).toBe(false);
+    expect(can(testUser({ role: 'ADMIN', permissions: ['company:view'] }), 'company:view')).toBe(true);
+    expect(can(testUser({ role: 'MANAGER', permissions: [] }), 'company:view', ['MANAGER'])).toBe(false);
   });
 });

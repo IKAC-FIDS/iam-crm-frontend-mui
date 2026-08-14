@@ -39,7 +39,11 @@ type StatusFilter = 'ALL' | 'ACTIVE' | 'INACTIVE';
 
 export default function AdminUsersPage() {
   const current = useAuthStore((state) => state.user);
-  const allowed = can(current, 'user:manage', ['ADMIN']);
+  const allowed = can(current, 'user:view');
+  const canCreate = can(current, 'user:create');
+  const canChangeRole = can(current, 'user:change-role');
+  const canActivate = can(current, 'user:activate');
+  const canDeactivate = can(current, 'user:deactivate');
   const query = useAdminUsers(allowed);
   const teamsQuery = useActiveTeams(allowed);
   const activate = useActivateUser();
@@ -113,6 +117,7 @@ export default function AdminUsersPage() {
               key: 'role',
               label: 'ویرایش نقش',
               icon: <ManageAccountsOutlinedIcon fontSize="small" />,
+              visible: canChangeRole,
               onClick: () => setEditing(row),
             },
             {
@@ -120,6 +125,7 @@ export default function AdminUsersPage() {
               label: isUserActive(row) ? 'غیرفعال‌سازی' : 'فعال‌سازی',
               icon: isUserActive(row) ? <BlockOutlinedIcon fontSize="small" /> : <CheckCircleOutlineIcon fontSize="small" />,
               color: isUserActive(row) ? 'error' : 'success',
+              visible: isUserActive(row) ? canDeactivate : canActivate,
               disabled: row.id === current?.id,
               onClick: () => setStatusUser(row),
             },
@@ -127,7 +133,7 @@ export default function AdminUsersPage() {
         />
       ),
     },
-  ], [current?.id, getUserTeamLabel]);
+  ], [canActivate, canChangeRole, canDeactivate, current?.id, getUserTeamLabel]);
 
   if (!allowed) return <Alert severity="warning">شما دسترسی مدیریت کاربران را ندارید.</Alert>;
 
@@ -152,7 +158,7 @@ export default function AdminUsersPage() {
         </div>
         <Stack direction="row" spacing={1}>
           <Button onClick={() => query.refetch()}>بروزرسانی</Button>
-          <Button variant="contained" onClick={() => setCreateOpen(true)}>افزودن کاربر</Button>
+          {canCreate && <Button variant="contained" onClick={() => setCreateOpen(true)}>افزودن کاربر</Button>}
         </Stack>
       </Stack>
       {query.isError && <Alert severity="error">خطا در دریافت کاربران.</Alert>}
@@ -193,8 +199,8 @@ export default function AdminUsersPage() {
           sx={{ border: 0, minHeight: 350 }}
         />
       </Paper>
-      <AdminUserFormDialog open={createOpen} onClose={() => setCreateOpen(false)} />
-      <EditUserRoleDialog key={editing?.id ?? 'no-user'} user={editing} open={Boolean(editing)} onClose={() => setEditing(null)} />
+      {canCreate && <AdminUserFormDialog open={createOpen} onClose={() => setCreateOpen(false)} />}
+      {canChangeRole && <EditUserRoleDialog key={editing?.id ?? 'no-user'} user={editing} open={Boolean(editing)} onClose={() => setEditing(null)} />}
       <Dialog open={Boolean(statusUser)} onClose={() => setStatusUser(null)}>
         <DialogTitle>{statusUser && isUserActive(statusUser) ? 'غیرفعال‌سازی کاربر' : 'فعال‌سازی کاربر'}</DialogTitle>
         <DialogContent>آیا از تغییر وضعیت این کاربر مطمئن هستید؟</DialogContent>

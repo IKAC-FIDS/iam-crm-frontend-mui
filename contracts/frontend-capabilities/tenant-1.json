@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "DELETE",
+      "path": "/api/tenant/memberships/{id}/role",
+      "operationId": "tenantMembershipsRoleDelete",
+      "tag": "Tenant",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "PERMISSION:role:view/manage",
+      "bindings": []
+    },
+    {
+      "method": "PUT",
+      "path": "/api/tenant/memberships/{id}/role",
+      "operationId": "tenantMembershipsRolePut",
+      "tag": "Tenant",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "PERMISSION:role:view/manage",
+      "bindings": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/tenant/roles",
+      "operationId": "tenantRolesGet",
+      "tag": "Tenant",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "PERMISSION:role:view/manage",
+      "bindings": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/tenant/roles",
+      "operationId": "tenantRolesPost",
+      "tag": "Tenant",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "PERMISSION:role:view/manage",
+      "bindings": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/tenant/roles/{id}",
+      "operationId": "tenantRolesGet2",
+      "tag": "Tenant",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "PERMISSION:role:view/manage",
+      "bindings": []
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/tenant/roles/{id}",
+      "operationId": "tenantRolesPatch",
+      "tag": "Tenant",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "PERMISSION:role:view/manage",
+      "bindings": []
+    },
+    {
+      "method": "PUT",
+      "path": "/api/tenant/roles/{id}/permissions",
+      "operationId": "tenantRolesPermissionsPut",
+      "tag": "Tenant",
+      "status": "BLOCKED_BY_GENERIC_OPENAPI_RESPONSE",
+      "responseTyped": false,
+      "authorization": "PERMISSION:role:view/manage",
+      "bindings": []
+    }
+  ]
+}

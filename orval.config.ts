@@ -8,7 +8,7 @@ export default defineConfig({
       target: 'contracts/backend/openapi.json',
       filters: {
         mode: 'include',
-        tags: ['Companies', 'Tasks'],
+        tags: ['Companies', 'Tasks', 'Quotas'],
       },
     },
     output: {

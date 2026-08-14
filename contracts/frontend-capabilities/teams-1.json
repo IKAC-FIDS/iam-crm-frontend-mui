@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/api/teams",
+      "operationId": "teamsGet",
+      "tag": "Teams",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/teams/services/teams.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/teams",
+      "operationId": "teamsPost",
+      "tag": "Teams",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/teams/services/teams.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/{id}",
+      "operationId": "teamsGet1",
+      "tag": "Teams",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/teams/services/teams.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/teams/{id}",
+      "operationId": "teamsPatch",
+      "tag": "Teams",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/teams/services/teams.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/teams/{id}/activate",
+      "operationId": "teamsActivatePatch",
+      "tag": "Teams",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/teams/services/teams.service.ts"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/teams/{id}/deactivate",
+      "operationId": "teamsDeactivatePatch",
+      "tag": "Teams",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/teams/services/teams.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/{id}/members",
+      "operationId": "teamsMembersGet",
+      "tag": "Teams",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/teams/services/teams.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/teams/{id}/members",
+      "operationId": "teamsMembersPost",
+      "tag": "Teams",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/teams/services/teams.service.ts"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/teams/{id}/members/{userId}",
+      "operationId": "teamsMembersDelete",
+      "tag": "Teams",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/teams/services/teams.service.ts"
+      ]
+    }
+  ]
+}

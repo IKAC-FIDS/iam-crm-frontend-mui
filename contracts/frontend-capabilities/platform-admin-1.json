@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/api/admin/audit-logs",
+      "operationId": "adminAuditLogsGet",
+      "tag": "Platform Admin",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/auditLogs/services/auditLogs.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/audit-logs/{id}",
+      "operationId": "adminAuditLogsGet2",
+      "tag": "Platform Admin",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/auditLogs/services/auditLogs.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/audit-logs/export",
+      "operationId": "adminAuditLogsExportGet",
+      "tag": "Platform Admin",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/auditLogs/services/auditLogs.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/audit-logs/filter-options",
+      "operationId": "adminAuditLogsFilterOptionsGet",
+      "tag": "Platform Admin",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/auditLogs/services/auditLogs.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/audit-logs/summary",
+      "operationId": "adminAuditLogsSummaryGet",
+      "tag": "Platform Admin",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/auditLogs/services/auditLogs.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/exchange-rates",
+      "operationId": "adminExchangeRatesGet",
+      "tag": "Platform Admin",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/exchangeRates/services/exchangeRates.service.ts"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/exchange-rates",
+      "operationId": "adminExchangeRatesPost",
+      "tag": "Platform Admin",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/exchangeRates/services/exchangeRates.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/exchange-rates/current",
+      "operationId": "adminExchangeRatesCurrentGet",
+      "tag": "Platform Admin",
+      "status": "FULL_UI_SUPPORT",
+      "responseTyped": false,
+      "authorization": "BACKEND_CONTROLLER_PERMISSION_POLICY",
+      "bindings": [
+        "src/features/exchangeRates/services/exchangeRates.service.ts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/organizations",
+      "operationId": "adminOrganizationsGet",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/organizations",
+      "operationId": "adminOrganizationsPost",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/organizations/{id}",
+      "operationId": "adminOrganizationsGet2",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/admin/organizations/{id}",
+      "operationId": "adminOrganizationsPatch",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    }
+  ]
+}

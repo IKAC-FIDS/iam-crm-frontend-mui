@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "operations": [
+    {
+      "method": "PATCH",
+      "path": "/api/admin/plans/{id}",
+      "operationId": "adminPlansPatch",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/plans/{id}/features/{feature}",
+      "operationId": "adminPlansFeaturesPut",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/plans/{planId}/quotas",
+      "operationId": "adminPlansQuotasGet",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/plans/{planId}/quotas/{metric}",
+      "operationId": "adminPlansQuotasPut",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/platform-audit-logs",
+      "operationId": "adminPlatformAuditLogsGet",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/platform-audit-logs/{id}",
+      "operationId": "adminPlatformAuditLogsGet2",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/platform-audit-logs/export",
+      "operationId": "adminPlatformAuditLogsExportGet",
+      "tag": "Platform Admin",
+      "status": "PLATFORM_CONTRACT_REQUIRED",
+      "responseTyped": false,
+      "authorization": "PLATFORM_ADMIN",
+      "bindings": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/sso-providers",
+      "operationId": "adminSsoProvidersGet",
+      "tag": "Platform Admin",
+      "status": "SERVICE_ONLY_NO_UI",
+      "responseTyped": false,
+      "authorization": "PERMISSION:sso-provider:view/manage + FEATURE:SSO",
+      "bindings": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/sso-providers",
+      "operationId": "adminSsoProvidersPost",
+      "tag": "Platform Admin",
+      "status": "SERVICE_ONLY_NO_UI",
+      "responseTyped": false,
+      "authorization": "PERMISSION:sso-provider:view/manage + FEATURE:SSO",
+      "bindings": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/admin/sso-providers/{id}",
+      "operationId": "adminSsoProvidersDelete",
+      "tag": "Platform Admin",
+      "status": "SERVICE_ONLY_NO_UI",
+      "responseTyped": false,
+      "authorization": "PERMISSION:sso-provider:view/manage + FEATURE:SSO",
+      "bindings": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/sso-providers/{id}",
+      "operationId": "adminSsoProvidersGet2",
+      "tag": "Platform Admin",
+      "status": "SERVICE_ONLY_NO_UI",
+      "responseTyped": false,
+      "authorization": "PERMISSION:sso-provider:view/manage + FEATURE:SSO",
+      "bindings": []
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/admin/sso-providers/{id}",
+      "operationId": "adminSsoProvidersPatch",
+      "tag": "Platform Admin",
+      "status": "SERVICE_ONLY_NO_UI",
+      "responseTyped": false,
+      "authorization": "PERMISSION:sso-provider:view/manage + FEATURE:SSO",
+      "bindings": []
+    }
+  ]
+}
