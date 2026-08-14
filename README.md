@@ -2584,6 +2584,31 @@ The fix history below documents what changed in each numbered fix.
 
 ---
 
+## Fix 000108-C — Align Frontend Quota Client With Backend Runtime Contract
+
+* Synced `contracts/backend/openapi.json` from approved backend fix `000095-C` at commit `13097af1bdc9ed1d67974e4c2e90a92a45ccead2`. The canonical LF-normalized OpenAPI SHA-256 changed from `b84ca61d0e7aff8d69cc1ff61590f6fa50fd67621873b40fcd34d742a8ac8055` to `e669b1b76105e3b5af5c5471abceb2cfb3f90c64ce84cfa9aed04921271c49f7`.
+* Regenerated the quota client exclusively through the existing Orval workflow. `QuotaSummary` now requires `organizationId`, `generatedAt`, and `metrics`; the obsolete generated `quotas` item/state models were replaced by the backend-defined metric, configuration-state, reset-period, and threshold models.
+* Updated the quota service and `/account/usage` page to consume `metrics`. Runtime validation now requires a non-empty `organizationId`, a non-empty `generatedAt`, a metrics array, and the essential fields of every metric; malformed payloads and the obsolete `quotas` shape continue to fail safely instead of appearing as empty data.
+* Preserved BigInt-safe decimal-string formatting, progress calculation, loading/error/retry/empty behavior, tenant-aware React Query keys, shared Axios handling, and all Fix `000108-B` authorization and parity behavior. Updated backend configuration-state labels cover enforced, inactive-organization, and inactive-subscription states.
+* Updated quota service tests to use the authoritative runtime envelope and verify `generatedAt`, `metrics`, the absence of tenant headers, malformed metric rejection, and rejection of the obsolete response shape. The API inventory did not change, so the checked-in capability manifests required no modification.
+
+**Changed and regenerated files:**
+
+* `contracts/backend/openapi.json`
+* `src/api/generated/models/index.ts`, `quotaSummary.ts`, `quotaConfigurationState.ts`, `quotaResetPeriod.ts`, `quotaSummaryMetric.ts`, `quotaSummaryMetricThreshold.ts`; obsolete `quotaSummaryQuotasItem.ts` and `quotaSummaryQuotasItemState.ts` were removed
+* `src/features/quota/services/quota.service.ts`, `src/features/quota/services/quota.service.test.ts`, `src/features/quota/pages/CurrentQuotaPage.tsx`
+* `README.md`
+
+**Verification and warnings:**
+
+* `npm run api:contract:validate`, `npm run api:client:generate`, and `npm run api:client:drift`: passed; generated output is deterministic/current and passed the generated-client security scan.
+* `npm run api:parity:report` and `npm run api:parity:check`: passed for all 323 operations with the unchanged Fix `000108-B` classification totals.
+* `npm run typecheck`: passed. `npm test`: passed; 25 test files and 71 tests, with zero failures.
+* `npm run lint`: passed with zero errors and zero warnings. `npm run build`: passed in 1.14 seconds; the main entry is 400.42 kB (126.87 kB gzip) and DataGrid is 424.67 kB (126.23 kB gzip). No chunk-over-500-kB warning was emitted.
+* No browser/live API, Production, deployment, backend, database, schema, migration, push, merge, tag, or release action was performed.
+
+---
+
 ---
 **Built with ❤️ for sales team**
 

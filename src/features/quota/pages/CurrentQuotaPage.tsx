@@ -1,5 +1,5 @@
 import { Alert, Button, Chip, Grid, LinearProgress, Paper, Skeleton, Stack, Typography } from '@mui/material';
-import type { QuotaSummaryQuotasItem } from '@/api/generated/models';
+import type { QuotaSummaryMetric } from '@/api/generated/models';
 import { getApiErrorMessage } from '@/lib/apiResponse';
 import { useAuthStore } from '@/store/authStore';
 import { useCurrentQuota } from '../hooks/useCurrentQuota';
@@ -18,12 +18,13 @@ const metricLabels: Record<string, string> = {
 };
 
 const stateLabels: Record<string, string> = {
-  ACTIVE: 'فعال',
+  ENFORCED: 'فعال',
   UNLIMITED: 'نامحدود',
   DISABLED: 'غیرفعال',
   UNCONFIGURED: 'تعریف‌نشده',
   LEGACY_COMPATIBILITY: 'سازگاری قدیمی',
-  ORGANIZATION_INACTIVE: 'سازمان غیرفعال',
+  INACTIVE_ORGANIZATION: 'سازمان غیرفعال',
+  INACTIVE_SUBSCRIPTION: 'اشتراک غیرفعال',
 };
 
 function formatInteger(value?: string | null): string {
@@ -35,7 +36,7 @@ function formatInteger(value?: string | null): string {
   }
 }
 
-function progress(item: QuotaSummaryQuotasItem): number | null {
+function progress(item: QuotaSummaryMetric): number | null {
   if (!item.current || !item.hardLimit || !/^\d+$/.test(item.current) || !/^\d+$/.test(item.hardLimit)) return null;
   const limit = BigInt(item.hardLimit);
   if (limit <= 0n) return null;
@@ -43,7 +44,7 @@ function progress(item: QuotaSummaryQuotasItem): number | null {
   return Math.min(100, Number(perThousand) / 10);
 }
 
-function QuotaCard({ item }: { item: QuotaSummaryQuotasItem }) {
+function QuotaCard({ item }: { item: QuotaSummaryMetric }) {
   const percentage = progress(item);
   const unlimited = item.state === 'UNLIMITED' || item.hardLimit == null;
   return (
@@ -75,8 +76,8 @@ export default function CurrentQuotaPage() {
       </div>
       {query.isLoading && <Grid container spacing={2}>{[0, 1, 2].map((item) => <Grid key={item} size={{ xs: 12, md: 4 }}><Skeleton variant="rounded" height={150} /></Grid>)}</Grid>}
       {query.isError && <Alert severity="error" action={<Button onClick={() => query.refetch()}>تلاش مجدد</Button>}>{getApiErrorMessage(query.error, 'دریافت اطلاعات مصرف و سهمیه انجام نشد.')}</Alert>}
-      {query.data && !query.data.quotas.length && <Alert severity="info">برای این سازمان سهمیه‌ای گزارش نشده است.</Alert>}
-      {query.data?.quotas.length ? <Grid container spacing={2}>{query.data.quotas.map((item) => <Grid key={item.metric} size={{ xs: 12, sm: 6, lg: 4 }}><QuotaCard item={item} /></Grid>)}</Grid> : null}
+      {query.data && !query.data.metrics.length && <Alert severity="info">برای این سازمان سهمیه‌ای گزارش نشده است.</Alert>}
+      {query.data?.metrics.length ? <Grid container spacing={2}>{query.data.metrics.map((item) => <Grid key={item.metric} size={{ xs: 12, sm: 6, lg: 4 }}><QuotaCard item={item} /></Grid>)}</Grid> : null}
     </Stack>
   );
 }
