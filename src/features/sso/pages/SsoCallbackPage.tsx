@@ -4,6 +4,7 @@ import { Box, Button, Card, CardContent, CircularProgress, Stack, Typography } f
 import { Link as RouterLink, useNavigate, useSearchParams } from 'react-router-dom';
 import { getApiErrorMessage } from '@/lib/apiResponse';
 import { applyAuthenticatedSession } from '@/features/auth/utils/authSession';
+import { getDefaultRouteForUser } from '@/features/auth/utils/defaultRoute';
 import { ssoService } from '../services/sso.service';
 
 export default function SsoCallbackPage() {
@@ -29,7 +30,7 @@ export default function SsoCallbackPage() {
         applyAuthenticatedSession(response);
         window.history.replaceState(null, '', '/auth/sso/callback');
         toast.success('ورود سازمانی موفق!');
-        navigate('/dashboard', { replace: true });
+        navigate(getDefaultRouteForUser(response.user), { replace: true });
       } catch (error) {
         if (!cancelled) {
           setErrorMessage(getApiErrorMessage(error, 'تبادل تیکت ورود سازمانی انجام نشد.'));

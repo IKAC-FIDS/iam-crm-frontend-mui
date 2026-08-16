@@ -8,6 +8,10 @@ export type RouteAccessPolicy =
       type: 'permissions';
       mode: 'any' | 'all';
       permissions: readonly string[];
+    }
+  | {
+      type: 'roles';
+      roles: readonly string[];
     };
 
 export interface RouteMenuMetadata {

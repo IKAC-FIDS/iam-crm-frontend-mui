@@ -8,6 +8,7 @@ import { authService } from '../services/auth.service';
 import type { LoginRequest } from '../services/auth.service';
 import { getApiErrorMessage } from '@/lib/apiResponse';
 import { applyAuthenticatedSession } from '../utils/authSession';
+import { getDefaultRouteForUser } from '../utils/defaultRoute';
 import { toast } from 'sonner';
 
 export function useAuth() {
@@ -17,7 +18,7 @@ export function useAuth() {
     onSuccess: (response) => {
       applyAuthenticatedSession(response);
       toast.success('ورود موفق!');
-      navigate('/dashboard');
+      navigate(getDefaultRouteForUser(response.user));
     },
     onError: (error) => {
       toast.error(getApiErrorMessage(error, 'خطا در ورود'));

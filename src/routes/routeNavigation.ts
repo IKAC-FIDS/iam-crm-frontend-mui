@@ -3,9 +3,16 @@ import type { AuthUser } from '@/store/authStore';
 import { canAccessRoute } from './routeAccess';
 import { resolvedRouteRegistry } from './routeRegistry';
 
+const boardsMenuRouteIds = new Set([
+  'boards-dashboard',
+  'reports',
+  'account-security',
+]);
+
 export function getVisibleMenuRoutes(user: AuthUser | null | undefined) {
   return resolvedRouteRegistry
     .filter((route) => route.menu && canAccessRoute(user, route.access))
+    .filter((route) => user?.role !== 'BOARDS' || boardsMenuRouteIds.has(route.id))
     .sort((left, right) => (left.menu?.order ?? 0) - (right.menu?.order ?? 0));
 }
 
@@ -42,8 +49,16 @@ export function getRouteBreadcrumbs(pathname: string, user: AuthUser | null | un
     .filter((route) => route.breadcrumb && route.breadcrumb.include !== false && canAccessRoute(user, route.access))
     .map((route) => ({ routeId: route.id, label: route.breadcrumb!.label, to: route.fullPath, current: route.id === current.id }));
 
-  if (!entries.some((entry) => entry.routeId === 'dashboard')) {
-    entries.unshift({ routeId: 'dashboard', label: 'خانه', to: '/dashboard', current: false });
+  const homeRouteId = user?.role === 'BOARDS' ? 'boards-dashboard' : 'dashboard';
+  const homePath = user?.role === 'BOARDS' ? '/boards/dashboard' : '/dashboard';
+
+  if (!entries.some((entry) => entry.routeId === homeRouteId)) {
+    entries.unshift({ routeId: homeRouteId, label: 'خانه', to: homePath, current: false });
   }
-  return entries.map((entry, index) => ({ ...entry, to: index === entries.length - 1 ? undefined : entry.to, current: index === entries.length - 1 }));
+
+  return entries.map((entry, index) => ({
+    ...entry,
+    to: index === entries.length - 1 ? undefined : entry.to,
+    current: index === entries.length - 1,
+  }));
 }

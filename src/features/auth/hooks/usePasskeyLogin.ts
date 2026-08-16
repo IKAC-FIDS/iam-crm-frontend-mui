@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { authService } from '../services/auth.service';
 import { passkeyErrorMessage } from '../utils/passkeyErrors';
 import { applyAuthenticatedSession } from '../utils/authSession';
+import { getDefaultRouteForUser } from '../utils/defaultRoute';
 
 export function usePasskeyLogin() {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ export function usePasskeyLogin() {
     onSuccess: (response) => {
       applyAuthenticatedSession(response);
       toast.success('ورود موفق!');
-      navigate('/dashboard');
+      navigate(getDefaultRouteForUser(response.user));
     },
     onError: (error) => {
       toast.error(passkeyErrorMessage(error));

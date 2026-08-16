@@ -23,8 +23,11 @@ const publicAccess = { type: 'public' } as const;
 const authenticatedAccess = { type: 'authenticated' } as const;
 const any = (permissions: readonly string[]) =>
   ({ type: 'permissions', mode: 'any', permissions }) as const;
+const roles = (allowedRoles: readonly string[]) =>
+  ({ type: 'roles', roles: allowedRoles }) as const;
 
 const salesGroup = 'عملیات فروش';
+const boardsGroup = 'مدیریت';
 const adminGroup = 'مدیریت';
 const accountGroup = 'حساب';
 
@@ -32,6 +35,7 @@ export const routeRegistry: readonly AppRouteDefinition[] = [
   { id: 'app', path: '/', access: authenticatedAccess, load: () => import('@/layouts/DashboardLayout'), breadcrumb: { label: 'خانه', include: false } },
   { id: 'dashboard-index', parentId: 'app', index: true, access: authenticatedAccess, load: () => import('@/features/dashboard/pages/DashboardPage') },
   { id: 'dashboard', parentId: 'app', path: 'dashboard', access: authenticatedAccess, load: () => import('@/features/dashboard/pages/DashboardPage'), menu: { label: 'داشبورد', group: salesGroup, order: 10, icon: DashboardIcon }, breadcrumb: { label: 'داشبورد' }, title: 'داشبورد' },
+  { id: 'boards-dashboard', parentId: 'app', path: 'boards/dashboard', access: roles(['BOARDS']), load: () => import('@/features/boardsDashboard/pages/BoardsDashboardPage'), menu: { label: 'داشبورد مدیریتی', group: boardsGroup, order: 5, icon: DashboardIcon }, breadcrumb: { label: 'داشبورد مدیریتی' }, title: 'داشبورد مدیریتی' },
 
   { id: 'companies', parentId: 'app', path: 'companies', access: any(['company:view']), menu: { label: 'شرکت‌ها', group: salesGroup, order: 20, icon: BusinessIcon }, breadcrumb: { label: 'شرکت‌ها' } },
   { id: 'companies-index', parentId: 'companies', index: true, access: any(['company:view']), load: () => import('@/features/companies/pages/CompaniesPage') },
@@ -142,6 +146,7 @@ export function validateRouteRegistry(definitions: readonly AppRouteDefinition[]
 
 export const routePaths = {
   dashboard: '/dashboard',
+  boardsDashboard: '/boards/dashboard',
   login: '/login',
   forbidden: '/forbidden',
   activities: '/activities',
