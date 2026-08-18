@@ -82,14 +82,10 @@ function percentLabel(value: NumericValue | null | undefined): string {
 }
 
 function monthLabel(date: string): string {
-  /**
-   * Backend buckets are Gregorian calendar months.
-   * We keep the month boundary/label semantically aligned and only localize
-   * numerals/text to Persian.
-   */
-  return new Intl.DateTimeFormat('fa-IR-u-ca-gregory', {
+  return new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
     year: '2-digit',
     month: 'short',
+    timeZone: 'UTC',
   }).format(new Date(date));
 }
 
