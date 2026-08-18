@@ -14,6 +14,7 @@ import { Link as RouterLink } from 'react-router-dom';
 
 import LatestActivitiesWidget from '@/features/activities/components/LatestActivitiesWidget';
 import { can, canAny } from '@/features/auth/utils/permissions';
+import BoardPipelineOverview from '@/features/dashboard/components/BoardPipelineOverview';
 import SalesManagementOverview, {
   type ManagementDashboardSummary,
 } from '@/features/dashboard/components/SalesManagementOverview';
@@ -219,6 +220,10 @@ const comparisonMeta: Record<
 export default function MainGrid() {
   const user = useAuthStore((state) => state.user);
 
+  const isBoard =
+    user?.roleCode === 'BOARDS' ||
+    user?.role === 'BOARDS';
+
   const hasReports = can(user, 'report:view', [
     'ADMIN',
     'MANAGER',
@@ -314,6 +319,201 @@ export default function MainGrid() {
         0,
   );
 
+
+  if (isBoard) {
+    return (
+      <Stack
+        spacing={3}
+        sx={{
+          width: '100%',
+          mt: 2,
+        }}
+      >
+        {hasReports && summary.isLoading && (
+          <Paper sx={{ p: 3 }}>
+            <Skeleton height={48} />
+            <Skeleton height={120} />
+          </Paper>
+        )}
+
+        {hasReports && summary.isError && (
+          <Alert
+            severity="error"
+            action={
+              <Button onClick={() => summary.refetch()}>
+                تلاش مجدد
+              </Button>
+            }
+          >
+            خلاصه مدیریتی در دسترس نیست.
+          </Alert>
+        )}
+
+        {data && managementData && (
+          <>
+            <Typography color="text.secondary">
+              آخرین تولید گزارش:{' '}
+              {formatJalaliDateTime(data.generatedAt)}
+            </Typography>
+
+            <SalesManagementOverview
+              data={managementData}
+              periodLabel={periodLabel}
+            />
+
+            <Metrics
+              title="پیش‌بینی ۹۰ روزه"
+              items={[
+                {
+                  key: 'dashboard.forecast.count',
+                  label: 'تعداد فرصت‌های Forecast',
+                  value: value(data.forecast.opportunityCount),
+                  contextLabel: 'افق ۹۰ روزه',
+                },
+                {
+                  key: 'dashboard.forecast.estimated',
+                  label: 'ارزش اسمی Forecast',
+                  value: value(
+                    data.forecast.estimatedValueIrr,
+                    true,
+                  ),
+                },
+                {
+                  key: 'dashboard.forecast.weighted',
+                  label: 'ارزش وزنی Forecast',
+                  value: value(
+                    data.forecast.weightedValueIrr,
+                    true,
+                  ),
+                },
+                {
+                  key: 'dashboard.forecast.overdue',
+                  label: 'فرصت‌های دارای تاریخ بستن گذشته',
+                  value: value(data.forecast.overdueCloseCount),
+                  ...actionable(
+                    data.forecast.overdueCloseCount,
+                    true,
+                  ),
+                },
+                {
+                  key: 'dashboard.forecast.noDate',
+                  label: 'فرصت‌های بدون تاریخ بستن',
+                  value: value(
+                    data.forecast.withoutCloseDateCount,
+                  ),
+                  ...actionable(
+                    data.forecast.withoutCloseDateCount,
+                  ),
+                },
+              ]}
+            />
+
+            {data.periodComparison ? (
+              <Metrics
+                title="مقایسه با دوره قبل"
+                items={data.periodComparison.metrics.flatMap(
+                  (metric) => {
+                    const meta = comparisonMeta[metric.key];
+
+                    if (!meta) {
+                      return [];
+                    }
+
+                    const display = metric.key.endsWith('_IRR')
+                      ? formatIrrPrice
+                      : metric.key.includes('RATE')
+                        ? formatPercent
+                        : formatCount;
+
+                    return [
+                      {
+                        key: meta.key,
+                        label: meta.label,
+                        value: display(metric.currentValue),
+                        contextLabel: 'مقایسه با دوره قبل',
+                        comparison: {
+                          previousValue: display(
+                            metric.comparisonValue,
+                          ),
+                          percentChange:
+                            metric.percentChange == null
+                              ? null
+                              : formatPercent(
+                                  metric.percentChange,
+                                ),
+                          direction: metric.direction,
+                          isImprovement:
+                            metric.isImprovement,
+                        },
+                        tone:
+                          metric.isImprovement === true
+                            ? 'success'
+                            : metric.isImprovement === false
+                              ? 'error'
+                              : 'default',
+                      },
+                    ];
+                  },
+                )}
+              />
+            ) : (
+              <Alert severity="info">
+                خلاصه مقایسه دوره‌ها در اطلاعات فعلی موجود نیست.
+              </Alert>
+            )}
+
+            {canOrganization ? (
+              <Paper sx={{ p: 2 }}>
+                <Stack
+                  direction="row"
+                  sx={{
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Box>
+                    <Typography variant="h6">
+                      وضعیت سازمان جاری
+                    </Typography>
+
+                    <Typography>
+                      {organization.data?.name ??
+                        (organization.isLoading
+                          ? 'در حال دریافت...'
+                          : 'ناموجود')}
+                    </Typography>
+                  </Box>
+
+                  {organization.data && (
+                    <Chip
+                      color={getOrganizationStatusColor(
+                        organization.data.status,
+                      )}
+                      label={getOrganizationStatusLabel(
+                        organization.data.status,
+                      )}
+                    />
+                  )}
+                </Stack>
+              </Paper>
+            ) : (
+              <Alert severity="info">
+                دسترسی مشاهده وضعیت سازمان برای این نقش فعال نیست.
+              </Alert>
+            )}
+
+            {canOpportunity ? (
+              <BoardPipelineOverview />
+            ) : (
+              <Alert severity="info">
+                دسترسی مشاهده فرصت‌های فروش برای این نقش فعال نیست.
+              </Alert>
+            )}
+          </>
+        )}
+      </Stack>
+    );
+  }
   return (
     <Stack
       spacing={3}
