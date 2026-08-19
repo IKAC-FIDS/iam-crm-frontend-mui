@@ -4,47 +4,73 @@
    ============================================================ */
 
 :root {
-  /* Primary */
-  --color-primary-main: #001736;
-  --color-primary-light: #123B70;
-  --color-primary-dark: #000B1A;
+  /* Brand / Primary */
+  --color-primary-main: #0053B2;
+  --color-primary-hover: #004A9F;
+  --color-primary-interactive: #003F88;
+  --color-primary-alt: #55677F;
+  --color-primary-light: #D6E3FF;
+  --color-primary-dark: #004A9F;
+  --color-primary-soft-bg: #D6E3FF;
+  --color-primary-container: #D6E3FF;
   --color-primary-contrast: #FFFFFF;
+  --color-on-primary: #FFFFFF;
+  --color-on-primary-container: #001B3D;
 
-  /* Secondary */
-  --color-secondary-main: #00A6B2;
-  --color-secondary-light: #33C5CF;
-  --color-secondary-dark: #007C86;
+  /* Secondary / Gray-blue */
+  --color-secondary-main: #55677F;
+  --color-secondary-light: #64748B;
+  --color-secondary-dark: #003F88;
   --color-secondary-contrast: #FFFFFF;
 
-  /* Background */
-  --color-bg-default: #F5F7FB;
-  --color-bg-paper: #FFFFFF;
+  /* Background / Surface */
+  --color-bg-default: #EFF5FA;
+  --color-bg-paper: #FCFCFF;
+  --color-content-bg: #FCFCFF;
 
   /* Text */
   --color-text-primary: #0F172A;
   --color-text-secondary: #64748B;
+  --color-text-muted: #64748B;
+  --color-icon-muted: #64748B;
+  --color-on-surface: #0F172A;
+  --color-on-surface-variant: #64748B;
 
-  /* Border / Divider */
-  --color-divider: #E2E8F0;
+  /* Border / Divider / Outline */
+  --color-divider: #E4EAF3;
+  --color-outline: #C2CAD6;
+  --color-outline-strong: #C2CAD6;
 
   /* Semantic */
-  --color-success-main: #16A34A;
+  --color-success-main: #048A3B;
+  --color-success-light: #E6F9EE;
   --color-success-contrast: #FFFFFF;
 
   --color-warning-main: #F59E0B;
+  --color-warning-light: #FFF4E0;
   --color-warning-contrast: #0F172A;
 
-  --color-error-main: #DC2626;
+  --color-error-main: #BA1A1A;
+  --color-error-light: #FFDAD6;
   --color-error-contrast: #FFFFFF;
 
-  --color-info-main: #2563EB;
+  --color-info-main: #1371D3;
+  --color-info-light: #D0E5FB;
   --color-info-contrast: #FFFFFF;
 
+  --color-accent-main: #E91E63;
+
   /* Action states */
-  --color-action-hover: rgba(18, 59, 112, 0.08);
-  --color-action-selected: rgba(18, 59, 112, 0.14);
-  --color-action-disabled: rgba(15, 23, 42, 0.38);
-  --color-action-disabled-bg: rgba(15, 23, 42, 0.12);
+  --color-action-hover: #D6E3FF;
+  --color-action-selected: #D6E3FF;
+  --color-action-disabled: #C2CAD6;
+  --color-action-disabled-bg: #E4EAF3;
+
+  /* Chart series */
+  --color-chart-1: #0053B2;
+  --color-chart-2: #55677F;
+  --color-chart-3: #1371D3;
+  --color-chart-4: #64748B;
 
   /* Shadows */
   --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.08);
@@ -62,10 +88,10 @@
   --bg: var(--color-bg-default);
   --border: var(--color-divider);
   --code-bg: var(--color-bg-paper);
-  --accent: var(--color-secondary-main);
-  --accent-bg: rgba(0, 166, 178, 0.1);
-  --accent-border: rgba(0, 166, 178, 0.5);
-  --social-bg: rgba(226, 232, 240, 0.45);
+  --accent: var(--color-primary-main);
+  --accent-bg: var(--color-primary-soft-bg);
+  --accent-border: var(--color-outline);
+  --social-bg: var(--color-divider);
   --shadow: var(--shadow-card);
 
   color-scheme: light;

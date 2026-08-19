@@ -9,47 +9,47 @@ import { appTokens } from './theme/tokens';
 
 const palette = {
   primary: {
-    main: '#001736',
-    light: '#123B70',
-    dark: '#000B1A',
-    contrastText: '#FFFFFF',
+    main: appTokens.colors.primary,
+    light: appTokens.colors.primarySoftBg,
+    dark: appTokens.colors.primaryHover,
+    contrastText: appTokens.colors.onPrimary,
   },
   secondary: {
-    main: '#00A6B2',
-    light: '#33C5CF',
-    dark: '#007C86',
-    contrastText: '#FFFFFF',
+    main: appTokens.colors.primaryAlt,
+    contrastText: appTokens.colors.white,
   },
   background: {
-    default: '#F5F7FB',
-    paper: '#FFFFFF',
+    default: appTokens.colors.background,
+    paper: appTokens.colors.surface,
   },
   text: {
-    primary: '#0F172A',
-    secondary: '#64748B',
+    primary: appTokens.colors.onSurface,
+    secondary: appTokens.colors.textSecondary,
+    disabled: appTokens.colors.disabledIcon,
   },
-  divider: '#E2E8F0',
+  divider: appTokens.colors.divider,
   success: {
-    main: '#16A34A',
-    contrastText: '#FFFFFF',
+    main: appTokens.colors.success,
+    contrastText: appTokens.colors.white,
   },
   warning: {
-    main: '#F59E0B',
-    contrastText: '#0F172A',
+    main: appTokens.colors.warning,
+    contrastText: appTokens.colors.onSurface,
   },
   error: {
-    main: '#DC2626',
-    contrastText: '#FFFFFF',
+    main: appTokens.colors.error,
+    contrastText: appTokens.colors.white,
   },
   info: {
-    main: '#2563EB',
-    contrastText: '#FFFFFF',
+    main: appTokens.colors.info,
+    contrastText: appTokens.colors.white,
   },
   action: {
-    hover: 'rgba(18, 59, 112, 0.08)',
-    selected: 'rgba(18, 59, 112, 0.14)',
-    disabled: 'rgba(15, 23, 42, 0.38)',
-    disabledBackground: 'rgba(15, 23, 42, 0.12)',
+    active: appTokens.colors.iconMuted,
+    hover: appTokens.colors.primarySoftBg,
+    selected: appTokens.colors.primarySoftBg,
+    disabled: appTokens.colors.disabledIcon,
+    disabledBackground: appTokens.colors.disabledSurface,
   },
 };
 
@@ -68,7 +68,7 @@ const sharedComponents: Components<Theme> = {
         backgroundColor: 'var(--color-bg-default)',
       },
       '*:focus-visible': {
-        outline: '2px solid var(--color-secondary-main)',
+        outline: '2px solid var(--color-primary-interactive)',
         outlineOffset: 2,
       },
     },
